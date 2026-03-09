@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:developer' as dev;
 import 'dart:io' show Platform;
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {
@@ -35,6 +37,15 @@ class NotificationManager {
       sound: true,
     );
     dev.log('[FCM] Permission status: ${settings.authorizationStatus}', name: 'NotificationManager');
+
+    AnalyticsManager.instance.logEvent(AnalyticsEvents.notificationPermissionAsk);
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      AnalyticsManager.instance.logEvent(AnalyticsEvents.notificationPermissionGrant);
+      AnalyticsManager.instance.setUserProperty('notification_enabled', 'true');
+    } else {
+      AnalyticsManager.instance.logEvent(AnalyticsEvents.notificationPermissionDeny);
+      AnalyticsManager.instance.setUserProperty('notification_enabled', 'false');
+    }
 
     // iOS: wait for APNS token before requesting FCM token
     if (Platform.isIOS) {
@@ -92,11 +103,18 @@ class NotificationManager {
 
     _onMessageSub = FirebaseMessaging.onMessage.listen((message) {
       dev.log('[FCM] Foreground message: ${message.notification?.title}', name: 'NotificationManager');
+      AnalyticsManager.instance.logEvent(AnalyticsEvents.notificationReceiveForeground, params: {
+        AnalyticsEvents.paramType: message.data['type'] ?? 'unknown',
+      });
       _onForegroundMessage?.call(message);
     });
 
     _onMessageOpenedAppSub = FirebaseMessaging.onMessageOpenedApp.listen((message) {
       dev.log('[FCM] Message opened app: ${message.notification?.title}', name: 'NotificationManager');
+      AnalyticsManager.instance.logEvent(AnalyticsEvents.notificationTap, params: {
+        AnalyticsEvents.paramType: message.data['type'] ?? 'unknown',
+        AnalyticsEvents.paramActionUrl: message.data['action_url'] ?? '',
+      });
       _onMessageOpenedApp?.call(message);
     });
 

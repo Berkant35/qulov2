@@ -11,6 +11,8 @@ import 'package:qulo_v2/providers/app_config_provider.dart';
 import 'package:qulo_v2/providers/locale_provider.dart';
 import 'package:qulo_v2/providers/notification_provider.dart';
 import 'package:qulo_v2/providers/theme_provider.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/routing/app_router.dart';
 
 class QuloApp extends ConsumerStatefulWidget {
@@ -137,6 +139,10 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
           entry.remove();
         }
 
+        AnalyticsManager.instance.logEvent(AnalyticsEvents.notificationBannerShow, params: {
+          AnalyticsEvents.paramType: message.data['type'] ?? 'unknown',
+        });
+
         entry = OverlayEntry(
           builder: (_) => Positioned(
             top: 0,
@@ -148,12 +154,20 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
                 title: title,
                 body: body,
                 onTap: () {
+                  AnalyticsManager.instance.logEvent(AnalyticsEvents.notificationBannerTap, params: {
+                    AnalyticsEvents.paramType: message.data['type'] ?? 'unknown',
+                  });
                   removeEntry();
                   if (actionUrl != null && actionUrl.isNotEmpty) {
                     ref.read(routerProvider).go(actionUrl);
                   }
                 },
-                onDismiss: removeEntry,
+                onDismiss: () {
+                  AnalyticsManager.instance.logEvent(AnalyticsEvents.notificationBannerDismiss, params: {
+                    AnalyticsEvents.paramType: message.data['type'] ?? 'unknown',
+                  });
+                  removeEntry();
+                },
               ),
             ),
           ),
