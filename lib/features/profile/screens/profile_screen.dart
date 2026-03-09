@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
@@ -33,6 +35,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     Future.microtask(() {
       ref.read(userProvider.notifier).fetchMe();
     });
+    AnalyticsManager.instance.logEvent(AnalyticsEvents.profileViewOwn);
   }
 
   String _genderPrefLabel(BuildContext context, String? pref) {
@@ -107,7 +110,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         ),
         IconButton(
           icon: QIcon(QIcons.icSettings, color: theme.colorScheme.onSurfaceVariant, size: 24),
-          onPressed: () => ref.read(navigationServiceProvider).go(RouteNames.settings),
+          onPressed: () {
+            AnalyticsManager.instance.logEvent(AnalyticsEvents.profileSettingsOpen);
+            ref.read(navigationServiceProvider).go(RouteNames.settings);
+          },
         ),
       ],
       padding: EdgeInsets.zero,
@@ -254,8 +260,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           iconPath: QIcons.icAgeRange,
                           label: '${user.agePrefMin} - ${user.agePrefMax}',
                         ),
-                      if (user.matchRadiusKm != null)
-                        _PrefChip(
+                      _PrefChip(
                           iconPath: QIcons.icMapPin,
                           label: '${user.matchRadiusKm} km',
                         ),

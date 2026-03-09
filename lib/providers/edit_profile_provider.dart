@@ -76,7 +76,7 @@ class EditProfileNotifier extends Notifier<EditProfileState> {
         (user.agePrefMin ?? 18).toDouble(),
         (user.agePrefMax ?? 50).toDouble(),
       ),
-      distanceKm: (user.matchRadiusKm ?? 50).toDouble(),
+      distanceKm: user.matchRadiusKm.toDouble(),
       photos: List.generate(
         6,
         (i) => i < (user.photos?.length ?? 0) ? user.photos![i] : null,
