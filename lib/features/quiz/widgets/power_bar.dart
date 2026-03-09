@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qulo_v2/core/constants/q_icons.dart';
-import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
-import 'package:qulo_v2/core/widgets/q_icon.dart';
+import 'package:qulo_v2/core/widgets/power_icon.dart';
+import 'package:qulo_v2/providers/exchange_provider.dart';
 
 class PowerBar extends ConsumerWidget {
   final String sessionId;
@@ -19,33 +18,38 @@ class PowerBar extends ConsumerWidget {
   });
 
   static const _powers = [
-    ('COPY', QIcons.icCopy, 'power_copy'),
-    ('HALF', QIcons.icSplit, 'power_half'),
-    ('SKIP', QIcons.icSkipForward, 'power_skip'),
-    ('HINT', QIcons.icLightbulb, 'power_hint'),
-    ('TIME_EXTEND', QIcons.icClock, 'power_time'),
-    ('SKIP_ALL', QIcons.icFastForward, 'power_skip_all'),
+    (PowerType.oracle, 'power_oracle'),
+    (PowerType.half, 'power_half'),
+    (PowerType.skip, 'power_skip'),
+    (PowerType.hint, 'power_hint'),
+    (PowerType.timeExtend, 'power_time'),
+    (PowerType.skipAll, 'power_skip_all'),
   ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final exchangeState = ref.watch(exchangeProvider);
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
         children: _powers.map((p) {
-          final isHint = p.$1 == 'HINT';
+          final isHint = p.$1 == PowerType.hint;
+          final count = exchangeState.getCount(p.$1.apiName);
+
           return Padding(
             padding: const EdgeInsets.only(right: AppSpacing.sm),
             child: ActionChip(
-              avatar: QIcon(p.$2, size: 18, color: AppColors.primaryDark),
-              label: Text(context.tr(p.$3)),
+              avatar: PowerIcon(
+                type: p.$1,
+                size: 18,
+                showCount: count > 0,
+                count: count,
+              ),
+              label: Text(context.tr(p.$2)),
               onPressed: (isHint && !hasHint)
                   ? null
-                  : () {
-                      if (onPowerUsed != null) {
-                        onPowerUsed!(p.$1);
-                      }
-                    },
+                  : () => onPowerUsed?.call(p.$1.apiName),
             ),
           );
         }).toList(),

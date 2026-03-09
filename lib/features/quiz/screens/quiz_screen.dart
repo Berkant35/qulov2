@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
+import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
@@ -28,6 +30,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
   int _totalTimeSpent = 0;
   int _totalCorrect = 0;
   int _powersUsed = 0;
+  int? _oracleSuggestedIndex;
 
   @override
   void initState() {
@@ -105,7 +108,16 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
             },
           );
           _showGamifiedResult(matched: false);
-        } else if (data.awaitingAnswer != true) {
+        } else if (data.awaitingAnswer == true) {
+          // ORACLE power: highlight the suggested answer
+          final powerResult = data.powerResult;
+          if (powerResult != null && powerResult.containsKey('suggested_answer_index')) {
+            setState(() {
+              _oracleSuggestedIndex = powerResult['suggested_answer_index'] as int?;
+            });
+          }
+        } else {
+          setState(() => _oracleSuggestedIndex = null);
           ref.read(quizProvider.notifier).fetchCurrentQuestion();
           _startQuestionTimer();
         }
@@ -205,11 +217,43 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: AppSpacing.xxl),
+                  if (_oracleSuggestedIndex != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.md,
+                          vertical: AppSpacing.sm,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.primarySurface,
+                          borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                          border: Border.all(
+                            color: AppColors.primary.withValues(alpha: 0.3),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.auto_awesome, size: 16, color: AppColors.primary),
+                            const SizedBox(width: AppSpacing.xs),
+                            Text(
+                              context.tr('power_oracle_desc'),
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ...question.answers.map((a) => Padding(
                         padding: const EdgeInsets.only(bottom: AppSpacing.md),
                         child: AnswerButton(
                           text: a.text,
                           onTap: () => _answer(a.index),
+                          isOracleSuggested: _oracleSuggestedIndex == a.index,
                         ),
                       )),
                   const Spacer(),
