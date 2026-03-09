@@ -16,6 +16,10 @@ class UserNotifier extends AsyncNotifier<UserModel?> {
     );
   }
 
+  /// Returns the old completionRewardsClaimed map (snapshot before any update).
+  Map<String, dynamic> get currentRewardsClaimed =>
+      Map<String, dynamic>.from(state.value?.completionRewardsClaimed ?? {});
+
   Future<Result<UserModel>> updateProfile(Map<String, dynamic> data) async {
     final result = await ref.read(userRepositoryProvider).updateProfile(data);
     result.when(
@@ -23,6 +27,18 @@ class UserNotifier extends AsyncNotifier<UserModel?> {
       failure: (_) {},
     );
     return result;
+  }
+
+  /// Compares old and new completionRewardsClaimed to find newly claimed milestones.
+  List<int> detectNewMilestones(Map<String, dynamic> oldClaimed) {
+    final newClaimed = state.value?.completionRewardsClaimed ?? {};
+    final milestones = <int>[];
+    for (final m in [25, 50, 75, 100]) {
+      if (newClaimed[m.toString()] == true && oldClaimed[m.toString()] != true) {
+        milestones.add(m);
+      }
+    }
+    return milestones;
   }
 
   Future<Result<void>> updateDetails(Map<String, dynamic> data) async {

@@ -20,6 +20,7 @@ import 'package:qulo_v2/providers/edit_profile_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
 import 'package:qulo_v2/features/profile/widgets/photo_grid.dart';
+import 'package:qulo_v2/core/widgets/milestone_celebration_sheet.dart';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
   const EditProfileScreen({super.key});
@@ -229,6 +230,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     final epState = ref.read(editProfileProvider);
     final notifier = ref.read(editProfileProvider.notifier);
 
+    // Snapshot rewards before save for milestone detection
+    final oldClaimed = ref.read(userProvider.notifier).currentRewardsClaimed;
+
     final profileData = <String, dynamic>{
       'bio': _bioController.text.trim(),
       'city': _cityController.text.trim(),
@@ -265,7 +269,28 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       );
 
       if (success) {
-        ref.read(navigationServiceProvider).pop();
+        // Detect newly claimed milestones
+        final newMilestones =
+            ref.read(userProvider.notifier).detectNewMilestones(oldClaimed);
+
+        if (newMilestones.isNotEmpty) {
+          const milestoneRewards = {25: 5, 50: 15, 75: 30, 100: 50};
+          final highestMilestone = newMilestones.last;
+
+          await ref.read(navigationServiceProvider).showAppBottomSheet(
+            CustomBottomSheet(
+              name: 'milestone_celebration',
+              builder: (_) => MilestoneCelebrationSheet(
+                milestone: highestMilestone,
+                reward: milestoneRewards[highestMilestone] ?? 0,
+              ),
+            ),
+          );
+        }
+
+        if (mounted) {
+          ref.read(navigationServiceProvider).pop();
+        }
       }
     }
   }
