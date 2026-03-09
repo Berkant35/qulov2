@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
@@ -22,6 +24,7 @@ class QuizScreen extends ConsumerStatefulWidget {
 
 class _QuizScreenState extends ConsumerState<QuizScreen> {
   final _stopwatch = Stopwatch();
+  final _sessionStopwatch = Stopwatch();
   int _totalTimeSpent = 0;
   int _totalCorrect = 0;
   int _powersUsed = 0;
@@ -32,6 +35,13 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
     Future.microtask(() async {
       await ref.read(quizProvider.notifier).startSession(widget.targetId);
       _startQuestionTimer();
+      _sessionStopwatch.start();
+      AnalyticsManager.instance.logEvent(
+        AnalyticsEvents.quizStart,
+        params: {
+          AnalyticsEvents.paramPartnerId: widget.targetId,
+        },
+      );
     });
   }
 
@@ -54,6 +64,17 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
 
     if (powerUsed != null) _powersUsed++;
 
+    final quiz = ref.read(quizProvider);
+    final questionIndex = quiz.currentQuestion?.questionNumber ?? 0;
+
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.quizAnswer,
+      params: {
+        AnalyticsEvents.paramQuestionIndex: questionIndex,
+        AnalyticsEvents.paramDurationMs: _stopwatch.elapsedMilliseconds,
+      },
+    );
+
     final result = await ref.read(quizProvider.notifier).answer(
           index,
           powerUsed: powerUsed,
@@ -65,8 +86,24 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
         if (data.isCorrect == true) _totalCorrect++;
 
         if (data.sessionStatus == 'COMPLETED') {
+          _sessionStopwatch.stop();
+          AnalyticsManager.instance.logEvent(
+            AnalyticsEvents.quizComplete,
+            params: {
+              AnalyticsEvents.paramScore: _totalCorrect,
+              AnalyticsEvents.paramTotalDurationMs: _sessionStopwatch.elapsedMilliseconds,
+            },
+          );
           _showGamifiedResult(matched: true);
         } else if (data.sessionStatus == 'FAILED') {
+          _sessionStopwatch.stop();
+          AnalyticsManager.instance.logEvent(
+            AnalyticsEvents.quizComplete,
+            params: {
+              AnalyticsEvents.paramScore: _totalCorrect,
+              AnalyticsEvents.paramTotalDurationMs: _sessionStopwatch.elapsedMilliseconds,
+            },
+          );
           _showGamifiedResult(matched: false);
         } else if (data.awaitingAnswer != true) {
           ref.read(quizProvider.notifier).fetchCurrentQuestion();
@@ -136,7 +173,17 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
           : '',
       leading: IconButton(
         icon: QIcon(QIcons.icX, size: 24),
-        onPressed: () => ref.read(navigationServiceProvider).pop(),
+        onPressed: () {
+          final quiz = ref.read(quizProvider);
+          AnalyticsManager.instance.logEvent(
+            AnalyticsEvents.quizAbandon,
+            params: {
+              AnalyticsEvents.paramQuestionIndex:
+                  quiz.currentQuestion?.questionNumber ?? 0,
+            },
+          );
+          ref.read(navigationServiceProvider).pop();
+        },
       ),
       padding: EdgeInsets.zero,
       isLoading: quiz.isLoading || question == null,

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
@@ -25,6 +27,7 @@ class _QuestionAnalyticsScreenState
   @override
   void initState() {
     super.initState();
+    AnalyticsManager.instance.logEvent(AnalyticsEvents.questionAnalyticsView);
     Future.microtask(
       () => ref.read(questionAnalyticsProvider.notifier).fetchAnalytics(),
     );

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
@@ -48,10 +50,12 @@ class _QuestionCreateScreenState extends ConsumerState<QuestionCreateScreen> {
   late String _selectedLocale;
 
   bool get _isEditMode => widget.editQuestion != null;
+  bool _didComplete = false;
 
   @override
   void initState() {
     super.initState();
+    AnalyticsManager.instance.logEvent(AnalyticsEvents.questionCreateStart);
     if (_isEditMode) {
       final q = widget.editQuestion!;
       _questionTextController.text = q.questionText;
@@ -94,6 +98,9 @@ class _QuestionCreateScreenState extends ConsumerState<QuestionCreateScreen> {
 
   @override
   void dispose() {
+    if (!_didComplete) {
+      AnalyticsManager.instance.logEvent(AnalyticsEvents.questionCreateAbandon);
+    }
     _pageController.dispose();
     _questionTextController.dispose();
     _answer1Controller.dispose();
@@ -169,7 +176,17 @@ class _QuestionCreateScreenState extends ConsumerState<QuestionCreateScreen> {
         data,
       );
       result.when(
-        success: (_) => ref.read(navigationServiceProvider).pop(),
+        success: (_) {
+          _didComplete = true;
+          AnalyticsManager.instance.logEvent(
+            AnalyticsEvents.questionCreateComplete,
+            params: {
+              if (_selectedCategory != null)
+                AnalyticsEvents.paramQuestionType: _selectedCategory!,
+            },
+          );
+          ref.read(navigationServiceProvider).pop();
+        },
         failure: (f) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -183,7 +200,17 @@ class _QuestionCreateScreenState extends ConsumerState<QuestionCreateScreen> {
       data['order_num'] = questions.length + 1;
       final result = await notifier.createQuestion(data);
       result.when(
-        success: (_) => ref.read(navigationServiceProvider).pop(),
+        success: (_) {
+          _didComplete = true;
+          AnalyticsManager.instance.logEvent(
+            AnalyticsEvents.questionCreateComplete,
+            params: {
+              if (_selectedCategory != null)
+                AnalyticsEvents.paramQuestionType: _selectedCategory!,
+            },
+          );
+          ref.read(navigationServiceProvider).pop();
+        },
         failure: (f) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(

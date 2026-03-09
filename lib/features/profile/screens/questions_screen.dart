@@ -32,6 +32,13 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
     Future.microtask(() {
       ref.read(questionProvider.notifier).fetchQuestions();
       ref.read(pendingChangesProvider.notifier).fetchPending();
+      final questions = ref.read(questionProvider).valueOrNull ?? [];
+      AnalyticsManager.instance.logEvent(
+        AnalyticsEvents.questionListView,
+        params: {
+          AnalyticsEvents.paramQuestionsCount: questions.length,
+        },
+      );
     });
   }
 
@@ -84,6 +91,12 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
   }
 
   void _editQuestion(QuestionModel question) {
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.questionEdit,
+      params: {
+        AnalyticsEvents.paramQuestionId: question.id,
+      },
+    );
     ref.read(navigationServiceProvider).push(
       RouteNames.questionCreate,
       extra: question,
@@ -91,6 +104,12 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
   }
 
   void _deleteQuestion(QuestionModel question) {
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.questionDelete,
+      params: {
+        AnalyticsEvents.paramQuestionId: question.id,
+      },
+    );
     final nav = ref.read(navigationServiceProvider);
     nav.showAppDialog(
       ConfirmDialog(
