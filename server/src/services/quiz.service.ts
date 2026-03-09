@@ -242,8 +242,8 @@ export class QuizService {
       switch (powerUsed) {
         case "SKIP": {
           // Mark correct, record answer, proceed
-          await this.recordAnswer(sessionId, currentQuestion.id, selectedAnswer, true, powerUsed, timeSpent ?? null);
-          await this.updateQuestionStats(currentQuestion.id, true, powerUsed ?? null, timeSpent ?? null, selectedAnswer);
+          await this.recordAnswer(sessionId, currentQuestion.id, selectedAnswer ?? 0, true, powerUsed, timeSpent ?? null);
+          await this.updateQuestionStats(currentQuestion.id, true, powerUsed ?? null, timeSpent ?? null, selectedAnswer ?? 0);
 
           if (session.current_q >= session.total_questions) {
             return await this.completeSession(session);
