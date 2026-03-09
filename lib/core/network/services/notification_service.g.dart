@@ -34,7 +34,16 @@ class _NotificationRetrofitService implements NotificationRetrofitService {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    final _value = _result.data!;
+    late Map<String, dynamic> _value;
+    try {
+      _value = _result.data!.map(
+        (k, dynamic v) =>
+            MapEntry(k, v),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
     return _value;
   }
 
@@ -55,7 +64,16 @@ class _NotificationRetrofitService implements NotificationRetrofitService {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    final _value = _result.data!;
+    late Map<String, dynamic> _value;
+    try {
+      _value = _result.data!.map(
+        (k, dynamic v) =>
+            MapEntry(k, v),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
     return _value;
   }
 

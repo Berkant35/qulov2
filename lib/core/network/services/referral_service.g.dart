@@ -38,7 +38,7 @@ class _ReferralService implements ReferralService {
     try {
       _value = _result.data!.map(
         (k, dynamic v) =>
-            MapEntry(k, dynamic.fromJson(v as Map<String, dynamic>)),
+            MapEntry(k, v),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
