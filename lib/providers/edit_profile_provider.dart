@@ -11,6 +11,8 @@ class EditProfileState {
   final RangeValues ageRange;
   final double distanceKm;
   final List<String?> photos;
+  final String? selectedRelationshipGoal;
+  final List<String> selectedLanguages;
 
   const EditProfileState({
     this.isSaving = false,
@@ -21,6 +23,8 @@ class EditProfileState {
     this.ageRange = const RangeValues(18, 50),
     this.distanceKm = 50,
     this.photos = const [null, null, null, null, null, null],
+    this.selectedRelationshipGoal,
+    this.selectedLanguages = const [],
   });
 
   EditProfileState copyWith({
@@ -32,6 +36,8 @@ class EditProfileState {
     RangeValues? ageRange,
     double? distanceKm,
     List<String?>? photos,
+    String? Function()? selectedRelationshipGoal,
+    List<String>? selectedLanguages,
   }) {
     return EditProfileState(
       isSaving: isSaving ?? this.isSaving,
@@ -47,6 +53,10 @@ class EditProfileState {
       ageRange: ageRange ?? this.ageRange,
       distanceKm: distanceKm ?? this.distanceKm,
       photos: photos ?? this.photos,
+      selectedRelationshipGoal: selectedRelationshipGoal != null
+          ? selectedRelationshipGoal()
+          : this.selectedRelationshipGoal,
+      selectedLanguages: selectedLanguages ?? this.selectedLanguages,
     );
   }
 }
@@ -71,6 +81,10 @@ class EditProfileNotifier extends Notifier<EditProfileState> {
         6,
         (i) => i < (user.photos?.length ?? 0) ? user.photos![i] : null,
       ),
+      selectedRelationshipGoal: user.relationshipGoal,
+      selectedLanguages: user.preferredLanguages.isNotEmpty
+          ? user.preferredLanguages
+          : [user.locale ?? 'tr'],
     );
   }
 
@@ -84,6 +98,19 @@ class EditProfileNotifier extends Notifier<EditProfileState> {
       state = state.copyWith(selectedGenderPref: () => v);
   void setAgeRange(RangeValues v) => state = state.copyWith(ageRange: v);
   void setDistanceKm(double v) => state = state.copyWith(distanceKm: v);
+  void setRelationshipGoal(String? v) =>
+      state = state.copyWith(selectedRelationshipGoal: () => v);
+  void setLanguages(List<String> v) =>
+      state = state.copyWith(selectedLanguages: v);
+  void toggleLanguage(String lang) {
+    final current = List<String>.from(state.selectedLanguages);
+    if (current.contains(lang)) {
+      if (current.length > 1) current.remove(lang); // En az 1 dil kalmalı
+    } else {
+      current.add(lang);
+    }
+    state = state.copyWith(selectedLanguages: current);
+  }
 
   void refreshPhotos() {
     final user = ref.read(userProvider).valueOrNull;
