@@ -16,7 +16,7 @@ import 'package:qulo_v2/features/quiz/widgets/answer_button.dart';
 import 'package:qulo_v2/features/quiz/widgets/answer_feedback_overlay.dart';
 import 'package:qulo_v2/features/quiz/widgets/power_bar.dart';
 import 'package:qulo_v2/features/quiz/widgets/quiz_timer.dart';
-import 'package:qulo_v2/features/quiz/widgets/quiz_result_dialog.dart';
+import 'package:qulo_v2/features/quiz/screens/match_celebration_screen.dart';
 
 class QuizScreen extends ConsumerStatefulWidget {
   final String targetId;
@@ -179,16 +179,14 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
     return 'none';
   }
 
-  Future<void> _showGamifiedResult({required bool matched}) async {
+  void _showGamifiedResult({required bool matched}) {
     final nav = ref.read(navigationServiceProvider);
     final quiz = ref.read(quizProvider);
     final badge = _determineBadge();
 
-    await nav.showAppDialog(
-      CustomDialog(
-        name: 'quiz_result',
-        barrierDismissible: false,
-        builder: (_) => QuizResultContent(
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => MatchCelebrationScreen(
           matched: matched,
           totalCorrect: _totalCorrect,
           totalQuestions: quiz.totalQuestions,
@@ -197,14 +195,11 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
           performanceBadge: badge,
           onStartChat: matched
               ? () {
-                  nav.closeOverlay();
-                  nav.pop();
                   nav.go(RouteNames.matches);
                 }
               : null,
           onGoBack: () {
-            nav.closeOverlay();
-            if (mounted) nav.pop();
+            nav.pop();
           },
         ),
       ),
