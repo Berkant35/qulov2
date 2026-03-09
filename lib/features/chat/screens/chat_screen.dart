@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:qulo_v2/core/navigation/navigation_provider.dart';
 import 'package:qulo_v2/core/navigation/models/app_dialog.dart';
@@ -18,6 +20,9 @@ import 'package:qulo_v2/providers/quiz_summary_provider.dart';
 import 'package:qulo_v2/features/chat/widgets/quiz_summary_card.dart';
 import 'package:qulo_v2/features/chat/widgets/typing_indicator.dart';
 import 'package:qulo_v2/features/chat/widgets/reaction_picker.dart';
+import 'package:qulo_v2/features/chat/widgets/photo_message_widget.dart';
+import 'package:qulo_v2/features/chat/widgets/voice_message_widget.dart';
+import 'package:qulo_v2/features/chat/widgets/voice_recorder_overlay.dart';
 import 'package:qulo_v2/features/chat/sheets/create_question_sheet.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 
@@ -36,11 +41,19 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   final Stopwatch _chatStopwatch = Stopwatch()..start();
   int _messagesSentCount = 0;
   bool _isOtherTyping = false;
+  bool _isRecording = false;
+  bool _hasText = false;
   Timer? _typingDebounce;
 
   @override
   void initState() {
     super.initState();
+    _msgCtrl.addListener(() {
+      final hasText = _msgCtrl.text.trim().isNotEmpty;
+      if (hasText != _hasText) {
+        setState(() => _hasText = hasText);
+      }
+    });
     AnalyticsManager.instance.logEvent(
       AnalyticsEvents.chatOpen,
       params: {AnalyticsEvents.paramChatId: widget.matchId},
@@ -48,6 +61,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     Future.microtask(() {
       ref.read(chatProvider(widget.matchId).notifier).loadMessages();
       ref.read(chatProvider(widget.matchId).notifier).markAsRead();
+      ref.read(chatProvider(widget.matchId).notifier).loadMediaStatus();
       _subscribeRealtime();
       _subscribeTyping();
     });
@@ -239,6 +253,155 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     );
   }
 
+  // ─── Media Methods ───
+
+  Future<void> _handlePhotoTap() async {
+    final chatState = ref.read(chatProvider(widget.matchId)).requireValue;
+    if (chatState.mediaEnabled) {
+      _showPhotoSourceSheet();
+    } else {
+      _showMediaConsentDialog();
+    }
+  }
+
+  Future<void> _showMediaConsentDialog() async {
+    final confirmed = await ref.read(navigationServiceProvider).showAppDialog<bool>(
+      const ConfirmDialog(
+        name: 'media_consent',
+        title: 'Medya Paylasimi',
+        message: 'Medya paylasmak icin karsi tarafin da onay vermesi gerekiyor. Istek gonderilsin mi?',
+        confirmText: 'Istek Gonder',
+        cancelText: 'Iptal',
+      ),
+    );
+    if (confirmed == true) {
+      await ref.read(chatProvider(widget.matchId).notifier).requestMedia();
+    }
+  }
+
+  void _showPhotoSourceSheet() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (_) => Container(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        decoration: BoxDecoration(
+          color: AppColors.surfaceElevated,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusLg)),
+        ),
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.photo_library_outlined),
+                title: const Text('Galeriden Sec'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickAndSendPhoto(ImageSource.gallery);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.camera_alt_outlined),
+                title: const Text('Kamera'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickAndSendPhoto(ImageSource.camera);
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _pickAndSendPhoto(ImageSource source) async {
+    final picker = ref.read(imagePickerManagerProvider);
+    final picked = source == ImageSource.gallery
+        ? await picker.pickFromGallery()
+        : await picker.pickFromCamera();
+    if (picked == null) return;
+
+    final fileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
+    final storagePath = 'chat-media/${widget.matchId}/$fileName';
+
+    await Supabase.instance.client.storage
+        .from('chat-media')
+        .uploadBinary(storagePath, picked.bytes);
+
+    final url = Supabase.instance.client.storage
+        .from('chat-media')
+        .getPublicUrl(storagePath);
+
+    await ref.read(chatProvider(widget.matchId).notifier)
+        .sendMessage(url, isImage: true);
+    _messagesSentCount++;
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.chatMessageSend,
+      params: {
+        AnalyticsEvents.paramChatId: widget.matchId,
+        AnalyticsEvents.paramType: 'photo',
+      },
+    );
+  }
+
+  void _startVoiceRecording() {
+    final chatState = ref.read(chatProvider(widget.matchId)).requireValue;
+    if (!chatState.mediaEnabled) {
+      _showMediaConsentDialog();
+      return;
+    }
+    setState(() => _isRecording = true);
+  }
+
+  Future<void> _handleVoiceComplete(String filePath, int durationSeconds) async {
+    setState(() => _isRecording = false);
+
+    final file = File(filePath);
+    final fileName = '${DateTime.now().millisecondsSinceEpoch}.m4a';
+    final storagePath = 'chat-media/${widget.matchId}/$fileName';
+
+    await Supabase.instance.client.storage
+        .from('chat-media')
+        .upload(storagePath, file);
+
+    final url = Supabase.instance.client.storage
+        .from('chat-media')
+        .getPublicUrl(storagePath);
+
+    await ref.read(chatProvider(widget.matchId).notifier)
+        .sendMessage('Sesli mesaj', audioUrl: url, audioDurationSeconds: durationSeconds);
+    _messagesSentCount++;
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.chatMessageSend,
+      params: {
+        AnalyticsEvents.paramChatId: widget.matchId,
+        AnalyticsEvents.paramType: 'voice',
+        AnalyticsEvents.paramDurationMs: durationSeconds * 1000,
+      },
+    );
+  }
+
+  void _cancelVoiceRecording() {
+    setState(() => _isRecording = false);
+  }
+
+  Future<void> _handleDisableMedia() async {
+    final confirmed = await ref.read(navigationServiceProvider).showAppDialog<bool>(
+      const ConfirmDialog(
+        name: 'media_disable',
+        title: 'Medya Paylasimini Kapat',
+        message: 'Medya paylasimini kapatmak istediginize emin misiniz?',
+        confirmText: 'Kapat',
+        isDestructive: true,
+      ),
+    );
+    if (confirmed == true) {
+      await ref.read(chatProvider(widget.matchId).notifier).disableMedia();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final chatState = ref.watch(chatProvider(widget.matchId));
@@ -306,19 +469,34 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             icon: const Icon(Icons.more_vert),
             onSelected: (value) {
               if (value == 'unmatch') _confirmUnmatch();
+              if (value == 'media_disable') _handleDisableMedia();
             },
-            itemBuilder: (ctx) => [
-              PopupMenuItem(
-                value: 'unmatch',
-                child: Row(
-                  children: [
-                    Icon(Icons.heart_broken, color: AppColors.error, size: 20),
-                    const SizedBox(width: 8),
-                    const Text('Unmatch'),
-                  ],
+            itemBuilder: (ctx) {
+              final mediaEnabled = ref.read(chatProvider(widget.matchId)).valueOrNull?.mediaEnabled ?? false;
+              return [
+                if (mediaEnabled)
+                  PopupMenuItem(
+                    value: 'media_disable',
+                    child: Row(
+                      children: [
+                        Icon(Icons.no_photography, color: AppColors.textSecondary, size: 20),
+                        const SizedBox(width: 8),
+                        const Text('Medya paylasimini kapat'),
+                      ],
+                    ),
+                  ),
+                PopupMenuItem(
+                  value: 'unmatch',
+                  child: Row(
+                    children: [
+                      Icon(Icons.heart_broken, color: AppColors.error, size: 20),
+                      const SizedBox(width: 8),
+                      const Text('Unmatch'),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ];
+            },
           ),
         ],
       ),
@@ -366,42 +544,67 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                         child: Column(
                           crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              margin: EdgeInsets.only(bottom: hasReactions ? 2 : AppSpacing.sm),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 14,
-                                vertical: 10,
-                              ),
-                              constraints: BoxConstraints(
-                                maxWidth: MediaQuery.of(context).size.width * 0.75,
-                              ),
-                              decoration: BoxDecoration(
-                                gradient: msg.isDeleted ? null : (isMe ? AppColors.primaryButtonGradient : null),
-                                color: msg.isDeleted
-                                    ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5)
-                                    : (isMe ? null : theme.colorScheme.surfaceContainerHighest),
-                                borderRadius: BorderRadius.only(
-                                  topLeft: const Radius.circular(16),
-                                  topRight: const Radius.circular(16),
-                                  bottomLeft: Radius.circular(isMe ? 16 : 4),
-                                  bottomRight: Radius.circular(isMe ? 4 : 16),
+                            if (msg.isDeleted)
+                              Container(
+                                margin: EdgeInsets.only(bottom: hasReactions ? 2 : AppSpacing.sm),
+                                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                                constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
+                                decoration: BoxDecoration(
+                                  color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: const Radius.circular(16),
+                                    topRight: const Radius.circular(16),
+                                    bottomLeft: Radius.circular(isMe ? 16 : 4),
+                                    bottomRight: Radius.circular(isMe ? 4 : 16),
+                                  ),
+                                ),
+                                child: Text(
+                                  'Bu mesaj silindi',
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: theme.colorScheme.onSurfaceVariant,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                              )
+                            else if (msg.isAudio)
+                              Padding(
+                                padding: EdgeInsets.only(bottom: hasReactions ? 2 : AppSpacing.sm),
+                                child: VoiceMessageWidget(
+                                  audioUrl: msg.audioUrl!,
+                                  durationSeconds: msg.audioDurationSeconds ?? 0,
+                                  isMine: isMe,
+                                ),
+                              )
+                            else if (msg.isImage)
+                              Padding(
+                                padding: EdgeInsets.only(bottom: hasReactions ? 2 : AppSpacing.sm),
+                                child: PhotoMessageWidget(
+                                  imageUrl: msg.content,
+                                  isMine: isMe,
+                                ),
+                              )
+                            else
+                              Container(
+                                margin: EdgeInsets.only(bottom: hasReactions ? 2 : AppSpacing.sm),
+                                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                                constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
+                                decoration: BoxDecoration(
+                                  gradient: isMe ? AppColors.primaryButtonGradient : null,
+                                  color: isMe ? null : theme.colorScheme.surfaceContainerHighest,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: const Radius.circular(16),
+                                    topRight: const Radius.circular(16),
+                                    bottomLeft: Radius.circular(isMe ? 16 : 4),
+                                    bottomRight: Radius.circular(isMe ? 4 : 16),
+                                  ),
+                                ),
+                                child: Text(
+                                  msg.content,
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: isMe ? theme.colorScheme.onPrimary : theme.colorScheme.onSurface,
+                                  ),
                                 ),
                               ),
-                              child: msg.isDeleted
-                                  ? Text(
-                                      'Bu mesaj silindi',
-                                      style: theme.textTheme.bodyMedium?.copyWith(
-                                        color: theme.colorScheme.onSurfaceVariant,
-                                        fontStyle: FontStyle.italic,
-                                      ),
-                                    )
-                                  : Text(
-                                      msg.content,
-                                      style: theme.textTheme.bodyMedium?.copyWith(
-                                        color: isMe ? theme.colorScheme.onPrimary : theme.colorScheme.onSurface,
-                                      ),
-                                    ),
-                            ),
                             if (hasReactions)
                               Padding(
                                 padding: const EdgeInsets.only(bottom: AppSpacing.sm),
@@ -440,6 +643,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               ),
               child: const TypingIndicator(),
             ),
+          if (_isRecording)
+            VoiceRecorderOverlay(
+              onRecordComplete: _handleVoiceComplete,
+              onCancel: _cancelVoiceRecording,
+            )
+          else
           Container(
             padding: const EdgeInsets.all(AppSpacing.sm),
             decoration: BoxDecoration(
@@ -451,6 +660,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             child: SafeArea(
               child: Row(
                 children: [
+                  IconButton(
+                    onPressed: _handlePhotoTap,
+                    icon: Icon(
+                      Icons.photo_camera_outlined,
+                      color: theme.colorScheme.onSurfaceVariant,
+                      size: 22,
+                    ),
+                  ),
                   Expanded(
                     child: TextField(
                       controller: _msgCtrl,
@@ -491,16 +708,31 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       size: 22,
                     ),
                   ),
-                  Container(
-                    decoration: const BoxDecoration(
-                      gradient: AppColors.primaryButtonGradient,
-                      shape: BoxShape.circle,
+                  if (_hasText)
+                    Container(
+                      decoration: const BoxDecoration(
+                        gradient: AppColors.primaryButtonGradient,
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
+                        onPressed: _send,
+                        icon: Icon(Icons.send, color: Theme.of(context).colorScheme.onPrimary, size: 20),
+                      ),
+                    )
+                  else
+                    GestureDetector(
+                      onLongPress: _startVoiceRecording,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          gradient: AppColors.primaryButtonGradient,
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          onPressed: null,
+                          icon: Icon(Icons.mic, color: Theme.of(context).colorScheme.onPrimary, size: 20),
+                        ),
+                      ),
                     ),
-                    child: IconButton(
-                      onPressed: _send,
-                      icon: Icon(Icons.send, color: Theme.of(context).colorScheme.onPrimary, size: 20),
-                    ),
-                  ),
                 ],
               ),
             ),

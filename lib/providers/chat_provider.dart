@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/network/result.dart';
+import 'package:qulo_v2/data/models/media_request_model.dart';
 import 'package:qulo_v2/data/models/message_model.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
@@ -23,8 +24,8 @@ class ChatNotifier extends FamilyAsyncNotifier<ChatState, String> {
     );
   }
 
-  Future<Result<MessageModel>> sendMessage(String content, {bool isImage = false}) async {
-    final result = await ref.read(chatRepositoryProvider).sendMessage(arg, content: content, isImage: isImage);
+  Future<Result<MessageModel>> sendMessage(String content, {bool isImage = false, String? audioUrl, int? audioDurationSeconds}) async {
+    final result = await ref.read(chatRepositoryProvider).sendMessage(arg, content: content, isImage: isImage, audioUrl: audioUrl, audioDurationSeconds: audioDurationSeconds);
     result.when(
       success: (message) {
         final current = state.valueOrNull ?? const ChatState();
@@ -80,6 +81,57 @@ class ChatNotifier extends FamilyAsyncNotifier<ChatState, String> {
     );
   }
 
+  Future<void> loadMediaStatus() async {
+    final repo = ref.read(chatRepositoryProvider);
+    final result = await repo.getMediaStatus(arg);
+    result.when(
+      success: (status) {
+        state = AsyncData(state.requireValue.copyWith(
+          mediaEnabled: status.mediaEnabled,
+          pendingMediaRequest: status.pendingRequest,
+        ));
+      },
+      failure: (_) {},
+    );
+  }
+
+  Future<void> requestMedia() async {
+    final repo = ref.read(chatRepositoryProvider);
+    final result = await repo.requestMedia(arg);
+    result.when(
+      success: (request) {
+        state = AsyncData(state.requireValue.copyWith(
+          pendingMediaRequest: request,
+        ));
+      },
+      failure: (_) {},
+    );
+  }
+
+  Future<void> respondToMediaRequest(String requestId, String action) async {
+    final repo = ref.read(chatRepositoryProvider);
+    final result = await repo.respondToMediaRequest(arg, requestId, action);
+    result.when(
+      success: (response) {
+        final enabled = response['media_enabled'] == true;
+        state = AsyncData(state.requireValue.copyWith(
+          mediaEnabled: enabled,
+          clearPendingMediaRequest: true,
+        ));
+      },
+      failure: (_) {},
+    );
+  }
+
+  Future<void> disableMedia() async {
+    final repo = ref.read(chatRepositoryProvider);
+    await repo.disableMedia(arg);
+    state = AsyncData(state.requireValue.copyWith(
+      mediaEnabled: false,
+      clearPendingMediaRequest: true,
+    ));
+  }
+
   Future<void> deleteMessage(String messageId) async {
     final result = await ref.read(chatRepositoryProvider).deleteMessage(arg, messageId);
     result.when(
@@ -112,14 +164,33 @@ class ChatState {
   final List<MessageModel> messages;
   final int total;
   final int page;
+  final bool mediaEnabled;
+  final MediaRequestModel? pendingMediaRequest;
 
-  const ChatState({this.messages = const [], this.total = 0, this.page = 1});
+  const ChatState({
+    this.messages = const [],
+    this.total = 0,
+    this.page = 1,
+    this.mediaEnabled = false,
+    this.pendingMediaRequest,
+  });
 
-  ChatState copyWith({List<MessageModel>? messages, int? total, int? page}) {
+  ChatState copyWith({
+    List<MessageModel>? messages,
+    int? total,
+    int? page,
+    bool? mediaEnabled,
+    MediaRequestModel? pendingMediaRequest,
+    bool clearPendingMediaRequest = false,
+  }) {
     return ChatState(
       messages: messages ?? this.messages,
       total: total ?? this.total,
       page: page ?? this.page,
+      mediaEnabled: mediaEnabled ?? this.mediaEnabled,
+      pendingMediaRequest: clearPendingMediaRequest
+          ? null
+          : (pendingMediaRequest ?? this.pendingMediaRequest),
     );
   }
 }

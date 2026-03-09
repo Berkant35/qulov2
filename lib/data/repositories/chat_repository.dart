@@ -21,12 +21,15 @@ class ChatRepository implements IChatRepository {
   }
 
   @override
-  Future<Result<MessageModel>> sendMessage(String matchId, {required String content, bool isImage = false}) async {
+  Future<Result<MessageModel>> sendMessage(String matchId, {required String content, bool isImage = false, String? audioUrl, int? audioDurationSeconds}) async {
     try {
-      final response = await _service.sendMessage(matchId, {
+      final data = <String, dynamic>{
         'content': content,
         'is_image': isImage,
-      });
+      };
+      if (audioUrl != null) data['audio_url'] = audioUrl;
+      if (audioDurationSeconds != null) data['audio_duration_seconds'] = audioDurationSeconds;
+      final response = await _service.sendMessage(matchId, data);
       return Success(response);
     } on DioException catch (e) {
       return Failure(e.toAppFailure());

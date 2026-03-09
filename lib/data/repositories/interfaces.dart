@@ -54,7 +54,7 @@ abstract class IAuthRepository {
 abstract class IChatRepository {
   Future<Result<MessagesResponse>> getMessages(String matchId, {int page = 1, int limit = 30});
 
-  Future<Result<MessageModel>> sendMessage(String matchId, {required String content, bool isImage = false});
+  Future<Result<MessageModel>> sendMessage(String matchId, {required String content, bool isImage = false, String? audioUrl, int? audioDurationSeconds});
 
   Future<Result<void>> markAsRead(String matchId);
 
