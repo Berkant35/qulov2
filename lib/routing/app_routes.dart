@@ -92,8 +92,21 @@ final _routes = <RouteBase>[
     parentNavigatorKey: rootNavigatorKey,
     path: '/quiz/:targetId',
     name: RouteNames.quiz,
-    builder: (context, state) => QuizScreen(
-      targetId: state.pathParameters['targetId']!,
+    pageBuilder: (context, state) => CustomTransitionPage(
+      key: state.pageKey,
+      child: QuizScreen(targetId: state.pathParameters['targetId']!),
+      transitionDuration: const Duration(milliseconds: 500),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: ScaleTransition(
+            scale: Tween<double>(begin: 0.85, end: 1.0).animate(
+              CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+            ),
+            child: child,
+          ),
+        );
+      },
     ),
   ),
 
