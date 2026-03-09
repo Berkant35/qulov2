@@ -76,6 +76,14 @@ abstract class AnalyticsEvents {
   static const String chatQuestionCreate = 'chat_question_create';
   static const String chatQuestionAnswer = 'chat_question_answer';
   static const String chatUnmatch = 'chat_unmatch';
+  static const String chatMediaRequest = 'chat_media_request';
+  static const String chatMediaAccept = 'chat_media_accept';
+  static const String chatMediaReject = 'chat_media_reject';
+  static const String chatMediaDisable = 'chat_media_disable';
+  static const String chatPhotoSend = 'chat_photo_send';
+  static const String chatVoiceSend = 'chat_voice_send';
+  static const String chatVoicePlay = 'chat_voice_play';
+  static const String chatPhotoView = 'chat_photo_view';
 
   // ─── Quiz (10) ─────────────────────────────────────────────────────
   static const String quizStart = 'quiz_start';
