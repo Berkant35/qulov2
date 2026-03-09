@@ -563,11 +563,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         const SizedBox(height: AppSpacing.sm),
         SegmentedButton<String>(
           segments: [
-            ButtonSegment(value: 'MALE', label: Text(context.tr('male'))),
-            ButtonSegment(value: 'FEMALE', label: Text(context.tr('female'))),
-            ButtonSegment(value: 'ALL', label: Text(context.tr('all'))),
+            ButtonSegment(value: 'MAN', label: Text(context.tr('male'))),
+            ButtonSegment(value: 'WOMAN', label: Text(context.tr('female'))),
+            ButtonSegment(value: 'BOTH', label: Text(context.tr('all'))),
           ],
-          selected: {epState.selectedGenderPref ?? 'ALL'},
+          selected: {epState.selectedGenderPref ?? 'BOTH'},
           onSelectionChanged: (set) {
             ref.read(editProfileProvider.notifier).setGenderPref(set.first);
           },
