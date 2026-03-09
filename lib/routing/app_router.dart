@@ -37,7 +37,6 @@ import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/navigation/navigation_provider.dart';
-import 'package:qulo_v2/core/l10n/app_localizations.dart';
 
 part 'app_routes.dart';
 

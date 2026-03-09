@@ -66,6 +66,8 @@ class UserModel extends Equatable {
   final List<String> preferredLanguages;
   @JsonKey(name: 'completion_rewards_claimed', defaultValue: {})
   final Map<String, dynamic> completionRewardsClaimed;
+  @JsonKey(name: 'referral_code')
+  final String? referralCode;
   final UserDetailsModel? details;
 
   const UserModel({
@@ -105,6 +107,7 @@ class UserModel extends Equatable {
     this.relationshipGoal,
     this.preferredLanguages = const [],
     this.completionRewardsClaimed = const {},
+    this.referralCode,
     this.details,
   });
 
@@ -119,6 +122,6 @@ class UserModel extends Equatable {
     lat, lng, photos, profileCompletion, greenDiamonds, purpleDiamonds,
     isOnline, lastSeenAt, emailVerified, passportCity, boostUntil,
     likeReceivedCount, timesShownCount, badgeRewardsClaimed, questionCount,
-    relationshipGoal, preferredLanguages, completionRewardsClaimed,
+    relationshipGoal, preferredLanguages, completionRewardsClaimed, referralCode,
   ];
 }

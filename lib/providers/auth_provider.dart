@@ -128,6 +128,7 @@ class AuthNotifier extends Notifier<AuthState> {
     double? lat,
     double? lng,
     String locale = 'tr',
+    String? referralCode,
   }) async {
     AnalyticsManager.instance.logEvent(AnalyticsEvents.authRegisterStart, params: {
       AnalyticsEvents.paramMethod: 'email',
@@ -143,6 +144,7 @@ class AuthNotifier extends Notifier<AuthState> {
       lat: lat,
       lng: lng,
       locale: locale,
+      referralCode: referralCode,
     );
     result.when(
       success: (_) {

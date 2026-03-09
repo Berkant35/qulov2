@@ -27,6 +27,7 @@ abstract class IAuthRepository {
     double? lat,
     double? lng,
     String locale = 'tr',
+    String? referralCode,
   });
 
   Future<Result<AuthTokens>> login({

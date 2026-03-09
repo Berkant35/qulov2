@@ -1,5 +1,6 @@
 import { supabase } from "../config/supabase.js";
 import { diamondService } from "./diamond.service.js";
+import { referralService } from "./referral.service.js";
 import { Errors } from "../utils/errors.js";
 import type { UpdateProfileInput, UpdateDetailsInput } from "../validators/user.validator.js";
 
@@ -345,6 +346,9 @@ export class UserService {
         completion_rewards_claimed: claimed,
       })
       .eq("id", userId);
+
+    // Check and reward referral if profile completion >= 60%
+    await referralService.checkAndReward(userId, newCompletion);
   }
 }
 

@@ -608,6 +608,20 @@ class AppLocalizations {
     'power_skip_all_desc': 'Tüm kalan soruları geç',
     'power_time_extend_desc': 'Süreye 15 saniye ekle',
     'power_hint_desc': 'İpucu göster',
+
+    // Referral
+    'referral_title': 'Arkadaşını Davet Et',
+    'referral_description': 'Arkadaşını davet et, ikimize de 25 mor elmas hediye!',
+    'referral_compact_cta': 'Arkadaşını getir, elmas kazan',
+    'referral_copy': 'Kopyala',
+    'referral_share': 'Paylaş',
+    'referral_progress': 'Davet kullanıldı',
+    'referral_code_copied': 'Davet kodu kopyalandı!',
+    'referral_have_code': 'Davet kodun var mı?',
+    'referral_code_hint': 'Davet kodunu gir',
+    'referral_code_valid': 'Davet eden: ',
+    'referral_code_invalid': 'Geçersiz davet kodu',
+    'referral_already_logged_in': 'Davet kodu sadece yeni kayıt sırasında kullanılabilir',
   };
 
   static const _en = <String, String>{
@@ -1194,6 +1208,20 @@ class AppLocalizations {
     'power_skip_all_desc': 'Skips all remaining questions',
     'power_time_extend_desc': 'Adds 15 seconds to timer',
     'power_hint_desc': 'Shows a hint',
+
+    // Referral
+    'referral_title': 'Invite a Friend',
+    'referral_description': 'Invite a friend, both of you get 25 purple diamonds!',
+    'referral_compact_cta': 'Bring a friend, earn diamonds',
+    'referral_copy': 'Copy',
+    'referral_share': 'Share',
+    'referral_progress': 'Invites used',
+    'referral_code_copied': 'Referral code copied!',
+    'referral_have_code': 'Have a referral code?',
+    'referral_code_hint': 'Enter referral code',
+    'referral_code_valid': 'Referred by: ',
+    'referral_code_invalid': 'Invalid referral code',
+    'referral_already_logged_in': 'Referral codes can only be used during registration',
   };
 }
 

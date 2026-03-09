@@ -20,6 +20,7 @@ import 'package:qulo_v2/features/profile/widgets/photo_grid.dart';
 import 'package:qulo_v2/features/profile/widgets/badge_bar.dart';
 import 'package:qulo_v2/features/profile/widgets/detail_chips.dart';
 import 'package:qulo_v2/features/profile/widgets/question_vitrin_card.dart';
+import 'package:qulo_v2/core/widgets/referral_invite_card.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -179,6 +180,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     ),
                   );
                 }),
+                const SizedBox(height: AppSpacing.md),
+
+                // ─── Referral Invite (Compact) ───
+                ReferralInviteCard(
+                  compact: true,
+                  onTap: () => ref.read(navigationServiceProvider).go(RouteNames.diamonds),
+                ),
+
                 if (user.city != null) ...[
                   const SizedBox(height: AppSpacing.xs),
                   Row(

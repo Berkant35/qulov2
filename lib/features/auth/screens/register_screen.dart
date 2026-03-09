@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/network/result.dart';
-import 'package:qulo_v2/core/l10n/app_localizations.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/mixins/form_mixin.dart';
 import 'package:qulo_v2/core/services/location_manager.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
@@ -19,7 +19,9 @@ import 'package:qulo_v2/features/auth/widgets/register_step_name.dart';
 import 'package:qulo_v2/features/auth/widgets/register_step_terms.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
-  const RegisterScreen({super.key});
+  final String? referralCode;
+
+  const RegisterScreen({super.key, this.referralCode});
 
   @override
   ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
@@ -34,6 +36,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
   final _surnameCtrl = TextEditingController();
   final _emailCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
+  final _referralCodeCtrl = TextEditingController();
 
   int _currentStep = 0;
   DateTime? _birthday;
@@ -45,6 +48,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
   bool _termsAccepted = false;
   bool _obscurePassword = true;
   bool _isLoading = false;
+  bool _referralExpanded = false;
+  bool _validatingReferral = false;
+  String? _referralValidName;
 
   // Error state
   String? _nameError;
@@ -55,6 +61,16 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
   String? _genderError;
   String? _locationError;
   String? _termsError;
+  String? _referralError;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.referralCode != null && widget.referralCode!.isNotEmpty) {
+      _referralCodeCtrl.text = widget.referralCode!;
+      _referralExpanded = true;
+    }
+  }
 
   @override
   void dispose() {
@@ -63,6 +79,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
     _surnameCtrl.dispose();
     _emailCtrl.dispose();
     _passwordCtrl.dispose();
+    _referralCodeCtrl.dispose();
     super.dispose();
   }
 
@@ -204,11 +221,62 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
     }
   }
 
+  Future<void> _validateReferralCode() async {
+    final code = _referralCodeCtrl.text.trim();
+    if (code.isEmpty) {
+      setState(() {
+        _referralError = null;
+        _referralValidName = null;
+      });
+      return;
+    }
+
+    setState(() {
+      _validatingReferral = true;
+      _referralError = null;
+      _referralValidName = null;
+    });
+
+    try {
+      final repo = ref.read(referralRepositoryProvider);
+      final result = await repo.validateCode(code);
+      if (!mounted) return;
+      result.when(
+        success: (response) {
+          setState(() {
+            _validatingReferral = false;
+            if (response.valid) {
+              _referralValidName = response.referrerName;
+              _referralError = null;
+            } else {
+              _referralError = context.tr('referral_code_invalid');
+              _referralValidName = null;
+            }
+          });
+        },
+        failure: (_) {
+          setState(() {
+            _validatingReferral = false;
+            _referralError = context.tr('referral_code_invalid');
+          });
+        },
+      );
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _validatingReferral = false;
+          _referralError = context.tr('referral_code_invalid');
+        });
+      }
+    }
+  }
+
   Future<void> _register() async {
     if (!_validateCurrentStep()) return;
 
     setState(() => _isLoading = true);
 
+    final referralCode = _referralCodeCtrl.text.trim();
     final result = await ref.read(authProvider.notifier).register(
           email: _emailCtrl.text.trim(),
           password: _passwordCtrl.text,
@@ -218,6 +286,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
           gender: _gender!,
           lat: _lat,
           lng: _lng,
+          referralCode: referralCode.isNotEmpty ? referralCode : null,
         );
 
     if (!mounted) return;
@@ -348,6 +417,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                     isLoading: _isLoading,
                     onRegister: _register,
                     onOpenUrl: (url) => ref.read(urlLauncherManagerProvider).launch(url),
+                    referralCodeCtrl: _referralCodeCtrl,
+                    referralExpanded: _referralExpanded,
+                    onToggleReferral: () => setState(() => _referralExpanded = !_referralExpanded),
+                    onValidateReferral: _validateReferralCode,
+                    validatingReferral: _validatingReferral,
+                    referralValidName: _referralValidName,
+                    referralError: _referralError,
                   ),
                 ],
               ),
