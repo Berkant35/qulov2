@@ -10,6 +10,7 @@ import 'package:qulo_v2/core/widgets/app_button.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/core/widgets/app_text_field.dart';
+import 'package:qulo_v2/core/widgets/profile_section_card.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:image_picker/image_picker.dart';
@@ -235,6 +236,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       'age_pref_min': epState.ageRange.start.round(),
       'age_pref_max': epState.ageRange.end.round(),
       'match_radius_km': epState.distanceKm.round(),
+      'relationship_goal': epState.selectedRelationshipGoal,
+      'preferred_languages': epState.selectedLanguages,
     };
 
     final detailsData = <String, dynamic>{
@@ -290,11 +293,82 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     ];
   }
 
+  // ─── Progress Helpers ───
+
+  int? _nextMilestone(int completion) {
+    for (final m in [25, 50, 75, 100]) {
+      if (completion < m) return m;
+    }
+    return null;
+  }
+
+  String _milestoneMessage(int completion) {
+    final next = _nextMilestone(completion);
+    const rewards = {25: 5, 50: 15, 75: 30, 100: 50};
+    if (next == null) return '';
+    return '%$next tamamla, ${rewards[next]} elmas kazan!';
+  }
+
+  String _languageLabel(String code) {
+    return switch (code) {
+      'tr' => 'Turkce',
+      'en' => 'English',
+      'de' => 'Deutsch',
+      'fr' => 'Francais',
+      'ar' => '\u0627\u0644\u0639\u0631\u0628\u064A\u0629',
+      'ru' => '\u0420\u0443\u0441\u0441\u043A\u0438\u0439',
+      'es' => 'Espanol',
+      _ => code,
+    };
+  }
+
+  // ─── Completion Counters ───
+
+  String _photoCompletionText(List<String?> photos) {
+    final count = photos.where((p) => p != null).length;
+    return '$count/6';
+  }
+
+  String _basicInfoCompletionText() {
+    int filled = 0;
+    if (_nameController.text.trim().isNotEmpty) filled++;
+    if (_cityController.text.trim().isNotEmpty) filled++;
+    if (_heightController.text.trim().isNotEmpty) filled++;
+    if (_weightController.text.trim().isNotEmpty) filled++;
+    return '$filled/4';
+  }
+
+  String _detailsCompletionText(EditProfileState epState) {
+    int filled = 0;
+    if (epState.selectedZodiac != null) filled++;
+    if (_jobController.text.trim().isNotEmpty) filled++;
+    if (_schoolController.text.trim().isNotEmpty) filled++;
+    if (epState.selectedSmoking != null) filled++;
+    if (epState.selectedAlcohol != null) filled++;
+    if (_petsController.text.trim().isNotEmpty) filled++;
+    if (_musicController.text.trim().isNotEmpty) filled++;
+    if (_personalityController.text.trim().isNotEmpty) filled++;
+    return '$filled/8';
+  }
+
+  String _preferencesCompletionText(EditProfileState epState) {
+    int filled = 0;
+    if (epState.selectedGenderPref != null) filled++;
+    // age range is always set
+    filled++;
+    // distance is always set
+    filled++;
+    if (epState.selectedLanguages.isNotEmpty) filled++;
+    return '$filled/4';
+  }
+
   // ─── Build ───
 
   @override
   Widget build(BuildContext context) {
     final epState = ref.watch(editProfileProvider);
+    final user = ref.watch(userProvider).valueOrNull;
+    final theme = Theme.of(context);
 
     return AppScaffold(
       title: context.tr('edit_profile'),
@@ -308,7 +382,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           children: [
             // ─── Question Nudge Banner ───
             Builder(builder: (_) {
-              final user = ref.watch(userProvider).valueOrNull;
               if (user == null || user.questionCount >= AppConstants.minQuestions) {
                 return const SizedBox.shrink();
               }
@@ -327,8 +400,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       Expanded(
                         child: Text(
                           context.tr('question_nudge_edit_hint'),
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
                           ),
                         ),
                       ),
@@ -342,139 +415,235 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 ),
               );
             }),
+
+            // ─── Progress Bar ───
+            _buildProgressBar(context, theme, user),
+            const SizedBox(height: AppSpacing.sectionGap),
+
             // ─── Photos Section ───
-            _sectionTitle(context.tr('photos')),
-            const SizedBox(height: AppSpacing.sm),
-            PhotoGridFull(
-              photos: epState.photos,
-              editMode: true,
-              onSlotTap: _onPhotoSlotTap,
+            ProfileSectionCard(
+              icon: Icons.photo_library,
+              title: context.tr('photos'),
+              subtitle: 'Ilk fotografin profil fotografin olur',
+              completionText: _photoCompletionText(epState.photos),
+              isComplete: epState.photos.where((p) => p != null).length >= 2,
+              child: PhotoGridFull(
+                photos: epState.photos,
+                editMode: true,
+                onSlotTap: _onPhotoSlotTap,
+              ),
             ),
             const SizedBox(height: AppSpacing.sectionGap),
 
             // ─── About Section ───
-            _sectionTitle(context.tr('about')),
-            const SizedBox(height: AppSpacing.sm),
-            _buildBioField(),
+            ProfileSectionCard(
+              icon: Icons.edit_note,
+              title: context.tr('about'),
+              subtitle: 'Kendini kisaca tanit',
+              completionText: _bioController.text.trim().isEmpty ? '0/1' : '1/1',
+              isComplete: _bioController.text.trim().isNotEmpty,
+              child: _buildBioField(),
+            ),
             const SizedBox(height: AppSpacing.sectionGap),
 
             // ─── Basic Info Section ───
-            _sectionTitle(context.tr('basic_info')),
-            const SizedBox(height: AppSpacing.sm),
-            AppTextField(
-              controller: _nameController,
-              label: context.tr('name'),
-              enabled: false,
-            ),
-            const SizedBox(height: AppSpacing.itemGap),
-            Row(
-              children: [
-                Expanded(
-                  child: AppTextField(
-                    controller: _cityController,
-                    label: context.tr('city'),
-                    hint: context.tr('city_hint'),
-                    textCapitalization: TextCapitalization.words,
+            ProfileSectionCard(
+              icon: Icons.person,
+              title: context.tr('basic_info'),
+              subtitle: 'Seni tanimamiza yardimci ol',
+              completionText: _basicInfoCompletionText(),
+              isComplete: _basicInfoCompletionText() == '4/4',
+              child: Column(
+                children: [
+                  AppTextField(
+                    controller: _nameController,
+                    label: context.tr('name'),
+                    enabled: false,
                   ),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                _locationButton(),
-              ],
+                  const SizedBox(height: AppSpacing.itemGap),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AppTextField(
+                          controller: _cityController,
+                          label: context.tr('city'),
+                          hint: context.tr('city_hint'),
+                          textCapitalization: TextCapitalization.words,
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      _locationButton(),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.itemGap),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AppTextField(
+                          controller: _heightController,
+                          label: context.tr('height'),
+                          hint: 'cm',
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.itemGap),
+                      Expanded(
+                        child: AppTextField(
+                          controller: _weightController,
+                          label: context.tr('weight'),
+                          hint: 'kg',
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: AppSpacing.sectionGap),
 
             // ─── Details Section ───
-            _sectionTitle(context.tr('details')),
-            const SizedBox(height: AppSpacing.sm),
-            Row(
-              children: [
-                Expanded(
-                  child: AppTextField(
-                    controller: _heightController,
-                    label: context.tr('height'),
-                    hint: 'cm',
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            ProfileSectionCard(
+              icon: Icons.interests,
+              title: context.tr('details'),
+              subtitle: 'Profilini zenginlestir, daha fazla eslesme al',
+              completionText: _detailsCompletionText(epState),
+              isComplete: _detailsCompletionText(epState) == '8/8',
+              child: Column(
+                children: [
+                  _buildDropdown(
+                    label: context.tr('zodiac'),
+                    value: epState.selectedZodiac,
+                    items: _zodiacItems(),
+                    onChanged: (v) => ref.read(editProfileProvider.notifier).setZodiac(v),
                   ),
-                ),
-                const SizedBox(width: AppSpacing.itemGap),
-                Expanded(
-                  child: AppTextField(
-                    controller: _weightController,
-                    label: context.tr('weight'),
-                    hint: 'kg',
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  const SizedBox(height: AppSpacing.itemGap),
+                  AppTextField(
+                    controller: _jobController,
+                    label: context.tr('job'),
+                    hint: context.tr('job_hint'),
+                    textCapitalization: TextCapitalization.words,
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.itemGap),
-            _buildDropdown(
-              label: context.tr('zodiac'),
-              value: epState.selectedZodiac,
-              items: _zodiacItems(),
-              onChanged: (v) => ref.read(editProfileProvider.notifier).setZodiac(v),
-            ),
-            const SizedBox(height: AppSpacing.itemGap),
-            AppTextField(
-              controller: _jobController,
-              label: context.tr('job'),
-              hint: context.tr('job_hint'),
-              textCapitalization: TextCapitalization.words,
-            ),
-            const SizedBox(height: AppSpacing.itemGap),
-            AppTextField(
-              controller: _schoolController,
-              label: context.tr('school'),
-              hint: context.tr('school_hint'),
-              textCapitalization: TextCapitalization.words,
-            ),
-            const SizedBox(height: AppSpacing.itemGap),
-            _buildDropdown(
-              label: context.tr('smoking'),
-              value: epState.selectedSmoking,
-              items: _frequencyItems(),
-              onChanged: (v) => ref.read(editProfileProvider.notifier).setSmoking(v),
-            ),
-            const SizedBox(height: AppSpacing.itemGap),
-            _buildDropdown(
-              label: context.tr('alcohol'),
-              value: epState.selectedAlcohol,
-              items: _frequencyItems(),
-              onChanged: (v) => ref.read(editProfileProvider.notifier).setAlcohol(v),
-            ),
-            const SizedBox(height: AppSpacing.itemGap),
-            AppTextField(
-              controller: _petsController,
-              label: context.tr('pets'),
-              hint: context.tr('pets_hint'),
-              textCapitalization: TextCapitalization.sentences,
-            ),
-            const SizedBox(height: AppSpacing.itemGap),
-            AppTextField(
-              controller: _musicController,
-              label: context.tr('music'),
-              hint: context.tr('music_hint'),
-              textCapitalization: TextCapitalization.words,
-            ),
-            const SizedBox(height: AppSpacing.itemGap),
-            AppTextField(
-              controller: _personalityController,
-              label: context.tr('personality'),
-              hint: context.tr('personality_hint'),
-              textCapitalization: TextCapitalization.sentences,
+                  const SizedBox(height: AppSpacing.itemGap),
+                  AppTextField(
+                    controller: _schoolController,
+                    label: context.tr('school'),
+                    hint: context.tr('school_hint'),
+                    textCapitalization: TextCapitalization.words,
+                  ),
+                  const SizedBox(height: AppSpacing.itemGap),
+                  _buildDropdown(
+                    label: context.tr('smoking'),
+                    value: epState.selectedSmoking,
+                    items: _frequencyItems(),
+                    onChanged: (v) => ref.read(editProfileProvider.notifier).setSmoking(v),
+                  ),
+                  const SizedBox(height: AppSpacing.itemGap),
+                  _buildDropdown(
+                    label: context.tr('alcohol'),
+                    value: epState.selectedAlcohol,
+                    items: _frequencyItems(),
+                    onChanged: (v) => ref.read(editProfileProvider.notifier).setAlcohol(v),
+                  ),
+                  const SizedBox(height: AppSpacing.itemGap),
+                  AppTextField(
+                    controller: _petsController,
+                    label: context.tr('pets'),
+                    hint: context.tr('pets_hint'),
+                    textCapitalization: TextCapitalization.sentences,
+                  ),
+                  const SizedBox(height: AppSpacing.itemGap),
+                  AppTextField(
+                    controller: _musicController,
+                    label: context.tr('music'),
+                    hint: context.tr('music_hint'),
+                    textCapitalization: TextCapitalization.words,
+                  ),
+                  const SizedBox(height: AppSpacing.itemGap),
+                  AppTextField(
+                    controller: _personalityController,
+                    label: context.tr('personality'),
+                    hint: context.tr('personality_hint'),
+                    textCapitalization: TextCapitalization.sentences,
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: AppSpacing.sectionGap),
 
             // ─── Preferences Section ───
-            _sectionTitle(context.tr('preferences')),
-            const SizedBox(height: AppSpacing.sm),
-            _buildGenderPref(epState),
-            const SizedBox(height: AppSpacing.lg),
-            _buildAgeRange(epState),
-            const SizedBox(height: AppSpacing.lg),
-            _buildDistanceSlider(epState),
+            ProfileSectionCard(
+              icon: Icons.tune,
+              title: context.tr('preferences'),
+              subtitle: 'Sana uygun kisileri gorelim',
+              completionText: _preferencesCompletionText(epState),
+              isComplete: _preferencesCompletionText(epState) == '4/4',
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildGenderPref(epState),
+                  const SizedBox(height: AppSpacing.lg),
+                  _buildAgeRange(epState),
+                  const SizedBox(height: AppSpacing.lg),
+                  _buildDistanceSlider(epState),
+                  const SizedBox(height: AppSpacing.lg),
+                  Text(
+                    'Dil Tercihi',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  Wrap(
+                    spacing: AppSpacing.sm,
+                    runSpacing: AppSpacing.sm,
+                    children: ['tr', 'en', 'de', 'fr', 'ar', 'ru', 'es'].map((lang) {
+                      final isSelected = epState.selectedLanguages.contains(lang);
+                      return FilterChip(
+                        label: Text(_languageLabel(lang)),
+                        selected: isSelected,
+                        onSelected: (_) => ref.read(editProfileProvider.notifier).toggleLanguage(lang),
+                        selectedColor: AppColors.primary.withValues(alpha: 0.2),
+                        checkmarkColor: AppColors.primary,
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sectionGap),
+
+            // ─── Relationship Goal Section ───
+            ProfileSectionCard(
+              icon: Icons.favorite,
+              title: 'Iliski Amaci',
+              subtitle: 'Ne aradigini karsi taraf gorsun',
+              completionText: epState.selectedRelationshipGoal != null &&
+                  epState.selectedRelationshipGoal != 'NOT_SURE'
+                  ? '1/1'
+                  : '0/1',
+              isComplete: epState.selectedRelationshipGoal != null &&
+                  epState.selectedRelationshipGoal != 'NOT_SURE',
+              child: SizedBox(
+                width: double.infinity,
+                child: SegmentedButton<String>(
+                  segments: [
+                    ButtonSegment(value: 'SERIOUS', label: Text('Ciddi Iliski')),
+                    ButtonSegment(value: 'FRIENDSHIP', label: Text('Arkadaslik')),
+                    ButtonSegment(value: 'NOT_SURE', label: Text('Emin Degilim')),
+                  ],
+                  selected: {epState.selectedRelationshipGoal ?? 'NOT_SURE'},
+                  onSelectionChanged: (v) =>
+                      ref.read(editProfileProvider.notifier).setRelationshipGoal(v.first),
+                  style: SegmentedButton.styleFrom(
+                    selectedBackgroundColor: AppColors.primarySurface,
+                    selectedForegroundColor: AppColors.primary,
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(height: AppSpacing.sectionGap),
           ],
         ),
@@ -484,13 +653,53 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   // ─── Widgets ───
 
-  Widget _sectionTitle(String title) {
-    return Text(
-      title,
-      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            color: AppColors.primary,
-            fontWeight: FontWeight.w600,
+  Widget _buildProgressBar(BuildContext context, ThemeData theme, dynamic user) {
+    final completion = user?.profileCompletion ?? 0;
+    final percentage = completion.clamp(0, 100);
+    final message = _milestoneMessage(percentage);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Profil Tamamlama',
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            Text(
+              '%$percentage',
+              style: theme.textTheme.titleSmall?.copyWith(
+                color: AppColors.primary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: LinearProgressIndicator(
+            value: percentage / 100.0,
+            minHeight: 8,
+            backgroundColor: theme.colorScheme.surfaceContainerHigh,
+            valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
           ),
+        ),
+        if (message.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            message,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: AppColors.secondary,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ],
     );
   }
 
