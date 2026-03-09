@@ -4,11 +4,13 @@ import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/data/models/auth_model.dart';
 import 'package:qulo_v2/data/models/diamond_model.dart';
 import 'package:qulo_v2/data/models/discover_model.dart';
+import 'package:qulo_v2/data/models/exchange_model.dart';
 import 'package:qulo_v2/data/models/match_model.dart';
 import 'package:qulo_v2/data/models/message_model.dart';
 import 'package:qulo_v2/data/models/power_model.dart';
 import 'package:qulo_v2/data/models/question_model.dart';
 import 'package:qulo_v2/data/models/quiz_model.dart';
+import 'package:qulo_v2/data/models/referral_model.dart';
 import 'package:qulo_v2/data/models/subscription_model.dart';
 import 'package:qulo_v2/data/models/user_details_model.dart';
 import 'package:qulo_v2/data/models/user_model.dart';
@@ -53,6 +55,14 @@ abstract class IChatRepository {
   Future<Result<MessageModel>> sendMessage(String matchId, {required String content, bool isImage = false});
 
   Future<Result<void>> markAsRead(String matchId);
+}
+
+// ─── Exchange ───
+abstract class IExchangeRepository {
+  Future<Result<ConvertResponse>> convert(int greenAmount);
+  Future<Result<BuyPowerResponse>> buyPower(String powerName, String diamondType, int quantity);
+  Future<Result<InventoryResponse>> getInventory();
+  Future<Result<RatesResponse>> getRates();
 }
 
 // ─── Diamond ───
@@ -132,6 +142,17 @@ abstract class IReportRepository {
 // ─── Subscription ───
 abstract class ISubscriptionRepository {
   Future<Result<SubscriptionInfo>> getStatus();
+}
+
+// ─── Referral ───
+abstract class IReferralRepository {
+  Future<Result<String>> getMyCode();
+
+  Future<Result<ReferralStats>> getStats();
+
+  Future<Result<List<ReferralItem>>> getHistory();
+
+  Future<Result<ValidateCodeResponse>> validateCode(String code);
 }
 
 // ─── User ───

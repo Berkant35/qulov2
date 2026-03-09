@@ -19,6 +19,8 @@ import 'package:qulo_v2/core/network/services/report_service.dart';
 import 'package:qulo_v2/core/network/services/subscription_service.dart';
 import 'package:qulo_v2/core/network/services/notification_service.dart';
 import 'package:qulo_v2/core/network/services/app_config_service.dart';
+import 'package:qulo_v2/core/network/services/referral_service.dart';
+import 'package:qulo_v2/core/network/services/exchange_service.dart';
 import 'package:qulo_v2/data/repositories/repositories.dart';
 
 // ─── Core Services ───
@@ -87,6 +89,9 @@ final notificationRetrofitServiceProvider =
 final appConfigRetrofitServiceProvider = Provider<AppConfigRetrofitService>(
   (ref) => AppConfigRetrofitService(ref.read(networkManagerProvider).dio),
 );
+final referralServiceProvider = Provider<ReferralService>(
+  (ref) => ReferralService(ref.read(networkManagerProvider).dio),
+);
 
 // ─── Repositories ───
 final authRepositoryProvider = Provider<AuthRepository>(
@@ -137,4 +142,15 @@ final notificationRepositoryProvider = Provider<NotificationRepository>(
 );
 final appConfigRepositoryProvider = Provider<AppConfigRepository>(
   (ref) => AppConfigRepository(ref.read(appConfigRetrofitServiceProvider)),
+);
+final referralRepositoryProvider = Provider<ReferralRepository>(
+  (ref) => ReferralRepository(ref.read(referralServiceProvider)),
+);
+
+final exchangeServiceProvider = Provider<ExchangeService>(
+  (ref) => ExchangeService(ref.read(networkManagerProvider).dio),
+);
+
+final exchangeRepositoryProvider = Provider<ExchangeRepository>(
+  (ref) => ExchangeRepository(ref.read(exchangeServiceProvider)),
 );
