@@ -10,16 +10,24 @@ class MatchModel extends Equatable {
   @JsonKey(name: 'matched_at')
   final String matchedAt;
   final MatchUserModel? user;
+  @JsonKey(name: 'media_enabled_by_user1')
+  final bool mediaEnabledByUser1;
+  @JsonKey(name: 'media_enabled_by_user2')
+  final bool mediaEnabledByUser2;
 
   const MatchModel({
     required this.matchId,
     required this.matchedAt,
     this.user,
+    this.mediaEnabledByUser1 = false,
+    this.mediaEnabledByUser2 = false,
   });
 
   factory MatchModel.fromJson(Map<String, dynamic> json) =>
       _$MatchModelFromJson(json);
   Map<String, dynamic> toJson() => _$MatchModelToJson(this);
+
+  bool get isMediaEnabled => mediaEnabledByUser1 && mediaEnabledByUser2;
 
   @override
   List<Object?> get props => [matchId];
