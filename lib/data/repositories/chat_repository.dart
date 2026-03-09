@@ -41,4 +41,24 @@ class ChatRepository implements IChatRepository {
       return Failure(e.toAppFailure());
     }
   }
+
+  @override
+  Future<Result<void>> deleteMessage(String matchId, String messageId) async {
+    try {
+      await _service.deleteMessage(matchId, messageId);
+      return const Success(null);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
+
+  @override
+  Future<Result<Map<String, dynamic>>> addReaction(String matchId, String messageId, String emoji) async {
+    try {
+      final response = await _service.addReaction(matchId, messageId, {'emoji': emoji});
+      return Success(response);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
 }

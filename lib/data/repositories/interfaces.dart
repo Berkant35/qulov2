@@ -56,6 +56,10 @@ abstract class IChatRepository {
   Future<Result<MessageModel>> sendMessage(String matchId, {required String content, bool isImage = false});
 
   Future<Result<void>> markAsRead(String matchId);
+
+  Future<Result<void>> deleteMessage(String matchId, String messageId);
+
+  Future<Result<Map<String, dynamic>>> addReaction(String matchId, String messageId, String emoji);
 }
 
 // ─── Exchange ───

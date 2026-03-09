@@ -23,4 +23,17 @@ abstract class ChatService {
 
   @POST('/chat/{matchId}/read')
   Future<void> markAsRead(@Path('matchId') String matchId);
+
+  @DELETE('/chat/{matchId}/messages/{messageId}')
+  Future<void> deleteMessage(
+    @Path('matchId') String matchId,
+    @Path('messageId') String messageId,
+  );
+
+  @POST('/chat/{matchId}/messages/{messageId}/reactions')
+  Future<Map<String, dynamic>> addReaction(
+    @Path('matchId') String matchId,
+    @Path('messageId') String messageId,
+    @Body() Map<String, dynamic> data,
+  );
 }

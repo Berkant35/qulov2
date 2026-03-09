@@ -21,6 +21,7 @@ import 'package:qulo_v2/core/network/services/notification_service.dart';
 import 'package:qulo_v2/core/network/services/app_config_service.dart';
 import 'package:qulo_v2/core/network/services/referral_service.dart';
 import 'package:qulo_v2/core/network/services/exchange_service.dart';
+import 'package:qulo_v2/core/network/services/chat_question_service.dart';
 import 'package:qulo_v2/data/repositories/repositories.dart';
 
 // ─── Core Services ───
@@ -91,6 +92,9 @@ final appConfigRetrofitServiceProvider = Provider<AppConfigRetrofitService>(
 );
 final referralServiceProvider = Provider<ReferralService>(
   (ref) => ReferralService(ref.read(networkManagerProvider).dio),
+);
+final chatQuestionServiceProvider = Provider<ChatQuestionService>(
+  (ref) => ChatQuestionService(ref.read(networkManagerProvider).dio),
 );
 
 // ─── Repositories ───
