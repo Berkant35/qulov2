@@ -192,30 +192,51 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
     );
   }
 
+  Future<void> _confirmExit() async {
+    final nav = ref.read(navigationServiceProvider);
+    final confirm = await nav.showAppDialog<bool>(
+      ConfirmDialog(
+        name: 'quiz_exit',
+        title: 'Emin misin?',
+        message: 'Matchleşme şansından vazgeçiyorsun!',
+        confirmText: 'Vazgeç',
+        cancelText: 'Devam Et',
+        isDestructive: true,
+      ),
+    );
+    if (confirm == true && mounted) {
+      final quiz = ref.read(quizProvider);
+      AnalyticsManager.instance.logEvent(
+        AnalyticsEvents.quizAbandon,
+        params: {
+          AnalyticsEvents.paramQuestionIndex:
+              quiz.currentQuestion?.questionNumber ?? 0,
+        },
+      );
+      nav.pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final quiz = ref.watch(quizProvider);
     final theme = Theme.of(context);
     final question = quiz.currentQuestion;
 
-    return AppScaffold(
-      title: question != null
-          ? '${question.questionNumber}/${question.totalQuestions}'
-          : '',
-      leading: IconButton(
-        icon: QIcon(QIcons.icX, size: 24),
-        onPressed: () {
-          final quiz = ref.read(quizProvider);
-          AnalyticsManager.instance.logEvent(
-            AnalyticsEvents.quizAbandon,
-            params: {
-              AnalyticsEvents.paramQuestionIndex:
-                  quiz.currentQuestion?.questionNumber ?? 0,
-            },
-          );
-          ref.read(navigationServiceProvider).pop();
-        },
-      ),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        await _confirmExit();
+      },
+      child: AppScaffold(
+        title: question != null
+            ? '${question.questionNumber}/${question.totalQuestions}'
+            : '',
+        leading: IconButton(
+          icon: QIcon(QIcons.icX, size: 24),
+          onPressed: _confirmExit,
+        ),
       padding: EdgeInsets.zero,
       isLoading: quiz.isLoading || question == null,
       body: quiz.isLoading || question == null
@@ -308,6 +329,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                 ],
               ),
             ),
+      ),
     );
   }
 }
