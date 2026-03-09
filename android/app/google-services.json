@@ -1,0 +1,70 @@
+{
+  "project_info": {
+    "project_number": "1036336261876",
+    "project_id": "qulo-b2f1a",
+    "storage_bucket": "qulo-b2f1a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1036336261876:android:9bc8b6cd47514ca15fcca1",
+        "android_client_info": {
+          "package_name": "com.wordpress.calikusuberkant.qulo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1036336261876-0779fogghmpoggfo89r7p8c10j8n3uij.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.wordpress.calikusuberkant.qulo",
+            "certificate_hash": "fd269b0bddf272627a4104658e04e779e2556547"
+          }
+        },
+        {
+          "client_id": "1036336261876-71lifpmjt4pcaa2lfpd08r5kkhetjs43.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.wordpress.calikusuberkant.qulo",
+            "certificate_hash": "a72fd2ee15c8b9187822eef54422b2da0e2efd88"
+          }
+        },
+        {
+          "client_id": "1036336261876-9p9rpnea5io6oj77eh2q83ved5nla9ca.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.wordpress.calikusuberkant.qulo",
+            "certificate_hash": "5b46d288b6833894e42f94c75c387ad803aac5cd"
+          }
+        },
+        {
+          "client_id": "1036336261876-gjgamt1c9q1g5h1qc45mmek30l1o2op8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdoTWGarzK9QNO2h9FHGGqOopV9u9E2vk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1036336261876-gjgamt1c9q1g5h1qc45mmek30l1o2op8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1036336261876-d5asnaftn21mvke8q407mnsvtvsc7quq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.wordpress.calikusuberkant.qulo"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

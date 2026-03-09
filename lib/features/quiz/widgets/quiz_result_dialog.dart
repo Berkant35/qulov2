@@ -1,0 +1,244 @@
+import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/constants/q_icons.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/core/theme/app_colors.dart';
+import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/widgets/q_icon.dart';
+
+class QuizResultContent extends StatelessWidget {
+  final bool matched;
+  final int totalCorrect;
+  final int totalQuestions;
+  final int totalTimeSpent;
+  final int powersUsed;
+  final String performanceBadge;
+  final VoidCallback? onStartChat;
+  final VoidCallback onGoBack;
+
+  const QuizResultContent({
+    super.key,
+    required this.matched,
+    required this.totalCorrect,
+    required this.totalQuestions,
+    required this.totalTimeSpent,
+    required this.powersUsed,
+    required this.performanceBadge,
+    this.onStartChat,
+    required this.onGoBack,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Dialog(
+      backgroundColor: theme.dialogTheme.backgroundColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.xl),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // ─── Top icon ───
+            _buildTopIcon(),
+            const SizedBox(height: AppSpacing.lg),
+
+            // ─── Title ───
+            Text(
+              matched
+                  ? context.tr('quiz_result_matched')
+                  : context.tr('quiz_result_not_matched'),
+              style: theme.textTheme.headlineSmall?.copyWith(
+                color: matched ? AppColors.secondary : AppColors.error,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppSpacing.xl),
+
+            // ─── Badge ───
+            if (performanceBadge != 'none') ...[
+              _buildBadge(context, theme),
+              const SizedBox(height: AppSpacing.lg),
+            ],
+
+            // ─── Stats ───
+            _buildStats(context, theme),
+            const SizedBox(height: AppSpacing.xl),
+
+            // ─── Buttons ───
+            if (matched && onStartChat != null) ...[
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: onStartChat,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: AppColors.secondary,
+                    foregroundColor: AppColors.background,
+                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                    ),
+                  ),
+                  child: Text(context.tr('quiz_result_start_chat')),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+            ],
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: onGoBack,
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                  ),
+                ),
+                child: Text(context.tr('quiz_result_go_back')),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTopIcon() {
+    if (matched) {
+      return Container(
+        width: 80,
+        height: 80,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: AppColors.secondarySurface,
+        ),
+        child: const Center(
+          child: QIcon(QIcons.icHeart, size: 40, color: AppColors.secondary),
+        ),
+      );
+    }
+    return Container(
+      width: 80,
+      height: 80,
+      decoration: const BoxDecoration(
+        shape: BoxShape.circle,
+        color: Color(0x1ACF6679),
+      ),
+      child: const Center(
+        child: QIcon(QIcons.icX, size: 40, color: AppColors.error),
+      ),
+    );
+  }
+
+  Widget _buildBadge(BuildContext context, ThemeData theme) {
+    final (icon, color, labelKey) = _badgeConfig;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.sm,
+      ),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
+        border: Border.all(color: color.withValues(alpha: 0.4)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          QIcon(icon, size: 20, color: color),
+          const SizedBox(width: AppSpacing.sm),
+          Text(
+            context.tr(labelKey),
+            style: theme.textTheme.titleSmall?.copyWith(
+              color: color,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  (String icon, Color color, String labelKey) get _badgeConfig {
+    return switch (performanceBadge) {
+      'flawless' => (QIcons.icCrown, AppColors.gold, 'quiz_result_flawless'),
+      'speed_solver' => (QIcons.icZap, AppColors.info, 'quiz_result_speed_solver'),
+      'power_master' => (QIcons.icGem, AppColors.primary, 'quiz_result_power_master'),
+      'determined' => (QIcons.icFire, AppColors.warning, 'quiz_result_determined'),
+      _ => (QIcons.icTarget, AppColors.textSecondary, 'quiz_result_determined'),
+    };
+  }
+
+  Widget _buildStats(BuildContext context, ThemeData theme) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceElevated,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+      ),
+      child: Column(
+        children: [
+          _StatRow(
+            icon: QIcons.icCheckCircle,
+            iconColor: AppColors.secondary,
+            label: context
+                .tr('quiz_result_correct_count')
+                .replaceAll('{correct}', '$totalCorrect')
+                .replaceAll('{total}', '$totalQuestions'),
+            theme: theme,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          _StatRow(
+            icon: QIcons.icClock,
+            iconColor: AppColors.info,
+            label: '${context.tr('quiz_result_time_spent')}: ${totalTimeSpent}s',
+            theme: theme,
+          ),
+          if (powersUsed > 0) ...[
+            const SizedBox(height: AppSpacing.md),
+            _StatRow(
+              icon: QIcons.icZap,
+              iconColor: AppColors.primary,
+              label: '${context.tr('quiz_result_powers_used')}: $powersUsed',
+              theme: theme,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _StatRow extends StatelessWidget {
+  final String icon;
+  final Color iconColor;
+  final String label;
+  final ThemeData theme;
+
+  const _StatRow({
+    required this.icon,
+    required this.iconColor,
+    required this.label,
+    required this.theme,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        QIcon(icon, size: 18, color: iconColor),
+        const SizedBox(width: AppSpacing.md),
+        Expanded(
+          child: Text(
+            label,
+            style: theme.textTheme.bodyMedium,
+          ),
+        ),
+      ],
+    );
+  }
+}

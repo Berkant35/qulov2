@@ -1,0 +1,446 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/constants/app_constants.dart';
+import 'package:qulo_v2/core/constants/q_icons.dart';
+import 'package:qulo_v2/core/navigation/navigation.dart';
+import 'package:qulo_v2/core/theme/app_colors.dart';
+import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/widgets/app_scaffold.dart';
+import 'package:qulo_v2/core/widgets/diamond_icon.dart';
+import 'package:qulo_v2/core/widgets/q_icon.dart';
+import 'package:qulo_v2/core/widgets/question_gate_banner.dart';
+import 'package:qulo_v2/providers/notification_provider.dart';
+import 'package:qulo_v2/providers/subscription_provider.dart';
+import 'package:qulo_v2/providers/user_provider.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/routing/route_names.dart';
+import 'package:qulo_v2/features/profile/widgets/photo_grid.dart';
+import 'package:qulo_v2/features/profile/widgets/badge_bar.dart';
+import 'package:qulo_v2/features/profile/widgets/detail_chips.dart';
+import 'package:qulo_v2/features/profile/widgets/question_vitrin_card.dart';
+
+class ProfileScreen extends ConsumerStatefulWidget {
+  const ProfileScreen({super.key});
+
+  @override
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      ref.read(userProvider.notifier).fetchMe();
+    });
+  }
+
+  String _genderPrefLabel(BuildContext context, String? pref) {
+    switch (pref) {
+      case 'MAN':
+        return context.tr('men');
+      case 'WOMAN':
+        return context.tr('women');
+      case 'BOTH':
+        return context.tr('both');
+      default:
+        return '';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final userAsync = ref.watch(userProvider);
+    final unreadCount = ref.watch(notificationProvider.select((s) => s.unreadCount));
+    final theme = Theme.of(context);
+
+    return AppScaffold(
+      title: context.tr('profile'),
+      isLoading: userAsync is AsyncLoading,
+      actions: [
+        Stack(
+          children: [
+            IconButton(
+              icon: QIcon(QIcons.icBell, color: theme.colorScheme.onSurfaceVariant, size: 24),
+              onPressed: () => ref.read(navigationServiceProvider).go(RouteNames.notifications),
+            ),
+            if (unreadCount > 0)
+              Positioned(
+                right: 8,
+                top: 8,
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: const BoxDecoration(
+                    color: AppColors.error,
+                    shape: BoxShape.circle,
+                  ),
+                  constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+                  child: Text(
+                    unreadCount > 99 ? '99+' : '$unreadCount',
+                    style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+          ],
+        ),
+        IconButton(
+          icon: QIcon(QIcons.icSettings, color: theme.colorScheme.onSurfaceVariant, size: 24),
+          onPressed: () => ref.read(navigationServiceProvider).go(RouteNames.settings),
+        ),
+      ],
+      padding: EdgeInsets.zero,
+      body: userAsync.when(
+        loading: () => const SizedBox.shrink(),
+        error: (e, _) => Center(child: Text('Error: $e')),
+        data: (user) {
+          if (user == null) return const Center(child: Text('No user data'));
+          final photos = user.photos ?? [];
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(AppSpacing.pagePadding),
+            child: Column(
+              children: [
+                // ─── Photo Grid ───
+                PhotoGridFull(
+                  photos: photos.map<String?>((e) => e).toList(),
+                  onSlotTap: (_) => ref.read(navigationServiceProvider).go(RouteNames.editProfile),
+                ),
+                const SizedBox(height: AppSpacing.lg),
+
+                // ─── Question Gate Banner / Vitrin ───
+                if (user.questionCount < AppConstants.minQuestions) ...[
+                  QuestionGateBanner(
+                    questionCount: user.questionCount,
+                    profileCompletion: user.profileCompletion,
+                    onAddQuestions: () => ref.read(navigationServiceProvider).go(RouteNames.questions),
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                ] else ...[
+                  const QuestionVitrinCard(),
+                  const SizedBox(height: AppSpacing.lg),
+                ],
+
+                // ─── Name, Age ───
+                Text(
+                  '${user.name ?? ''}, ${user.age ?? ''}',
+                  style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                // ─── Subscription Badge ───
+                Builder(builder: (context) {
+                  final subAsync = ref.watch(subscriptionProvider);
+                  final sub = subAsync.valueOrNull;
+                  if (sub == null || sub.isFree) return const SizedBox.shrink();
+                  return Padding(
+                    padding: const EdgeInsets.only(top: AppSpacing.sm),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.md,
+                        vertical: AppSpacing.xs,
+                      ),
+                      decoration: BoxDecoration(
+                        gradient: AppColors.purpleGradient,
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
+                      ),
+                      child: Text(
+                        sub.isPremium ? 'Premium' : 'Plus',
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+                if (user.city != null) ...[
+                  const SizedBox(height: AppSpacing.xs),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      QIcon(QIcons.icMapPin, color: theme.colorScheme.onSurfaceVariant, size: 16),
+                      const SizedBox(width: AppSpacing.xs),
+                      Text(
+                        user.city!,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+                const SizedBox(height: AppSpacing.lg),
+
+                // ─── Badge Bar ───
+                BadgeBar(
+                  user: user,
+                  onClaimReward: (level) async {
+                    final result = await ref.read(userProvider.notifier).claimBadgeReward(level);
+                    result.when(
+                      success: (data) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(context.tr('badge_reward_claimed'))),
+                        );
+                      },
+                      failure: (_) {},
+                    );
+                  },
+                ),
+                const SizedBox(height: AppSpacing.lg),
+
+                // ─── About Me Card ───
+                _SectionCard(
+                  title: context.tr('about_me'),
+                  onTap: () => ref.read(navigationServiceProvider).go(RouteNames.editProfile),
+                  child: Text(
+                    user.bio != null && user.bio!.isNotEmpty
+                        ? user.bio!
+                        : context.tr('hint_add_bio'),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: user.bio != null && user.bio!.isNotEmpty
+                          ? null
+                          : theme.hintColor,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+
+                // ─── Details Card ───
+                _SectionCard(
+                  title: context.tr('details'),
+                  onTap: () => ref.read(navigationServiceProvider).go(RouteNames.editProfile),
+                  child: DetailChips(
+                    user: user,
+                    onTap: () => ref.read(navigationServiceProvider).go(RouteNames.editProfile),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+
+                // ─── Preferences Card ───
+                _SectionCard(
+                  title: context.tr('preferences'),
+                  onTap: () => ref.read(navigationServiceProvider).go(RouteNames.editProfile),
+                  child: Wrap(
+                    spacing: AppSpacing.sm,
+                    runSpacing: AppSpacing.sm,
+                    children: [
+                      if (user.genderPref != null)
+                        _PrefChip(
+                          iconPath: QIcons.icGenderPref,
+                          label: _genderPrefLabel(context, user.genderPref),
+                        ),
+                      if (user.agePrefMin != null && user.agePrefMax != null)
+                        _PrefChip(
+                          iconPath: QIcons.icAgeRange,
+                          label: '${user.agePrefMin} - ${user.agePrefMax}',
+                        ),
+                      if (user.matchRadiusKm != null)
+                        _PrefChip(
+                          iconPath: QIcons.icMapPin,
+                          label: '${user.matchRadiusKm} km',
+                        ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.lg),
+
+                // ─── Menu Items ───
+                _MenuItem(
+                  iconPath: QIcons.icPencil,
+                  title: context.tr('edit_profile'),
+                  onTap: () => ref.read(navigationServiceProvider).go(RouteNames.editProfile),
+                ),
+                _MenuItem(
+                  iconPath: QIcons.icHelpCircle,
+                  title: context.tr('my_questions'),
+                  subtitle: user.questionCount < AppConstants.minQuestions
+                      ? context.tr('question_nudge_menu_required')
+                      : null,
+                  showBadge: user.questionCount < AppConstants.minQuestions,
+                  onTap: () => ref.read(navigationServiceProvider).go(RouteNames.questions),
+                ),
+                _MenuItem(
+                  iconWidget: const DiamondIcon.purple(size: 24),
+                  title: context.tr('diamonds'),
+                  onTap: () => ref.read(navigationServiceProvider).go(RouteNames.diamonds),
+                ),
+                _MenuItem(
+                  iconPath: QIcons.icCrown,
+                  title: context.tr('sub_my_subscription'),
+                  subtitle: (() {
+                    final sub = ref.watch(subscriptionProvider).valueOrNull;
+                    if (sub == null || sub.isFree) return context.tr('sub_free_upgrade');
+                    final planLabel = sub.isPremium ? 'Premium' : 'Plus';
+                    if (sub.expiresAt != null) {
+                      final date = DateTime.tryParse(sub.expiresAt!);
+                      if (date != null) {
+                        final formatted = '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year}';
+                        return '$planLabel • $formatted';
+                      }
+                    }
+                    return planLabel;
+                  })(),
+                  onTap: () => ref.read(navigationServiceProvider).go(RouteNames.subscription),
+                ),
+                _MenuItem(
+                  iconPath: QIcons.icPlane,
+                  title: context.tr('passport'),
+                  onTap: () => ref.read(navigationServiceProvider).go(RouteNames.passport),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+// ─── Section Card ───
+
+class _SectionCard extends StatelessWidget {
+  final String title;
+  final Widget child;
+  final VoidCallback? onTap;
+
+  const _SectionCard({
+    required this.title,
+    required this.child,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.cardPadding),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GestureDetector(
+            onTap: onTap,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    title,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                QIcon(QIcons.icChevronRight, color: theme.hintColor, size: 20),
+              ],
+            ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          child,
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Pref Chip ───
+
+class _PrefChip extends StatelessWidget {
+  final String iconPath;
+  final String label;
+
+  const _PrefChip({
+    required this.iconPath,
+    required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.xs,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.secondarySurface,
+        border: Border.all(color: AppColors.secondary.withAlpha(77)),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          QIcon(iconPath, size: 14, color: AppColors.secondary),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: AppColors.secondary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Menu Item ───
+
+class _MenuItem extends StatelessWidget {
+  final String? iconPath;
+  final Widget? iconWidget;
+  final String title;
+  final String? subtitle;
+  final bool showBadge;
+  final VoidCallback onTap;
+
+  const _MenuItem({
+    this.iconPath,
+    this.iconWidget,
+    required this.title,
+    this.subtitle,
+    this.showBadge = false,
+    required this.onTap,
+  }) : assert(iconPath != null || iconWidget != null);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+      ),
+      child: ListTile(
+        leading: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            iconWidget ?? QIcon(iconPath!, color: AppColors.primary, size: 24),
+            if (showBadge)
+              Positioned(
+                right: -4,
+                top: -4,
+                child: Container(
+                  width: 10,
+                  height: 10,
+                  decoration: const BoxDecoration(
+                    color: AppColors.error,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+          ],
+        ),
+        title: Text(title),
+        subtitle: subtitle != null
+            ? Text(subtitle!, style: theme.textTheme.bodySmall?.copyWith(color: AppColors.error))
+            : null,
+        trailing: QIcon(QIcons.icChevronRight, color: theme.hintColor, size: 20),
+        onTap: onTap,
+      ),
+    );
+  }
+}

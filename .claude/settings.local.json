@@ -1,0 +1,110 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git clone:*)",
+      "Bash(wc:*)",
+      "Bash(git:*)",
+      "Bash(npm install:*)",
+      "Bash(npx tsc:*)",
+      "Bash(ls:*)",
+      "Bash(curl:*)",
+      "Bash(__NEW_LINE_aa989f74e3f25945__ echo:*)",
+      "Bash(flutter create:*)",
+      "Bash(flutter analyze:*)",
+      "Bash(flutter pub:*)",
+      "Bash(dart analyze:*)",
+      "Bash(dart run:*)",
+      "Bash(file:*)",
+      "Bash(rm:*)",
+      "Bash(claude mcp:*)",
+      "Bash(ipconfig getifaddr:*)",
+      "Bash(node:*)",
+      "Bash(xargs ls:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(cat:*)",
+      "Bash(dart fix:*)",
+      "Bash(lsof:*)",
+      "Bash(xargs cat:*)",
+      "Bash(grep \"\"express\"\":*)",
+      "Bash(kill:*)",
+      "Bash(flutter devices:*)",
+      "Bash(killall:*)",
+      "Bash(flutter run:*)",
+      "Bash(flutter:*)",
+      "Bash(npx tsx:*)",
+      "Bash(sips:*)",
+      "WebFetch(domain:pub.dev)",
+      "Read(//Users/berkantcalikusu/.pub-cache/hosted/pub.dev/crop_your_image-1.1.0/lib/src/**)",
+      "Read(//Users/berkantcalikusu/.pub-cache/hosted/pub.dev/crop_your_image-1.1.0/lib/**)",
+      "Bash(chmod +x:*)",
+      "Bash(npm run:*)",
+      "Bash(flutter build:*)",
+      "Bash(git checkout:*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": {
+          "tools": [
+            "Edit",
+            "Write"
+          ]
+        },
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if echo \"$TOOL_INPUT\" | grep -qE '\\.env(\"|$)'; then echo 'BLOCK: .env dosyasi duzenlenemez' && exit 1; fi"
+          }
+        ]
+      },
+      {
+        "matcher": {
+          "tools": [
+            "Edit",
+            "Write"
+          ]
+        },
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if echo \"$TOOL_INPUT\" | grep -qE '(package-lock|pubspec\\.lock|yarn\\.lock)'; then echo 'BLOCK: Lock dosyalari duzenlenemez' && exit 1; fi"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": {
+          "tools": [
+            "Edit",
+            "Write"
+          ]
+        },
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if echo \"$TOOL_INPUT\" | grep -q '.dart'; then cd /Users/berkantcalikusu/IdeaProjects/qulov2 && dart analyze lib/ 2>&1 | tail -5; fi"
+          }
+        ]
+      },
+      {
+        "matcher": {
+          "tools": [
+            "Edit",
+            "Write"
+          ]
+        },
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if echo \"$TOOL_INPUT\" | grep -q '.ts'; then cd /Users/berkantcalikusu/IdeaProjects/qulov2/server && npx tsc --noEmit 2>&1 | tail -10; fi"
+          }
+        ]
+      }
+    ]
+  }
+}

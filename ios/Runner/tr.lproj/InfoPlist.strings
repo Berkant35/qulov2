@@ -1,0 +1,4 @@
+"CFBundleDisplayName" = "Qulo";
+"CAMERA_USAGE_DESCRIPTION" = "Profil fotoğraflarınızı çekmek için kamera erişimi gereklidir.";
+"PHOTO_LIBRARY_DESCRIPTION" = "Profil fotoğraflarınızı seçmek için galeri erişimi gereklidir.";
+"LOCATION_WHEN_IN_USE_DESCRIPTION" = "Yakınlarınızdaki kullanıcıları görmek için konum erişimi gereklidir.";

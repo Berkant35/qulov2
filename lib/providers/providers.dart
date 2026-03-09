@@ -1,0 +1,12 @@
+export 'api_provider.dart';
+export 'auth_provider.dart';
+export 'chat_provider.dart';
+export 'diamond_provider.dart';
+export 'locale_provider.dart';
+export 'location_provider.dart';
+export 'match_provider.dart';
+export 'passport_provider.dart';
+export 'power_provider.dart';
+export 'question_provider.dart';
+export 'quiz_provider.dart';
+export 'user_provider.dart';
