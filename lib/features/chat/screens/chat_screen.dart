@@ -2,16 +2,18 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:qulo_v2/core/navigation/navigation_provider.dart';
+import 'package:qulo_v2/core/navigation/models/app_dialog.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
-import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/data/models/message_model.dart';
 import 'package:qulo_v2/providers/chat_provider.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
+import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/providers/quiz_summary_provider.dart';
 import 'package:qulo_v2/features/chat/widgets/quiz_summary_card.dart';
 import 'package:qulo_v2/features/chat/widgets/typing_indicator.dart';
@@ -185,6 +187,42 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     );
   }
 
+  Future<void> _confirmUnmatch() async {
+    final nav = ref.read(navigationServiceProvider);
+    final confirm = await nav.showAppDialog<bool>(
+      const ConfirmDialog(
+        name: 'unmatch',
+        title: 'Unmatch',
+        message: 'Bu kişiyle eşleşmeyi kaldırmak istediğine emin misin? Bu işlem geri alınamaz.',
+        confirmText: 'Unmatch',
+        isDestructive: true,
+      ),
+    );
+    if (confirm == true && mounted) {
+      await ref.read(matchListProvider.notifier).unmatch(widget.matchId);
+      if (mounted) {
+        ref.read(navigationServiceProvider).pop();
+      }
+    }
+  }
+
+  String _formatLastSeen(String? lastSeen) {
+    if (lastSeen == null) return '';
+    try {
+      final dt = DateTime.parse(lastSeen);
+      final now = DateTime.now().toUtc();
+      final diff = now.difference(dt);
+
+      if (diff.inMinutes < 1) return 'Son görülme: az önce';
+      if (diff.inMinutes < 60) return 'Son görülme: ${diff.inMinutes} dk önce';
+      if (diff.inHours < 24) return 'Son görülme: ${diff.inHours} saat önce';
+      if (diff.inDays < 7) return 'Son görülme: ${diff.inDays} gün önce';
+      return 'Son görülme: ${diff.inDays ~/ 7} hafta önce';
+    } catch (_) {
+      return '';
+    }
+  }
+
   Future<void> _send() async {
     final text = _msgCtrl.text.trim();
     if (text.isEmpty) return;
@@ -209,9 +247,81 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
     final quizSummary = ref.watch(quizSummaryProvider(widget.matchId));
 
-    return AppScaffold(
-      title: context.tr('chat'),
-      padding: EdgeInsets.zero,
+    // Watch matchListProvider to get user info for header
+    final matchUser = ref.watch(matchListProvider).whenData((matches) {
+      try {
+        return matches.firstWhere((m) => m.matchId == widget.matchId).user;
+      } catch (_) {
+        return null;
+      }
+    }).valueOrNull;
+
+    final userName = matchUser?.name ?? context.tr('chat');
+    final isOnline = matchUser?.isOnline ?? false;
+    final lastSeen = matchUser?.lastSeen;
+    final statusText = isOnline ? 'Online' : _formatLastSeen(lastSeen);
+
+    return Scaffold(
+      backgroundColor: theme.scaffoldBackgroundColor,
+      appBar: AppBar(
+        title: Row(
+          children: [
+            Container(
+              width: 10,
+              height: 10,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isOnline ? AppColors.secondary : theme.colorScheme.outline,
+              ),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    userName,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: theme.colorScheme.onSurface,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  if (statusText.isNotEmpty)
+                    Text(
+                      statusText,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: isOnline
+                            ? AppColors.secondary
+                            : theme.colorScheme.onSurfaceVariant,
+                        fontSize: 12,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert),
+            onSelected: (value) {
+              if (value == 'unmatch') _confirmUnmatch();
+            },
+            itemBuilder: (ctx) => [
+              PopupMenuItem(
+                value: 'unmatch',
+                child: Row(
+                  children: [
+                    Icon(Icons.heart_broken, color: AppColors.error, size: 20),
+                    const SizedBox(width: 8),
+                    const Text('Unmatch'),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
       body: Column(
         children: [
           // ─── Quiz Summary Card ───
