@@ -136,10 +136,14 @@ abstract class IQuizRepository {
 
   Future<Result<QuizAnswerResponse>> answerQuestion(
     String sessionId, {
-    required int selectedAnswer,
+    int? selectedAnswer,
     String? powerUsed,
     int? timeSpent,
   });
+
+  Future<Result<QuizAnswerResponse>> rescueWithSkip(String sessionId);
+
+  Future<Result<QuizAnswerResponse>> failSession(String sessionId);
 
   Future<Result<QuizResultModel>> getSessionResult(String sessionId);
 }

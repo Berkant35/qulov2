@@ -23,6 +23,16 @@ abstract class QuizService {
     @Body() Map<String, dynamic> data,
   );
 
+  @POST('/quiz/{sessionId}/rescue')
+  Future<QuizAnswerResponse> rescueWithSkip(
+    @Path('sessionId') String sessionId,
+  );
+
+  @POST('/quiz/{sessionId}/fail')
+  Future<QuizAnswerResponse> failSession(
+    @Path('sessionId') String sessionId,
+  );
+
   @GET('/quiz/{sessionId}/result')
   Future<QuizResultModel> getSessionResult(
     @Path('sessionId') String sessionId,
