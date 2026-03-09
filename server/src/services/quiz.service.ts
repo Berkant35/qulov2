@@ -481,7 +481,8 @@ export class QuizService {
     // Apply any pending question changes for the target user
     await pendingChangeService.applyPendingChanges(session.target_id);
 
-    return { is_correct: true, matched: true, session_status: "COMPLETED" };
+    const badge = await this.calculateBadge(session.id);
+    return { is_correct: true, matched: true, session_status: "COMPLETED", badge };
   }
 
   private async recordAnswer(
