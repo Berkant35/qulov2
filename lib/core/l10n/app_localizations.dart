@@ -595,6 +595,19 @@ class AppLocalizations {
     'profile_completed_percent': 'Profilini %{milestone} tamamladın!',
     'purple_diamonds_earned': 'Mor elmas kazandın!',
     'free_boost_earned': '24 saatlik ücretsiz boost kazandın!',
+
+    // Exchange center
+    'exchange_title': 'Dönüşüm Merkezi',
+    'exchange_convert_title': 'Elmas Dönüşümü',
+    'exchange_convert_button': 'Dönüştür',
+    'exchange_powers_title': 'Power Hakları',
+    'power_oracle': 'Kahin',
+    'power_oracle_desc': 'Bir şık önerir — garanti değil!',
+    'power_half_desc': '2 yanlış şıkkı eler',
+    'power_skip_desc': 'Soruyu doğru say ve geç',
+    'power_skip_all_desc': 'Tüm kalan soruları geç',
+    'power_time_extend_desc': 'Süreye 15 saniye ekle',
+    'power_hint_desc': 'İpucu göster',
   };
 
   static const _en = <String, String>{
@@ -1168,6 +1181,19 @@ class AppLocalizations {
     'profile_completed_percent': 'You completed %{milestone} of your profile!',
     'purple_diamonds_earned': 'You earned purple diamonds!',
     'free_boost_earned': 'You earned a free 24-hour boost!',
+
+    // Exchange center
+    'exchange_title': 'Exchange Center',
+    'exchange_convert_title': 'Diamond Conversion',
+    'exchange_convert_button': 'Convert',
+    'exchange_powers_title': 'Power Rights',
+    'power_oracle': 'Oracle',
+    'power_oracle_desc': 'Suggests an answer — not guaranteed!',
+    'power_half_desc': 'Eliminates 2 wrong options',
+    'power_skip_desc': 'Marks question correct and skips',
+    'power_skip_all_desc': 'Skips all remaining questions',
+    'power_time_extend_desc': 'Adds 15 seconds to timer',
+    'power_hint_desc': 'Shows a hint',
   };
 }
 

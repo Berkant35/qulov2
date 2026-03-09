@@ -19,7 +19,7 @@ abstract final class QIcons {
   static const icCheckCircle = 'assets/icons/ic_check_circle.svg';
 
   // ─── Powers (Quiz) ───
-  static const icCopy = 'assets/icons/ic_copy.svg';
+  static const icOracle = 'assets/icons/ic_oracle.svg';
   static const icSplit = 'assets/icons/ic_split.svg';
   static const icSkipForward = 'assets/icons/ic_skip_forward.svg';
   static const icLightbulb = 'assets/icons/ic_lightbulb.svg';
