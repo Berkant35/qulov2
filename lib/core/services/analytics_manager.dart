@@ -12,7 +12,6 @@ class AnalyticsManager {
   final BreadcrumbQueue _breadcrumbs = BreadcrumbQueue(maxSize: 30);
 
   bool _initialized = false;
-  String? _lastScreen;
   DateTime? _sessionStart;
   DateTime? _backgroundStart;
 
@@ -55,7 +54,6 @@ class AnalyticsManager {
       screenClass: screenClass ?? screenName,
     );
 
-    _lastScreen = screenName;
     _crashlytics.setCustomKey('last_screen', screenName);
     _crashlytics.log('SCREEN: $screenName');
     _breadcrumbs.add(BreadcrumbEntry('screen_view:$screenName', null, DateTime.now()));

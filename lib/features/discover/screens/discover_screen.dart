@@ -37,7 +37,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
   final Stopwatch _sessionStopwatch = Stopwatch()..start();
   int _swipesRight = 0;
   int _swipesLeft = 0;
-  int _profilesViewed = 0;
+  final int _profilesViewed = 0;
 
   @override
   void initState() {
