@@ -275,7 +275,7 @@ export class UserService {
   private async recalculateProfileCompletion(userId: string) {
     const { data: user } = await supabase
       .from("users")
-      .select("name, surname, bio, city, lat, lng, photos")
+      .select("name, surname, bio, city, lat, lng, photos, relationship_goal, preferred_languages, completion_rewards_claimed")
       .eq("id", userId)
       .single();
 
@@ -288,9 +288,9 @@ export class UserService {
       .maybeSingle();
 
     let score = 0;
-    const total = 14; // total checkable fields
+    const total = 16; // total checkable fields
 
-    // User fields (7 checks)
+    // User fields (9 checks)
     if (user.name) score++;
     if (user.surname) score++;
     if (user.bio) score++;
@@ -299,6 +299,8 @@ export class UserService {
     const photos: string[] = user.photos ?? [];
     if (photos.length >= 1) score++;
     if (photos.length >= 3) score++;
+    if (user.relationship_goal && user.relationship_goal !== 'NOT_SURE') score++;
+    if (user.preferred_languages && user.preferred_languages.length > 0) score++;
 
     // Detail fields (7 checks)
     if (details) {
@@ -311,11 +313,37 @@ export class UserService {
       if (details.alcohol) score++;
     }
 
-    const completion = Math.round((score / total) * 100);
+    const newCompletion = Math.round((score / total) * 100);
 
+    // Milestone rewards
+    const milestones = [
+      { threshold: 25, reward: 5 },
+      { threshold: 50, reward: 15 },
+      { threshold: 75, reward: 30 },
+      { threshold: 100, reward: 50 },
+    ];
+
+    const claimed: Record<string, boolean> = user.completion_rewards_claimed || {};
+
+    for (const m of milestones) {
+      if (newCompletion >= m.threshold && !claimed[String(m.threshold)]) {
+        await diamondService.addPurple(userId, m.reward, 'PROFILE_COMPLETION', `milestone_${m.threshold}`);
+        claimed[String(m.threshold)] = true;
+
+        if (m.threshold === 100) {
+          const boostUntil = new Date(Date.now() + 24 * 60 * 60 * 1000);
+          await supabase.from('users').update({ boost_until: boostUntil.toISOString() }).eq('id', userId);
+        }
+      }
+    }
+
+    // Update both completion and rewards claimed
     await supabase
       .from("users")
-      .update({ profile_completion: completion })
+      .update({
+        profile_completion: newCompletion,
+        completion_rewards_claimed: claimed,
+      })
       .eq("id", userId);
   }
 }
