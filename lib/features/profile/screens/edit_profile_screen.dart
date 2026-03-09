@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
@@ -165,6 +167,12 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
     if (mounted) {
       if (result.isSuccess) {
+        final photos = ref.read(editProfileProvider).photos;
+        final photoIndex = photos.indexWhere((p) => p == null);
+        AnalyticsManager.instance.logEvent(AnalyticsEvents.profilePhotoAdd, params: {
+          AnalyticsEvents.paramPhotoIndex: photoIndex >= 0 ? photoIndex : photos.length,
+          AnalyticsEvents.paramSource: source == ImageSource.gallery ? 'gallery' : 'camera',
+        });
         ref.read(editProfileProvider.notifier).refreshPhotos();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -200,6 +208,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       ),
     ).then((confirmed) {
       if (confirmed == true) {
+        AnalyticsManager.instance.logEvent(AnalyticsEvents.profilePhotoRemove, params: {
+          AnalyticsEvents.paramPhotoIndex: index,
+        });
         ref.read(userProvider.notifier).deletePhoto(index).then((_) {
           ref.read(editProfileProvider.notifier).refreshPhotos();
         });
@@ -258,6 +269,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     };
 
     final success = await notifier.saveProfile(profileData, detailsData);
+
+    if (success) {
+      AnalyticsManager.instance.logEvent(AnalyticsEvents.profileEditSave);
+    }
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

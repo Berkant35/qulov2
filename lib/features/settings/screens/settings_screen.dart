@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
@@ -19,11 +21,22 @@ final _packageInfoProvider = FutureProvider<PackageInfo>(
   (_) => PackageInfo.fromPlatform(),
 );
 
-class SettingsScreen extends ConsumerWidget {
+class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    AnalyticsManager.instance.logEvent(AnalyticsEvents.settingsScreenView);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final locale = ref.watch(localeProvider);
     final languagesAsync = ref.watch(userLanguagesProvider);
     final theme = Theme.of(context);
@@ -53,7 +66,17 @@ class SettingsScreen extends ConsumerWidget {
                 ],
                 selected: {locale.languageCode},
                 onSelectionChanged: (s) {
-                  ref.read(localeProvider.notifier).setLocale(Locale(s.first));
+                  final oldLang = locale.languageCode;
+                  final newLang = s.first;
+                  AnalyticsManager.instance.logEvent(AnalyticsEvents.settingsLanguageChange, params: {
+                    AnalyticsEvents.paramLanguage: newLang,
+                  });
+                  AnalyticsManager.instance.logEvent(AnalyticsEvents.settingsChange, params: {
+                    AnalyticsEvents.paramSettingName: 'language',
+                    AnalyticsEvents.paramOldValue: oldLang,
+                    AnalyticsEvents.paramNewValue: newLang,
+                  });
+                  ref.read(localeProvider.notifier).setLocale(Locale(newLang));
                 },
               ),
             ),
@@ -126,7 +149,14 @@ class SettingsScreen extends ConsumerWidget {
                     ],
                     selected: {ref.watch(themeProvider)},
                     onSelectionChanged: (s) {
-                      ref.read(themeProvider.notifier).setThemeMode(s.first);
+                      final oldTheme = ref.read(themeProvider).name;
+                      final newTheme = s.first;
+                      AnalyticsManager.instance.logEvent(AnalyticsEvents.settingsChange, params: {
+                        AnalyticsEvents.paramSettingName: 'theme',
+                        AnalyticsEvents.paramOldValue: oldTheme,
+                        AnalyticsEvents.paramNewValue: newTheme.name,
+                      });
+                      ref.read(themeProvider.notifier).setThemeMode(newTheme);
                     },
                   ),
                 ),
@@ -176,6 +206,7 @@ class SettingsScreen extends ConsumerWidget {
                 style: const TextStyle(color: AppColors.error),
               ),
               onTap: () async {
+                AnalyticsManager.instance.logEvent(AnalyticsEvents.settingsDeleteAccountStart);
                 final nav = ref.read(navigationServiceProvider);
                 final userNotifier = ref.read(userProvider.notifier);
                 final authNotifier = ref.read(authProvider.notifier);
