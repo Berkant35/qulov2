@@ -58,9 +58,9 @@ class QuizTimerState extends State<QuizTimer> with TickerProviderStateMixin {
   }
 
   @override
-  void didUpdateWidget(QuizTimer old) {
-    super.didUpdateWidget(old);
-    if (old.seconds != widget.seconds) {
+  void didUpdateWidget(QuizTimer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.seconds != widget.seconds) {
       _timer?.cancel();
       _pulseController.reset();
       _shakeController.reset();
