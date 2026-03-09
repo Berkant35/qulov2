@@ -17,6 +17,8 @@ import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/providers/passport_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/features/discover/widgets/discover_empty_state.dart';
 import 'package:qulo_v2/features/discover/widgets/profile_card.dart';
 
@@ -31,9 +33,16 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
   int _nudgeCount = 0;
   bool _nudgeLoaded = false;
 
+  // ─── Analytics session tracking ───
+  final Stopwatch _sessionStopwatch = Stopwatch()..start();
+  int _swipesRight = 0;
+  int _swipesLeft = 0;
+  int _profilesViewed = 0;
+
   @override
   void initState() {
     super.initState();
+    AnalyticsManager.instance.logEvent(AnalyticsEvents.discoverSessionStart);
     Future.microtask(() => _initLocationAndDiscover());
     _loadAndIncrementNudge();
   }
@@ -57,6 +66,21 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
         _nudgeLoaded = true;
       });
     }
+  }
+
+  @override
+  void dispose() {
+    _sessionStopwatch.stop();
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.discoverSessionEnd,
+      params: {
+        AnalyticsEvents.paramDurationMs: _sessionStopwatch.elapsedMilliseconds,
+        AnalyticsEvents.paramSwipesRight: _swipesRight,
+        AnalyticsEvents.paramSwipesLeft: _swipesLeft,
+        AnalyticsEvents.paramProfilesViewed: _profilesViewed,
+      },
+    );
+    super.dispose();
   }
 
   void _showEasyModeSheet() {
@@ -391,6 +415,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
           }
 
           if (discover.cards.isEmpty) {
+            AnalyticsManager.instance.logEvent(AnalyticsEvents.discoverCardsEmpty);
             return const DiscoverEmptyState();
           }
           final card = discover.cards.first;
@@ -410,6 +435,14 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(12),
                       onTap: () {
+                        _swipesRight++;
+                        AnalyticsManager.instance.logEvent(
+                          AnalyticsEvents.discoverSwipeRight,
+                          params: {
+                            AnalyticsEvents.paramTargetUserId: card.userId,
+                            AnalyticsEvents.paramSource: 'solve_button',
+                          },
+                        );
                         ref.read(navigationServiceProvider).go(RouteNames.quiz, params: {'targetId': card.userId});
                       },
                       child: Padding(
@@ -434,6 +467,13 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
                       backgroundColor: theme.colorScheme.surface,
                       borderColor: AppColors.error,
                       onTap: () async {
+                        _swipesLeft++;
+                        AnalyticsManager.instance.logEvent(
+                          AnalyticsEvents.discoverSwipeLeft,
+                          params: {
+                            AnalyticsEvents.paramTargetUserId: card.userId,
+                          },
+                        );
                         await ref.read(discoverProvider.notifier).swipe(
                           targetId: card.userId,
                           action: 'REJECT',
@@ -447,6 +487,13 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
                       borderColor: AppColors.secondary,
                       size: 72,
                       onTap: () {
+                        _swipesRight++;
+                        AnalyticsManager.instance.logEvent(
+                          AnalyticsEvents.discoverSwipeRight,
+                          params: {
+                            AnalyticsEvents.paramTargetUserId: card.userId,
+                          },
+                        );
                         ref.read(navigationServiceProvider).go(RouteNames.quiz, params: {'targetId': card.userId});
                       },
                     ),
