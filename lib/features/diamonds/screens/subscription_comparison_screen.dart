@@ -14,12 +14,27 @@ import 'package:qulo_v2/providers/daily_stats_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/features/diamonds/widgets/celebration_dialog.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
 
-class SubscriptionComparisonScreen extends ConsumerWidget {
+class SubscriptionComparisonScreen extends ConsumerStatefulWidget {
   const SubscriptionComparisonScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SubscriptionComparisonScreen> createState() =>
+      _SubscriptionComparisonScreenState();
+}
+
+class _SubscriptionComparisonScreenState
+    extends ConsumerState<SubscriptionComparisonScreen> {
+  @override
+  void initState() {
+    super.initState();
+    AnalyticsManager.instance.logEvent(AnalyticsEvents.subscriptionCompareView);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final subAsync = ref.watch(subscriptionProvider);
     final currentPlan = subAsync.valueOrNull;
     final theme = Theme.of(context);
@@ -52,7 +67,7 @@ class SubscriptionComparisonScreen extends ConsumerWidget {
               ],
               isRecommended: false,
               isCurrent: currentPlan?.isPlus ?? false,
-              onSubscribe: () => _handlePurchase(context, ref, 'plus'),
+              onSubscribe: () => _handlePurchase(context, 'plus'),
             ),
             const SizedBox(height: AppSpacing.md),
 
@@ -70,13 +85,13 @@ class SubscriptionComparisonScreen extends ConsumerWidget {
               ],
               isRecommended: true,
               isCurrent: currentPlan?.isPremium ?? false,
-              onSubscribe: () => _handlePurchase(context, ref, 'premium'),
+              onSubscribe: () => _handlePurchase(context, 'premium'),
             ),
             const SizedBox(height: AppSpacing.xxl),
 
             // Restore purchases
             TextButton(
-              onPressed: () => _handleRestore(context, ref),
+              onPressed: () => _handleRestore(context),
               child: Text(
                 context.tr('sub_restore_purchases'),
                 style: theme.textTheme.bodySmall?.copyWith(
@@ -94,9 +109,13 @@ class SubscriptionComparisonScreen extends ConsumerWidget {
 
   Future<void> _handlePurchase(
     BuildContext context,
-    WidgetRef ref,
     String plan,
   ) async {
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.subscriptionPurchaseStart,
+      params: {AnalyticsEvents.paramTier: plan},
+    );
+
     final productId = plan == 'premium' ? 'qulopremiummonthly' : 'quloplusmonthly2';
     final success = await ref
         .read(subscriptionProvider.notifier)
@@ -139,7 +158,7 @@ class SubscriptionComparisonScreen extends ConsumerWidget {
     }
   }
 
-  Future<void> _handleRestore(BuildContext context, WidgetRef ref) async {
+  Future<void> _handleRestore(BuildContext context) async {
     await ref.read(subscriptionProvider.notifier).restorePurchases();
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

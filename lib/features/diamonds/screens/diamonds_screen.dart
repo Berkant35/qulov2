@@ -19,6 +19,8 @@ import 'package:qulo_v2/features/diamonds/widgets/diamond_balance_card.dart';
 import 'package:qulo_v2/features/diamonds/widgets/monthly_benefits_card.dart';
 import 'package:qulo_v2/features/diamonds/widgets/subscription_banner.dart';
 import 'package:qulo_v2/features/diamonds/widgets/purchase_grid.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
 
 class DiamondsScreen extends ConsumerStatefulWidget {
   const DiamondsScreen({super.key});
@@ -39,6 +41,15 @@ class _DiamondsScreenState extends ConsumerState<DiamondsScreen> {
       ref.read(diamondProvider.notifier).fetchBalance();
       ref.read(dailyStatsProvider.notifier).fetchStats();
       _loadHistory();
+
+      final balance = ref.read(diamondProvider).valueOrNull;
+      AnalyticsManager.instance.logEvent(
+        AnalyticsEvents.diamondsScreenView,
+        params: {
+          if (balance != null)
+            AnalyticsEvents.paramCurrentBalance: balance.purple,
+        },
+      );
     });
   }
 
@@ -63,6 +74,14 @@ class _DiamondsScreenState extends ConsumerState<DiamondsScreen> {
   Future<void> _onPurchase(PurchasePackage package) async {
     if (_purchasing) return;
     setState(() => _purchasing = true);
+
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.diamondsPurchaseStart,
+      params: {
+        AnalyticsEvents.paramProductId: package.tier.productId,
+      },
+    );
+
     try {
       final success = await ref
           .read(diamondProvider.notifier)
