@@ -64,6 +64,8 @@ class ProfileCardModel extends Equatable {
   final int profileCompletion;
   @JsonKey(name: 'is_boosted')
   final bool isBoosted;
+  @JsonKey(name: 'relationship_goal')
+  final String? relationshipGoal;
   @JsonKey(name: 'question_info')
   final QuestionInfoModel? questionInfo;
 
@@ -78,6 +80,7 @@ class ProfileCardModel extends Equatable {
     required this.questionCount,
     this.profileCompletion = 0,
     this.isBoosted = false,
+    this.relationshipGoal,
     this.questionInfo,
   });
 
@@ -86,7 +89,7 @@ class ProfileCardModel extends Equatable {
   Map<String, dynamic> toJson() => _$ProfileCardModelToJson(this);
 
   @override
-  List<Object?> get props => [userId];
+  List<Object?> get props => [userId, relationshipGoal];
 }
 
 @JsonSerializable()
