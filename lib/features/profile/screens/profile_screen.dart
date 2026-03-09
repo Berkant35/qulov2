@@ -48,6 +48,27 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     }
   }
 
+  String _relationshipGoalLabel(BuildContext context, String? goal) {
+    return switch (goal) {
+      'SERIOUS' => context.tr('serious_relationship'),
+      'FRIENDSHIP' => context.tr('friendship'),
+      _ => context.tr('not_sure'),
+    };
+  }
+
+  String _languageFlag(String code) {
+    return switch (code) {
+      'tr' => 'TR',
+      'en' => 'EN',
+      'de' => 'DE',
+      'fr' => 'FR',
+      'ar' => 'AR',
+      'ru' => 'RU',
+      'es' => 'ES',
+      _ => code.toUpperCase(),
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     final userAsync = ref.watch(userProvider);
@@ -237,6 +258,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         _PrefChip(
                           iconPath: QIcons.icMapPin,
                           label: '${user.matchRadiusKm} km',
+                        ),
+                      if (user.relationshipGoal != null && user.relationshipGoal != 'NOT_SURE')
+                        _PrefChip(
+                          iconPath: QIcons.icHeart,
+                          label: _relationshipGoalLabel(context, user.relationshipGoal),
+                        ),
+                      if (user.preferredLanguages.isNotEmpty)
+                        _PrefChip(
+                          iconPath: QIcons.icGlobe,
+                          label: user.preferredLanguages.map(_languageFlag).join(', '),
                         ),
                     ],
                   ),
