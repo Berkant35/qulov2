@@ -140,4 +140,7 @@ export const Errors = {
 
   MEDIA_REQUEST_NOT_RECIPIENT: () =>
     new AppError("MEDIA_REQUEST_NOT_RECIPIENT", 403, "Only the recipient can respond"),
+
+  MEDIA_NOT_ENABLED: () =>
+    new AppError("MEDIA_NOT_ENABLED", 403, "Both users must enable media sharing"),
 } as const;
