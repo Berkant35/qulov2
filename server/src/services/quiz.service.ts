@@ -581,6 +581,91 @@ export class QuizService {
 
     if (error) throw Errors.SERVER_ERROR();
   }
+  // ─── Rescue with SKIP (after wrong answer) ──────────────────
+  async rescueWithSkip(sessionId: string, solverId: string) {
+    const session = await this.getActiveSession(sessionId, solverId);
+
+    // Son cevabı bul — yanlış olmalı
+    const { data: lastAnswer, error: ansErr } = await supabase
+      .from("quiz_answers")
+      .select("id, question_id, is_correct")
+      .eq("session_id", sessionId)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (ansErr || !lastAnswer || lastAnswer.is_correct !== false) {
+      throw Errors.VALIDATION_ERROR({ rescue: "No wrong answer to rescue" });
+    }
+
+    // SKIP power envanter/elmas kontrolü
+    const { data: power, error: powerErr } = await supabase
+      .from("powers")
+      .select("id, name, base_cost, is_active")
+      .eq("name", "SKIP")
+      .eq("is_active", true)
+      .maybeSingle();
+
+    if (powerErr || !power) throw Errors.SERVER_ERROR();
+
+    const usedFromInventory = await exchangeService.tryUseInventory(solverId, "SKIP");
+
+    if (!usedFromInventory) {
+      const cost = calculatePowerCost(power.base_cost, session.total_questions);
+      const greenReward = calculateGreenReward(cost);
+
+      await diamondService.spendPurple(solverId, cost, "POWER_USED", `SKIP_RESCUE:${sessionId}`);
+      await diamondService.earnGreen(session.target_id, greenReward, "POWER_REWARD", `SKIP_RESCUE:${sessionId}`);
+    }
+
+    // Yanlış cevabı override et
+    await supabase
+      .from("quiz_answers")
+      .update({ is_correct: true, power_used: "SKIP" })
+      .eq("id", lastAnswer.id);
+
+    // Soru stats güncelle
+    const { data: qStats } = await supabase
+      .from("questions")
+      .select("stats_correct, stats_wrong, stats_skip_used")
+      .eq("id", lastAnswer.question_id)
+      .single();
+
+    if (qStats) {
+      await supabase
+        .from("questions")
+        .update({
+          stats_correct: qStats.stats_correct + 1,
+          stats_wrong: Math.max(0, qStats.stats_wrong - 1),
+          stats_skip_used: (qStats.stats_skip_used ?? 0) + 1,
+        })
+        .eq("id", lastAnswer.question_id);
+    }
+
+    // Son soru muydu?
+    if (session.current_q >= session.total_questions) {
+      return await this.completeSession(session);
+    }
+
+    await this.incrementCurrentQ(sessionId, session.current_q);
+    return { is_correct: true, next_question: session.current_q + 1, session_status: "IN_PROGRESS" };
+  }
+
+  // ─── Fail Session (user declined rescue) ────────────────────
+  async failSession(sessionId: string, solverId: string) {
+    const session = await this.getActiveSession(sessionId, solverId);
+
+    await supabase
+      .from("quiz_sessions")
+      .update({ status: "FAILED", completed_at: new Date().toISOString() })
+      .eq("id", sessionId);
+
+    await this.saveSessionSummary(sessionId);
+    await pendingChangeService.applyPendingChanges(session.target_id);
+
+    return { session_status: "FAILED" };
+  }
+
   // ─── Match Quiz Summary (for chat card) ──────────────────────
   async getMatchQuizSummary(matchId: string, userId: string) {
     // Find the match
