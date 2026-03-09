@@ -18,14 +18,14 @@ class QuizTimer extends StatefulWidget {
   });
 
   @override
-  State<QuizTimer> createState() => _QuizTimerState();
+  State<QuizTimer> createState() => QuizTimerState();
 }
 
-class _QuizTimerState extends State<QuizTimer> with TickerProviderStateMixin {
+class QuizTimerState extends State<QuizTimer> with TickerProviderStateMixin {
   late int _remaining;
   Timer? _timer;
+  bool _isPaused = false;
 
-  // Pulse animation for last 10 seconds (scale timer text)
   late final AnimationController _pulseController;
   late final Animation<double> _pulseAnimation;
 
@@ -65,12 +65,14 @@ class _QuizTimerState extends State<QuizTimer> with TickerProviderStateMixin {
       _pulseController.reset();
       _shakeController.reset();
       _remaining = widget.seconds;
+      _isPaused = false;
       _startTimer();
     }
   }
 
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (_isPaused) return;
       if (_remaining <= 1) {
         _timer?.cancel();
         _pulseController.stop();
@@ -83,14 +85,27 @@ class _QuizTimerState extends State<QuizTimer> with TickerProviderStateMixin {
     });
   }
 
+  // ── Public API ──────────────────────────────────────────────
+  void pause() {
+    _isPaused = true;
+  }
+
+  void resume() {
+    _isPaused = false;
+  }
+
+  void addSeconds(int extra) {
+    setState(() {
+      _remaining += extra;
+    });
+  }
+
   void _updateAnimations() {
-    // Start pulse when entering last 10 seconds
     if (_remaining == 10 && !_pulseController.isAnimating) {
       _pulseController.repeat(reverse: true);
       widget.onWarning?.call();
     }
 
-    // Trigger shake on each tick in last 5 seconds
     if (_remaining == 5) {
       widget.onCritical?.call();
     }
