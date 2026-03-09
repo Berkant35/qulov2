@@ -4,6 +4,8 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/services/location_manager.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
@@ -95,6 +97,11 @@ class _MapPickerScreenState extends ConsumerState<MapPickerScreen> {
   }
 
   void _confirm() {
+    if (_selectedCity != null) {
+      AnalyticsManager.instance.logEvent(AnalyticsEvents.passportCitySelect, params: {
+        AnalyticsEvents.paramCityName: _selectedCity!,
+      });
+    }
     Navigator.of(context).pop({
       'lat': _selectedPosition.latitude,
       'lng': _selectedPosition.longitude,

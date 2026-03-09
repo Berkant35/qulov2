@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
@@ -15,8 +17,21 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 }
 
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
+  final _analytics = AnalyticsManager.instance;
   final _controller = PageController();
   int _page = 0;
+
+  static const List<String> _stepNames = ['welcome', 'quiz', 'profile'];
+
+  @override
+  void initState() {
+    super.initState();
+    _analytics.logEvent(AnalyticsEvents.onboardingStart);
+    _analytics.logEvent(AnalyticsEvents.onboardingStepView, params: {
+      AnalyticsEvents.paramStepName: _stepNames[0],
+      AnalyticsEvents.paramStepIndex: 0,
+    });
+  }
 
   List<_PageData> _getPages(BuildContext context) => [
     _PageData(
@@ -55,7 +70,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             Expanded(
               child: PageView.builder(
                 controller: _controller,
-                onPageChanged: (i) => setState(() => _page = i),
+                onPageChanged: (i) {
+                  setState(() => _page = i);
+                  _analytics.logEvent(AnalyticsEvents.onboardingStepView, params: {
+                    AnalyticsEvents.paramStepName: _stepNames[i],
+                    AnalyticsEvents.paramStepIndex: i,
+                  });
+                },
                 itemCount: pages.length,
                 itemBuilder: (_, i) => _buildPage(theme, pages[i]),
               ),
@@ -70,7 +91,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 height: 52,
                 child: ElevatedButton(
                   onPressed: () {
+                    _analytics.logEvent(AnalyticsEvents.onboardingStepComplete, params: {
+                      AnalyticsEvents.paramStepName: _stepNames[_page],
+                      AnalyticsEvents.paramStepIndex: _page,
+                    });
                     if (isLast) {
+                      _analytics.logEvent(AnalyticsEvents.onboardingComplete);
                       ref.read(navigationServiceProvider).go(RouteNames.discover);
                     } else {
                       _controller.nextPage(
