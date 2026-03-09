@@ -16,6 +16,8 @@ import 'package:qulo_v2/providers/quiz_summary_provider.dart';
 import 'package:qulo_v2/features/chat/widgets/quiz_summary_card.dart';
 import 'package:qulo_v2/features/chat/widgets/typing_indicator.dart';
 import 'package:qulo_v2/features/chat/widgets/reaction_picker.dart';
+import 'package:qulo_v2/features/chat/sheets/create_question_sheet.dart';
+import 'package:qulo_v2/providers/api_provider.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   final String matchId;
@@ -166,6 +168,21 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       map[r.emoji] = (map[r.emoji] ?? 0) + 1;
     }
     return map;
+  }
+
+  void _showCreateQuestionSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => CreateQuestionSheet(
+        matchId: widget.matchId,
+        onSubmit: (data) async {
+          final service = ref.read(chatQuestionServiceProvider);
+          await service.createQuestion(widget.matchId, data);
+        },
+      ),
+    );
   }
 
   Future<void> _send() async {
@@ -356,6 +373,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     ),
                   ),
                   const SizedBox(width: AppSpacing.sm),
+                  IconButton(
+                    onPressed: _showCreateQuestionSheet,
+                    icon: Icon(
+                      Icons.help_outline,
+                      color: AppColors.primary,
+                      size: 22,
+                    ),
+                  ),
                   Container(
                     decoration: const BoxDecoration(
                       gradient: AppColors.primaryButtonGradient,
