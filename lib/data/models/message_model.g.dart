@@ -13,6 +13,12 @@ MessageModel _$MessageModelFromJson(Map<String, dynamic> json) => MessageModel(
   content: json['content'] as String,
   isImage: json['is_image'] as bool? ?? false,
   readAt: json['read_at'] as String?,
+  deletedAt: json['deleted_at'] as String?,
+  audioUrl: json['audio_url'] as String?,
+  audioDurationSeconds: (json['audio_duration_seconds'] as num?)?.toInt(),
+  reactions: (json['reactions'] as List<dynamic>?)
+      ?.map((e) => MessageReaction.fromJson(e as Map<String, dynamic>))
+      .toList(),
   createdAt: json['created_at'] as String?,
 );
 
@@ -24,8 +30,21 @@ Map<String, dynamic> _$MessageModelToJson(MessageModel instance) =>
       'content': instance.content,
       'is_image': instance.isImage,
       'read_at': instance.readAt,
+      'deleted_at': instance.deletedAt,
+      'audio_url': instance.audioUrl,
+      'audio_duration_seconds': instance.audioDurationSeconds,
+      'reactions': instance.reactions,
       'created_at': instance.createdAt,
     };
+
+MessageReaction _$MessageReactionFromJson(Map<String, dynamic> json) =>
+    MessageReaction(
+      emoji: json['emoji'] as String,
+      userId: json['user_id'] as String,
+    );
+
+Map<String, dynamic> _$MessageReactionToJson(MessageReaction instance) =>
+    <String, dynamic>{'emoji': instance.emoji, 'user_id': instance.userId};
 
 MessagesResponse _$MessagesResponseFromJson(Map<String, dynamic> json) =>
     MessagesResponse(
