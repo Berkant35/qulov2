@@ -13,6 +13,7 @@ import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/providers/quiz_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/features/quiz/widgets/answer_button.dart';
+import 'package:qulo_v2/features/quiz/widgets/answer_feedback_overlay.dart';
 import 'package:qulo_v2/features/quiz/widgets/power_bar.dart';
 import 'package:qulo_v2/features/quiz/widgets/quiz_timer.dart';
 import 'package:qulo_v2/features/quiz/widgets/quiz_result_dialog.dart';
@@ -34,6 +35,10 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
   int? _oracleSuggestedIndex;
   int? _selectedAnswerIndex;
   bool _isSubmitting = false;
+  bool _showFeedback = false;
+  bool _feedbackCorrect = false;
+  String? _correctAnswerText;
+  String? _pendingSessionStatus;
 
   @override
   void initState() {
@@ -104,27 +109,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
       success: (data) {
         if (data.isCorrect == true) _totalCorrect++;
 
-        if (data.sessionStatus == 'COMPLETED') {
-          _sessionStopwatch.stop();
-          AnalyticsManager.instance.logEvent(
-            AnalyticsEvents.quizComplete,
-            params: {
-              AnalyticsEvents.paramScore: _totalCorrect,
-              AnalyticsEvents.paramTotalDurationMs: _sessionStopwatch.elapsedMilliseconds,
-            },
-          );
-          _showGamifiedResult(matched: true);
-        } else if (data.sessionStatus == 'FAILED') {
-          _sessionStopwatch.stop();
-          AnalyticsManager.instance.logEvent(
-            AnalyticsEvents.quizComplete,
-            params: {
-              AnalyticsEvents.paramScore: _totalCorrect,
-              AnalyticsEvents.paramTotalDurationMs: _sessionStopwatch.elapsedMilliseconds,
-            },
-          );
-          _showGamifiedResult(matched: false);
-        } else if (data.awaitingAnswer == true) {
+        if (data.awaitingAnswer == true) {
           // ORACLE power: highlight the suggested answer
           final powerResult = data.powerResult;
           if (powerResult != null && powerResult.containsKey('suggested_answer_index')) {
@@ -132,17 +117,51 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
               _oracleSuggestedIndex = powerResult['suggested_answer_index'] as int?;
             });
           }
-        } else {
-          setState(() {
-            _oracleSuggestedIndex = null;
-            _selectedAnswerIndex = null;
-          });
-          ref.read(quizProvider.notifier).fetchCurrentQuestion();
-          _startQuestionTimer();
+          return;
         }
+
+        // Log completion analytics before feedback
+        if (data.sessionStatus == 'COMPLETED' || data.sessionStatus == 'FAILED') {
+          _sessionStopwatch.stop();
+          AnalyticsManager.instance.logEvent(
+            AnalyticsEvents.quizComplete,
+            params: {
+              AnalyticsEvents.paramScore: _totalCorrect,
+              AnalyticsEvents.paramTotalDurationMs: _sessionStopwatch.elapsedMilliseconds,
+            },
+          );
+        }
+
+        // Show feedback overlay
+        setState(() {
+          _feedbackCorrect = data.isCorrect == true;
+          _correctAnswerText = null; // Backend doesn't return correct answer text
+          _pendingSessionStatus = data.sessionStatus;
+          _showFeedback = true;
+        });
       },
       failure: (_) {},
     );
+  }
+
+  void _onFeedbackComplete() {
+    if (!mounted) return;
+    final status = _pendingSessionStatus;
+    setState(() {
+      _showFeedback = false;
+      _pendingSessionStatus = null;
+      _oracleSuggestedIndex = null;
+      _selectedAnswerIndex = null;
+    });
+
+    if (status == 'COMPLETED') {
+      _showGamifiedResult(matched: true);
+    } else if (status == 'FAILED') {
+      _showGamifiedResult(matched: false);
+    } else {
+      ref.read(quizProvider.notifier).fetchCurrentQuestion();
+      _startQuestionTimer();
+    }
   }
 
   String _determineBadge() {
@@ -241,93 +260,103 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
       isLoading: quiz.isLoading || question == null,
       body: quiz.isLoading || question == null
           ? const SizedBox.shrink()
-          : Padding(
-              padding: const EdgeInsets.all(AppSpacing.pagePadding),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  QuizTimer(
-                    seconds: question.timeLimitSeconds,
-                    onTimeout: () => _answer(0),
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
-                  Text(
-                    question.questionText,
-                    style: theme.textTheme.titleLarge,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: AppSpacing.xxl),
-                  if (_oracleSuggestedIndex != null)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.md,
-                          vertical: AppSpacing.sm,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primarySurface,
-                          borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-                          border: Border.all(
-                            color: AppColors.primary.withValues(alpha: 0.3),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.auto_awesome, size: 16, color: AppColors.primary),
-                            const SizedBox(width: AppSpacing.xs),
-                            Text(
-                              context.tr('power_oracle_desc'),
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: AppColors.primary,
-                                fontWeight: FontWeight.w500,
+          : Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(AppSpacing.pagePadding),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      QuizTimer(
+                        seconds: question.timeLimitSeconds,
+                        onTimeout: () => _answer(0),
+                      ),
+                      const SizedBox(height: AppSpacing.xl),
+                      Text(
+                        question.questionText,
+                        style: theme.textTheme.titleLarge,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: AppSpacing.xxl),
+                      if (_oracleSuggestedIndex != null)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.md,
+                              vertical: AppSpacing.sm,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.primarySurface,
+                              borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                              border: Border.all(
+                                color: AppColors.primary.withValues(alpha: 0.3),
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ...question.answers.map((a) => Padding(
-                        padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                        child: AnswerButton(
-                          text: a.text,
-                          onTap: () => _selectAnswer(a.index),
-                          isSelected: _selectedAnswerIndex == a.index,
-                          isOracleSuggested: _oracleSuggestedIndex == a.index,
-                        ),
-                      )),
-                  if (_selectedAnswerIndex != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: AppSpacing.sm),
-                      child: ElevatedButton(
-                        onPressed: _isSubmitting ? null : _submitAnswer,
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(double.infinity, 52),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                          ),
-                          backgroundColor: AppColors.primary,
-                        ),
-                        child: _isSubmitting
-                            ? AppLoadingWidget.small()
-                            : Text(
-                                context.tr('quiz_confirm_answer'),
-                                style: theme.textTheme.titleMedium?.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.auto_awesome, size: 16, color: AppColors.primary),
+                                const SizedBox(width: AppSpacing.xs),
+                                Text(
+                                  context.tr('power_oracle_desc'),
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: AppColors.primary,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ...question.answers.map((a) => Padding(
+                            padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                            child: AnswerButton(
+                              text: a.text,
+                              onTap: () => _selectAnswer(a.index),
+                              isSelected: _selectedAnswerIndex == a.index,
+                              isOracleSuggested: _oracleSuggestedIndex == a.index,
+                            ),
+                          )),
+                      if (_selectedAnswerIndex != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: AppSpacing.sm),
+                          child: ElevatedButton(
+                            onPressed: _isSubmitting ? null : _submitAnswer,
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size(double.infinity, 52),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                               ),
+                              backgroundColor: AppColors.primary,
+                            ),
+                            child: _isSubmitting
+                                ? AppLoadingWidget.small()
+                                : Text(
+                                    context.tr('quiz_confirm_answer'),
+                                    style: theme.textTheme.titleMedium?.copyWith(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                          ),
+                        ),
+                      const Spacer(),
+                      PowerBar(
+                        sessionId: quiz.sessionId!,
+                        hasHint: question.hasHint,
+                        onPowerUsed: (power) => _answer(0, powerUsed: power),
                       ),
-                    ),
-                  const Spacer(),
-                  PowerBar(
-                    sessionId: quiz.sessionId!,
-                    hasHint: question.hasHint,
-                    onPowerUsed: (power) => _answer(0, powerUsed: power),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                if (_showFeedback)
+                  AnswerFeedbackOverlay(
+                    isCorrect: _feedbackCorrect,
+                    correctAnswerText: _correctAnswerText,
+                    onComplete: _onFeedbackComplete,
+                  ),
+              ],
             ),
       ),
     );
