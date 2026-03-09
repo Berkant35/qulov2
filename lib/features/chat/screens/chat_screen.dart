@@ -15,6 +15,7 @@ import 'package:qulo_v2/providers/auth_provider.dart';
 import 'package:qulo_v2/providers/quiz_summary_provider.dart';
 import 'package:qulo_v2/features/chat/widgets/quiz_summary_card.dart';
 import 'package:qulo_v2/features/chat/widgets/typing_indicator.dart';
+import 'package:qulo_v2/features/chat/widgets/reaction_picker.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   final String matchId;
@@ -118,6 +119,55 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     super.dispose();
   }
 
+  void _showMessageMenu(MessageModel msg, bool isMe) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (_) => Container(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        decoration: BoxDecoration(
+          color: AppColors.surfaceElevated,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusLg)),
+        ),
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ReactionPicker(
+                onReactionSelected: (emoji) {
+                  Navigator.pop(context);
+                  ref.read(chatProvider(widget.matchId).notifier).addReaction(msg.id, emoji);
+                },
+              ),
+              if (isMe) ...[
+                const SizedBox(height: AppSpacing.lg),
+                ListTile(
+                  leading: const Icon(Icons.delete_outline, color: AppColors.error),
+                  title: Text(
+                    'Mesajı Sil',
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.error),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    ref.read(chatProvider(widget.matchId).notifier).deleteMessage(msg.id);
+                  },
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Map<String, int> _groupReactions(List<MessageReaction> reactions) {
+    final map = <String, int>{};
+    for (final r in reactions) {
+      map[r.emoji] = (map[r.emoji] ?? 0) + 1;
+    }
+    return map;
+  }
+
   Future<void> _send() async {
     final text = _msgCtrl.text.trim();
     if (text.isEmpty) return;
@@ -181,32 +231,72 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   itemBuilder: (_, i) {
                     final msg = state.messages[i];
                     final isMe = msg.senderId == myId;
+                    final hasReactions = msg.reactions != null && msg.reactions!.isNotEmpty;
                     return Align(
                       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-                      child: Container(
-                        margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 10,
-                        ),
-                        constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width * 0.75,
-                        ),
-                        decoration: BoxDecoration(
-                          gradient: isMe ? AppColors.primaryButtonGradient : null,
-                          color: isMe ? null : theme.colorScheme.surfaceContainerHighest,
-                          borderRadius: BorderRadius.only(
-                            topLeft: const Radius.circular(16),
-                            topRight: const Radius.circular(16),
-                            bottomLeft: Radius.circular(isMe ? 16 : 4),
-                            bottomRight: Radius.circular(isMe ? 4 : 16),
-                          ),
-                        ),
-                        child: Text(
-                          msg.content,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: isMe ? theme.colorScheme.onPrimary : theme.colorScheme.onSurface,
-                          ),
+                      child: GestureDetector(
+                        onLongPress: msg.isDeleted ? null : () => _showMessageMenu(msg, isMe),
+                        child: Column(
+                          crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(bottom: hasReactions ? 2 : AppSpacing.sm),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 10,
+                              ),
+                              constraints: BoxConstraints(
+                                maxWidth: MediaQuery.of(context).size.width * 0.75,
+                              ),
+                              decoration: BoxDecoration(
+                                gradient: msg.isDeleted ? null : (isMe ? AppColors.primaryButtonGradient : null),
+                                color: msg.isDeleted
+                                    ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5)
+                                    : (isMe ? null : theme.colorScheme.surfaceContainerHighest),
+                                borderRadius: BorderRadius.only(
+                                  topLeft: const Radius.circular(16),
+                                  topRight: const Radius.circular(16),
+                                  bottomLeft: Radius.circular(isMe ? 16 : 4),
+                                  bottomRight: Radius.circular(isMe ? 4 : 16),
+                                ),
+                              ),
+                              child: msg.isDeleted
+                                  ? Text(
+                                      'Bu mesaj silindi',
+                                      style: theme.textTheme.bodyMedium?.copyWith(
+                                        color: theme.colorScheme.onSurfaceVariant,
+                                        fontStyle: FontStyle.italic,
+                                      ),
+                                    )
+                                  : Text(
+                                      msg.content,
+                                      style: theme.textTheme.bodyMedium?.copyWith(
+                                        color: isMe ? theme.colorScheme.onPrimary : theme.colorScheme.onSurface,
+                                      ),
+                                    ),
+                            ),
+                            if (hasReactions)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                                child: Wrap(
+                                  spacing: 4,
+                                  runSpacing: 4,
+                                  children: _groupReactions(msg.reactions!).entries.map((entry) {
+                                    return Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.surfaceInput,
+                                        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                                      ),
+                                      child: Text(
+                                        entry.value > 1 ? '${entry.key} ${entry.value}' : entry.key,
+                                        style: const TextStyle(fontSize: 12),
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                          ],
                         ),
                       ),
                     );
