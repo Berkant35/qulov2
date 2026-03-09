@@ -330,18 +330,12 @@ export class QuizService {
     await this.updateQuestionStats(currentQuestion.id, isCorrect, powerUsed ?? null, timeSpent ?? null, selectedAnswer);
 
     if (!isCorrect) {
-      // FAILED
-      await supabase
-        .from("quiz_sessions")
-        .update({ status: "FAILED", completed_at: new Date().toISOString() })
-        .eq("id", sessionId);
-
-      await this.saveSessionSummary(sessionId);
-
-      // Apply any pending question changes for the target user
-      await pendingChangeService.applyPendingChanges(session.target_id);
-
-      return { is_correct: false, session_status: "FAILED" };
+      // Session'ı hemen FAILED yapma — client'a SKIP kurtulma şansı ver
+      return {
+        is_correct: false,
+        session_status: "IN_PROGRESS",
+        can_rescue: true,
+      };
     }
 
     // Correct AND last question
