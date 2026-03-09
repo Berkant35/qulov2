@@ -14,6 +14,7 @@ import 'package:qulo_v2/providers/chat_provider.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
 import 'package:qulo_v2/providers/quiz_summary_provider.dart';
 import 'package:qulo_v2/features/chat/widgets/quiz_summary_card.dart';
+import 'package:qulo_v2/features/chat/widgets/typing_indicator.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   final String matchId;
@@ -26,8 +27,11 @@ class ChatScreen extends ConsumerStatefulWidget {
 class _ChatScreenState extends ConsumerState<ChatScreen> {
   final _msgCtrl = TextEditingController();
   RealtimeChannel? _channel;
+  RealtimeChannel? _typingChannel;
   final Stopwatch _chatStopwatch = Stopwatch()..start();
   int _messagesSentCount = 0;
+  bool _isOtherTyping = false;
+  Timer? _typingDebounce;
 
   @override
   void initState() {
@@ -40,6 +44,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       ref.read(chatProvider(widget.matchId).notifier).loadMessages();
       ref.read(chatProvider(widget.matchId).notifier).markAsRead();
       _subscribeRealtime();
+      _subscribeTyping();
     });
   }
 
@@ -67,6 +72,34 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         .subscribe();
   }
 
+  void _subscribeTyping() {
+    final myId = ref.read(authProvider).userId;
+    _typingChannel = Supabase.instance.client.channel('typing:${widget.matchId}');
+    _typingChannel!
+        .onBroadcast(
+          event: 'typing',
+          callback: (payload) {
+            final senderId = payload['user_id'] as String?;
+            if (senderId != null && senderId != myId) {
+              setState(() => _isOtherTyping = true);
+              _typingDebounce?.cancel();
+              _typingDebounce = Timer(const Duration(seconds: 3), () {
+                if (mounted) setState(() => _isOtherTyping = false);
+              });
+            }
+          },
+        )
+        .subscribe();
+  }
+
+  void _sendTypingEvent() {
+    final myId = ref.read(authProvider).userId;
+    _typingChannel?.sendBroadcastMessage(
+      event: 'typing',
+      payload: {'user_id': myId},
+    );
+  }
+
   @override
   void dispose() {
     _chatStopwatch.stop();
@@ -79,6 +112,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       },
     );
     _channel?.unsubscribe();
+    _typingChannel?.unsubscribe();
+    _typingDebounce?.cancel();
     _msgCtrl.dispose();
     super.dispose();
   }
@@ -180,6 +215,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               },
             ),
           ),
+          if (_isOtherTyping)
+            Padding(
+              padding: const EdgeInsets.only(
+                left: AppSpacing.pagePadding,
+                bottom: AppSpacing.xs,
+              ),
+              child: const TypingIndicator(),
+            ),
           Container(
             padding: const EdgeInsets.all(AppSpacing.sm),
             decoration: BoxDecoration(
@@ -196,6 +239,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       controller: _msgCtrl,
                       textInputAction: TextInputAction.send,
                       onSubmitted: (_) => _send(),
+                      onChanged: (_) => _sendTypingEvent(),
                       style: TextStyle(color: theme.colorScheme.onSurface),
                       decoration: InputDecoration(
                         hintText: context.tr('message_hint'),
