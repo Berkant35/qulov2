@@ -21,6 +21,9 @@ import 'package:qulo_v2/features/diamonds/widgets/subscription_banner.dart';
 import 'package:qulo_v2/features/diamonds/widgets/purchase_grid.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/widgets/referral_invite_card.dart';
+import 'package:qulo_v2/providers/referral_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 class DiamondsScreen extends ConsumerStatefulWidget {
   const DiamondsScreen({super.key});
@@ -40,6 +43,7 @@ class _DiamondsScreenState extends ConsumerState<DiamondsScreen> {
     Future.microtask(() {
       ref.read(diamondProvider.notifier).fetchBalance();
       ref.read(dailyStatsProvider.notifier).fetchStats();
+      ref.read(referralProvider.notifier).fetchAll();
       _loadHistory();
 
       final balance = ref.read(diamondProvider).valueOrNull;
@@ -136,6 +140,25 @@ class _DiamondsScreenState extends ConsumerState<DiamondsScreen> {
               ),
             ),
 
+            const SizedBox(height: AppSpacing.md),
+
+            // Exchange Center Button
+            OutlinedButton.icon(
+              onPressed: () {
+                ref.read(navigationServiceProvider).goNamed(RouteNames.exchange);
+              },
+              icon: QIcon(QIcons.icGem, size: 18, color: AppColors.primary),
+              label: Text(context.tr('exchange_title')),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.primary,
+                side: const BorderSide(color: AppColors.primary),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.sm,
+                ),
+              ),
+            ),
+
             const SizedBox(height: AppSpacing.sectionGap),
 
             // 2. Subscription Banner
@@ -171,6 +194,29 @@ class _DiamondsScreenState extends ConsumerState<DiamondsScreen> {
                     ),
                   );
                 },
+              );
+            }),
+
+            const SizedBox(height: AppSpacing.sectionGap),
+
+            // Referral Invite Card
+            Builder(builder: (context) {
+              final referralAsync = ref.watch(referralProvider);
+              return referralAsync.when(
+                loading: () => const Center(child: AppLoadingWidget.small()),
+                error: (_, __) => const SizedBox.shrink(),
+                data: (referralState) => ReferralInviteCard(
+                  code: referralState.code,
+                  stats: referralState.stats,
+                  onShare: () {
+                    if (referralState.code != null) {
+                      final code = referralState.code!;
+                      final message =
+                          "Qulo'ya katıl! Davet kodumu kullan, ikimize de 25 mor elmas hediye: $code\nhttps://qulo.app/invite/$code";
+                      Share.share(message);
+                    }
+                  },
+                ),
               );
             }),
 

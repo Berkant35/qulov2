@@ -25,6 +25,16 @@ final _routes = <RouteBase>[
     builder: (context, state) => const MaintenanceScreen(),
   ),
 
+  // Invite deep link
+  GoRoute(
+    path: '/invite/:code',
+    name: RouteNames.invite,
+    redirect: (context, state) {
+      final code = state.pathParameters['code'] ?? '';
+      return '/auth/login/register?referralCode=$code';
+    },
+  ),
+
   // Auth
   GoRoute(
     path: '/auth/login',
@@ -41,7 +51,10 @@ final _routes = <RouteBase>[
       GoRoute(
         path: 'register',
         name: RouteNames.register,
-        builder: (context, state) => const RegisterScreen(),
+        builder: (context, state) {
+          final referralCode = state.uri.queryParameters['referralCode'];
+          return RegisterScreen(referralCode: referralCode);
+        },
       ),
       GoRoute(
         path: 'forgot-password',
@@ -167,6 +180,18 @@ final _routes = <RouteBase>[
               path: 'passport',
               name: RouteNames.passport,
               builder: (context, state) => const PassportScreen(),
+            ),
+            GoRoute(
+              path: 'exchange',
+              name: RouteNames.exchange,
+              pageBuilder: (context, state) => CustomTransitionPage(
+                key: state.pageKey,
+                child: const ExchangeScreen(),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(opacity: animation, child: child);
+                },
+                transitionDuration: const Duration(milliseconds: 500),
+              ),
             ),
             GoRoute(
               path: 'subscription',
