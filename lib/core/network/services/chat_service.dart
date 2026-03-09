@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:qulo_v2/data/models/media_request_model.dart';
 import 'package:qulo_v2/data/models/message_model.dart';
 
 part 'chat_service.g.dart';
@@ -36,4 +37,20 @@ abstract class ChatService {
     @Path('messageId') String messageId,
     @Body() Map<String, dynamic> data,
   );
+
+  @POST('/chat/{matchId}/media-request')
+  Future<MediaRequestModel> requestMedia(@Path('matchId') String matchId);
+
+  @POST('/chat/{matchId}/media-request/{requestId}/respond')
+  Future<Map<String, dynamic>> respondToMediaRequest(
+    @Path('matchId') String matchId,
+    @Path('requestId') String requestId,
+    @Body() Map<String, dynamic> data,
+  );
+
+  @POST('/chat/{matchId}/media-disable')
+  Future<void> disableMedia(@Path('matchId') String matchId);
+
+  @GET('/chat/{matchId}/media-status')
+  Future<MediaStatusResponse> getMediaStatus(@Path('matchId') String matchId);
 }

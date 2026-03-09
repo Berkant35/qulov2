@@ -6,6 +6,7 @@ import 'package:qulo_v2/data/models/diamond_model.dart';
 import 'package:qulo_v2/data/models/discover_model.dart';
 import 'package:qulo_v2/data/models/exchange_model.dart';
 import 'package:qulo_v2/data/models/match_model.dart';
+import 'package:qulo_v2/data/models/media_request_model.dart';
 import 'package:qulo_v2/data/models/message_model.dart';
 import 'package:qulo_v2/data/models/power_model.dart';
 import 'package:qulo_v2/data/models/question_model.dart';
@@ -60,6 +61,14 @@ abstract class IChatRepository {
   Future<Result<void>> deleteMessage(String matchId, String messageId);
 
   Future<Result<Map<String, dynamic>>> addReaction(String matchId, String messageId, String emoji);
+
+  Future<Result<MediaRequestModel>> requestMedia(String matchId);
+
+  Future<Result<Map<String, dynamic>>> respondToMediaRequest(String matchId, String requestId, String action);
+
+  Future<Result<void>> disableMedia(String matchId);
+
+  Future<Result<MediaStatusResponse>> getMediaStatus(String matchId);
 }
 
 // ─── Exchange ───

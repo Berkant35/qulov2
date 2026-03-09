@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/network/services/chat_service.dart';
+import 'package:qulo_v2/data/models/media_request_model.dart';
 import 'package:qulo_v2/data/models/message_model.dart';
 import 'package:qulo_v2/data/repositories/interfaces.dart';
 
@@ -56,6 +57,46 @@ class ChatRepository implements IChatRepository {
   Future<Result<Map<String, dynamic>>> addReaction(String matchId, String messageId, String emoji) async {
     try {
       final response = await _service.addReaction(matchId, messageId, {'emoji': emoji});
+      return Success(response);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
+
+  @override
+  Future<Result<MediaRequestModel>> requestMedia(String matchId) async {
+    try {
+      final response = await _service.requestMedia(matchId);
+      return Success(response);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
+
+  @override
+  Future<Result<Map<String, dynamic>>> respondToMediaRequest(String matchId, String requestId, String action) async {
+    try {
+      final response = await _service.respondToMediaRequest(matchId, requestId, {'action': action});
+      return Success(response);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
+
+  @override
+  Future<Result<void>> disableMedia(String matchId) async {
+    try {
+      await _service.disableMedia(matchId);
+      return const Success(null);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
+
+  @override
+  Future<Result<MediaStatusResponse>> getMediaStatus(String matchId) async {
+    try {
+      final response = await _service.getMediaStatus(matchId);
       return Success(response);
     } on DioException catch (e) {
       return Failure(e.toAppFailure());
