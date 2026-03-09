@@ -31,7 +31,7 @@ class _PassportScreenState extends ConsumerState<PassportScreen> with LoadingMix
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final passport = ref.read(passportProvider);
       _analytics.logEvent(AnalyticsEvents.passportScreenView, params: {
-        AnalyticsEvents.paramIsActive: passport.isActive,
+        AnalyticsEvents.paramIsActive: passport.isActive ? 1 : 0,
       });
     });
   }
