@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
@@ -21,6 +23,7 @@ class _MatchesScreenState extends ConsumerState<MatchesScreen> {
   @override
   void initState() {
     super.initState();
+    AnalyticsManager.instance.logEvent(AnalyticsEvents.matchScreenView);
     Future.microtask(() => ref.read(matchListProvider.notifier).fetchMatches());
   }
 
@@ -82,10 +85,20 @@ class _MatchesScreenState extends ConsumerState<MatchesScreen> {
                           final photo = u?.photos?.isNotEmpty == true ? u!.photos!.first : null;
 
                           return GestureDetector(
-                            onTap: () => ref.read(navigationServiceProvider).go(
-                              RouteNames.chat,
-                              params: {'matchId': m.matchId},
-                            ),
+                            onTap: () {
+                              AnalyticsManager.instance.logEvent(
+                                AnalyticsEvents.matchTapProfile,
+                                params: {AnalyticsEvents.paramMatchUserId: u?.userId ?? ''},
+                              );
+                              AnalyticsManager.instance.logEvent(
+                                AnalyticsEvents.matchOpenChat,
+                                params: {AnalyticsEvents.paramMatchUserId: u?.userId ?? ''},
+                              );
+                              ref.read(navigationServiceProvider).go(
+                                RouteNames.chat,
+                                params: {'matchId': m.matchId},
+                              );
+                            },
                             child: Column(
                               children: [
                                 Container(
@@ -134,10 +147,16 @@ class _MatchesScreenState extends ConsumerState<MatchesScreen> {
                     final m = matches[index];
                     return _MatchCard(
                       match: m,
-                      onTap: () => ref.read(navigationServiceProvider).go(
-                        RouteNames.chat,
-                        params: {'matchId': m.matchId},
-                      ),
+                      onTap: () {
+                        AnalyticsManager.instance.logEvent(
+                          AnalyticsEvents.matchOpenChat,
+                          params: {AnalyticsEvents.paramMatchUserId: m.user?.userId ?? ''},
+                        );
+                        ref.read(navigationServiceProvider).go(
+                          RouteNames.chat,
+                          params: {'matchId': m.matchId},
+                        );
+                      },
                     );
                   },
                   childCount: matches.length,

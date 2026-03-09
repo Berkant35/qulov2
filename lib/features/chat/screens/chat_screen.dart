@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
@@ -24,10 +26,16 @@ class ChatScreen extends ConsumerStatefulWidget {
 class _ChatScreenState extends ConsumerState<ChatScreen> {
   final _msgCtrl = TextEditingController();
   RealtimeChannel? _channel;
+  final Stopwatch _chatStopwatch = Stopwatch()..start();
+  int _messagesSentCount = 0;
 
   @override
   void initState() {
     super.initState();
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.chatOpen,
+      params: {AnalyticsEvents.paramChatId: widget.matchId},
+    );
     Future.microtask(() {
       ref.read(chatProvider(widget.matchId).notifier).loadMessages();
       ref.read(chatProvider(widget.matchId).notifier).markAsRead();
@@ -61,6 +69,15 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
   @override
   void dispose() {
+    _chatStopwatch.stop();
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.chatClose,
+      params: {
+        AnalyticsEvents.paramChatId: widget.matchId,
+        AnalyticsEvents.paramDurationMs: _chatStopwatch.elapsedMilliseconds,
+        AnalyticsEvents.paramMessagesSent: _messagesSentCount,
+      },
+    );
     _channel?.unsubscribe();
     _msgCtrl.dispose();
     super.dispose();
@@ -71,6 +88,15 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     if (text.isEmpty) return;
     _msgCtrl.clear();
     await ref.read(chatProvider(widget.matchId).notifier).sendMessage(text);
+    _messagesSentCount++;
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.chatMessageSend,
+      params: {
+        AnalyticsEvents.paramChatId: widget.matchId,
+        AnalyticsEvents.paramType: 'text',
+        AnalyticsEvents.paramCharCount: text.length,
+      },
+    );
   }
 
   @override
