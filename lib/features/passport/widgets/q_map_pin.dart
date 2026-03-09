@@ -80,20 +80,31 @@ class _QMapPinPainter extends CustomPainter {
     final path = Path();
     final tipY = totalHeight * 0.95;
 
-    // Arc for the circle (top portion)
-    final startAngle = math.pi * 0.15;
-    final sweepAngle = math.pi * (2 - 0.3);
+    // Start from the bottom tip
+    path.moveTo(cx, tipY);
 
-    path.addArc(
-      Rect.fromCircle(center: Offset(cx, cy), radius: r),
-      startAngle,
-      sweepAngle,
+    // Left curve from tip to top-left of circle
+    path.cubicTo(
+      cx - r * 0.4, cy + r * 1.2, // control point 1
+      cx - r, cy + r * 0.5,       // control point 2
+      cx - r, cy,                  // end: left of circle
     );
 
-    // Lines to the tip (bottom point)
-    path.lineTo(cx, tipY);
-    path.close();
+    // Top arc (full semicircle over the top)
+    path.addArc(
+      Rect.fromCircle(center: Offset(cx, cy), radius: r),
+      math.pi,    // start at left (180°)
+      math.pi,    // sweep to right (180°)
+    );
 
+    // Right curve from top-right of circle back to tip
+    path.cubicTo(
+      cx + r, cy + r * 0.5,       // control point 1
+      cx + r * 0.4, cy + r * 1.2, // control point 2
+      cx, tipY,                    // end: back at tip
+    );
+
+    path.close();
     return path;
   }
 
