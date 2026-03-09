@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
@@ -20,9 +22,16 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(
-      () => ref.read(notificationProvider.notifier).fetchNotifications(),
-    );
+    Future.microtask(() async {
+      await ref.read(notificationProvider.notifier).fetchNotifications();
+      final unreadCount = ref.read(notificationProvider).unreadCount;
+      AnalyticsManager.instance.logEvent(
+        AnalyticsEvents.notificationInboxView,
+        params: {
+          AnalyticsEvents.paramUnreadCount: unreadCount,
+        },
+      );
+    });
   }
 
   void _onTap(String id, String? actionUrl) {
