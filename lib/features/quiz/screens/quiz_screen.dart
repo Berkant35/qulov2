@@ -69,13 +69,32 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
   }
 
   void _selectAnswer(int index) {
+    final wasSelected = _selectedAnswerIndex == index;
     setState(() {
-      _selectedAnswerIndex = _selectedAnswerIndex == index ? null : index;
+      _selectedAnswerIndex = wasSelected ? null : index;
     });
+    if (!wasSelected) {
+      AnalyticsManager.instance.logEvent(
+        AnalyticsEvents.quizAnswerSelect,
+        params: {
+          AnalyticsEvents.paramAnswerIndex: index,
+          AnalyticsEvents.paramQuestionIndex:
+              ref.read(quizProvider).currentQuestion?.questionNumber ?? 0,
+        },
+      );
+    }
   }
 
   Future<void> _submitAnswer() async {
     if (_selectedAnswerIndex == null || _isSubmitting) return;
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.quizAnswerConfirm,
+      params: {
+        AnalyticsEvents.paramAnswerIndex: _selectedAnswerIndex!,
+        AnalyticsEvents.paramQuestionIndex:
+            ref.read(quizProvider).currentQuestion?.questionNumber ?? 0,
+      },
+    );
     setState(() => _isSubmitting = true);
     await _answer(_selectedAnswerIndex!);
     if (mounted) setState(() => _isSubmitting = false);
@@ -208,6 +227,13 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
 
   Future<void> _confirmExit() async {
     final nav = ref.read(navigationServiceProvider);
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.quizExitAttempt,
+      params: {
+        AnalyticsEvents.paramQuestionIndex:
+            ref.read(quizProvider).currentQuestion?.questionNumber ?? 0,
+      },
+    );
     final confirm = await nav.showAppDialog<bool>(
       ConfirmDialog(
         name: 'quiz_exit',
@@ -220,6 +246,9 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
     );
     if (confirm == true && mounted) {
       final quiz = ref.read(quizProvider);
+      AnalyticsManager.instance.logEvent(
+        AnalyticsEvents.quizExitConfirm,
+      );
       AnalyticsManager.instance.logEvent(
         AnalyticsEvents.quizAbandon,
         params: {
@@ -265,6 +294,26 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                       QuizTimer(
                         seconds: question.timeLimitSeconds,
                         onTimeout: () => _answer(0),
+                        onWarning: () {
+                          AnalyticsManager.instance.logEvent(
+                            AnalyticsEvents.quizTimerWarning,
+                            params: {
+                              AnalyticsEvents.paramQuestionIndex:
+                                  question.questionNumber,
+                              AnalyticsEvents.paramSecondsRemaining: 10,
+                            },
+                          );
+                        },
+                        onCritical: () {
+                          AnalyticsManager.instance.logEvent(
+                            AnalyticsEvents.quizTimerCritical,
+                            params: {
+                              AnalyticsEvents.paramQuestionIndex:
+                                  question.questionNumber,
+                              AnalyticsEvents.paramSecondsRemaining: 5,
+                            },
+                          );
+                        },
                       ),
                       const SizedBox(height: AppSpacing.xl),
                       Text(

@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
@@ -84,6 +86,14 @@ class _MatchCelebrationScreenState extends State<MatchCelebrationScreen>
     );
 
     _startAnimations();
+
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.matchCelebrationShown,
+      params: {
+        AnalyticsEvents.paramMatched: widget.matched,
+        AnalyticsEvents.paramBadge: widget.performanceBadge,
+      },
+    );
   }
 
   Future<void> _startAnimations() async {
@@ -331,7 +341,12 @@ class _MatchCelebrationScreenState extends State<MatchCelebrationScreen>
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: widget.onStartChat,
+              onPressed: () {
+                AnalyticsManager.instance.logEvent(
+                  AnalyticsEvents.matchCelebrationStartChat,
+                );
+                widget.onStartChat?.call();
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,
@@ -356,7 +371,12 @@ class _MatchCelebrationScreenState extends State<MatchCelebrationScreen>
         SizedBox(
           width: double.infinity,
           child: OutlinedButton(
-            onPressed: widget.onGoBack,
+            onPressed: () {
+              AnalyticsManager.instance.logEvent(
+                AnalyticsEvents.matchCelebrationGoBack,
+              );
+              widget.onGoBack();
+            },
             style: OutlinedButton.styleFrom(
               foregroundColor: AppColors.textPrimary,
               padding:

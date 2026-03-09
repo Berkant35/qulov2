@@ -45,15 +45,18 @@ abstract class AnalyticsEvents {
   static const String discoverSessionStart = 'discover_session_start';
   static const String discoverSessionEnd = 'discover_session_end';
 
-  // ─── Match (6) ─────────────────────────────────────────────────────
+  // ─── Match (9) ─────────────────────────────────────────────────────
   static const String matchNew = 'match_new';
   static const String matchScreenView = 'match_screen_view';
   static const String matchOpenChat = 'match_open_chat';
   static const String matchUnmatch = 'match_unmatch';
   static const String matchListScroll = 'match_list_scroll';
   static const String matchTapProfile = 'match_tap_profile';
+  static const String matchCelebrationShown = 'match_celebration_shown';
+  static const String matchCelebrationStartChat = 'match_celebration_start_chat';
+  static const String matchCelebrationGoBack = 'match_celebration_go_back';
 
-  // ─── Chat (14) ─────────────────────────────────────────────────────
+  // ─── Chat (19) ─────────────────────────────────────────────────────
   static const String chatOpen = 'chat_open';
   static const String chatClose = 'chat_close';
   static const String chatMessageSend = 'chat_message_send';
@@ -68,12 +71,23 @@ abstract class AnalyticsEvents {
   static const String chatRetrySend = 'chat_retry_send';
   static const String chatLinkTap = 'chat_link_tap';
   static const String chatFirstMessage = 'chat_first_message';
+  static const String chatReactionAdd = 'chat_reaction_add';
+  static const String chatMessageDelete = 'chat_message_delete';
+  static const String chatQuestionCreate = 'chat_question_create';
+  static const String chatQuestionAnswer = 'chat_question_answer';
+  static const String chatUnmatch = 'chat_unmatch';
 
-  // ─── Quiz (4) ──────────────────────────────────────────────────────
+  // ─── Quiz (10) ─────────────────────────────────────────────────────
   static const String quizStart = 'quiz_start';
   static const String quizAnswer = 'quiz_answer';
+  static const String quizAnswerSelect = 'quiz_answer_select';
+  static const String quizAnswerConfirm = 'quiz_answer_confirm';
   static const String quizComplete = 'quiz_complete';
   static const String quizAbandon = 'quiz_abandon';
+  static const String quizExitAttempt = 'quiz_exit_attempt';
+  static const String quizExitConfirm = 'quiz_exit_confirm';
+  static const String quizTimerWarning = 'quiz_timer_warning';
+  static const String quizTimerCritical = 'quiz_timer_critical';
 
   // ─── Questions (8) ─────────────────────────────────────────────────
   static const String questionCreateStart = 'question_create_start';
@@ -291,4 +305,12 @@ abstract class AnalyticsEvents {
   static const String paramLanguage = 'language';
   static const String paramDaysSinceRegister = 'days_since_register';
   static const String paramCurrentBalance = 'current_balance';
+  static const String paramEmoji = 'emoji';
+  static const String paramHasUnmatchRisk = 'has_unmatch_risk';
+  static const String paramDiamondCost = 'diamond_cost';
+  static const String paramIsCorrect = 'is_correct';
+  static const String paramBadge = 'badge';
+  static const String paramMatched = 'matched';
+  static const String paramAnswerIndex = 'answer_index';
+  static const String paramSecondsRemaining = 'seconds_remaining';
 }

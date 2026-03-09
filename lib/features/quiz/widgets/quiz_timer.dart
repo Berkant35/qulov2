@@ -6,8 +6,16 @@ import 'package:qulo_v2/core/theme/app_spacing.dart';
 class QuizTimer extends StatefulWidget {
   final int seconds;
   final VoidCallback onTimeout;
+  final VoidCallback? onWarning;
+  final VoidCallback? onCritical;
 
-  const QuizTimer({super.key, required this.seconds, required this.onTimeout});
+  const QuizTimer({
+    super.key,
+    required this.seconds,
+    required this.onTimeout,
+    this.onWarning,
+    this.onCritical,
+  });
 
   @override
   State<QuizTimer> createState() => _QuizTimerState();
@@ -79,9 +87,13 @@ class _QuizTimerState extends State<QuizTimer> with TickerProviderStateMixin {
     // Start pulse when entering last 10 seconds
     if (_remaining == 10 && !_pulseController.isAnimating) {
       _pulseController.repeat(reverse: true);
+      widget.onWarning?.call();
     }
 
     // Trigger shake on each tick in last 5 seconds
+    if (_remaining == 5) {
+      widget.onCritical?.call();
+    }
     if (_remaining <= 5) {
       _shakeController.forward().then((_) => _shakeController.reverse());
     }
