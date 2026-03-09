@@ -94,6 +94,17 @@ class AuthNotifier extends Notifier<AuthState> {
           status: AuthStatus.authenticated,
           userId: userId,
         );
+        // Update user properties for analytics
+        final user = ref.read(userProvider).value;
+        if (user != null) {
+          final analytics = AnalyticsManager.instance;
+          analytics.updateUserProperties(
+            gender: user.gender ?? '',
+            ageRange: AnalyticsManager.ageRange(user.age ?? 0),
+            city: user.city ?? '',
+            photoCount: (user.photos?.length ?? 0).toString(),
+          );
+        }
         // Initialize push notifications on auto-login
         ref.read(notificationProvider.notifier).init();
       } catch (_) {
@@ -179,6 +190,17 @@ class AuthNotifier extends Notifier<AuthState> {
           userId: data.userId,
           isLoading: false,
         );
+        // Update user properties for analytics
+        final user = ref.read(userProvider).value;
+        if (user != null) {
+          final analytics = AnalyticsManager.instance;
+          analytics.updateUserProperties(
+            gender: user.gender ?? '',
+            ageRange: AnalyticsManager.ageRange(user.age ?? 0),
+            city: user.city ?? '',
+            photoCount: (user.photos?.length ?? 0).toString(),
+          );
+        }
         // Initialize push notifications after successful login
         ref.read(notificationProvider.notifier).init();
       case Failure(:final failure):

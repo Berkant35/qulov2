@@ -5,6 +5,7 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/services/revenuecat_service.dart';
 import 'package:qulo_v2/data/models/diamond_model.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 
 class DiamondNotifier extends AsyncNotifier<DiamondBalance> {
@@ -17,7 +18,13 @@ class DiamondNotifier extends AsyncNotifier<DiamondBalance> {
     state = const AsyncLoading();
     final result = await ref.read(diamondRepositoryProvider).getBalance();
     state = result.when(
-      success: (data) => AsyncData(data),
+      success: (data) {
+        AnalyticsManager.instance.setUserProperty(
+          'diamond_balance',
+          AnalyticsManager.diamondRange(data.purple + data.green),
+        );
+        return AsyncData(data);
+      },
       failure: (f) => AsyncError(f, StackTrace.current),
     );
   }
