@@ -9,7 +9,7 @@ abstract class ReferralService {
   factory ReferralService(Dio dio) = _ReferralService;
 
   @GET('/referrals/my-code')
-  Future<Map<String, dynamic>> getMyCode();
+  Future<dynamic> getMyCode();
 
   @GET('/referrals/stats')
   Future<ReferralStats> getStats();

@@ -8,13 +8,13 @@ abstract class NotificationRetrofitService {
   factory NotificationRetrofitService(Dio dio) = _NotificationRetrofitService;
 
   @GET('/notifications')
-  Future<Map<String, dynamic>> getNotifications(
+  Future<dynamic> getNotifications(
     @Query('page') int page,
     @Query('limit') int limit,
   );
 
   @GET('/notifications/unread-count')
-  Future<Map<String, dynamic>> getUnreadCount();
+  Future<dynamic> getUnreadCount();
 
   @PATCH('/notifications/{id}/read')
   Future<void> markAsRead(@Path('id') String id);

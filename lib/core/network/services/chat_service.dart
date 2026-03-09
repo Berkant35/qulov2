@@ -32,7 +32,7 @@ abstract class ChatService {
   );
 
   @POST('/chat/{matchId}/messages/{messageId}/reactions')
-  Future<Map<String, dynamic>> addReaction(
+  Future<dynamic> addReaction(
     @Path('matchId') String matchId,
     @Path('messageId') String messageId,
     @Body() Map<String, dynamic> data,
@@ -42,7 +42,7 @@ abstract class ChatService {
   Future<MediaRequestModel> requestMedia(@Path('matchId') String matchId);
 
   @POST('/chat/{matchId}/media-request/{requestId}/respond')
-  Future<Map<String, dynamic>> respondToMediaRequest(
+  Future<dynamic> respondToMediaRequest(
     @Path('matchId') String matchId,
     @Path('requestId') String requestId,
     @Body() Map<String, dynamic> data,

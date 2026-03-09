@@ -29,10 +29,10 @@ abstract class QuestionService {
   Future<QuestionAnalyticsResponse> getAnalytics();
 
   @GET('/questions/me/weekly-report')
-  Future<Map<String, dynamic>> getWeeklyReport();
+  Future<dynamic> getWeeklyReport();
 
   @POST('/questions/ai-suggest')
-  Future<Map<String, dynamic>> getAiSuggestions(@Body() Map<String, dynamic> data);
+  Future<dynamic> getAiSuggestions(@Body() Map<String, dynamic> data);
 
   @GET('/questions/me/pending')
   Future<List<PendingChangeModel>> getPendingChanges();
