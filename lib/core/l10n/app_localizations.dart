@@ -571,6 +571,30 @@ class AppLocalizations {
     'locale_nl': 'Nederlands',
     'locale_pl': 'Polski',
     'locale_sv': 'Svenska',
+
+    // Profile sections
+    'first_photo_is_profile': 'İlk fotoğrafın profil fotoğrafın olur',
+    'introduce_yourself': 'Kendini kısaca tanıt',
+    'help_us_know_you': 'Seni tanımamıza yardımcı ol',
+    'enrich_profile_more_matches': 'Profilini zenginleştir, daha fazla eşleşme al',
+    'show_you_right_people': 'Sana uygun kişileri görelim',
+    'let_others_know_what_you_seek': 'Ne aradığını karşı taraf görsün',
+    'profile_completion': 'Profil Tamamlama',
+
+    // Relationship goal
+    'relationship_goal': 'İlişki Amacı',
+    'serious_relationship': 'Ciddi İlişki',
+    'friendship': 'Arkadaşlık',
+    'not_sure': 'Henüz Bilmiyorum',
+
+    // Language preference
+    'language_preference': 'Dil Tercihi',
+
+    // Milestone celebration
+    'congratulations': 'Tebrikler!',
+    'profile_completed_percent': 'Profilini %{milestone} tamamladın!',
+    'purple_diamonds_earned': 'Mor elmas kazandın!',
+    'free_boost_earned': '24 saatlik ücretsiz boost kazandın!',
   };
 
   static const _en = <String, String>{
@@ -1120,6 +1144,30 @@ class AppLocalizations {
     'locale_nl': 'Nederlands',
     'locale_pl': 'Polski',
     'locale_sv': 'Svenska',
+
+    // Profile sections
+    'first_photo_is_profile': 'Your first photo is your profile photo',
+    'introduce_yourself': 'Briefly introduce yourself',
+    'help_us_know_you': 'Help us get to know you',
+    'enrich_profile_more_matches': 'Enrich your profile, get more matches',
+    'show_you_right_people': 'Let us show you the right people',
+    'let_others_know_what_you_seek': 'Let others know what you\'re looking for',
+    'profile_completion': 'Profile Completion',
+
+    // Relationship goal
+    'relationship_goal': 'Relationship Goal',
+    'serious_relationship': 'Serious Relationship',
+    'friendship': 'Friendship',
+    'not_sure': 'Not Sure Yet',
+
+    // Language preference
+    'language_preference': 'Language Preference',
+
+    // Milestone celebration
+    'congratulations': 'Congratulations!',
+    'profile_completed_percent': 'You completed %{milestone} of your profile!',
+    'purple_diamonds_earned': 'You earned purple diamonds!',
+    'free_boost_earned': 'You earned a free 24-hour boost!',
   };
 }
 
