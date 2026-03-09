@@ -145,7 +145,7 @@ class _DiamondsScreenState extends ConsumerState<DiamondsScreen> {
             // Exchange Center Button
             OutlinedButton.icon(
               onPressed: () {
-                ref.read(navigationServiceProvider).goNamed(RouteNames.exchange);
+                ref.read(navigationServiceProvider).go(RouteNames.exchange);
               },
               icon: QIcon(QIcons.icGem, size: 18, color: AppColors.primary),
               label: Text(context.tr('exchange_title')),

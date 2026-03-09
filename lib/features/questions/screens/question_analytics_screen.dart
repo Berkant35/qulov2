@@ -378,7 +378,7 @@ class _QuestionCard extends StatelessWidget {
   ) {
     final theme = Theme.of(context);
     final powerIcons = {
-      'copy': QIcons.icCopy,
+      'oracle': QIcons.icOracle,
       'half': QIcons.icSplit,
       'hint': QIcons.icLightbulb,
       'time_extend': QIcons.icClock,

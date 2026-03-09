@@ -16,7 +16,7 @@ enum PowerType {
   const PowerType(this.iconPath, this.apiName);
 
   Color get color => switch (this) {
-    PowerType.oracle => AppColors.purple,
+    PowerType.oracle => AppColors.primaryDark,
     PowerType.half => AppColors.error,
     PowerType.skip => AppColors.info,
     PowerType.skipAll => AppColors.primary,
