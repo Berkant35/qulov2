@@ -5,6 +5,7 @@ import 'package:qulo_v2/core/services/location_manager.dart';
 import 'package:qulo_v2/core/services/notification_manager.dart';
 import 'package:qulo_v2/core/services/url_launcher_manager.dart';
 import 'package:qulo_v2/core/services/version_manager.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/network/services/auth_service.dart';
 import 'package:qulo_v2/core/network/services/user_service.dart';
 import 'package:qulo_v2/core/network/services/question_service.dart';
@@ -35,6 +36,9 @@ final notificationManagerProvider = Provider<NotificationManager>(
 );
 final versionManagerProvider = Provider<VersionManager>(
   (_) => VersionManager.instance,
+);
+final analyticsManagerProvider = Provider<AnalyticsManager>(
+  (_) => AnalyticsManager.instance,
 );
 
 // ─── NetworkManager ───
