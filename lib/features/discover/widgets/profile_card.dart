@@ -72,6 +72,19 @@ class ProfileCard extends StatelessWidget {
                       ),
                     ],
                   ),
+                if (card.relationshipGoal != null && card.relationshipGoal != 'NOT_SURE')
+                  Container(
+                    margin: const EdgeInsets.only(top: AppSpacing.xs),
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: AppColors.primarySurface,
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                    ),
+                    child: Text(
+                      _relationshipGoalLabel(context, card.relationshipGoal),
+                      style: theme.textTheme.labelSmall?.copyWith(color: AppColors.primary),
+                    ),
+                  ),
                 const SizedBox(height: AppSpacing.sm),
                 // ─── Question Info Section ───
                 _buildQuestionInfoSection(context, theme),
@@ -177,5 +190,13 @@ class ProfileCard extends StatelessWidget {
         ],
       ],
     );
+  }
+
+  String _relationshipGoalLabel(BuildContext context, String? goal) {
+    return switch (goal) {
+      'SERIOUS' => context.tr('serious_relationship'),
+      'FRIENDSHIP' => context.tr('friendship'),
+      _ => context.tr('not_sure'),
+    };
   }
 }
