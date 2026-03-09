@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:qulo_v2/core/error/error_manager.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/network/network_manager.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/services/revenuecat_service.dart';
@@ -78,6 +80,10 @@ class AuthNotifier extends Notifier<AuthState> {
       try {
         await ref.read(userProvider.notifier).fetchMe();
         ErrorManager.setUser(userId);
+        AnalyticsManager.instance.setUserId(userId);
+        AnalyticsManager.instance.logEvent(AnalyticsEvents.authLoginSuccess, params: {
+          AnalyticsEvents.paramMethod: 'auto',
+        });
         try {
           await RevenueCatService.init(userId);
           await RevenueCatService.logIn(userId);
@@ -112,6 +118,9 @@ class AuthNotifier extends Notifier<AuthState> {
     double? lng,
     String locale = 'tr',
   }) async {
+    AnalyticsManager.instance.logEvent(AnalyticsEvents.authRegisterStart, params: {
+      AnalyticsEvents.paramMethod: 'email',
+    });
     state = state.copyWith(isLoading: true, failure: null);
     final result = await ref.read(authRepositoryProvider).register(
       email: email,
@@ -125,8 +134,19 @@ class AuthNotifier extends Notifier<AuthState> {
       locale: locale,
     );
     result.when(
-      success: (_) => state = state.copyWith(isLoading: false),
-      failure: (f) => state = state.copyWith(isLoading: false, failure: f),
+      success: (_) {
+        AnalyticsManager.instance.logEvent(AnalyticsEvents.authRegisterSuccess, params: {
+          AnalyticsEvents.paramMethod: 'email',
+        });
+        state = state.copyWith(isLoading: false);
+      },
+      failure: (f) {
+        AnalyticsManager.instance.logEvent(AnalyticsEvents.authRegisterFail, params: {
+          AnalyticsEvents.paramMethod: 'email',
+          AnalyticsEvents.paramErrorCode: f.message ?? 'unknown',
+        });
+        state = state.copyWith(isLoading: false, failure: f);
+      },
     );
     return result;
   }
@@ -144,6 +164,10 @@ class AuthNotifier extends Notifier<AuthState> {
       case Success(:final data):
         await _saveTokens(data);
         ErrorManager.setUser(data.userId);
+        AnalyticsManager.instance.setUserId(data.userId);
+        AnalyticsManager.instance.logEvent(AnalyticsEvents.authLoginSuccess, params: {
+          AnalyticsEvents.paramMethod: 'email',
+        });
         try {
           await RevenueCatService.init(data.userId);
           await RevenueCatService.logIn(data.userId);
@@ -158,12 +182,18 @@ class AuthNotifier extends Notifier<AuthState> {
         // Initialize push notifications after successful login
         ref.read(notificationProvider.notifier).init();
       case Failure(:final failure):
+        AnalyticsManager.instance.logEvent(AnalyticsEvents.authLoginFail, params: {
+          AnalyticsEvents.paramMethod: 'email',
+          AnalyticsEvents.paramErrorCode: failure.message ?? 'unknown',
+        });
         state = state.copyWith(isLoading: false, failure: failure);
     }
     return result;
   }
 
   Future<void> logout() async {
+    AnalyticsManager.instance.logEvent(AnalyticsEvents.authLogout);
+    AnalyticsManager.instance.setUserId(null);
     try {
       final refreshToken = await _storage.read(key: 'refresh_token');
       await ref.read(authRepositoryProvider).logout(refreshToken: refreshToken);
@@ -194,6 +224,7 @@ class AuthNotifier extends Notifier<AuthState> {
   }
 
   Future<Result<void>> forgotPassword(String email) async {
+    AnalyticsManager.instance.logEvent(AnalyticsEvents.authForgotPassword);
     return ref.read(authRepositoryProvider).forgotPassword(email);
   }
 
