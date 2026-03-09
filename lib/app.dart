@@ -20,9 +20,35 @@ class QuloApp extends ConsumerStatefulWidget {
   ConsumerState<QuloApp> createState() => _QuloAppState();
 }
 
-class _QuloAppState extends ConsumerState<QuloApp> {
+class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
   bool _callbacksSet = false;
   bool _versionManagerSet = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    ref.read(analyticsManagerProvider).logAppOpen();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final analytics = ref.read(analyticsManagerProvider);
+    switch (state) {
+      case AppLifecycleState.resumed:
+        analytics.logAppForeground();
+      case AppLifecycleState.paused:
+        analytics.logAppBackground();
+      default:
+        break;
+    }
+  }
 
   void _setupVersionManager() {
     if (_versionManagerSet) return;
