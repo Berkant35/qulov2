@@ -10,7 +10,9 @@ import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
+import 'package:qulo_v2/data/models/quiz_model.dart';
 import 'package:qulo_v2/providers/quiz_provider.dart';
+import 'package:qulo_v2/providers/exchange_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/features/quiz/widgets/answer_button.dart';
 import 'package:qulo_v2/features/quiz/widgets/answer_feedback_overlay.dart';
@@ -27,6 +29,7 @@ class QuizScreen extends ConsumerStatefulWidget {
 }
 
 class _QuizScreenState extends ConsumerState<QuizScreen> {
+  final _timerKey = GlobalKey<QuizTimerState>();
   final _stopwatch = Stopwatch();
   final _sessionStopwatch = Stopwatch();
   int _totalTimeSpent = 0;
@@ -35,15 +38,25 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
   int? _oracleSuggestedIndex;
   int? _selectedAnswerIndex;
   bool _isSubmitting = false;
+  // Feedback state
   bool _showFeedback = false;
   bool _feedbackCorrect = false;
-  String? _correctAnswerText;
+  bool _canRescue = false;
   String? _pendingSessionStatus;
+  String? _pendingBadge;
+  // Power result states
+  List<int> _removedIndices = [];
+  String? _hintText;
+  // Celebration state
+  bool _showCelebration = false;
+  bool _celebrationMatched = false;
+  String _celebrationBadge = 'none';
 
   @override
   void initState() {
     super.initState();
     Future.microtask(() async {
+      ref.read(exchangeProvider.notifier).fetchAll();
       await ref.read(quizProvider.notifier).startSession(widget.targetId);
       _startQuestionTimer();
       _sessionStopwatch.start();
@@ -68,6 +81,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
     super.dispose();
   }
 
+  // ── Cevap seçimi (sadece highlight) ──────────────────────────
   void _selectAnswer(int index) {
     final wasSelected = _selectedAnswerIndex == index;
     setState(() {
@@ -85,8 +99,11 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
     }
   }
 
+  // ── Cevap gönderimi (onaylama sonrası) ───────────────────────
   Future<void> _submitAnswer() async {
     if (_selectedAnswerIndex == null || _isSubmitting) return;
+    _timerKey.currentState?.pause();
+
     AnalyticsManager.instance.logEvent(
       AnalyticsEvents.quizAnswerConfirm,
       params: {
@@ -95,21 +112,14 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
             ref.read(quizProvider).currentQuestion?.questionNumber ?? 0,
       },
     );
-    setState(() => _isSubmitting = true);
-    await _answer(_selectedAnswerIndex!);
-    if (mounted) setState(() => _isSubmitting = false);
-  }
 
-  Future<void> _answer(int index, {String? powerUsed}) async {
+    setState(() => _isSubmitting = true);
+
     _stopwatch.stop();
     final timeSpent = _stopwatch.elapsedMilliseconds ~/ 1000;
     _totalTimeSpent += timeSpent;
 
-    if (powerUsed != null) _powersUsed++;
-
-    final quiz = ref.read(quizProvider);
-    final questionIndex = quiz.currentQuestion?.questionNumber ?? 0;
-
+    final questionIndex = ref.read(quizProvider).currentQuestion?.questionNumber ?? 0;
     AnalyticsManager.instance.logEvent(
       AnalyticsEvents.quizAnswer,
       params: {
@@ -119,110 +129,207 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
     );
 
     final result = await ref.read(quizProvider.notifier).answer(
-          index,
-          powerUsed: powerUsed,
+          _selectedAnswerIndex!,
           timeSpent: timeSpent,
         );
+
     if (!mounted) return;
+    setState(() => _isSubmitting = false);
+
+    result.when(
+      success: (data) => _handleAnswerResponse(data),
+      failure: (_) {
+        _timerKey.currentState?.resume();
+      },
+    );
+  }
+
+  // ── Power kullanımı (cevap göndermeden) ──────────────────────
+  Future<void> _usePower(String power) async {
+    if (_isSubmitting) return;
+
+    setState(() => _isSubmitting = true);
+
+    final result = await ref.read(quizProvider.notifier).answer(
+          null,
+          powerUsed: power,
+        );
+
+    if (!mounted) return;
+    setState(() => _isSubmitting = false);
+
     result.when(
       success: (data) {
-        if (data.isCorrect == true) _totalCorrect++;
-
         if (data.awaitingAnswer == true) {
-          // ORACLE power: highlight the suggested answer
+          // Power efekti: ORACLE, HALF, HINT, TIME_EXTEND
+          _powersUsed++;
           final powerResult = data.powerResult;
-          if (powerResult != null && powerResult.containsKey('suggested_answer_index')) {
+          if (powerResult != null) {
             setState(() {
-              _oracleSuggestedIndex = powerResult['suggested_answer_index'] as int?;
+              if (powerResult.containsKey('suggested_answer_index')) {
+                _oracleSuggestedIndex = powerResult['suggested_answer_index'] as int?;
+              }
+              if (powerResult.containsKey('removed_indices')) {
+                _removedIndices = (powerResult['removed_indices'] as List).cast<int>();
+              }
+              if (powerResult.containsKey('extra_seconds')) {
+                final extra = powerResult['extra_seconds'] as int;
+                _timerKey.currentState?.addSeconds(extra);
+              }
+              if (powerResult.containsKey('hint_text')) {
+                _hintText = powerResult['hint_text'] as String?;
+              }
             });
           }
-          return;
+        } else {
+          // SKIP veya SKIP_ALL — direkt sonuç
+          _powersUsed++;
+          if (data.isCorrect == true) _totalCorrect++;
+          _handleSessionTransition(data.sessionStatus, data.badge);
         }
-
-        // Log completion analytics before feedback
-        if (data.sessionStatus == 'COMPLETED' || data.sessionStatus == 'FAILED') {
-          _sessionStopwatch.stop();
-          AnalyticsManager.instance.logEvent(
-            AnalyticsEvents.quizComplete,
-            params: {
-              AnalyticsEvents.paramScore: _totalCorrect,
-              AnalyticsEvents.paramTotalDurationMs: _sessionStopwatch.elapsedMilliseconds,
-            },
-          );
-        }
-
-        // Show feedback overlay
-        setState(() {
-          _feedbackCorrect = data.isCorrect == true;
-          _correctAnswerText = null; // Backend doesn't return correct answer text
-          _pendingSessionStatus = data.sessionStatus;
-          _showFeedback = true;
-        });
       },
       failure: (_) {},
     );
   }
 
+  // ── Cevap response handler ──────────────────────────────────
+  void _handleAnswerResponse(QuizAnswerResponse data) {
+    if (data.awaitingAnswer == true) return;
+
+    final isCorrect = data.isCorrect == true;
+    if (isCorrect) _totalCorrect++;
+
+    // Completion analytics
+    if (data.sessionStatus == 'COMPLETED') {
+      _sessionStopwatch.stop();
+      AnalyticsManager.instance.logEvent(
+        AnalyticsEvents.quizComplete,
+        params: {
+          AnalyticsEvents.paramScore: _totalCorrect,
+          AnalyticsEvents.paramTotalDurationMs: _sessionStopwatch.elapsedMilliseconds,
+        },
+      );
+    }
+
+    // Feedback overlay göster
+    setState(() {
+      _feedbackCorrect = isCorrect;
+      _canRescue = data.canRescue == true;
+      _pendingSessionStatus = isCorrect ? data.sessionStatus : null;
+      _pendingBadge = data.badge;
+      _showFeedback = true;
+    });
+  }
+
+  // ── Feedback tamamlandı (doğru cevap sonrası otomatik) ──────
   void _onFeedbackComplete() {
     if (!mounted) return;
     final status = _pendingSessionStatus;
-    setState(() {
-      _showFeedback = false;
-      _pendingSessionStatus = null;
-      _oracleSuggestedIndex = null;
-      _selectedAnswerIndex = null;
-    });
+    final badge = _pendingBadge;
+    _resetQuestionState();
 
     if (status == 'COMPLETED') {
-      _showGamifiedResult(matched: true);
-    } else if (status == 'FAILED') {
-      _showGamifiedResult(matched: false);
+      _showGamifiedResult(matched: true, badge: badge ?? 'none');
     } else {
+      // Doğru cevap, sonraki soruya geç
       ref.read(quizProvider.notifier).fetchCurrentQuestion();
       _startQuestionTimer();
     }
   }
 
-  String _determineBadge() {
-    final quiz = ref.read(quizProvider);
-    final total = quiz.totalQuestions;
+  // ── SKIP Rescue — kullanıcı kurtulmayı kabul etti ───────────
+  Future<void> _onRescue() async {
+    setState(() => _isSubmitting = true);
 
-    // Flawless: all correct, no powers
-    if (_totalCorrect == total && _powersUsed == 0) return 'flawless';
-    // Speed solver: average < 10s per question
-    if (total > 0 && (_totalTimeSpent / total) < 10) return 'speed_solver';
-    // Power master: used 2+ powers
-    if (_powersUsed >= 2) return 'power_master';
-    // Determined: completed but not perfect
-    if (_totalCorrect > 0) return 'determined';
-    return 'none';
+    final result = await ref.read(quizProvider.notifier).rescue();
+
+    if (!mounted) return;
+    setState(() => _isSubmitting = false);
+
+    result.when(
+      success: (data) {
+        _powersUsed++;
+        _totalCorrect++; // yanlış cevap override edildi
+        _resetQuestionState();
+
+        if (data.sessionStatus == 'COMPLETED') {
+          _showGamifiedResult(matched: true, badge: data.badge ?? 'none');
+        } else {
+          ref.read(quizProvider.notifier).fetchCurrentQuestion();
+          _startQuestionTimer();
+        }
+      },
+      failure: (_) {
+        // Rescue başarısız — session'ı fail yap
+        _onDeclineRescue();
+      },
+    );
   }
 
-  void _showGamifiedResult({required bool matched}) {
-    final nav = ref.read(navigationServiceProvider);
-    final quiz = ref.read(quizProvider);
-    final badge = _determineBadge();
+  // ── SKIP Rescue — kullanıcı vazgeçti ────────────────────────
+  Future<void> _onDeclineRescue() async {
+    await ref.read(quizProvider.notifier).fail();
 
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => MatchCelebrationScreen(
-          matched: matched,
-          totalCorrect: _totalCorrect,
-          totalQuestions: quiz.totalQuestions,
-          totalTimeSpent: _totalTimeSpent,
-          powersUsed: _powersUsed,
-          performanceBadge: badge,
-          onStartChat: matched
-              ? () {
-                  nav.go(RouteNames.matches);
-                }
-              : null,
-          onGoBack: () {
-            nav.pop();
-          },
-        ),
-      ),
+    if (!mounted) return;
+    _resetQuestionState();
+
+    _sessionStopwatch.stop();
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.quizComplete,
+      params: {
+        AnalyticsEvents.paramScore: _totalCorrect,
+        AnalyticsEvents.paramTotalDurationMs: _sessionStopwatch.elapsedMilliseconds,
+      },
     );
+
+    _showGamifiedResult(matched: false, badge: 'none');
+  }
+
+  // ── Timer bitti ─────────────────────────────────────────────
+  Future<void> _onTimeout() async {
+    _stopwatch.stop();
+    await ref.read(quizProvider.notifier).fail();
+
+    if (!mounted) return;
+    _sessionStopwatch.stop();
+
+    _showGamifiedResult(matched: false, badge: 'none');
+  }
+
+  // ── Session sonucu geçişi ───────────────────────────────────
+  void _handleSessionTransition(String? status, String? badge) {
+    if (status == 'COMPLETED') {
+      _showGamifiedResult(matched: true, badge: badge ?? 'none');
+    } else if (status == 'FAILED') {
+      _showGamifiedResult(matched: false, badge: 'none');
+    } else {
+      // IN_PROGRESS — sonraki soruya geç
+      _resetQuestionState();
+      ref.read(quizProvider.notifier).fetchCurrentQuestion();
+      _startQuestionTimer();
+    }
+  }
+
+  void _resetQuestionState() {
+    setState(() {
+      _showFeedback = false;
+      _canRescue = false;
+      _pendingSessionStatus = null;
+      _pendingBadge = null;
+      _oracleSuggestedIndex = null;
+      _selectedAnswerIndex = null;
+      _removedIndices = [];
+      _hintText = null;
+    });
+  }
+
+  void _showGamifiedResult({required bool matched, required String badge}) {
+    _stopwatch.stop();
+    setState(() {
+      _showCelebration = true;
+      _celebrationMatched = matched;
+      _celebrationBadge = badge;
+    });
   }
 
   Future<void> _confirmExit() async {
@@ -245,19 +352,25 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
       ),
     );
     if (confirm == true && mounted) {
-      final quiz = ref.read(quizProvider);
-      AnalyticsManager.instance.logEvent(
-        AnalyticsEvents.quizExitConfirm,
-      );
+      AnalyticsManager.instance.logEvent(AnalyticsEvents.quizExitConfirm);
       AnalyticsManager.instance.logEvent(
         AnalyticsEvents.quizAbandon,
         params: {
           AnalyticsEvents.paramQuestionIndex:
-              quiz.currentQuestion?.questionNumber ?? 0,
+              ref.read(quizProvider).currentQuestion?.questionNumber ?? 0,
         },
       );
-      nav.pop();
+      nav.go(RouteNames.discover);
     }
+  }
+
+  int _getSkipCost() {
+    final rates = ref.read(exchangeProvider).rates;
+    if (rates != null) {
+      final skipPower = rates.powers.where((p) => p.name == 'SKIP').firstOrNull;
+      if (skipPower != null) return skipPower.baseCost;
+    }
+    return 20;
   }
 
   @override
@@ -265,6 +378,22 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
     final quiz = ref.watch(quizProvider);
     final theme = Theme.of(context);
     final question = quiz.currentQuestion;
+
+    if (_showCelebration) {
+      final nav = ref.read(navigationServiceProvider);
+      return MatchCelebrationScreen(
+        matched: _celebrationMatched,
+        totalCorrect: _totalCorrect,
+        totalQuestions: quiz.totalQuestions,
+        totalTimeSpent: _totalTimeSpent,
+        powersUsed: _powersUsed,
+        performanceBadge: _celebrationBadge,
+        onStartChat: _celebrationMatched
+            ? () => nav.go(RouteNames.matches)
+            : null,
+        onGoBack: () => nav.go(RouteNames.discover),
+      );
+    }
 
     return PopScope(
       canPop: false,
@@ -280,128 +409,163 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
           icon: QIcon(QIcons.icX, size: 24),
           onPressed: _confirmExit,
         ),
-      padding: EdgeInsets.zero,
-      isLoading: quiz.isLoading || question == null,
-      body: quiz.isLoading || question == null
-          ? const SizedBox.shrink()
-          : Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(AppSpacing.pagePadding),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      QuizTimer(
-                        seconds: question.timeLimitSeconds,
-                        onTimeout: () => _answer(0),
-                        onWarning: () {
-                          AnalyticsManager.instance.logEvent(
-                            AnalyticsEvents.quizTimerWarning,
-                            params: {
-                              AnalyticsEvents.paramQuestionIndex:
-                                  question.questionNumber,
-                              AnalyticsEvents.paramSecondsRemaining: 10,
-                            },
-                          );
-                        },
-                        onCritical: () {
-                          AnalyticsManager.instance.logEvent(
-                            AnalyticsEvents.quizTimerCritical,
-                            params: {
-                              AnalyticsEvents.paramQuestionIndex:
-                                  question.questionNumber,
-                              AnalyticsEvents.paramSecondsRemaining: 5,
-                            },
-                          );
-                        },
-                      ),
-                      const SizedBox(height: AppSpacing.xl),
-                      Text(
-                        question.questionText,
-                        style: theme.textTheme.titleLarge,
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: AppSpacing.xxl),
-                      if (_oracleSuggestedIndex != null)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppSpacing.md,
-                              vertical: AppSpacing.sm,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.primarySurface,
-                              borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-                              border: Border.all(
-                                color: AppColors.primary.withValues(alpha: 0.3),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.auto_awesome, size: 16, color: AppColors.primary),
-                                const SizedBox(width: AppSpacing.xs),
-                                Text(
-                                  context.tr('power_oracle_desc'),
-                                  style: theme.textTheme.bodySmall?.copyWith(
-                                    color: AppColors.primary,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+        padding: EdgeInsets.zero,
+        isLoading: question == null,
+        body: question == null
+            ? const SizedBox.shrink()
+            : Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(AppSpacing.pagePadding),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        QuizTimer(
+                          key: _timerKey,
+                          seconds: question.timeLimitSeconds,
+                          onTimeout: _onTimeout,
+                          onWarning: () {
+                            AnalyticsManager.instance.logEvent(
+                              AnalyticsEvents.quizTimerWarning,
+                              params: {
+                                AnalyticsEvents.paramQuestionIndex:
+                                    question.questionNumber,
+                                AnalyticsEvents.paramSecondsRemaining: 10,
+                              },
+                            );
+                          },
+                          onCritical: () {
+                            AnalyticsManager.instance.logEvent(
+                              AnalyticsEvents.quizTimerCritical,
+                              params: {
+                                AnalyticsEvents.paramQuestionIndex:
+                                    question.questionNumber,
+                                AnalyticsEvents.paramSecondsRemaining: 5,
+                              },
+                            );
+                          },
                         ),
-                      ...question.answers.map((a) => Padding(
+                        const SizedBox(height: AppSpacing.xl),
+                        Text(
+                          question.questionText,
+                          style: theme.textTheme.titleLarge,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: AppSpacing.xxl),
+                        if (_oracleSuggestedIndex != null)
+                          _buildPowerBanner(
+                            theme,
+                            icon: Icons.auto_awesome,
+                            text: context.tr('power_oracle_desc'),
+                          ),
+                        if (_hintText != null && _hintText!.isNotEmpty)
+                          _buildPowerBanner(
+                            theme,
+                            icon: Icons.lightbulb_outline,
+                            text: _hintText!,
+                            color: Colors.amber,
+                          ),
+                        ...question.answers.map((a) {
+                          final isRemoved = _removedIndices.contains(a.index);
+                          return Padding(
                             padding: const EdgeInsets.only(bottom: AppSpacing.md),
                             child: AnswerButton(
                               text: a.text,
-                              onTap: () => _selectAnswer(a.index),
+                              onTap: () {
+                                if (!isRemoved) _selectAnswer(a.index);
+                              },
                               isSelected: _selectedAnswerIndex == a.index,
                               isOracleSuggested: _oracleSuggestedIndex == a.index,
+                              isDisabled: isRemoved,
                             ),
-                          )),
-                      if (_selectedAnswerIndex != null)
-                        Padding(
-                          padding: const EdgeInsets.only(top: AppSpacing.sm),
-                          child: ElevatedButton(
-                            onPressed: _isSubmitting ? null : _submitAnswer,
-                            style: ElevatedButton.styleFrom(
-                              minimumSize: const Size(double.infinity, 52),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                          );
+                        }),
+                        if (_selectedAnswerIndex != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: AppSpacing.sm),
+                            child: ElevatedButton(
+                              onPressed: _isSubmitting ? null : _submitAnswer,
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: const Size(double.infinity, 52),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(AppSpacing.radiusMd),
+                                ),
+                                backgroundColor: AppColors.primary,
                               ),
-                              backgroundColor: AppColors.primary,
-                            ),
-                            child: _isSubmitting
-                                ? AppLoadingWidget.small()
-                                : Text(
-                                    context.tr('quiz_confirm_answer'),
-                                    style: theme.textTheme.titleMedium?.copyWith(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
+                              child: _isSubmitting
+                                  ? AppLoadingWidget.small()
+                                  : Text(
+                                      context.tr('quiz_confirm_answer'),
+                                      style:
+                                          theme.textTheme.titleMedium?.copyWith(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
-                                  ),
+                            ),
                           ),
+                        const Spacer(),
+                        PowerBar(
+                          sessionId: quiz.sessionId!,
+                          hasHint: question.hasHint,
+                          onPowerUsed: _usePower,
                         ),
-                      const Spacer(),
-                      PowerBar(
-                        sessionId: quiz.sessionId!,
-                        hasHint: question.hasHint,
-                        onPowerUsed: (power) => _answer(0, powerUsed: power),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
+                  if (_showFeedback)
+                    AnswerFeedbackOverlay(
+                      isCorrect: _feedbackCorrect,
+                      onComplete: _onFeedbackComplete,
+                      canRescue: _canRescue,
+                      skipInventoryCount:
+                          ref.read(exchangeProvider).getCount('SKIP'),
+                      skipDiamondCost: _getSkipCost(),
+                      onRescue: _onRescue,
+                      onDeclineRescue: _onDeclineRescue,
+                    ),
+                ],
+              ),
+      ),
+    );
+  }
+
+  Widget _buildPowerBanner(
+    ThemeData theme, {
+    required IconData icon,
+    required String text,
+    Color? color,
+  }) {
+    final c = color ?? AppColors.primary;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.md),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
+        decoration: BoxDecoration(
+          color: c.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+          border: Border.all(color: c.withValues(alpha: 0.3)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 16, color: c),
+            const SizedBox(width: AppSpacing.xs),
+            Flexible(
+              child: Text(
+                text,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: c,
+                  fontWeight: FontWeight.w500,
                 ),
-                if (_showFeedback)
-                  AnswerFeedbackOverlay(
-                    isCorrect: _feedbackCorrect,
-                    correctAnswerText: _correctAnswerText,
-                    onComplete: _onFeedbackComplete,
-                  ),
-              ],
+              ),
             ),
+          ],
+        ),
       ),
     );
   }
