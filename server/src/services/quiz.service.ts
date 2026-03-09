@@ -159,7 +159,7 @@ export class QuizService {
   async answerQuestion(
     sessionId: string,
     solverId: string,
-    selectedAnswer: number,
+    selectedAnswer: number | undefined,
     powerUsed?: PowerName,
     timeSpent?: number,
   ) {
@@ -321,7 +321,10 @@ export class QuizService {
       }
     }
 
-    // ─── Normal answer (no power or after SKIP) ───
+    // ─── Normal answer (no power) ───
+    if (selectedAnswer == null) {
+      throw Errors.VALIDATION_ERROR({ selected_answer: "Required when no power is used" });
+    }
     const isCorrect = selectedAnswer === currentQuestion.correct_answer;
 
     // Record answer
