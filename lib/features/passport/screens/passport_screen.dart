@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/mixins/loading_mixin.dart';
@@ -97,12 +96,6 @@ class _PassportScreenState extends ConsumerState<PassportScreen> with LoadingMix
                 ? '${context.tr("passport_active")}: ${passport.city}'
                 : context.tr('passport_explore'),
             style: theme.textTheme.titleMedium,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            '${context.tr("passport_cost")}: ${AppConstants.passportCostPurple} 💎',
-            style: theme.textTheme.bodySmall?.copyWith(color: theme.hintColor),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.xl),

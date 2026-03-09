@@ -83,6 +83,7 @@ flutter:
     - assets/brand/
     - assets/illustrations/
     - assets/lottie/
+    - assets/map/
 
   fonts:
     - family: Helvetica

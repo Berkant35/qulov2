@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/services/location_manager.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
+import 'package:qulo_v2/features/passport/widgets/q_map_pin.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 
 class MapPickerScreen extends ConsumerStatefulWidget {
@@ -22,11 +23,34 @@ class _MapPickerScreenState extends ConsumerState<MapPickerScreen> {
   LatLng _selectedPosition = const LatLng(41.0082, 28.9784); // Istanbul default
   String? _selectedCity;
   bool _isLoadingCity = false;
+  bool _isMapReady = false;
+  String? _mapStyle;
 
   @override
   void initState() {
     super.initState();
     _initCurrentLocation();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadMapStyle();
+  }
+
+  Future<void> _loadMapStyle() async {
+    final brightness = Theme.of(context).brightness;
+    final path = brightness == Brightness.dark
+        ? 'assets/map/map_style_dark.json'
+        : 'assets/map/map_style_light.json';
+
+    try {
+      final style = await rootBundle.loadString(path);
+      if (!mounted) return;
+      setState(() => _mapStyle = style);
+
+      // setState triggers rebuild, GoogleMap.style property handles it
+    } catch (_) {}
   }
 
   Future<void> _initCurrentLocation() async {
@@ -85,35 +109,55 @@ class _MapPickerScreenState extends ConsumerState<MapPickerScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          // Google Map
-          GoogleMap(
-            initialCameraPosition: CameraPosition(
-              target: _selectedPosition,
-              zoom: 12,
+          // 1. Map loading placeholder (if !_isMapReady)
+          if (!_isMapReady)
+            Container(
+              color: theme.scaffoldBackgroundColor,
+              child: const Center(
+                child: AppLoadingWidget.large(),
+              ),
             ),
-            onMapCreated: (controller) => _mapController.complete(controller),
-            onCameraMove: _onCameraMove,
-            onCameraIdle: _onCameraIdle,
-            myLocationEnabled: true,
-            myLocationButtonEnabled: false,
-            zoomControlsEnabled: false,
-            mapToolbarEnabled: false,
+
+          // 2. Google Map (AnimatedOpacity fade-in)
+          AnimatedOpacity(
+            opacity: _isMapReady ? 1.0 : 0.0,
+            duration: const Duration(milliseconds: 400),
+            child: GoogleMap(
+              initialCameraPosition: CameraPosition(
+                target: _selectedPosition,
+                zoom: 12,
+              ),
+              style: _mapStyle,
+              onMapCreated: (controller) {
+                _mapController.complete(controller);
+                setState(() => _isMapReady = true);
+              },
+              onCameraMove: _onCameraMove,
+              onCameraIdle: _onCameraIdle,
+              myLocationEnabled: true,
+              myLocationButtonEnabled: false,
+              zoomControlsEnabled: false,
+              mapToolbarEnabled: false,
+            ),
           ),
 
-          // Center pin icon
-          const Center(
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 36),
-              child: Icon(Icons.location_on, size: 48, color: AppColors.primary),
+          // 3. Q pin (if _isMapReady)
+          if (_isMapReady)
+            const Center(
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 36),
+                child: QMapPin(size: 56),
+              ),
             ),
-          ),
 
-          // Back button
+          // 4. Back button (top-left)
           Positioned(
             top: MediaQuery.of(context).padding.top + AppSpacing.sm,
             left: AppSpacing.md,
-            child: CircleAvatar(
-              backgroundColor: theme.colorScheme.surface,
+            child: Material(
+              elevation: 4,
+              shape: const CircleBorder(),
+              color: theme.colorScheme.surface,
               child: IconButton(
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () => Navigator.of(context).pop(),
@@ -121,20 +165,7 @@ class _MapPickerScreenState extends ConsumerState<MapPickerScreen> {
             ),
           ),
 
-          // My location button
-          Positioned(
-            bottom: 140,
-            right: AppSpacing.md,
-            child: CircleAvatar(
-              backgroundColor: theme.colorScheme.surface,
-              child: IconButton(
-                icon: const Icon(Icons.my_location),
-                onPressed: _initCurrentLocation,
-              ),
-            ),
-          ),
-
-          // Bottom panel — city name + confirm
+          // 5. Bottom panel — city name + confirm
           Positioned(
             bottom: 0,
             left: 0,
@@ -168,17 +199,28 @@ class _MapPickerScreenState extends ConsumerState<MapPickerScreen> {
                       const Icon(Icons.location_on, color: AppColors.primary, size: 20),
                       const SizedBox(width: AppSpacing.sm),
                       Expanded(
-                        child: _isLoadingCity
-                            ? const AppLoadingWidget.small()
-                            : Text(
-                                _selectedCity ?? context.tr('passport_select_location'),
-                                style: theme.textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                        child: AnimatedOpacity(
+                          opacity: _isLoadingCity ? 0.4 : 1.0,
+                          duration: const Duration(milliseconds: 200),
+                          child: Text(
+                            _selectedCity ?? context.tr('passport_select_location'),
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                       ),
+                      if (_isLoadingCity)
+                        const Padding(
+                          padding: EdgeInsets.only(left: AppSpacing.sm),
+                          child: SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: AppLoadingWidget.small(),
+                          ),
+                        ),
                     ],
                   ),
                   const SizedBox(height: AppSpacing.lg),
@@ -192,11 +234,31 @@ class _MapPickerScreenState extends ConsumerState<MapPickerScreen> {
                         backgroundColor: AppColors.primaryDark,
                       ),
                       child: Text(
-                        '${context.tr("passport_move_here")} — ${AppConstants.passportCostPurple} 💎',
+                        context.tr('passport_move_here'),
                       ),
                     ),
                   ),
                 ],
+              ),
+            ),
+          ),
+
+          // 6. My location button — AFTER bottom panel for z-index
+          Positioned(
+            bottom: 160,
+            right: AppSpacing.md,
+            child: Material(
+              elevation: 6,
+              shape: const CircleBorder(),
+              color: theme.colorScheme.surface,
+              child: InkWell(
+                customBorder: const CircleBorder(),
+                onTap: _initCurrentLocation,
+                child: const SizedBox(
+                  width: 48,
+                  height: 48,
+                  child: Icon(Icons.my_location, color: AppColors.primary),
+                ),
               ),
             ),
           ),
