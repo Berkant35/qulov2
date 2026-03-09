@@ -7,6 +7,7 @@ class AnswerButton extends StatelessWidget {
   final VoidCallback onTap;
   final bool isDisabled;
   final bool isOracleSuggested;
+  final bool isSelected;
 
   const AnswerButton({
     super.key,
@@ -14,6 +15,7 @@ class AnswerButton extends StatelessWidget {
     required this.onTap,
     this.isDisabled = false,
     this.isOracleSuggested = false,
+    this.isSelected = false,
   });
 
   @override
@@ -33,22 +35,44 @@ class AnswerButton extends StatelessWidget {
             border: Border.all(
               color: isDisabled
                   ? Theme.of(context).colorScheme.outline
-                  : AppColors.primary,
-              width: isOracleSuggested ? 2.0 : 1.5,
+                  : isSelected
+                      ? AppColors.primary
+                      : AppColors.primary,
+              width: isSelected ? 2.5 : (isOracleSuggested ? 2.0 : 1.5),
             ),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             color: isDisabled
                 ? Theme.of(context).colorScheme.surfaceContainerHigh
-                : Theme.of(context).colorScheme.surface,
+                : isSelected
+                    ? AppColors.primary.withValues(alpha: 0.12)
+                    : Theme.of(context).colorScheme.surface,
           ),
-          child: Text(
-            text,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: isDisabled
-                      ? Theme.of(context).hintColor
-                      : Theme.of(context).colorScheme.onSurface,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (isSelected) ...[
+                Icon(
+                  Icons.check_circle,
+                  size: 20,
+                  color: AppColors.primary,
                 ),
-            textAlign: TextAlign.center,
+                const SizedBox(width: AppSpacing.sm),
+              ],
+              Flexible(
+                child: Text(
+                  text,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: isDisabled
+                            ? Theme.of(context).hintColor
+                            : isSelected
+                                ? AppColors.primary
+                                : Theme.of(context).colorScheme.onSurface,
+                        fontWeight: isSelected ? FontWeight.w600 : null,
+                      ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
           ),
         ),
       ),

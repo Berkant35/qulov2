@@ -7,6 +7,7 @@ import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/providers/quiz_provider.dart';
@@ -31,6 +32,8 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
   int _totalCorrect = 0;
   int _powersUsed = 0;
   int? _oracleSuggestedIndex;
+  int? _selectedAnswerIndex;
+  bool _isSubmitting = false;
 
   @override
   void initState() {
@@ -58,6 +61,19 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
     _stopwatch.stop();
     ref.read(quizProvider.notifier).reset();
     super.dispose();
+  }
+
+  void _selectAnswer(int index) {
+    setState(() {
+      _selectedAnswerIndex = _selectedAnswerIndex == index ? null : index;
+    });
+  }
+
+  Future<void> _submitAnswer() async {
+    if (_selectedAnswerIndex == null || _isSubmitting) return;
+    setState(() => _isSubmitting = true);
+    await _answer(_selectedAnswerIndex!);
+    if (mounted) setState(() => _isSubmitting = false);
   }
 
   Future<void> _answer(int index, {String? powerUsed}) async {
@@ -117,7 +133,10 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
             });
           }
         } else {
-          setState(() => _oracleSuggestedIndex = null);
+          setState(() {
+            _oracleSuggestedIndex = null;
+            _selectedAnswerIndex = null;
+          });
           ref.read(quizProvider.notifier).fetchCurrentQuestion();
           _startQuestionTimer();
         }
@@ -252,10 +271,34 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                         padding: const EdgeInsets.only(bottom: AppSpacing.md),
                         child: AnswerButton(
                           text: a.text,
-                          onTap: () => _answer(a.index),
+                          onTap: () => _selectAnswer(a.index),
+                          isSelected: _selectedAnswerIndex == a.index,
                           isOracleSuggested: _oracleSuggestedIndex == a.index,
                         ),
                       )),
+                  if (_selectedAnswerIndex != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: AppSpacing.sm),
+                      child: ElevatedButton(
+                        onPressed: _isSubmitting ? null : _submitAnswer,
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(double.infinity, 52),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                          ),
+                          backgroundColor: AppColors.primary,
+                        ),
+                        child: _isSubmitting
+                            ? AppLoadingWidget.small()
+                            : Text(
+                                context.tr('quiz_confirm_answer'),
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                      ),
+                    ),
                   const Spacer(),
                   PowerBar(
                     sessionId: quiz.sessionId!,

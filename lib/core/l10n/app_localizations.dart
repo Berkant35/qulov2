@@ -477,6 +477,7 @@ class AppLocalizations {
     'quiz_result_correct_count': '{correct}/{total} doğru',
     'quiz_result_start_chat': 'Sohbete Başla',
     'quiz_result_go_back': 'Geri Dön',
+    'quiz_confirm_answer': 'Cevapla',
 
     // Chat Quiz Summary
     'chat_quiz_summary': 'Quiz Özeti',
@@ -1077,6 +1078,7 @@ class AppLocalizations {
     'quiz_result_correct_count': '{correct}/{total} correct',
     'quiz_result_start_chat': 'Start Chat',
     'quiz_result_go_back': 'Go Back',
+    'quiz_confirm_answer': 'Answer',
 
     // Chat Quiz Summary
     'chat_quiz_summary': 'Quiz Summary',
