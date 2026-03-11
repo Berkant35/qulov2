@@ -17,6 +17,7 @@ import 'package:qulo_v2/providers/power_provider.dart';
 import 'package:qulo_v2/providers/question_provider.dart';
 import 'package:qulo_v2/providers/notification_provider.dart';
 import 'package:qulo_v2/providers/subscription_provider.dart';
+import 'package:qulo_v2/providers/location_provider.dart';
 
 enum AuthStatus { initial, authenticated, unauthenticated }
 
@@ -105,6 +106,18 @@ class AuthNotifier extends Notifier<AuthState> {
             photoCount: (user.photos?.length ?? 0).toString(),
           );
         }
+        // Seed location from user profile so discover works immediately
+        if (user != null && user.lat != null && user.lng != null) {
+          ref.read(locationProvider.notifier).seedFromProfile(
+            lat: user.lat!,
+            lng: user.lng!,
+            city: user.city,
+          );
+          // Pre-fetch discover cards while splash is still showing
+          ref.read(discoverProvider.notifier).loadCards();
+          // Background GPS update (non-blocking)
+          ref.read(locationProvider.notifier).getCurrentLocation();
+        }
         // Initialize push notifications on auto-login
         ref.read(notificationProvider.notifier).init();
       } catch (_) {
@@ -192,7 +205,8 @@ class AuthNotifier extends Notifier<AuthState> {
           userId: data.userId,
           isLoading: false,
         );
-        // Update user properties for analytics
+        // Fetch user profile + seed location for immediate discover
+        await ref.read(userProvider.notifier).fetchMe();
         final user = ref.read(userProvider).value;
         if (user != null) {
           final analytics = AnalyticsManager.instance;
@@ -202,6 +216,17 @@ class AuthNotifier extends Notifier<AuthState> {
             city: user.city ?? '',
             photoCount: (user.photos?.length ?? 0).toString(),
           );
+          if (user.lat != null && user.lng != null) {
+            ref.read(locationProvider.notifier).seedFromProfile(
+              lat: user.lat!,
+              lng: user.lng!,
+              city: user.city,
+            );
+            // Pre-fetch discover cards while transitioning
+            ref.read(discoverProvider.notifier).loadCards();
+            // Background GPS update (non-blocking)
+            ref.read(locationProvider.notifier).getCurrentLocation();
+          }
         }
         // Initialize push notifications after successful login
         ref.read(notificationProvider.notifier).init();

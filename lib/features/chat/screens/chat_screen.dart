@@ -256,7 +256,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   // ─── Media Methods ───
 
   Future<void> _handlePhotoTap() async {
-    final chatState = ref.read(chatProvider(widget.matchId)).requireValue;
+    final chatState = ref.read(chatProvider(widget.matchId)).valueOrNull;
+    if (chatState == null) return;
     if (chatState.mediaEnabled) {
       _showPhotoSourceSheet();
     } else {
@@ -326,28 +327,37 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final fileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
     final storagePath = 'chat-media/${widget.matchId}/$fileName';
 
-    await Supabase.instance.client.storage
-        .from('chat-media')
-        .uploadBinary(storagePath, picked.bytes);
+    try {
+      await Supabase.instance.client.storage
+          .from('chat-media')
+          .uploadBinary(storagePath, picked.bytes);
 
-    final url = Supabase.instance.client.storage
-        .from('chat-media')
-        .getPublicUrl(storagePath);
+      final url = Supabase.instance.client.storage
+          .from('chat-media')
+          .getPublicUrl(storagePath);
 
-    await ref.read(chatProvider(widget.matchId).notifier)
-        .sendMessage(url, isImage: true);
-    _messagesSentCount++;
-    AnalyticsManager.instance.logEvent(
-      AnalyticsEvents.chatMessageSend,
-      params: {
-        AnalyticsEvents.paramChatId: widget.matchId,
-        AnalyticsEvents.paramType: 'photo',
-      },
-    );
+      await ref.read(chatProvider(widget.matchId).notifier)
+          .sendMessage(url, isImage: true);
+      _messagesSentCount++;
+      AnalyticsManager.instance.logEvent(
+        AnalyticsEvents.chatMessageSend,
+        params: {
+          AnalyticsEvents.paramChatId: widget.matchId,
+          AnalyticsEvents.paramType: 'photo',
+        },
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Fotoğraf gönderilemedi. Lütfen tekrar deneyin.')),
+        );
+      }
+    }
   }
 
   void _startVoiceRecording() {
-    final chatState = ref.read(chatProvider(widget.matchId)).requireValue;
+    final chatState = ref.read(chatProvider(widget.matchId)).valueOrNull;
+    if (chatState == null) return;
     if (!chatState.mediaEnabled) {
       _showMediaConsentDialog();
       return;
@@ -362,25 +372,33 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final fileName = '${DateTime.now().millisecondsSinceEpoch}.m4a';
     final storagePath = 'chat-media/${widget.matchId}/$fileName';
 
-    await Supabase.instance.client.storage
-        .from('chat-media')
-        .upload(storagePath, file);
+    try {
+      await Supabase.instance.client.storage
+          .from('chat-media')
+          .upload(storagePath, file);
 
-    final url = Supabase.instance.client.storage
-        .from('chat-media')
-        .getPublicUrl(storagePath);
+      final url = Supabase.instance.client.storage
+          .from('chat-media')
+          .getPublicUrl(storagePath);
 
-    await ref.read(chatProvider(widget.matchId).notifier)
-        .sendMessage('Sesli mesaj', audioUrl: url, audioDurationSeconds: durationSeconds);
-    _messagesSentCount++;
-    AnalyticsManager.instance.logEvent(
-      AnalyticsEvents.chatMessageSend,
-      params: {
-        AnalyticsEvents.paramChatId: widget.matchId,
-        AnalyticsEvents.paramType: 'voice',
-        AnalyticsEvents.paramDurationMs: durationSeconds * 1000,
-      },
-    );
+      await ref.read(chatProvider(widget.matchId).notifier)
+          .sendMessage('Sesli mesaj', audioUrl: url, audioDurationSeconds: durationSeconds);
+      _messagesSentCount++;
+      AnalyticsManager.instance.logEvent(
+        AnalyticsEvents.chatMessageSend,
+        params: {
+          AnalyticsEvents.paramChatId: widget.matchId,
+          AnalyticsEvents.paramType: 'voice',
+          AnalyticsEvents.paramDurationMs: durationSeconds * 1000,
+        },
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Sesli mesaj gönderilemedi. Lütfen tekrar deneyin.')),
+        );
+      }
+    }
   }
 
   void _cancelVoiceRecording() {

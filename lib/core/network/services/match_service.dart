@@ -18,6 +18,9 @@ abstract class MatchService {
   @GET('/matches/list')
   Future<List<MatchModel>> getMatches();
 
+  @DELETE('/matches/swipe/{targetId}')
+  Future<ProfileCardModel> undoSwipe(@Path('targetId') String targetId);
+
   @DELETE('/matches/{matchId}')
   Future<void> unmatch(@Path('matchId') String matchId);
 }

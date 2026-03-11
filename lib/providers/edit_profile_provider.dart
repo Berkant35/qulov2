@@ -127,6 +127,7 @@ class EditProfileNotifier extends Notifier<EditProfileState> {
   ) async {
     state = state.copyWith(isSaving: true);
     try {
+      profileData.removeWhere((_, v) => v == null);
       final r1 =
           await ref.read(userProvider.notifier).updateProfile(profileData);
       detailsData.removeWhere((_, v) => v == null);

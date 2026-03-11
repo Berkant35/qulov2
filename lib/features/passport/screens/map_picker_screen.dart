@@ -136,7 +136,9 @@ class _MapPickerScreenState extends ConsumerState<MapPickerScreen> {
               ),
               style: _mapStyle,
               onMapCreated: (controller) {
-                _mapController.complete(controller);
+                if (!_mapController.isCompleted) {
+                  _mapController.complete(controller);
+                }
                 setState(() => _isMapReady = true);
               },
               onCameraMove: _onCameraMove,

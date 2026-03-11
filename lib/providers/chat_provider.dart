@@ -86,7 +86,8 @@ class ChatNotifier extends FamilyAsyncNotifier<ChatState, String> {
     final result = await repo.getMediaStatus(arg);
     result.when(
       success: (status) {
-        state = AsyncData(state.requireValue.copyWith(
+        final current = state.valueOrNull ?? const ChatState();
+        state = AsyncData(current.copyWith(
           mediaEnabled: status.mediaEnabled,
           pendingMediaRequest: status.pendingRequest,
         ));
@@ -100,7 +101,8 @@ class ChatNotifier extends FamilyAsyncNotifier<ChatState, String> {
     final result = await repo.requestMedia(arg);
     result.when(
       success: (request) {
-        state = AsyncData(state.requireValue.copyWith(
+        final current = state.valueOrNull ?? const ChatState();
+        state = AsyncData(current.copyWith(
           pendingMediaRequest: request,
         ));
       },
@@ -114,7 +116,8 @@ class ChatNotifier extends FamilyAsyncNotifier<ChatState, String> {
     result.when(
       success: (response) {
         final enabled = response['media_enabled'] == true;
-        state = AsyncData(state.requireValue.copyWith(
+        final current = state.valueOrNull ?? const ChatState();
+        state = AsyncData(current.copyWith(
           mediaEnabled: enabled,
           clearPendingMediaRequest: true,
         ));
@@ -126,7 +129,8 @@ class ChatNotifier extends FamilyAsyncNotifier<ChatState, String> {
   Future<void> disableMedia() async {
     final repo = ref.read(chatRepositoryProvider);
     await repo.disableMedia(arg);
-    state = AsyncData(state.requireValue.copyWith(
+    final current = state.valueOrNull ?? const ChatState();
+    state = AsyncData(current.copyWith(
       mediaEnabled: false,
       clearPendingMediaRequest: true,
     ));

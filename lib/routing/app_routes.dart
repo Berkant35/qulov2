@@ -276,12 +276,12 @@ class _MainShellState extends ConsumerState<_MainShell> {
               NavigationDestination(
                 icon: QIcon(QIcons.icCompass, size: 24),
                 selectedIcon: QIcon(QIcons.icCompassFilled, size: 24),
-                label: 'Discover',
+                label: context.tr('discover'),
               ),
               NavigationDestination(
                 icon: QIcon(QIcons.icHeart, size: 24),
                 selectedIcon: QIcon(QIcons.icHeartFilled, size: 24),
-                label: 'Matches',
+                label: context.tr('matches'),
               ),
               NavigationDestination(
                 icon: Badge(
@@ -296,7 +296,7 @@ class _MainShellState extends ConsumerState<_MainShell> {
                   backgroundColor: AppColors.error,
                   child: QIcon(QIcons.icUserFilled, size: 24),
                 ),
-                label: 'Profile',
+                label: context.tr('profile'),
               ),
             ],
           ),

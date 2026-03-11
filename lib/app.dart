@@ -9,6 +9,7 @@ import 'package:qulo_v2/core/widgets/in_app_banner.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/app_config_provider.dart';
 import 'package:qulo_v2/providers/locale_provider.dart';
+import 'package:qulo_v2/providers/location_provider.dart';
 import 'package:qulo_v2/providers/notification_provider.dart';
 import 'package:qulo_v2/providers/theme_provider.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
@@ -45,6 +46,8 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
     switch (state) {
       case AppLifecycleState.resumed:
         analytics.logAppForeground();
+        // Permission-dependent provider'ları tekrar kontrol et
+        ref.read(locationProvider.notifier).onAppResumed();
       case AppLifecycleState.paused:
         analytics.logAppBackground();
       default:

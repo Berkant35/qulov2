@@ -102,6 +102,33 @@ class _MatchService implements MatchService {
   }
 
   @override
+  Future<ProfileCardModel> undoSwipe(String targetId) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<ProfileCardModel>(
+      Options(method: 'DELETE', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/matches/swipe/${targetId}',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ProfileCardModel _value;
+    try {
+      _value = ProfileCardModel.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
   Future<void> unmatch(String matchId) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};

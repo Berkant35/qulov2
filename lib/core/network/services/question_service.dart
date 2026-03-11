@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:qulo_v2/data/models/question_model.dart';
 import 'package:qulo_v2/data/models/question_analytics_model.dart';
-import 'package:qulo_v2/data/models/pending_change_model.dart';
 
 part 'question_service.g.dart';
 
@@ -33,10 +32,4 @@ abstract class QuestionService {
 
   @POST('/questions/ai-suggest')
   Future<dynamic> getAiSuggestions(@Body() Map<String, dynamic> data);
-
-  @GET('/questions/me/pending')
-  Future<List<PendingChangeModel>> getPendingChanges();
-
-  @DELETE('/questions/me/pending/{changeId}')
-  Future<void> cancelPendingChange(@Path('changeId') String changeId);
 }

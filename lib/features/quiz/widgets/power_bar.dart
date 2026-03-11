@@ -36,6 +36,7 @@ class PowerBar extends ConsumerWidget {
         children: _powers.map((p) {
           final isHint = p.$1 == PowerType.hint;
           final count = exchangeState.getCount(p.$1.apiName);
+          final isDisabled = count <= 0 || (isHint && !hasHint);
 
           return Padding(
             padding: const EdgeInsets.only(right: AppSpacing.sm),
@@ -47,7 +48,7 @@ class PowerBar extends ConsumerWidget {
                 count: count,
               ),
               label: Text(context.tr(p.$2)),
-              onPressed: (isHint && !hasHint)
+              onPressed: isDisabled
                   ? null
                   : () => onPowerUsed?.call(p.$1.apiName),
             ),

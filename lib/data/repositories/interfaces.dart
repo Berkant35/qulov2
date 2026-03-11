@@ -96,6 +96,8 @@ abstract class IMatchRepository {
 
   Future<Result<List<MatchModel>>> getMatches();
 
+  Future<Result<ProfileCardModel>> undoSwipe(String targetId);
+
   Future<Result<void>> unmatch(String matchId);
 }
 
