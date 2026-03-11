@@ -12,6 +12,7 @@ import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/providers/passport_provider.dart';
+import 'package:qulo_v2/features/diamonds/widgets/paywall_bottom_sheet.dart';
 import 'package:qulo_v2/providers/subscription_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 
@@ -91,7 +92,7 @@ class _PassportScreenState extends ConsumerState<PassportScreen> with LoadingMix
                   width: double.infinity,
                   height: 52,
                   child: FilledButton(
-                    onPressed: () => ref.read(navigationServiceProvider).push(RouteNames.subscription),
+                    onPressed: () => PaywallBottomSheetContent.show(ref, trigger: 'passport_locked'),
                     style: FilledButton.styleFrom(backgroundColor: AppColors.primaryDark),
                     child: Text(context.tr('upgrade_to_premium')),
                   ),

@@ -368,6 +368,11 @@ class AppLocalizations {
     'question_nudge_celebration_title': 'Tebrikler! Artık keşfedilebilirsin!',
     'question_nudge_celebration_button': 'Keşfetmeye Başla',
     'question_nudge_menu_required': '2 soru gerekli',
+    'question_nudge_banner_compact': 'Sorularını ekle',
+    'question_word': 'soru',
+    'nearby': 'Yakında',
+    'undo_limit_reached': 'Geri alma hakkın kalmadı',
+    'undo': 'Geri Al',
 
     // Notifications
     'notifications': 'Bildirimler',
@@ -623,6 +628,21 @@ class AppLocalizations {
     'referral_code_valid': 'Davet eden: ',
     'referral_code_invalid': 'Geçersiz davet kodu',
     'referral_already_logged_in': 'Davet kodu sadece yeni kayıt sırasında kullanılabilir',
+
+    // Paywall
+    'paywall_title_undo': 'Geri Alma\'nın Kilidini Aç',
+    'paywall_title_passport': 'Pasaport Modunu Aç',
+    'paywall_title_questions': 'Daha Fazla Soru Ekle',
+    'paywall_title_swipes': 'Sınırsız Keşfet',
+    'paywall_title_general': 'Tüm Özelliklere Eriş',
+    'feature_daily_discovers': 'Günlük Keşif',
+    'feature_question_slots': 'Soru Slotu',
+    'feature_undo': 'Geri Alma',
+    'feature_monthly_diamonds': 'Aylık Mor Elmas',
+    'feature_passport': 'Pasaport Modu',
+    'feature_no_ads': 'Reklamsız',
+    'feature_unlimited': 'Sınırsız',
+    'feature_per_day': '/gün',
   };
 
   static const _en = <String, String>{
@@ -969,6 +989,11 @@ class AppLocalizations {
     'question_nudge_celebration_title': 'Congratulations! You\'re now discoverable!',
     'question_nudge_celebration_button': 'Start Discovering',
     'question_nudge_menu_required': '2 questions required',
+    'question_nudge_banner_compact': 'Add your questions',
+    'question_word': 'questions',
+    'nearby': 'Nearby',
+    'undo_limit_reached': 'No undo attempts remaining',
+    'undo': 'Undo',
 
     // Notifications
     'notifications': 'Notifications',
@@ -1224,6 +1249,21 @@ class AppLocalizations {
     'referral_code_valid': 'Referred by: ',
     'referral_code_invalid': 'Invalid referral code',
     'referral_already_logged_in': 'Referral codes can only be used during registration',
+
+    // Paywall
+    'paywall_title_undo': 'Unlock Undo',
+    'paywall_title_passport': 'Unlock Passport Mode',
+    'paywall_title_questions': 'Add More Questions',
+    'paywall_title_swipes': 'Unlimited Discovers',
+    'paywall_title_general': 'Access All Features',
+    'feature_daily_discovers': 'Daily Discovers',
+    'feature_question_slots': 'Question Slots',
+    'feature_undo': 'Undo',
+    'feature_monthly_diamonds': 'Monthly Purple Diamonds',
+    'feature_passport': 'Passport Mode',
+    'feature_no_ads': 'No Ads',
+    'feature_unlimited': 'Unlimited',
+    'feature_per_day': '/day',
   };
 }
 

@@ -133,6 +133,7 @@ abstract class AnalyticsEvents {
   static const String diamondsBalanceView = 'diamonds_balance_view';
   static const String subscriptionScreenView = 'subscription_screen_view';
   static const String subscriptionCompareView = 'subscription_compare_view';
+  static const String paywallView = 'paywall_view';
   static const String subscriptionPurchaseStart = 'subscription_purchase_start';
   static const String subscriptionPurchaseSuccess = 'subscription_purchase_success';
   static const String subscriptionPurchaseFail = 'subscription_purchase_fail';

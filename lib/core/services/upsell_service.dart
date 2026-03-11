@@ -1,3 +1,5 @@
+// @deprecated: Use PaywallBottomSheetContent.show() instead. This service is not connected anywhere.
+// Will be removed in a future cleanup.
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';

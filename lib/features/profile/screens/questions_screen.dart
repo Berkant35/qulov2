@@ -7,11 +7,12 @@ import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
+import 'package:qulo_v2/features/diamonds/widgets/paywall_bottom_sheet.dart';
+import 'package:qulo_v2/providers/daily_stats_provider.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/data/models/question_model.dart';
-import 'package:qulo_v2/providers/pending_changes_provider.dart';
 import 'package:qulo_v2/providers/question_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 
@@ -31,7 +32,6 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
     super.initState();
     Future.microtask(() {
       ref.read(questionProvider.notifier).fetchQuestions();
-      ref.read(pendingChangesProvider.notifier).fetchPending();
       final questions = ref.read(questionProvider).valueOrNull ?? [];
       AnalyticsManager.instance.logEvent(
         AnalyticsEvents.questionListView,
@@ -55,10 +55,10 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
 
   void _showModeSheet() {
     final questions = ref.read(questionProvider).valueOrNull ?? [];
-    if (questions.length >= AppConstants.maxQuestions) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.tr('max_questions'))),
-      );
+    final dailyStats = ref.read(dailyStatsProvider).valueOrNull;
+    final questionsLimit = dailyStats?.questionsLimit ?? 4;
+    if (questions.length >= questionsLimit) {
+      PaywallBottomSheetContent.show(ref, trigger: 'question_limit');
       return;
     }
 
@@ -189,7 +189,6 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
   @override
   Widget build(BuildContext context) {
     final questionsAsync = ref.watch(questionProvider);
-    final pendingAsync = ref.watch(pendingChangesProvider);
     final theme = Theme.of(context);
 
     // Check for celebration when questions data changes
@@ -208,19 +207,28 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
           icon: QIcon(QIcons.icChart, size: 22, color: AppColors.textSecondary),
         ),
       ],
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.primaryDark,
-        onPressed: _showModeSheet,
-        child: const Icon(Icons.add),
+      floatingActionButton: Builder(
+        builder: (context) {
+          final questions = questionsAsync.valueOrNull ?? [];
+          final dailyStats = ref.watch(dailyStatsProvider).valueOrNull;
+          final questionsLimit = dailyStats?.questionsLimit ?? 4;
+          final isAtLimit = questions.length >= questionsLimit;
+
+          return FloatingActionButton(
+            backgroundColor: isAtLimit ? AppColors.textHint : AppColors.primaryDark,
+            onPressed: _showModeSheet,
+            child: isAtLimit
+                ? QIcon(QIcons.icLock, size: 22, color: Colors.white)
+                : const Icon(Icons.add),
+          );
+        },
       ),
       isLoading: questionsAsync is AsyncLoading,
       body: questionsAsync.when(
         loading: () => const SizedBox.shrink(),
         error: (e, _) => Center(child: Text('Error: $e')),
         data: (questions) {
-          final pendingChanges = pendingAsync.valueOrNull ?? [];
-
-          if (questions.isEmpty && pendingChanges.isEmpty) {
+          if (questions.isEmpty) {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(AppSpacing.pagePadding),
@@ -245,17 +253,6 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
           return ListView(
             padding: const EdgeInsets.all(AppSpacing.pagePadding),
             children: [
-              // Pending changes section
-              if (pendingChanges.isNotEmpty) ...[
-                _PendingChangesSection(
-                  changes: pendingChanges,
-                  onCancel: (id) => ref
-                      .read(pendingChangesProvider.notifier)
-                      .cancelChange(id),
-                ),
-                const SizedBox(height: AppSpacing.lg),
-              ],
-
               // Question cards
               ...questions.map(
                 (q) => _QuestionCard(
@@ -487,95 +484,3 @@ class _QuestionCard extends StatelessWidget {
   }
 }
 
-// ─── Pending Changes Section ───
-
-class _PendingChangesSection extends StatelessWidget {
-  final List changes;
-  final void Function(String id) onCancel;
-
-  const _PendingChangesSection({
-    required this.changes,
-    required this.onCancel,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.warning.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        border: Border.all(
-          color: AppColors.warning.withValues(alpha: 0.3),
-        ),
-      ),
-      padding: const EdgeInsets.all(AppSpacing.md),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              QIcon(QIcons.icQueue, size: 18, color: AppColors.warning),
-              const SizedBox(width: AppSpacing.sm),
-              Text(
-                context.tr('pending_changes_title'),
-                style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.warning,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            context.tr('pending_change_info'),
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: AppColors.textSecondary,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          ...changes.map((change) {
-            final isDelete = change.changeType == 'delete';
-            return Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacing.xs),
-              child: Row(
-                children: [
-                  Icon(
-                    isDelete ? Icons.delete_outline : Icons.edit_outlined,
-                    size: 16,
-                    color: isDelete ? AppColors.error : AppColors.info,
-                  ),
-                  const SizedBox(width: AppSpacing.sm),
-                  Expanded(
-                    child: Text(
-                      isDelete
-                          ? context.tr('pending_change_delete')
-                          : context.tr('pending_change_update'),
-                      style: theme.textTheme.bodySmall,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () => onCancel(change.id),
-                    style: TextButton.styleFrom(
-                      foregroundColor: AppColors.error,
-                      padding: EdgeInsets.zero,
-                      minimumSize: const Size(0, 30),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                    child: Text(
-                      context.tr('pending_change_cancel'),
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: AppColors.error,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }),
-        ],
-      ),
-    );
-  }
-}
