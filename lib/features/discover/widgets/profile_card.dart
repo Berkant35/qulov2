@@ -67,7 +67,7 @@ class ProfileCard extends StatelessWidget {
                       QIcon(QIcons.icMapPin, color: Colors.white70, size: 16),
                       const SizedBox(width: AppSpacing.xs),
                       Text(
-                        '${card.city} • ${card.distanceKm.toStringAsFixed(1)} km',
+                        '${card.city} • ${card.distanceKm < 1.0 ? context.tr('nearby') : '${card.distanceKm.toStringAsFixed(1)} km'}',
                         style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white70),
                       ),
                     ],
