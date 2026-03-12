@@ -42,7 +42,15 @@
       "Bash(chmod +x:*)",
       "Bash(npm run:*)",
       "Bash(flutter build:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(xargs:*)",
+      "Bash(echo EXIT:$?:*)",
+      "Bash(git push:*)",
+      "Bash(npm test:*)",
+      "Bash(npx vitest:*)",
+      "Bash(git log:*)",
+      "Bash(wc -l /Users/berkantcalikusu/IdeaProjects/qulo/qulov2/lib/features/*/screens/*.dart)",
+      "Bash(sort -t'/' -k6)"
     ]
   },
   "hooks": {
