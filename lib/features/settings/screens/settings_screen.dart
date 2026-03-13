@@ -16,6 +16,7 @@ import 'package:qulo_v2/providers/theme_provider.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/providers/user_languages_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
+import 'package:qulo_v2/core/widgets/safe_tap_button.dart';
 
 final _packageInfoProvider = FutureProvider<PackageInfo>(
   (_) => PackageInfo.fromPlatform(),
@@ -170,12 +171,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               color: theme.colorScheme.surface,
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             ),
-            child: ListTile(
-              leading: Icon(Icons.logout, color: theme.colorScheme.onSurfaceVariant),
-              title: Text(
-                context.tr('logout'),
-                style: TextStyle(color: theme.colorScheme.onSurface),
-              ),
+            child: SafeTapButton(
               onTap: () async {
                 final nav = ref.read(navigationServiceProvider);
                 final authNotifier = ref.read(authProvider.notifier);
@@ -191,6 +187,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   await authNotifier.logout();
                 }
               },
+              builder: (context, isLoading, onTap) => ListTile(
+                leading: isLoading
+                    ? const SizedBox(width: 24, height: 24, child: AppLoadingWidget.small())
+                    : Icon(Icons.logout, color: theme.colorScheme.onSurfaceVariant),
+                title: Text(
+                  context.tr('logout'),
+                  style: TextStyle(color: theme.colorScheme.onSurface),
+                ),
+                onTap: onTap,
+              ),
             ),
           ),
           Container(
@@ -199,12 +205,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               color: theme.colorScheme.surface,
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             ),
-            child: ListTile(
-              leading: const Icon(Icons.delete_forever, color: AppColors.error),
-              title: Text(
-                context.tr('delete_account'),
-                style: const TextStyle(color: AppColors.error),
-              ),
+            child: SafeTapButton(
               onTap: () async {
                 AnalyticsManager.instance.logEvent(AnalyticsEvents.settingsDeleteAccountStart);
                 final nav = ref.read(navigationServiceProvider);
@@ -224,6 +225,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   await authNotifier.logout();
                 }
               },
+              builder: (context, isLoading, onTap) => ListTile(
+                leading: isLoading
+                    ? const SizedBox(width: 24, height: 24, child: AppLoadingWidget.small())
+                    : const Icon(Icons.delete_forever, color: AppColors.error),
+                title: Text(
+                  context.tr('delete_account'),
+                  style: const TextStyle(color: AppColors.error),
+                ),
+                onTap: onTap,
+              ),
             ),
           ),
           const SizedBox(height: AppSpacing.xl),

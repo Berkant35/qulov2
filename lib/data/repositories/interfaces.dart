@@ -143,7 +143,7 @@ abstract class IQuizRepository {
     int? timeSpent,
   });
 
-  Future<Result<QuizAnswerResponse>> rescueWithSkip(String sessionId);
+  Future<Result<QuizAnswerResponse>> rescueWithSkip(String sessionId, {String powerType = 'SKIP'});
 
   Future<Result<QuizAnswerResponse>> failSession(String sessionId);
 

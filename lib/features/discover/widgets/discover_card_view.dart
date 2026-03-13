@@ -7,7 +7,9 @@ import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/widgets/circle_icon_button.dart';
 import 'package:qulo_v2/core/network/result.dart';
+import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/locked_feature_button.dart';
+import 'package:qulo_v2/core/widgets/safe_tap_button.dart';
 import 'package:qulo_v2/data/models/discover_model.dart';
 import 'package:qulo_v2/features/diamonds/widgets/paywall_bottom_sheet.dart';
 import 'package:qulo_v2/providers/daily_stats_provider.dart';
@@ -37,28 +39,21 @@ class DiscoverCardView extends ConsumerWidget {
       child: Column(
         children: [
           Expanded(child: ProfileCard(card: card)),
-          DiscoverSolveButton(
-            label: context.tr('solve_questions'),
+          SafeTapButton(
             onTap: () => _navigateToQuiz(ref),
+            builder: (context, isLoading, onTap) => DiscoverSolveButton(
+              label: context.tr('solve_questions'),
+              onTap: onTap,
+              isLoading: isLoading,
+            ),
           ),
           const SizedBox(height: AppSpacing.sm),
           DiscoverActionButtons(
             canUndo: canUndo,
-            onUndo: () => _handleUndo(context, ref),
-            onReject: () async {
+            onUndo: () async => _handleUndo(context, ref),
+            onReject: () {
               onSwipeLeft();
-              final result = await ref.read(discoverProvider.notifier).swipe(
-                targetId: card.userId,
-                action: 'REJECT',
-              );
-              result.when(
-                success: (_) {},
-                failure: (f) {
-                  if (f is ServerFailure && f.code == 'DAILY_LIMIT_REACHED') {
-                    PaywallBottomSheetContent.show(ref, trigger: 'swipe_limit');
-                  }
-                },
-              );
+              ref.read(discoverProvider.notifier).rejectCard(card.userId);
             },
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -67,7 +62,7 @@ class DiscoverCardView extends ConsumerWidget {
     );
   }
 
-  void _navigateToQuiz(WidgetRef ref) async {
+  Future<void> _navigateToQuiz(WidgetRef ref) async {
     onSwipeRight();
     final result = await ref.read(discoverProvider.notifier).swipe(
       targetId: card.userId,
@@ -88,7 +83,7 @@ class DiscoverCardView extends ConsumerWidget {
     );
   }
 
-  void _handleUndo(BuildContext context, WidgetRef ref) async {
+  Future<void> _handleUndo(BuildContext context, WidgetRef ref) async {
     final result = await ref.read(discoverProvider.notifier).undoSwipe();
     result.when(
       success: (_) {
@@ -107,12 +102,14 @@ class DiscoverCardView extends ConsumerWidget {
 
 class DiscoverSolveButton extends StatelessWidget {
   final String label;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
+  final bool isLoading;
 
   const DiscoverSolveButton({
     super.key,
     required this.label,
-    required this.onTap,
+    this.onTap,
+    this.isLoading = false,
   });
 
   @override
@@ -133,13 +130,15 @@ class DiscoverSolveButton extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
             child: Center(
-              child: Text(
-                label,
-                style: theme.textTheme.bodyLarge?.copyWith(
-                  color: theme.colorScheme.onPrimary,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+              child: isLoading
+                  ? AppLoadingWidget.small()
+                  : Text(
+                      label,
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        color: theme.colorScheme.onPrimary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
             ),
           ),
         ),
@@ -150,7 +149,7 @@ class DiscoverSolveButton extends StatelessWidget {
 
 class DiscoverActionButtons extends ConsumerWidget {
   final VoidCallback onReject;
-  final VoidCallback onUndo;
+  final Future<void> Function() onUndo;
   final bool canUndo;
 
   const DiscoverActionButtons({
@@ -178,15 +177,18 @@ class DiscoverActionButtons extends ConsumerWidget {
             LockedFeatureButton(
               isLocked: !hasUndoRight,
               trigger: 'undo_locked',
-              child: CircleIconButton(
-                iconPath: QIcons.icArrowLeft,
-                iconColor: canUndo ? AppColors.warning : AppColors.textHint,
-                backgroundColor: Theme.of(context).colorScheme.surface,
-                borderColor: canUndo
-                    ? AppColors.warning
-                    : AppColors.textHint.withValues(alpha: 0.3),
-                size: 44,
-                onTap: canUndo ? onUndo : () {},
+              child: SafeTapButton(
+                onTap: canUndo ? onUndo : null,
+                builder: (context, isLoading, safeTap) => CircleIconButton(
+                  iconPath: QIcons.icArrowLeft,
+                  iconColor: canUndo && !isLoading ? AppColors.warning : AppColors.textHint,
+                  backgroundColor: Theme.of(context).colorScheme.surface,
+                  borderColor: canUndo && !isLoading
+                      ? AppColors.warning
+                      : AppColors.textHint.withValues(alpha: 0.3),
+                  size: 44,
+                  onTap: safeTap ?? () {},
+                ),
               ),
             ),
             const SizedBox(height: 4),

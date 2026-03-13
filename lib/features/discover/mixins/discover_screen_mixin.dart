@@ -84,7 +84,11 @@ mixin DiscoverScreenMixin on ConsumerState<DiscoverScreen> {
       ref.read(locationProvider.notifier).getCurrentLocation();
     } else {
       await ref.read(locationProvider.notifier).getCurrentLocation();
-      ref.read(discoverProvider.notifier).loadCards();
+      final isAlreadyLoading = ref.read(discoverProvider) is AsyncLoading;
+      final updatedState = ref.read(discoverProvider).valueOrNull;
+      if (!isAlreadyLoading && (updatedState == null || !updatedState.initialized)) {
+        ref.read(discoverProvider.notifier).loadCards();
+      }
     }
   }
 }

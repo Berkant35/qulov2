@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:qulo_v2/core/config/env.dart';
 import 'package:qulo_v2/core/network/interceptors/auth_interceptor.dart';
 import 'package:qulo_v2/core/network/interceptors/error_interceptor.dart';
+import 'package:qulo_v2/core/network/interceptors/idempotency_interceptor.dart';
 import 'package:qulo_v2/core/network/interceptors/log_interceptor.dart';
 import 'package:qulo_v2/core/network/result.dart';
 
@@ -34,6 +35,7 @@ class NetworkManager {
     ));
 
     _dio.interceptors.addAll([
+      IdempotencyInterceptor(),
       AuthInterceptor(_dio, onForceLogout: onForceLogout),
       AppLogInterceptor(),
       ErrorInterceptor(),

@@ -46,7 +46,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen>
     return AppScaffold(
       title: context.tr('discover'),
       padding: EdgeInsets.zero,
-      isLoading: discoverState is AsyncLoading || locationState.isLoading || isInitialLoad,
+      isLoading: discoverState is AsyncLoading || locationState.isLoading || isInitialLoad || (discoverState.valueOrNull?.isPrefetching == true && (discoverState.valueOrNull?.cards.isEmpty ?? false)),
       actions: const [PassportBadge()],
       body: (locationState.isLoading || isInitialLoad)
           ? const SizedBox.shrink()
@@ -61,6 +61,9 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen>
                 if (!discover.initialized) return const SizedBox.shrink();
 
                 if (discover.cards.isEmpty) {
+                  if (discover.isPrefetching) {
+                    return const SizedBox.shrink();
+                  }
                   onCardsEmpty();
                   return const DiscoverEmptyState();
                 }

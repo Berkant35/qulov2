@@ -147,18 +147,20 @@ class ProfileCard extends StatelessWidget {
               separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.xs),
               itemBuilder: (context, index) {
                 final category = info.categories[index];
-                return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
-                    border: Border.all(color: Colors.white.withValues(alpha: 0.25)),
-                  ),
-                  child: Text(
-                    context.tr('question_category_$category'),
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: Colors.white,
-                      fontSize: 10,
+                return Center(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.25)),
+                    ),
+                    child: Text(
+                      context.tr('question_category_$category'),
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: Colors.white,
+                        fontSize: 10,
+                      ),
                     ),
                   ),
                 );
@@ -172,7 +174,7 @@ class ProfileCard extends StatelessWidget {
           Wrap(
             spacing: AppSpacing.xs,
             children: info.languages.map((lang) => Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
               decoration: BoxDecoration(
                 color: Colors.white.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusFull),

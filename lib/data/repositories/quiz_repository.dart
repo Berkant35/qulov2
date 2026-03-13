@@ -50,9 +50,9 @@ class QuizRepository implements IQuizRepository {
   }
 
   @override
-  Future<Result<QuizAnswerResponse>> rescueWithSkip(String sessionId) async {
+  Future<Result<QuizAnswerResponse>> rescueWithSkip(String sessionId, {String powerType = 'SKIP'}) async {
     try {
-      final response = await _service.rescueWithSkip(sessionId);
+      final response = await _service.rescueWithSkip(sessionId, {'power_type': powerType});
       return Success(response);
     } on DioException catch (e) {
       return Failure(e.toAppFailure());

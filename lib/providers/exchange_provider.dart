@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/data/models/exchange_model.dart';
@@ -48,10 +49,12 @@ class ExchangeNotifier extends Notifier<ExchangeState> {
     final invResult = results[0] as Result<InventoryResponse>;
     final ratesResult = results[1] as Result<RatesResponse>;
 
+    final newInventory = invResult is Success<InventoryResponse>
+        ? invResult.data.inventory
+        : state.inventory;
+    debugPrint('[Exchange] inventory updated: ${newInventory.map((i) => "${i.powerName}:${i.count}").toList()}');
     state = state.copyWith(
-      inventory: invResult is Success<InventoryResponse>
-          ? invResult.data.inventory
-          : state.inventory,
+      inventory: newInventory,
       rates: ratesResult is Success<RatesResponse>
           ? ratesResult.data
           : state.rates,
@@ -68,18 +71,18 @@ class ExchangeNotifier extends Notifier<ExchangeState> {
     return false;
   }
 
-  Future<bool> buyPower(String powerName, String diamondType, int quantity) async {
+  Future<Result<BuyPowerResponse>> buyPower(String powerName, String diamondType, int quantity) async {
     final result = await ref.read(exchangeRepositoryProvider).buyPower(
       powerName,
       diamondType,
       quantity,
     );
     if (result is Success<BuyPowerResponse>) {
+      debugPrint('[Exchange] buyPower success, fetching inventory...');
       await fetchAll();
       await ref.read(diamondProvider.notifier).fetchBalance();
-      return true;
     }
-    return false;
+    return result;
   }
 }
 

@@ -87,10 +87,10 @@ class QuizNotifier extends Notifier<QuizState> {
     return result;
   }
 
-  Future<Result<QuizAnswerResponse>> rescue() async {
+  Future<Result<QuizAnswerResponse>> rescue({String powerType = 'SKIP'}) async {
     final sessionId = state.sessionId;
     if (sessionId == null) return Failure(const UnknownFailure(message: 'No active session'));
-    final result = await ref.read(quizRepositoryProvider).rescueWithSkip(sessionId);
+    final result = await ref.read(quizRepositoryProvider).rescueWithSkip(sessionId, powerType: powerType);
     result.when(
       success: (data) => state = state.copyWith(lastAnswer: data),
       failure: (f) => state = state.copyWith(failure: f),

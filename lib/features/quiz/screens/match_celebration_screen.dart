@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
@@ -90,7 +91,7 @@ class _MatchCelebrationScreenState extends State<MatchCelebrationScreen>
     AnalyticsManager.instance.logEvent(
       AnalyticsEvents.matchCelebrationShown,
       params: {
-        AnalyticsEvents.paramMatched: widget.matched,
+        AnalyticsEvents.paramMatched: widget.matched.toString(),
         AnalyticsEvents.paramBadge: widget.performanceBadge,
       },
     );
@@ -200,7 +201,7 @@ class _MatchCelebrationScreenState extends State<MatchCelebrationScreen>
                 Icon(config.icon, size: 24, color: Colors.white),
                 const SizedBox(width: AppSpacing.sm),
                 Text(
-                  config.label,
+                  context.tr(config.labelKey),
                   style: theme.textTheme.titleMedium?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w800,
@@ -213,7 +214,7 @@ class _MatchCelebrationScreenState extends State<MatchCelebrationScreen>
           const SizedBox(height: AppSpacing.lg),
           // Title text
           Text(
-            widget.matched ? "It's a Match!" : 'Quiz Failed',
+            widget.matched ? context.tr('quiz_match_title') : context.tr('quiz_failed_title'),
             style: theme.textTheme.headlineMedium?.copyWith(
               color: widget.matched ? AppColors.primary : AppColors.error,
               fontWeight: FontWeight.bold,
@@ -310,14 +311,14 @@ class _MatchCelebrationScreenState extends State<MatchCelebrationScreen>
             icon: Icons.check_circle_outline,
             iconColor: AppColors.secondary,
             label:
-                'Correct: ${widget.totalCorrect}/${widget.totalQuestions}',
+                context.tr('quiz_stat_correct').replaceAll('{correct}', '${widget.totalCorrect}').replaceAll('{total}', '${widget.totalQuestions}'),
             theme: theme,
           ),
           const SizedBox(height: AppSpacing.md),
           _StatRow(
             icon: Icons.timer_outlined,
             iconColor: AppColors.info,
-            label: 'Time spent: ${widget.totalTimeSpent}s',
+            label: context.tr('quiz_stat_time').replaceAll('{time}', '${widget.totalTimeSpent}'),
             theme: theme,
           ),
           if (widget.powersUsed > 0) ...[
@@ -325,7 +326,7 @@ class _MatchCelebrationScreenState extends State<MatchCelebrationScreen>
             _StatRow(
               icon: Icons.bolt,
               iconColor: AppColors.primary,
-              label: 'Powers used: ${widget.powersUsed}',
+              label: context.tr('quiz_stat_powers').replaceAll('{count}', '${widget.powersUsed}'),
               theme: theme,
             ),
           ],
@@ -358,7 +359,7 @@ class _MatchCelebrationScreenState extends State<MatchCelebrationScreen>
                 ),
               ),
               child: Text(
-                'Send a Message',
+                context.tr('quiz_send_message'),
                 style: theme.textTheme.titleMedium?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
@@ -388,7 +389,7 @@ class _MatchCelebrationScreenState extends State<MatchCelebrationScreen>
               ),
             ),
             child: Text(
-              'Go Back',
+              context.tr('quiz_go_back'),
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
@@ -403,34 +404,34 @@ class _MatchCelebrationScreenState extends State<MatchCelebrationScreen>
     if (widget.matched) {
       return switch (widget.performanceBadge) {
         'flawless' => _BadgeConfig(
-            label: 'FLAWLESS',
+            labelKey: 'quiz_badge_flawless',
             icon: Icons.stars,
             gradientColors: [Colors.amber, Colors.orange],
           ),
         'speed_solver' => _BadgeConfig(
-            label: 'SPEED SOLVER',
+            labelKey: 'quiz_badge_speed_solver',
             icon: Icons.bolt,
             gradientColors: [Colors.blue, Colors.cyan],
           ),
         'power_master' => _BadgeConfig(
-            label: 'POWER MASTER',
+            labelKey: 'quiz_badge_power_master',
             icon: Icons.auto_awesome,
             gradientColors: [AppColors.primary, Colors.deepPurple],
           ),
         'determined' => _BadgeConfig(
-            label: 'DETERMINED',
+            labelKey: 'quiz_badge_determined',
             icon: Icons.psychology,
             gradientColors: [Colors.green, Colors.teal],
           ),
         _ => _BadgeConfig(
-            label: 'MATCHED',
+            labelKey: 'quiz_badge_matched',
             icon: Icons.favorite,
             gradientColors: [AppColors.primary, Colors.pink],
           ),
       };
     }
     return _BadgeConfig(
-      label: 'FAILED',
+      labelKey: 'quiz_badge_failed',
       icon: Icons.close,
       gradientColors: [AppColors.error, Colors.red],
     );
@@ -438,12 +439,12 @@ class _MatchCelebrationScreenState extends State<MatchCelebrationScreen>
 }
 
 class _BadgeConfig {
-  final String label;
+  final String labelKey;
   final IconData icon;
   final List<Color> gradientColors;
 
   const _BadgeConfig({
-    required this.label,
+    required this.labelKey,
     required this.icon,
     required this.gradientColors,
   });

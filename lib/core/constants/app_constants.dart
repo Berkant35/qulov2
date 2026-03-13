@@ -11,7 +11,9 @@ abstract final class AppConstants {
   static const List<int> timePresets = [15, 30, 60, 90];
   static const List<String> questionCategories = [
     'personality', 'music', 'film', 'sports', 'travel',
-    'food', 'technology', 'general', 'other',
+    'food', 'technology', 'general', 'fun', 'entertainment',
+    'lifestyle', 'humor', 'hobby', 'science', 'history',
+    'art', 'nature', 'other',
   ];
 
   static const supportedQuestionLocales = [

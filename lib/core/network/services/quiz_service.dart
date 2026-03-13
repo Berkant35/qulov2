@@ -26,6 +26,7 @@ abstract class QuizService {
   @POST('/quiz/{sessionId}/rescue')
   Future<QuizAnswerResponse> rescueWithSkip(
     @Path('sessionId') String sessionId,
+    @Body() Map<String, dynamic> data,
   );
 
   @POST('/quiz/{sessionId}/fail')

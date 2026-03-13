@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/navigation/navigation.dart';
+import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
@@ -8,6 +10,7 @@ import 'package:qulo_v2/core/widgets/power_icon.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/data/models/exchange_model.dart';
 import 'package:qulo_v2/providers/exchange_provider.dart';
+import 'package:qulo_v2/routing/route_names.dart';
 
 class PowerShopCard extends ConsumerStatefulWidget {
   final ExchangeRatePower power;
@@ -58,19 +61,49 @@ class _PowerShopCardState extends ConsumerState<PowerShopCard> {
     if (_buyingWith != null) return;
     setState(() => _buyingWith = diamondType);
 
-    final success = await ref
+    final result = await ref
         .read(exchangeProvider.notifier)
-        .buyPower(widget.power.name, diamondType, 1);
+        .buyPower(widget.power.name, diamondType.toUpperCase(), 1);
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            success
-                ? context.tr('purchase_success')
-                : context.tr('purchase_failed'),
-          ),
-        ),
+      result.when(
+        success: (_) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(context.tr('purchase_success'))),
+          );
+        },
+        failure: (f) {
+          if (f is ServerFailure && f.code == 'INSUFFICIENT_DIAMONDS') {
+            final params = f.params as Map<String, dynamic>?;
+            final required = params?['required'] ?? '';
+            final current = params?['current'] ?? '';
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  context.tr('purchase_insufficient_diamonds')
+                      .replaceAll('{required}', '$required')
+                      .replaceAll('{current}', '$current'),
+                ),
+                backgroundColor: AppColors.error,
+                action: SnackBarAction(
+                  label: context.tr('purchase_get_diamonds'),
+                  textColor: Colors.white,
+                  onPressed: () {
+                    ref.read(navigationServiceProvider).go(RouteNames.diamonds);
+                  },
+                ),
+                duration: const Duration(seconds: 4),
+              ),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(f.message ?? context.tr('purchase_failed')),
+                backgroundColor: AppColors.error,
+              ),
+            );
+          }
+        },
       );
       setState(() => _buyingWith = null);
     }

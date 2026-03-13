@@ -25,6 +25,7 @@ import 'package:qulo_v2/features/chat/widgets/voice_message_widget.dart';
 import 'package:qulo_v2/features/chat/widgets/voice_recorder_overlay.dart';
 import 'package:qulo_v2/features/chat/sheets/create_question_sheet.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
+import 'package:qulo_v2/core/widgets/safe_tap_button.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   final String matchId;
@@ -727,14 +728,19 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     ),
                   ),
                   if (_hasText)
-                    Container(
-                      decoration: const BoxDecoration(
-                        gradient: AppColors.primaryButtonGradient,
-                        shape: BoxShape.circle,
-                      ),
-                      child: IconButton(
-                        onPressed: _send,
-                        icon: Icon(Icons.send, color: Theme.of(context).colorScheme.onPrimary, size: 20),
+                    SafeTapButton(
+                      onTap: _send,
+                      builder: (context, isLoading, onTap) => Container(
+                        decoration: const BoxDecoration(
+                          gradient: AppColors.primaryButtonGradient,
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          onPressed: onTap,
+                          icon: isLoading
+                              ? const AppLoadingWidget.small()
+                              : Icon(Icons.send, color: Theme.of(context).colorScheme.onPrimary, size: 20),
+                        ),
                       ),
                     )
                   else

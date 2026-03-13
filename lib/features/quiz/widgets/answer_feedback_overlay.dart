@@ -1,16 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
+import 'package:qulo_v2/core/widgets/diamond_icon.dart';
 import 'package:qulo_v2/core/widgets/power_icon.dart';
+import 'package:qulo_v2/core/widgets/q_icon.dart';
+import 'package:qulo_v2/core/widgets/safe_tap_button.dart';
+
+class RescuePowerOption {
+  final PowerType type;
+  final int inventoryCount;
+  final int diamondCost;
+
+  const RescuePowerOption({
+    required this.type,
+    required this.inventoryCount,
+    required this.diamondCost,
+  });
+
+  bool get hasInventory => inventoryCount > 0;
+}
 
 class AnswerFeedbackOverlay extends StatefulWidget {
   final bool isCorrect;
   final String? correctAnswerText;
   final VoidCallback onComplete;
   final bool canRescue;
-  final int skipInventoryCount;
-  final int skipDiamondCost;
-  final VoidCallback? onRescue;
+  final RescuePowerOption? skipOption;
+  final RescuePowerOption? skipAllOption;
+  final void Function(String power)? onRescue;
   final VoidCallback? onDeclineRescue;
 
   const AnswerFeedbackOverlay({
@@ -19,8 +38,8 @@ class AnswerFeedbackOverlay extends StatefulWidget {
     this.correctAnswerText,
     required this.onComplete,
     this.canRescue = false,
-    this.skipInventoryCount = 0,
-    this.skipDiamondCost = 20,
+    this.skipOption,
+    this.skipAllOption,
     this.onRescue,
     this.onDeclineRescue,
   });
@@ -39,8 +58,9 @@ class _AnswerFeedbackOverlayState extends State<AnswerFeedbackOverlay>
   void initState() {
     super.initState();
 
-    final duration =
-        widget.isCorrect ? const Duration(milliseconds: 800) : const Duration(milliseconds: 1000);
+    final duration = widget.isCorrect
+        ? const Duration(milliseconds: 800)
+        : const Duration(milliseconds: 1000);
 
     _controller = AnimationController(vsync: this, duration: duration);
 
@@ -65,7 +85,6 @@ class _AnswerFeedbackOverlayState extends State<AnswerFeedbackOverlay>
           if (mounted) widget.onComplete();
         });
       }
-      // canRescue=true: don't auto-close, user will tap rescue or decline
     });
   }
 
@@ -80,7 +99,9 @@ class _AnswerFeedbackOverlayState extends State<AnswerFeedbackOverlay>
     final theme = Theme.of(context);
     final color = widget.isCorrect ? AppColors.success : AppColors.error;
     final icon = widget.isCorrect ? Icons.check_rounded : Icons.close_rounded;
-    final label = widget.isCorrect ? 'Correct!' : 'Wrong!';
+    final label = widget.isCorrect
+        ? context.tr('quiz_correct')
+        : context.tr('quiz_wrong');
 
     return AnimatedBuilder(
       animation: _controller,
@@ -121,7 +142,7 @@ class _AnswerFeedbackOverlayState extends State<AnswerFeedbackOverlay>
                     ),
                     if (!widget.isCorrect && widget.canRescue) ...[
                       const SizedBox(height: AppSpacing.xxl),
-                      _buildRescueCard(theme),
+                      _buildRescueCards(theme),
                     ],
                   ],
                 ),
@@ -133,72 +154,167 @@ class _AnswerFeedbackOverlayState extends State<AnswerFeedbackOverlay>
     );
   }
 
-  Widget _buildRescueCard(ThemeData theme) {
-    final hasInventory = widget.skipInventoryCount > 0;
-
+  Widget _buildRescueCards(ThemeData theme) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              PowerIcon(type: PowerType.skip, size: 28),
-              const SizedBox(width: AppSpacing.sm),
-              Text(
-                'Skip ile Kurtul!',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.sm),
           Text(
-            'Bu soruyu geçerek devam edebilirsin.',
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: widget.onRescue,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: hasInventory ? AppColors.success : AppColors.primary,
-                minimumSize: const Size(double.infinity, 48),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                ),
-              ),
-              child: Text(
-                hasInventory
-                    ? 'SKIP Kullan (×${widget.skipInventoryCount})'
-                    : 'SKIP Satın Al — ${widget.skipDiamondCost} 💎',
-                style: theme.textTheme.titleSmall?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+            context.tr('quiz_rescue_title'),
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w700,
             ),
           ),
+          const SizedBox(height: AppSpacing.md),
+          if (widget.skipOption != null)
+            _RescueOptionTile(
+              option: widget.skipOption!,
+              label: context.tr('quiz_rescue_skip'),
+              onTap: () async => widget.onRescue?.call('SKIP'),
+            ),
           const SizedBox(height: AppSpacing.sm),
-          TextButton(
-            onPressed: widget.onDeclineRescue,
-            child: Text(
-              'Vazgeç',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
+          if (widget.skipAllOption != null)
+            _RescueOptionTile(
+              option: widget.skipAllOption!,
+              label: context.tr('quiz_rescue_skip_all'),
+              onTap: () async => widget.onRescue?.call('SKIP_ALL'),
+            ),
+          const SizedBox(height: AppSpacing.md),
+          SafeTapButton(
+            onTap: widget.onDeclineRescue != null
+                ? () async => widget.onDeclineRescue!()
+                : null,
+            builder: (context, isLoading, safeTap) => TextButton(
+              onPressed: safeTap,
+              child: isLoading
+                  ? AppLoadingWidget.small()
+                  : Text(
+                      context.tr('quiz_rescue_decline'),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _RescueOptionTile extends StatelessWidget {
+  final RescuePowerOption option;
+  final String label;
+  final Future<void> Function() onTap;
+
+  const _RescueOptionTile({
+    required this.option,
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final color = option.type.color;
+
+    return SafeTapButton(
+      onTap: onTap,
+      builder: (context, isLoading, safeTap) => Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: safeTap,
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.sm + 2,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+              border: Border.all(
+                color: color.withValues(alpha: 0.3),
               ),
+              color: color.withValues(alpha: 0.08),
+            ),
+            child: Row(
+              children: [
+                QIcon(option.type.iconPath, size: 22, color: color),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                isLoading
+                    ? AppLoadingWidget.small()
+                    : _CostBadge(option: option),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CostBadge extends StatelessWidget {
+  final RescuePowerOption option;
+
+  const _CostBadge({required this.option});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    if (option.hasInventory) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+        decoration: BoxDecoration(
+          color: AppColors.success.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+          border: Border.all(
+            color: AppColors.success.withValues(alpha: 0.3),
+          ),
+        ),
+        child: Text(
+          '${option.inventoryCount}',
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: AppColors.success,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: AppColors.primary.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+        border: Border.all(
+          color: AppColors.primary.withValues(alpha: 0.3),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const DiamondIcon.purple(size: 12, showGlow: false),
+          const SizedBox(width: 3),
+          Text(
+            '${option.diamondCost}',
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: AppColors.primary,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],

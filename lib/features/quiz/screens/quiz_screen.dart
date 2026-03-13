@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
@@ -8,7 +10,9 @@ import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
+import 'package:qulo_v2/core/widgets/safe_tap_button.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
+import 'package:qulo_v2/core/widgets/power_icon.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/data/models/quiz_model.dart';
 import 'package:qulo_v2/providers/quiz_provider.dart';
@@ -48,6 +52,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
   List<int> _removedIndices = [];
   String? _hintText;
   // Celebration state
+  bool _isSheetOpen = false;
   bool _showCelebration = false;
   bool _celebrationMatched = false;
   String _celebrationBadge = 'none';
@@ -56,8 +61,10 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
   void initState() {
     super.initState();
     Future.microtask(() async {
+      if (!mounted) return;
       ref.read(exchangeProvider.notifier).fetchAll();
       await ref.read(quizProvider.notifier).startSession(widget.targetId);
+      if (!mounted) return;
       _startQuestionTimer();
       _sessionStopwatch.start();
       AnalyticsManager.instance.logEvent(
@@ -77,7 +84,6 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
   @override
   void dispose() {
     _stopwatch.stop();
-    ref.read(quizProvider.notifier).reset();
     super.dispose();
   }
 
@@ -134,11 +140,14 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
         );
 
     if (!mounted) return;
-    setState(() => _isSubmitting = false);
 
     result.when(
-      success: (data) => _handleAnswerResponse(data),
+      success: (data) {
+        setState(() => _isSubmitting = false);
+        _handleAnswerResponse(data);
+      },
       failure: (_) {
+        setState(() => _isSubmitting = false);
         _timerKey.currentState?.resume();
       },
     );
@@ -147,6 +156,12 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
   // ── Power kullanımı (cevap göndermeden) ──────────────────────
   Future<void> _usePower(String power) async {
     if (_isSubmitting) return;
+
+    // SKIP/SKIP_ALL gibi sonlandırıcı power'lar için timer'ı durdur
+    final isTerminating = power == 'SKIP' || power == 'SKIP_ALL';
+    if (isTerminating) {
+      _timerKey.currentState?.pause();
+    }
 
     setState(() => _isSubmitting = true);
 
@@ -160,6 +175,9 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
 
     result.when(
       success: (data) {
+        // Power kullanıldı — envanter sayısını güncelle
+        ref.read(exchangeProvider.notifier).fetchAll();
+
         if (data.awaitingAnswer == true) {
           // Power efekti: ORACLE, HALF, HINT, TIME_EXTEND
           _powersUsed++;
@@ -188,7 +206,20 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
           _handleSessionTransition(data.sessionStatus, data.badge);
         }
       },
-      failure: (_) {},
+      failure: (f) {
+        // Hata durumunda timer'ı geri başlat
+        if (isTerminating) {
+          _timerKey.currentState?.resume();
+        }
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(f.message ?? context.tr('quiz_power_failed')),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        }
+      },
     );
   }
 
@@ -237,11 +268,11 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
     }
   }
 
-  // ── SKIP Rescue — kullanıcı kurtulmayı kabul etti ───────────
-  Future<void> _onRescue() async {
+  // ── Rescue — kullanıcı SKIP veya SKIP_ALL ile kurtulma ──────
+  Future<void> _onRescue(String powerType) async {
     setState(() => _isSubmitting = true);
 
-    final result = await ref.read(quizProvider.notifier).rescue();
+    final result = await ref.read(quizProvider.notifier).rescue(powerType: powerType);
 
     if (!mounted) return;
     setState(() => _isSubmitting = false);
@@ -250,6 +281,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
       success: (data) {
         _powersUsed++;
         _totalCorrect++; // yanlış cevap override edildi
+        ref.read(exchangeProvider.notifier).fetchAll();
         _resetQuestionState();
 
         if (data.sessionStatus == 'COMPLETED') {
@@ -259,9 +291,16 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
           _startQuestionTimer();
         }
       },
-      failure: (_) {
-        // Rescue başarısız — session'ı fail yap
-        _onDeclineRescue();
+      failure: (f) {
+        // Rescue başarısız — kullanıcıya hata göster, quiz'i fail yapma
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(f.message ?? context.tr('quiz_rescue_failed')),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        }
       },
     );
   }
@@ -344,10 +383,10 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
     final confirm = await nav.showAppDialog<bool>(
       ConfirmDialog(
         name: 'quiz_exit',
-        title: 'Emin misin?',
-        message: 'Matchleşme şansından vazgeçiyorsun!',
-        confirmText: 'Vazgeç',
-        cancelText: 'Devam Et',
+        title: context.tr('quiz_exit_title'),
+        message: context.tr('quiz_exit_message'),
+        confirmText: context.tr('quiz_exit_confirm'),
+        cancelText: context.tr('quiz_exit_cancel'),
         isDestructive: true,
       ),
     );
@@ -364,11 +403,11 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
     }
   }
 
-  int _getSkipCost() {
+  int _getPowerCost(String powerName) {
     final rates = ref.read(exchangeProvider).rates;
     if (rates != null) {
-      final skipPower = rates.powers.where((p) => p.name == 'SKIP').firstOrNull;
-      if (skipPower != null) return skipPower.baseCost;
+      final power = rates.powers.where((p) => p.name == powerName).firstOrNull;
+      if (power != null) return power.purpleCost;
     }
     return 20;
   }
@@ -483,26 +522,29 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                         if (_selectedAnswerIndex != null)
                           Padding(
                             padding: const EdgeInsets.only(top: AppSpacing.sm),
-                            child: ElevatedButton(
-                              onPressed: _isSubmitting ? null : _submitAnswer,
-                              style: ElevatedButton.styleFrom(
-                                minimumSize: const Size(double.infinity, 52),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.circular(AppSpacing.radiusMd),
+                            child: SafeTapButton(
+                              onTap: _isSubmitting ? null : () => _submitAnswer(),
+                              builder: (context, isLoading, onTap) => ElevatedButton(
+                                onPressed: onTap,
+                                style: ElevatedButton.styleFrom(
+                                  minimumSize: const Size(double.infinity, 52),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(AppSpacing.radiusMd),
+                                  ),
+                                  backgroundColor: AppColors.primary,
                                 ),
-                                backgroundColor: AppColors.primary,
-                              ),
-                              child: _isSubmitting
-                                  ? AppLoadingWidget.small()
-                                  : Text(
-                                      context.tr('quiz_confirm_answer'),
-                                      style:
-                                          theme.textTheme.titleMedium?.copyWith(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600,
+                                child: (isLoading || _isSubmitting)
+                                    ? AppLoadingWidget.small()
+                                    : Text(
+                                        context.tr('quiz_confirm_answer'),
+                                        style:
+                                            theme.textTheme.titleMedium?.copyWith(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600,
+                                        ),
                                       ),
-                                    ),
+                              ),
                             ),
                           ),
                         const Spacer(),
@@ -510,18 +552,42 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                           sessionId: quiz.sessionId!,
                           hasHint: question.hasHint,
                           onPowerUsed: _usePower,
+                          onSheetOpening: () {
+                            _timerKey.currentState?.pause();
+                            setState(() => _isSheetOpen = true);
+                          },
+                          onSheetClosed: () {
+                            _timerKey.currentState?.resume();
+                            setState(() => _isSheetOpen = false);
+                          },
                         ),
                       ],
                     ),
                   ),
+                  if (_isSheetOpen)
+                    Positioned.fill(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                        child: Container(
+                          color: Colors.black.withValues(alpha: 0.3),
+                        ),
+                      ),
+                    ),
                   if (_showFeedback)
                     AnswerFeedbackOverlay(
                       isCorrect: _feedbackCorrect,
                       onComplete: _onFeedbackComplete,
                       canRescue: _canRescue,
-                      skipInventoryCount:
-                          ref.read(exchangeProvider).getCount('SKIP'),
-                      skipDiamondCost: _getSkipCost(),
+                      skipOption: RescuePowerOption(
+                        type: PowerType.skip,
+                        inventoryCount: ref.read(exchangeProvider).getCount('SKIP'),
+                        diamondCost: _getPowerCost('SKIP'),
+                      ),
+                      skipAllOption: RescuePowerOption(
+                        type: PowerType.skipAll,
+                        inventoryCount: ref.read(exchangeProvider).getCount('SKIP_ALL'),
+                        diamondCost: _getPowerCost('SKIP_ALL'),
+                      ),
                       onRescue: _onRescue,
                       onDeclineRescue: _onDeclineRescue,
                     ),

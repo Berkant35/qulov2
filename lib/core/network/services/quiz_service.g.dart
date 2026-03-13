@@ -104,11 +104,15 @@ class _QuizService implements QuizService {
   }
 
   @override
-  Future<QuizAnswerResponse> rescueWithSkip(String sessionId) async {
+  Future<QuizAnswerResponse> rescueWithSkip(
+    String sessionId,
+    Map<String, dynamic> data,
+  ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
+    final _data = <String, dynamic>{};
+    _data.addAll(data);
     final _options = _setStreamType<QuizAnswerResponse>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
