@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:qulo_v2/core/widgets/crop_screen.dart';
 
+export 'package:image_picker/image_picker.dart' show ImageSource;
+
 class PickedImage {
   final Uint8List bytes;
   final String mimeType;

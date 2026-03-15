@@ -105,11 +105,14 @@ export class ChatQuestionService {
       throw Errors.SERVER_ERROR();
     }
 
-    // Send push to other user (fire-and-forget)
+    // Send push to other user (fire-and-forget with sender name)
     const otherUserId = match.user1_id === senderId ? match.user2_id : match.user1_id;
-    NotificationService.sendPush(otherUserId, "new_message", {}, undefined, {
-      actionUrl: `/matches/chat/${matchId}`,
-    }).catch(() => {});
+    (async () => {
+      const { data: sender } = await supabase.from("users").select("name").eq("id", senderId).single();
+      await NotificationService.sendPush(otherUserId, "new_message", { name: sender?.name ?? "Someone" }, undefined, {
+        actionUrl: `/matches/chat/${matchId}`,
+      });
+    })().catch(() => {});
 
     return question;
   }

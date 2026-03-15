@@ -7,6 +7,7 @@ import { subscriptionService } from "./subscription.service.js";
 import { userLanguageService } from "./user-language.service.js";
 
 const PAGE_SIZE = 10;
+const ONLINE_THRESHOLD_MS = 5 * 60 * 1000;
 
 interface CandidateRow {
   id: string;
@@ -381,6 +382,8 @@ export class MatchingService {
 
     if (!matches || matches.length === 0) return [];
 
+    const matchIds = matches.map((m) => m.id as string);
+
     // Gather other user IDs
     const otherIds = matches.map((m) =>
       m.user1_id === userId ? (m.user2_id as string) : (m.user1_id as string),
@@ -389,7 +392,7 @@ export class MatchingService {
     // Fetch basic info for other users
     const { data: others } = await supabase
       .from("users")
-      .select("id, name, age, city, photos, bio, is_online, last_seen_at")
+      .select("id, name, age, city, photos, bio, last_seen_at")
       .in("id", otherIds);
 
     const otherMap = new Map<string, (typeof others extends (infer U)[] | null ? U : never)>();
@@ -399,9 +402,55 @@ export class MatchingService {
       }
     }
 
+    // Fetch last message per match using DISTINCT ON
+    const { data: lastMessages } = await supabase
+      .from("messages")
+      .select("match_id, content, sender_id, created_at, is_image")
+      .in("match_id", matchIds)
+      .is("deleted_at", null)
+      .order("match_id")
+      .order("created_at", { ascending: false });
+
+    // Build last message map (first message per match_id = most recent)
+    const lastMsgMap = new Map<string, typeof lastMessages extends (infer U)[] | null ? U : never>();
+    if (lastMessages) {
+      for (const msg of lastMessages) {
+        const mid = msg.match_id as string;
+        if (!lastMsgMap.has(mid)) {
+          lastMsgMap.set(mid, msg);
+        }
+      }
+    }
+
+    // Fetch unread counts per match
+    const { data: unreadRows } = await supabase
+      .from("messages")
+      .select("match_id")
+      .in("match_id", matchIds)
+      .neq("sender_id", userId)
+      .is("read_at", null)
+      .is("deleted_at", null);
+
+    const unreadMap = new Map<string, number>();
+    if (unreadRows) {
+      for (const row of unreadRows) {
+        const mid = row.match_id as string;
+        unreadMap.set(mid, (unreadMap.get(mid) ?? 0) + 1);
+      }
+    }
+
+    const now = Date.now();
+
     return matches.map((m) => {
       const otherId = m.user1_id === userId ? (m.user2_id as string) : (m.user1_id as string);
       const other = otherMap.get(otherId);
+      const lastMsg = lastMsgMap.get(m.id as string);
+      const unread = unreadMap.get(m.id as string) ?? 0;
+
+      const isOnline = other?.last_seen_at
+        ? now - new Date(other.last_seen_at as string).getTime() < ONLINE_THRESHOLD_MS
+        : false;
+
       return {
         match_id: m.id,
         matched_at: m.matched_at,
@@ -413,10 +462,15 @@ export class MatchingService {
               city: other.city,
               photos: other.photos,
               bio: other.bio,
-              is_online: other.is_online,
+              is_online: isOnline,
               last_seen: other.last_seen_at,
             }
           : null,
+        last_message: lastMsg?.content ?? null,
+        last_message_sent_at: lastMsg?.created_at ?? null,
+        last_message_sender_id: lastMsg?.sender_id ?? null,
+        last_message_is_image: lastMsg?.is_image ?? false,
+        unread_count: unread,
       };
     });
   }

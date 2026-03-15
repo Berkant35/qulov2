@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
@@ -21,9 +20,10 @@ import 'package:qulo_v2/features/diamonds/widgets/subscription_banner.dart';
 import 'package:qulo_v2/features/diamonds/widgets/purchase_grid.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/features/diamonds/widgets/transaction_tile.dart';
 import 'package:qulo_v2/core/widgets/referral_invite_card.dart';
 import 'package:qulo_v2/providers/referral_provider.dart';
-import 'package:share_plus/share_plus.dart';
+import 'package:qulo_v2/providers/api_provider.dart';
 
 class DiamondsScreen extends ConsumerStatefulWidget {
   const DiamondsScreen({super.key});
@@ -72,7 +72,7 @@ class _DiamondsScreenState extends ConsumerState<DiamondsScreen> {
   }
 
   void _onViewPlans() {
-    context.pushNamed(RouteNames.subscription);
+    ref.read(navigationServiceProvider).go(RouteNames.subscription);
   }
 
   Future<void> _onPurchase(PurchasePackage package) async {
@@ -213,7 +213,7 @@ class _DiamondsScreenState extends ConsumerState<DiamondsScreen> {
                       final code = referralState.code!;
                       final message =
                           "Qulo'ya katıl! Davet kodumu kullan, ikimize de 25 mor elmas hediye: $code\nhttps://qulo.app/invite/$code";
-                      Share.share(message);
+                      ref.read(shareManagerProvider).share(message);
                     }
                   },
                 ),
@@ -276,54 +276,11 @@ class _DiamondsScreenState extends ConsumerState<DiamondsScreen> {
               )
             else
               ..._history.take(5).map(
-                    (tx) => _TransactionTile(transaction: tx),
+                    (tx) => TransactionTile(transaction: tx),
                   ),
 
             const SizedBox(height: AppSpacing.xl),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _TransactionTile extends StatelessWidget {
-  final DiamondTransaction transaction;
-
-  const _TransactionTile({required this.transaction});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isPositive = transaction.amount > 0;
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-      child: Container(
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surface,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-        ),
-        child: ListTile(
-          dense: true,
-          leading: QIcon(
-            isPositive ? QIcons.icPlusCircle : QIcons.icMinusCircle,
-            color: isPositive ? AppColors.success : AppColors.error,
-          ),
-          title: Text(transaction.reason),
-          subtitle: Text(
-            transaction.type,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
-          trailing: Text(
-            '${isPositive ? '+' : ''}${transaction.amount}',
-            style: theme.textTheme.titleSmall?.copyWith(
-              color: isPositive ? AppColors.success : AppColors.error,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
         ),
       ),
     );

@@ -105,10 +105,17 @@ export class ChatService {
     const otherUserId = match.user1_id === userId ? match.user2_id : match.user1_id;
     const pushType = isImage ? "new_message_image" : "new_message";
 
-    // Fire-and-forget push notification
-    NotificationService.sendPush(otherUserId, pushType, {}, undefined, {
-      actionUrl: `/matches/chat/${match.id}`,
-    }).catch(() => {});
+    // Fire-and-forget push notification (sender name fetch included)
+    (async () => {
+      const { data: sender } = await supabase
+        .from("users")
+        .select("name")
+        .eq("id", userId)
+        .single();
+      await NotificationService.sendPush(otherUserId, pushType, { name: sender?.name ?? "Someone" }, undefined, {
+        actionUrl: `/matches/chat/${match.id}`,
+      });
+    })().catch(() => {});
 
     return message;
   }

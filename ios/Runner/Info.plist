@@ -48,6 +48,8 @@
 		<string>$(LOCATION_WHEN_IN_USE_DESCRIPTION)</string>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>$(PHOTO_LIBRARY_DESCRIPTION)</string>
+		<key>NSMicrophoneUsageDescription</key>
+		<string>$(MICROPHONE_USAGE_DESCRIPTION)</string>
 		<key>UIBackgroundModes</key>
 		<array>
 			<string>fetch</string>

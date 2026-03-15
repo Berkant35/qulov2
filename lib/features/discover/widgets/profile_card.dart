@@ -87,7 +87,7 @@ class ProfileCard extends StatelessWidget {
                   ),
                 const SizedBox(height: AppSpacing.sm),
                 // ─── Question Info Section ───
-                _buildQuestionInfoSection(context, theme),
+                _QuestionInfoSection(card: card),
               ],
             ),
           ),
@@ -96,7 +96,23 @@ class ProfileCard extends StatelessWidget {
     );
   }
 
-  Widget _buildQuestionInfoSection(BuildContext context, ThemeData theme) {
+  String _relationshipGoalLabel(BuildContext context, String? goal) {
+    return switch (goal) {
+      'SERIOUS' => context.tr('serious_relationship'),
+      'FRIENDSHIP' => context.tr('friendship'),
+      _ => context.tr('not_sure'),
+    };
+  }
+}
+
+class _QuestionInfoSection extends StatelessWidget {
+  final ProfileCardModel card;
+
+  const _QuestionInfoSection({required this.card});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final info = card.questionInfo;
 
     // Fallback: just show question count chip if no question_info
@@ -192,13 +208,5 @@ class ProfileCard extends StatelessWidget {
         ],
       ],
     );
-  }
-
-  String _relationshipGoalLabel(BuildContext context, String? goal) {
-    return switch (goal) {
-      'SERIOUS' => context.tr('serious_relationship'),
-      'FRIENDSHIP' => context.tr('friendship'),
-      _ => context.tr('not_sure'),
-    };
   }
 }

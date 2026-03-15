@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/network/result.dart';
+import 'package:qulo_v2/data/models/chat_question_model.dart';
 import 'package:qulo_v2/data/models/media_request_model.dart';
 import 'package:qulo_v2/data/models/message_model.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
@@ -41,6 +42,33 @@ class ChatNotifier extends FamilyAsyncNotifier<ChatState, String> {
 
   Future<void> markAsRead() async {
     await ref.read(chatRepositoryProvider).markAsRead(arg);
+  }
+
+  bool get hasMore {
+    final current = state.valueOrNull;
+    if (current == null) return false;
+    return current.messages.length < current.total;
+  }
+
+  Future<void> loadMore() async {
+    final current = state.valueOrNull;
+    if (current == null || !hasMore) return;
+
+    final nextPage = current.page + 1;
+    final result = await ref.read(chatRepositoryProvider).getMessages(arg, page: nextPage);
+    result.when(
+      success: (response) {
+        final latest = state.valueOrNull;
+        if (latest != null) {
+          state = AsyncData(latest.copyWith(
+            messages: [...latest.messages, ...response.messages],
+            total: response.total,
+            page: nextPage,
+          ));
+        }
+      },
+      failure: (_) {},
+    );
   }
 
   void addRealtimeMessage(MessageModel message) {
@@ -200,3 +228,28 @@ class ChatState {
 }
 
 final chatProvider = AsyncNotifierProvider.family<ChatNotifier, ChatState, String>(ChatNotifier.new);
+
+/// Cache for chat questions fetched by ID — avoids re-fetching on every rebuild.
+final chatQuestionCacheProvider =
+    StateProvider<Map<String, ChatQuestionModel>>((ref) => {});
+
+/// Provider that fetches a single chat question by ID, using cache.
+final chatQuestionProvider =
+    FutureProvider.family<ChatQuestionModel?, String>((ref, questionId) async {
+  // Check cache first
+  final cache = ref.read(chatQuestionCacheProvider);
+  if (cache.containsKey(questionId)) return cache[questionId];
+
+  try {
+    final service = ref.read(chatQuestionServiceProvider);
+    final question = await service.getQuestion(questionId);
+    // Update cache
+    ref.read(chatQuestionCacheProvider.notifier).update((state) => {
+          ...state,
+          questionId: question,
+        });
+    return question;
+  } catch (_) {
+    return null;
+  }
+});

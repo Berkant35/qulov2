@@ -2,3 +2,4 @@
 "CAMERA_USAGE_DESCRIPTION" = "Camera access is required to take profile photos.";
 "PHOTO_LIBRARY_DESCRIPTION" = "Photo library access is required to select profile photos.";
 "LOCATION_WHEN_IN_USE_DESCRIPTION" = "Location access is required to show nearby users.";
+"MICROPHONE_USAGE_DESCRIPTION" = "Microphone access is required to send voice messages.";

@@ -161,7 +161,13 @@ final discoverProvider = AsyncNotifierProvider<DiscoverNotifier, DiscoverState>(
 
 class MatchListNotifier extends AsyncNotifier<List<MatchModel>> {
   @override
-  Future<List<MatchModel>> build() async => [];
+  Future<List<MatchModel>> build() async {
+    final result = await ref.read(matchRepositoryProvider).getMatches();
+    return result.when(
+      success: (data) => data,
+      failure: (f) => throw f,
+    );
+  }
 
   Future<void> fetchMatches() async {
     state = const AsyncLoading();

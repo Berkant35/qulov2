@@ -7,21 +7,21 @@ part 'media_request_model.g.dart';
 class MediaRequestModel extends Equatable {
   final String id;
   @JsonKey(name: 'match_id')
-  final String matchId;
+  final String? matchId;
   @JsonKey(name: 'requester_id')
-  final String requesterId;
+  final String? requesterId;
   final String status;
   @JsonKey(name: 'created_at')
-  final String createdAt;
+  final String? createdAt;
   @JsonKey(name: 'responded_at')
   final String? respondedAt;
 
   const MediaRequestModel({
     required this.id,
-    required this.matchId,
-    required this.requesterId,
+    this.matchId,
+    this.requesterId,
     required this.status,
-    required this.createdAt,
+    this.createdAt,
     this.respondedAt,
   });
 

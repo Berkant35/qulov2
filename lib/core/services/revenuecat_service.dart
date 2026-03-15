@@ -56,10 +56,18 @@ class RevenueCatService {
     }
   }
 
+  static const _subscriptionIds = {'quloplusmonthly2', 'qulopremiummonthly'};
+
   static Future<CustomerInfo> purchaseByProductId(String productId) async {
     _ensureConfigured();
     try {
-      final products = await Purchases.getProducts([productId]);
+      final category = _subscriptionIds.contains(productId)
+          ? ProductCategory.subscription
+          : ProductCategory.nonSubscription;
+      final products = await Purchases.getProducts(
+        [productId],
+        productCategory: category,
+      );
       if (products.isEmpty) {
         throw Exception('Product not found: $productId');
       }

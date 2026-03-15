@@ -22,8 +22,6 @@ class MediaRequestCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     final Color borderColor;
     final IconData icon;
     final Color iconColor;
@@ -59,13 +57,35 @@ class MediaRequestCard extends StatelessWidget {
         children: [
           Icon(icon, color: iconColor, size: 28),
           const SizedBox(height: AppSpacing.sm),
-          _buildContent(theme),
+          _MediaRequestContent(
+            status: status,
+            isMine: _isMine,
+            onAccept: onAccept,
+            onReject: onReject,
+          ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildContent(ThemeData theme) {
+class _MediaRequestContent extends StatelessWidget {
+  final String status;
+  final bool isMine;
+  final VoidCallback? onAccept;
+  final VoidCallback? onReject;
+
+  const _MediaRequestContent({
+    required this.status,
+    required this.isMine,
+    this.onAccept,
+    this.onReject,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     switch (status) {
       case 'accepted':
         return Text(
@@ -83,7 +103,7 @@ class MediaRequestCard extends StatelessWidget {
           ),
         );
       default: // pending
-        if (_isMine) {
+        if (isMine) {
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [

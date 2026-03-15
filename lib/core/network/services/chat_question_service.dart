@@ -14,6 +14,11 @@ abstract class ChatQuestionService {
     @Body() Map<String, dynamic> data,
   );
 
+  @GET('/chat/questions/{questionId}')
+  Future<ChatQuestionModel> getQuestion(
+    @Path('questionId') String questionId,
+  );
+
   @POST('/chat/questions/{questionId}/answer')
   Future<ChatQuestionAnswerResponse> answerQuestion(
     @Path('questionId') String questionId,

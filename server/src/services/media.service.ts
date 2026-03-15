@@ -86,11 +86,14 @@ export class MediaService {
       throw Errors.SERVER_ERROR();
     }
 
-    // Notify the other user
+    // Notify the other user (fire-and-forget with sender name)
     const otherUserId = isUser1 ? match.user2_id : match.user1_id;
-    NotificationService.sendPush(otherUserId, "new_message", {}, undefined, {
-      actionUrl: `/matches/chat/${match.id}`,
-    }).catch(() => {});
+    (async () => {
+      const { data: sender } = await supabase.from("users").select("name").eq("id", userId).single();
+      await NotificationService.sendPush(otherUserId, "new_message", { name: sender?.name ?? "Someone" }, undefined, {
+        actionUrl: `/matches/chat/${match.id}`,
+      });
+    })().catch(() => {});
 
     return request;
   }
@@ -149,10 +152,13 @@ export class MediaService {
         throw Errors.SERVER_ERROR();
       }
 
-      // Notify requester
-      NotificationService.sendPush(request.requester_id, "new_message", {}, undefined, {
-        actionUrl: `/matches/chat/${match.id}`,
-      }).catch(() => {});
+      // Notify requester (fire-and-forget with responder name)
+      (async () => {
+        const { data: responder } = await supabase.from("users").select("name").eq("id", userId).single();
+        await NotificationService.sendPush(request.requester_id, "new_message", { name: responder?.name ?? "Someone" }, undefined, {
+          actionUrl: `/matches/chat/${match.id}`,
+        });
+      })().catch(() => {});
 
       return { status: "accepted", media_enabled: true };
     } else {

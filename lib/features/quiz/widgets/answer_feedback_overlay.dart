@@ -142,7 +142,12 @@ class _AnswerFeedbackOverlayState extends State<AnswerFeedbackOverlay>
                     ),
                     if (!widget.isCorrect && widget.canRescue) ...[
                       const SizedBox(height: AppSpacing.xxl),
-                      _buildRescueCards(theme),
+                      _RescueCards(
+                        skipOption: widget.skipOption,
+                        skipAllOption: widget.skipAllOption,
+                        onRescue: widget.onRescue,
+                        onDeclineRescue: widget.onDeclineRescue,
+                      ),
                     ],
                   ],
                 ),
@@ -154,7 +159,25 @@ class _AnswerFeedbackOverlayState extends State<AnswerFeedbackOverlay>
     );
   }
 
-  Widget _buildRescueCards(ThemeData theme) {
+}
+
+class _RescueCards extends StatelessWidget {
+  final RescuePowerOption? skipOption;
+  final RescuePowerOption? skipAllOption;
+  final void Function(String power)? onRescue;
+  final VoidCallback? onDeclineRescue;
+
+  const _RescueCards({
+    this.skipOption,
+    this.skipAllOption,
+    this.onRescue,
+    this.onDeclineRescue,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       padding: const EdgeInsets.all(AppSpacing.md),
@@ -172,23 +195,23 @@ class _AnswerFeedbackOverlayState extends State<AnswerFeedbackOverlay>
             ),
           ),
           const SizedBox(height: AppSpacing.md),
-          if (widget.skipOption != null)
+          if (skipOption != null)
             _RescueOptionTile(
-              option: widget.skipOption!,
+              option: skipOption!,
               label: context.tr('quiz_rescue_skip'),
-              onTap: () async => widget.onRescue?.call('SKIP'),
+              onTap: () async => onRescue?.call('SKIP'),
             ),
           const SizedBox(height: AppSpacing.sm),
-          if (widget.skipAllOption != null)
+          if (skipAllOption != null)
             _RescueOptionTile(
-              option: widget.skipAllOption!,
+              option: skipAllOption!,
               label: context.tr('quiz_rescue_skip_all'),
-              onTap: () async => widget.onRescue?.call('SKIP_ALL'),
+              onTap: () async => onRescue?.call('SKIP_ALL'),
             ),
           const SizedBox(height: AppSpacing.md),
           SafeTapButton(
-            onTap: widget.onDeclineRescue != null
-                ? () async => widget.onDeclineRescue!()
+            onTap: onDeclineRescue != null
+                ? () async => onDeclineRescue!()
                 : null,
             builder: (context, isLoading, safeTap) => TextButton(
               onPressed: safeTap,

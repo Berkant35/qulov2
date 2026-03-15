@@ -73,6 +73,7 @@ class DiscoverCardView extends ConsumerWidget {
         ref.read(navigationServiceProvider).push(
           RouteNames.quiz,
           params: {'targetId': card.userId},
+          extra: card.photos?.isNotEmpty == true ? card.photos!.first : null,
         );
       },
       failure: (f) {

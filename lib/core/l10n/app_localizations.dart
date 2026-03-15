@@ -106,6 +106,8 @@ class AppLocalizations {
     'solve_to_meet': 'Sorulari Coz',
     'online': 'Cevrimici',
     'offline': 'Cevrimdisi',
+    'now': 'Simdi',
+    'yesterday': 'Dun',
 
     // Profile
     'profile': 'Profil',
@@ -765,6 +767,8 @@ class AppLocalizations {
     'solve_to_meet': 'Solve Questions',
     'online': 'Online',
     'offline': 'Offline',
+    'now': 'Now',
+    'yesterday': 'Yesterday',
 
     // Profile
     'profile': 'Profile',

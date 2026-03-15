@@ -33,7 +33,6 @@ class DetailChips extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final details = user.details;
-    final theme = Theme.of(context);
 
     final chips = <_ChipData>[
       _ChipData(
@@ -94,12 +93,21 @@ class DetailChips extends StatelessWidget {
       child: Wrap(
         spacing: AppSpacing.sm,
         runSpacing: AppSpacing.sm,
-        children: chips.map((chip) => _buildChip(context, theme, chip)).toList(),
+        children: chips.map((chip) => _DetailChipItem(chip: chip)).toList(),
       ),
     );
   }
 
-  Widget _buildChip(BuildContext context, ThemeData theme, _ChipData chip) {
+}
+
+class _DetailChipItem extends StatelessWidget {
+  final _ChipData chip;
+
+  const _DetailChipItem({required this.chip});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final isFilled = chip.filled;
 
     final colors = theme.colorScheme;

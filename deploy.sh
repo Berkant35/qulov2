@@ -24,6 +24,10 @@ PROD_URL="https://qulo-server-production.up.railway.app/api/v1"
 LOCAL_IP=$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null || echo "127.0.0.1")
 DEV_URL="http://${LOCAL_IP}:3001/api/v1"
 
+# ─── RevenueCat Keys ───
+RC_APPLE_KEY="appl_WFnimoKwLYxkyxZYOxjyuLMSRpc"
+RC_GOOGLE_KEY="goog_tAQvpZTakPHMKEYCoFvjSpGmjmv"
+
 # ─── Colors ───
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -236,7 +240,9 @@ cmd_testflight() {
   flutter build ipa \
     --release \
     --export-options-plist="$EXPORT_PLIST" \
-    --dart-define=API_BASE_URL="$PROD_URL"
+    --dart-define=API_BASE_URL="$PROD_URL" \
+    --dart-define=REVENUECAT_APPLE_KEY="$RC_APPLE_KEY" \
+    --dart-define=REVENUECAT_GOOGLE_KEY="$RC_GOOGLE_KEY"
 
   # Find IPA
   local ipa_file=$(find "$PROJECT_DIR/build/ios/ipa" -name "*.ipa" -type f | head -1)
@@ -292,7 +298,9 @@ cmd_apk() {
   info "APK build başlıyor..."
   flutter build apk \
     --release \
-    --dart-define=API_BASE_URL="$PROD_URL"
+    --dart-define=API_BASE_URL="$PROD_URL" \
+    --dart-define=REVENUECAT_APPLE_KEY="$RC_APPLE_KEY" \
+    --dart-define=REVENUECAT_GOOGLE_KEY="$RC_GOOGLE_KEY"
 
   local apk_file="$PROJECT_DIR/build/app/outputs/flutter-apk/app-release.apk"
   if [ -f "$apk_file" ]; then

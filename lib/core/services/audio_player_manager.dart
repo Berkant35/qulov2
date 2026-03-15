@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:just_audio/just_audio.dart';
 
+export 'package:just_audio/just_audio.dart' show PlayerState, ProcessingState;
+
 class AudioPlayerManager {
   AudioPlayerManager._();
   static final AudioPlayerManager instance = AudioPlayerManager._();

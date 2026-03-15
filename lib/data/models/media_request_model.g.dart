@@ -9,10 +9,10 @@ part of 'media_request_model.dart';
 MediaRequestModel _$MediaRequestModelFromJson(Map<String, dynamic> json) =>
     MediaRequestModel(
       id: json['id'] as String,
-      matchId: json['match_id'] as String,
-      requesterId: json['requester_id'] as String,
+      matchId: json['match_id'] as String?,
+      requesterId: json['requester_id'] as String?,
       status: json['status'] as String,
-      createdAt: json['created_at'] as String,
+      createdAt: json['created_at'] as String?,
       respondedAt: json['responded_at'] as String?,
     );
 

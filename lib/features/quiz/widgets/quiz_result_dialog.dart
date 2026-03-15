@@ -42,7 +42,7 @@ class QuizResultContent extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             // ─── Top icon ───
-            _buildTopIcon(),
+            _TopIcon(matched: matched),
             const SizedBox(height: AppSpacing.lg),
 
             // ─── Title ───
@@ -60,12 +60,17 @@ class QuizResultContent extends StatelessWidget {
 
             // ─── Badge ───
             if (performanceBadge != 'none') ...[
-              _buildBadge(context, theme),
+              _Badge(performanceBadge: performanceBadge),
               const SizedBox(height: AppSpacing.lg),
             ],
 
             // ─── Stats ───
-            _buildStats(context, theme),
+            _Stats(
+              totalCorrect: totalCorrect,
+              totalQuestions: totalQuestions,
+              totalTimeSpent: totalTimeSpent,
+              powersUsed: powersUsed,
+            ),
             const SizedBox(height: AppSpacing.xl),
 
             // ─── Buttons ───
@@ -106,7 +111,15 @@ class QuizResultContent extends StatelessWidget {
     );
   }
 
-  Widget _buildTopIcon() {
+}
+
+class _TopIcon extends StatelessWidget {
+  final bool matched;
+
+  const _TopIcon({required this.matched});
+
+  @override
+  Widget build(BuildContext context) {
     if (matched) {
       return Container(
         width: 80,
@@ -132,8 +145,26 @@ class QuizResultContent extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildBadge(BuildContext context, ThemeData theme) {
+class _Badge extends StatelessWidget {
+  final String performanceBadge;
+
+  const _Badge({required this.performanceBadge});
+
+  (String icon, Color color, String labelKey) get _badgeConfig {
+    return switch (performanceBadge) {
+      'flawless' => (QIcons.icCrown, AppColors.gold, 'quiz_result_flawless'),
+      'speed_solver' => (QIcons.icZap, AppColors.info, 'quiz_result_speed_solver'),
+      'power_master' => (QIcons.icGem, AppColors.primary, 'quiz_result_power_master'),
+      'determined' => (QIcons.icFire, AppColors.warning, 'quiz_result_determined'),
+      _ => (QIcons.icTarget, AppColors.textSecondary, 'quiz_result_determined'),
+    };
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final (icon, color, labelKey) = _badgeConfig;
 
     return Container(
@@ -162,18 +193,25 @@ class QuizResultContent extends StatelessWidget {
       ),
     );
   }
+}
 
-  (String icon, Color color, String labelKey) get _badgeConfig {
-    return switch (performanceBadge) {
-      'flawless' => (QIcons.icCrown, AppColors.gold, 'quiz_result_flawless'),
-      'speed_solver' => (QIcons.icZap, AppColors.info, 'quiz_result_speed_solver'),
-      'power_master' => (QIcons.icGem, AppColors.primary, 'quiz_result_power_master'),
-      'determined' => (QIcons.icFire, AppColors.warning, 'quiz_result_determined'),
-      _ => (QIcons.icTarget, AppColors.textSecondary, 'quiz_result_determined'),
-    };
-  }
+class _Stats extends StatelessWidget {
+  final int totalCorrect;
+  final int totalQuestions;
+  final int totalTimeSpent;
+  final int powersUsed;
 
-  Widget _buildStats(BuildContext context, ThemeData theme) {
+  const _Stats({
+    required this.totalCorrect,
+    required this.totalQuestions,
+    required this.totalTimeSpent,
+    required this.powersUsed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(

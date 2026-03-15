@@ -72,18 +72,33 @@ class ChatQuestionCard extends StatelessWidget {
 
           // Options
           if (!question.isAnswered && !isMyQuestion)
-            _buildUnansweredOptions(context)
+            _UnansweredOptions(
+              question: question,
+              onAnswer: onAnswer,
+            )
           else if (!question.isAnswered && isMyQuestion)
-            _buildWaitingOptions(context)
+            _WaitingOptions(question: question)
           else
-            _buildAnsweredOptions(context),
+            _AnsweredOptions(question: question),
         ],
       ),
     );
   }
 
-  /// Two tappable option buttons for the receiver
-  Widget _buildUnansweredOptions(BuildContext context) {
+}
+
+/// Two tappable option buttons for the receiver
+class _UnansweredOptions extends StatelessWidget {
+  final ChatQuestionModel question;
+  final Function(String)? onAnswer;
+
+  const _UnansweredOptions({
+    required this.question,
+    this.onAnswer,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Column(
       children: [
@@ -103,9 +118,16 @@ class ChatQuestionCard extends StatelessWidget {
       ],
     );
   }
+}
 
-  /// Sender sees options as text + waiting hint
-  Widget _buildWaitingOptions(BuildContext context) {
+/// Sender sees options as text + waiting hint
+class _WaitingOptions extends StatelessWidget {
+  final ChatQuestionModel question;
+
+  const _WaitingOptions({required this.question});
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,9 +146,16 @@ class ChatQuestionCard extends StatelessWidget {
       ],
     );
   }
+}
 
-  /// Options with color feedback after answering
-  Widget _buildAnsweredOptions(BuildContext context) {
+/// Options with color feedback after answering
+class _AnsweredOptions extends StatelessWidget {
+  final ChatQuestionModel question;
+
+  const _AnsweredOptions({required this.question});
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final answeredOpt = question.answeredOption;
     final isCorrect = question.isCorrect ?? false;

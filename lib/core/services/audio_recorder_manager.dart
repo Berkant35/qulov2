@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 
 class AudioRecorderManager {
@@ -11,6 +12,13 @@ class AudioRecorderManager {
   String? _currentFilePath;
 
   bool get isRecording => _isRecording;
+
+  /// Returns a unique file path in the temporary directory for voice recording.
+  Future<String> getRecordingPath() async {
+    final dir = await getTemporaryDirectory();
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    return '${dir.path}/voice_$timestamp.m4a';
+  }
 
   /// Checks and requests microphone permission.
   Future<bool> hasPermission() async {

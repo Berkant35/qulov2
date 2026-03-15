@@ -418,7 +418,7 @@ export class QuizService {
 
     const { error: matchErr } = await supabase
       .from("matches")
-      .insert({ user1_id: user1, user2_id: user2, quiz_session_id: sessionId });
+      .insert({ user1_id: user1, user2_id: user2 });
 
     if (matchErr && matchErr.code !== "23505") {
       console.error("[quiz] Match insert error:", matchErr);

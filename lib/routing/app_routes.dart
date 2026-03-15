@@ -94,7 +94,10 @@ final _routes = <RouteBase>[
     name: RouteNames.quiz,
     pageBuilder: (context, state) => CustomTransitionPage(
       key: state.pageKey,
-      child: QuizScreen(targetId: state.pathParameters['targetId']!),
+      child: QuizScreen(
+        targetId: state.pathParameters['targetId']!,
+        targetPhotoUrl: state.extra as String?,
+      ),
       transitionDuration: const Duration(milliseconds: 500),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         return FadeTransition(
@@ -107,6 +110,16 @@ final _routes = <RouteBase>[
           ),
         );
       },
+    ),
+  ),
+
+  // Chat (root navigator — full screen, no bottom nav)
+  GoRoute(
+    parentNavigatorKey: rootNavigatorKey,
+    path: '/chat/:matchId',
+    name: RouteNames.chat,
+    builder: (context, state) => ChatScreen(
+      matchId: state.pathParameters['matchId']!,
     ),
   ),
 
@@ -127,15 +140,6 @@ final _routes = <RouteBase>[
           path: '/matches',
           name: RouteNames.matches,
           builder: (context, state) => const MatchesScreen(),
-          routes: [
-            GoRoute(
-              path: 'chat/:matchId',
-              name: RouteNames.chat,
-              builder: (context, state) => ChatScreen(
-                matchId: state.pathParameters['matchId']!,
-              ),
-            ),
-          ],
         ),
       ]),
       StatefulShellBranch(routes: [

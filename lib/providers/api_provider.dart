@@ -7,6 +7,7 @@ import 'package:qulo_v2/core/services/url_launcher_manager.dart';
 import 'package:qulo_v2/core/services/version_manager.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/audio_player_manager.dart';
+import 'package:qulo_v2/core/services/share_manager.dart';
 import 'package:qulo_v2/core/services/audio_recorder_manager.dart';
 import 'package:qulo_v2/core/network/services/auth_service.dart';
 import 'package:qulo_v2/core/network/services/user_service.dart';
@@ -44,6 +45,9 @@ final versionManagerProvider = Provider<VersionManager>(
 );
 final analyticsManagerProvider = Provider<AnalyticsManager>(
   (_) => AnalyticsManager.instance,
+);
+final shareManagerProvider = Provider<ShareManager>(
+  (_) => ShareManager.instance,
 );
 final audioPlayerManagerProvider = Provider<AudioPlayerManager>(
   (_) => AudioPlayerManager.instance,

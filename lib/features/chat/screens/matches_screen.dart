@@ -1,16 +1,16 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
-import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/data/models/match_model.dart';
+import 'package:qulo_v2/features/chat/widgets/new_match_avatar.dart';
+import 'package:qulo_v2/features/chat/widgets/match_card.dart';
 
 class MatchesScreen extends ConsumerStatefulWidget {
   const MatchesScreen({super.key});
@@ -58,108 +58,65 @@ class _MatchesScreenState extends ConsumerState<MatchesScreen> {
             );
           }
 
+          // New matches: no messages yet
+          final newMatches = matches.where((m) => m.lastMessage == null).toList();
+
+          // All matches sorted by most recent activity
+          final sortedMatches = List<MatchModel>.from(matches)
+            ..sort((a, b) {
+              final aTime = a.lastMessageSentAt ?? a.matchedAt;
+              final bTime = b.lastMessageSentAt ?? b.matchedAt;
+              return bTime.compareTo(aTime);
+            });
+
           return CustomScrollView(
             slivers: [
               // ─── Top Section: New Matches Horizontal Scroll ───
-              SliverToBoxAdapter(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(AppSpacing.pagePadding, AppSpacing.sm, AppSpacing.pagePadding, AppSpacing.md),
-                      child: Text(
-                        context.tr('new_matches'),
-                        style: theme.textTheme.titleMedium,
+              if (newMatches.isNotEmpty)
+                SliverToBoxAdapter(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(AppSpacing.pagePadding, AppSpacing.sm, AppSpacing.pagePadding, AppSpacing.md),
+                        child: Text(
+                          context.tr('new_matches'),
+                          style: theme.textTheme.titleMedium,
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 90,
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.pagePadding),
-                        itemCount: matches.length,
-                        separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.lg),
-                        itemBuilder: (context, index) {
-                          final m = matches[index];
-                          final u = m.user;
-                          final photo = u?.photos?.isNotEmpty == true ? u!.photos!.first : null;
-
-                          return GestureDetector(
-                            onTap: () {
-                              AnalyticsManager.instance.logEvent(
-                                AnalyticsEvents.matchTapProfile,
-                                params: {AnalyticsEvents.paramMatchUserId: u?.userId ?? ''},
-                              );
-                              AnalyticsManager.instance.logEvent(
-                                AnalyticsEvents.matchOpenChat,
-                                params: {AnalyticsEvents.paramMatchUserId: u?.userId ?? ''},
-                              );
-                              ref.read(navigationServiceProvider).go(
-                                RouteNames.chat,
-                                params: {'matchId': m.matchId},
-                              );
-                            },
-                            child: Column(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(2),
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(color: AppColors.primary, width: 2),
-                                  ),
-                                  child: CircleAvatar(
-                                    radius: 28,
-                                    backgroundColor: theme.colorScheme.surface,
-                                    backgroundImage: photo != null
-                                        ? CachedNetworkImageProvider(photo)
-                                        : null,
-                                    child: photo == null
-                                        ? Icon(Icons.person, color: theme.hintColor)
-                                        : null,
-                                  ),
-                                ),
-                                const SizedBox(height: AppSpacing.xs),
-                                SizedBox(
-                                  width: 64,
-                                  child: Text(
-                                    u?.name ?? '?',
-                                    style: theme.textTheme.labelSmall,
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
+                      SizedBox(
+                        height: 90,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.pagePadding),
+                          itemCount: newMatches.length,
+                          separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.lg),
+                          itemBuilder: (context, index) {
+                            final m = newMatches[index];
+                            return NewMatchAvatar(
+                              match: m,
+                              onTap: () => _navigateToChat(m),
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                    Divider(color: theme.colorScheme.outline, height: 1),
-                    const SizedBox(height: AppSpacing.sm),
-                  ],
+                      Divider(color: theme.colorScheme.outline, height: 1),
+                      const SizedBox(height: AppSpacing.sm),
+                    ],
+                  ),
                 ),
-              ),
 
               // ─── Bottom Section: Chat List with Dark Cards ───
               SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
-                    final m = matches[index];
-                    return _MatchCard(
+                    final m = sortedMatches[index];
+                    return MatchCard(
                       match: m,
-                      onTap: () {
-                        AnalyticsManager.instance.logEvent(
-                          AnalyticsEvents.matchOpenChat,
-                          params: {AnalyticsEvents.paramMatchUserId: m.user?.userId ?? ''},
-                        );
-                        ref.read(navigationServiceProvider).go(
-                          RouteNames.chat,
-                          params: {'matchId': m.matchId},
-                        );
-                      },
+                      onTap: () => _navigateToChat(m),
                     );
                   },
-                  childCount: matches.length,
+                  childCount: sortedMatches.length,
                 ),
               ),
             ],
@@ -168,70 +125,15 @@ class _MatchesScreenState extends ConsumerState<MatchesScreen> {
       ),
     );
   }
-}
 
-class _MatchCard extends StatelessWidget {
-  final MatchModel match;
-  final VoidCallback onTap;
-  const _MatchCard({required this.match, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    final u = match.user;
-    final photo = u?.photos?.isNotEmpty == true ? u!.photos!.first : null;
-    final theme = Theme.of(context);
-
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-      ),
-      child: ListTile(
-        leading: Stack(
-          children: [
-            CircleAvatar(
-              radius: 24,
-              backgroundColor: theme.colorScheme.surfaceContainerHigh,
-              backgroundImage: photo != null ? CachedNetworkImageProvider(photo) : null,
-              child: photo == null
-                  ? Icon(Icons.person, color: theme.hintColor)
-                  : null,
-            ),
-            if (u?.isOnline == true)
-              Positioned(
-                right: 0,
-                bottom: 0,
-                child: Container(
-                  width: 12,
-                  height: 12,
-                  decoration: BoxDecoration(
-                    color: AppColors.secondary,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: theme.colorScheme.surface, width: 2),
-                  ),
-                ),
-              ),
-          ],
-        ),
-        title: Text(
-          u?.name ?? context.tr('unknown_user'),
-          style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
-        ),
-        subtitle: Text(
-          u?.city ?? '',
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
-        ),
-        trailing: u?.isOnline == true
-            ? Text(
-                context.tr('online'),
-                style: theme.textTheme.labelSmall?.copyWith(color: AppColors.secondary),
-              )
-            : null,
-        onTap: onTap,
-      ),
+  void _navigateToChat(MatchModel m) {
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.matchOpenChat,
+      params: {AnalyticsEvents.paramMatchUserId: m.user?.userId ?? ''},
+    );
+    ref.read(navigationServiceProvider).push(
+      RouteNames.chat,
+      params: {'matchId': m.matchId},
     );
   }
 }

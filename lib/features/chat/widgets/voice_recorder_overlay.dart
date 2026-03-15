@@ -1,12 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/services/audio_recorder_manager.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/providers/api_provider.dart';
 
-class VoiceRecorderOverlay extends StatefulWidget {
+class VoiceRecorderOverlay extends ConsumerStatefulWidget {
   final void Function(String filePath, int durationSeconds) onRecordComplete;
   final VoidCallback onCancel;
 
@@ -17,14 +18,14 @@ class VoiceRecorderOverlay extends StatefulWidget {
   });
 
   @override
-  State<VoiceRecorderOverlay> createState() => _VoiceRecorderOverlayState();
+  ConsumerState<VoiceRecorderOverlay> createState() => _VoiceRecorderOverlayState();
 }
 
-class _VoiceRecorderOverlayState extends State<VoiceRecorderOverlay>
+class _VoiceRecorderOverlayState extends ConsumerState<VoiceRecorderOverlay>
     with SingleTickerProviderStateMixin {
   static const int _maxDurationSeconds = 60;
 
-  final AudioRecorderManager _recorder = AudioRecorderManager.instance;
+  late final AudioRecorderManager _recorder;
 
   Timer? _timer;
   int _seconds = 0;
@@ -38,6 +39,7 @@ class _VoiceRecorderOverlayState extends State<VoiceRecorderOverlay>
   @override
   void initState() {
     super.initState();
+    _recorder = ref.read(audioRecorderManagerProvider);
 
     _blinkController = AnimationController(
       vsync: this,
@@ -60,9 +62,7 @@ class _VoiceRecorderOverlayState extends State<VoiceRecorderOverlay>
 
   Future<void> _startRecording() async {
     try {
-      final dir = await getTemporaryDirectory();
-      final timestamp = DateTime.now().millisecondsSinceEpoch;
-      _filePath = '${dir.path}/voice_$timestamp.m4a';
+      _filePath = await _recorder.getRecordingPath();
 
       await _recorder.startRecording(_filePath!);
 
@@ -166,32 +166,26 @@ class _VoiceRecorderOverlayState extends State<VoiceRecorderOverlay>
 
               const Spacer(),
 
-              // Cancel hint
-              AnimatedOpacity(
-                opacity: _isCancelling ? 1.0 : 0.7,
-                duration: const Duration(milliseconds: 150),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.arrow_upward_rounded,
-                      size: 16,
-                      color: _isCancelling
-                          ? AppColors.error
-                          : AppColors.textSecondary,
-                    ),
-                    const SizedBox(width: AppSpacing.xs),
-                    Text(
-                      'Kaydir: Iptal',
-                      style: TextStyle(
-                        color: _isCancelling
-                            ? AppColors.error
-                            : AppColors.textSecondary,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
+              // Cancel button
+              IconButton(
+                onPressed: _cancelRecording,
+                icon: const Icon(Icons.delete_outline, color: AppColors.error, size: 22),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+
+              // Send button
+              Container(
+                decoration: const BoxDecoration(
+                  gradient: AppColors.primaryButtonGradient,
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  onPressed: _hasStarted ? _completeRecording : null,
+                  icon: Icon(
+                    Icons.send,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    size: 20,
+                  ),
                 ),
               ),
             ],
