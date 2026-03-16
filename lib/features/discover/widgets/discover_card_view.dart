@@ -18,7 +18,7 @@ import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/features/discover/widgets/profile_card.dart';
 
-class DiscoverCardView extends ConsumerWidget {
+class DiscoverCardView extends ConsumerStatefulWidget {
   final ProfileCardModel card;
   final VoidCallback onSwipeRight;
   final VoidCallback onSwipeLeft;
@@ -31,7 +31,39 @@ class DiscoverCardView extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<DiscoverCardView> createState() => _DiscoverCardViewState();
+}
+
+class _DiscoverCardViewState extends ConsumerState<DiscoverCardView> {
+  double _dragOffset = 0;
+  bool _isDragging = false;
+
+  static const _swipeThreshold = 100.0;
+
+  void _onHorizontalDragUpdate(DragUpdateDetails details) {
+    setState(() {
+      _dragOffset += details.delta.dx;
+      _isDragging = true;
+    });
+  }
+
+  void _onHorizontalDragEnd(DragEndDetails details) {
+    if (_dragOffset > _swipeThreshold) {
+      ref.read(hapticManagerProvider).medium();
+      _navigateToQuiz();
+    } else if (_dragOffset < -_swipeThreshold) {
+      ref.read(hapticManagerProvider).light();
+      widget.onSwipeLeft();
+      ref.read(discoverProvider.notifier).rejectCard(widget.card.userId);
+    }
+    setState(() {
+      _dragOffset = 0;
+      _isDragging = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final discoverState = ref.watch(discoverProvider).valueOrNull;
     final canUndo = discoverState?.canUndo ?? false;
 
@@ -39,9 +71,57 @@ class DiscoverCardView extends ConsumerWidget {
       padding: const EdgeInsets.all(AppSpacing.pagePadding),
       child: Column(
         children: [
-          Expanded(child: ProfileCard(card: card)),
+          Expanded(
+            child: GestureDetector(
+              onHorizontalDragUpdate: _onHorizontalDragUpdate,
+              onHorizontalDragEnd: _onHorizontalDragEnd,
+              child: AnimatedContainer(
+                duration: _isDragging ? Duration.zero : const Duration(milliseconds: 200),
+                transform: Matrix4.identity()
+                  ..translateByDouble(_dragOffset * 0.3, 0, 0, 0)
+                  ..rotateZ(_dragOffset * 0.0005),
+                transformAlignment: Alignment.center,
+                child: Stack(
+                  children: [
+                    ProfileCard(card: widget.card),
+                    if (_dragOffset.abs() > 30)
+                      Positioned(
+                        top: AppSpacing.xl,
+                        left: _dragOffset > 0 ? AppSpacing.xl : null,
+                        right: _dragOffset < 0 ? AppSpacing.xl : null,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.lg,
+                            vertical: AppSpacing.sm,
+                          ),
+                          decoration: BoxDecoration(
+                            color: _dragOffset > 0
+                                ? AppColors.secondary.withValues(alpha: 0.9)
+                                : AppColors.error.withValues(alpha: 0.9),
+                            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 2,
+                            ),
+                          ),
+                          child: Text(
+                            _dragOffset > 0
+                                ? context.tr('solve_questions')
+                                : context.tr('reject'),
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ),
           SafeTapButton(
-            onTap: () => _navigateToQuiz(ref),
+            onTap: _navigateToQuiz,
             builder: (context, isLoading, onTap) => DiscoverSolveButton(
               label: context.tr('solve_questions'),
               onTap: onTap,
@@ -51,11 +131,11 @@ class DiscoverCardView extends ConsumerWidget {
           const SizedBox(height: AppSpacing.sm),
           DiscoverActionButtons(
             canUndo: canUndo,
-            onUndo: () async => _handleUndo(context, ref),
+            onUndo: _handleUndo,
             onReject: () {
               ref.read(hapticManagerProvider).light();
-              onSwipeLeft();
-              ref.read(discoverProvider.notifier).rejectCard(card.userId);
+              widget.onSwipeLeft();
+              ref.read(discoverProvider.notifier).rejectCard(widget.card.userId);
             },
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -64,19 +144,19 @@ class DiscoverCardView extends ConsumerWidget {
     );
   }
 
-  Future<void> _navigateToQuiz(WidgetRef ref) async {
+  Future<void> _navigateToQuiz() async {
     ref.read(hapticManagerProvider).medium();
-    onSwipeRight();
+    widget.onSwipeRight();
     final result = await ref.read(discoverProvider.notifier).swipe(
-      targetId: card.userId,
+      targetId: widget.card.userId,
       action: 'LIKE',
     );
     result.when(
       success: (_) {
         ref.read(navigationServiceProvider).push(
           RouteNames.quiz,
-          params: {'targetId': card.userId},
-          extra: card.photos?.isNotEmpty == true ? card.photos!.first : null,
+          params: {'targetId': widget.card.userId},
+          extra: widget.card.photos?.isNotEmpty == true ? widget.card.photos!.first : null,
         );
       },
       failure: (f) {
@@ -87,7 +167,7 @@ class DiscoverCardView extends ConsumerWidget {
     );
   }
 
-  Future<void> _handleUndo(BuildContext context, WidgetRef ref) async {
+  Future<void> _handleUndo() async {
     final result = await ref.read(discoverProvider.notifier).undoSwipe();
     result.when(
       success: (_) {

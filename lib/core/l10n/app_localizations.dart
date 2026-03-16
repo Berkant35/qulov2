@@ -80,6 +80,7 @@ class AppLocalizations {
 
     // Discover
     'discover': 'Keşfet',
+    'reject': 'Geç',
     'no_more_profiles': 'Gösterilecek profil kalmadı',
     'refresh': 'Yenile',
     'questions_count': '{count} soru',
@@ -748,6 +749,7 @@ class AppLocalizations {
 
     // Discover
     'discover': 'Discover',
+    'reject': 'Pass',
     'no_more_profiles': 'No more profiles',
     'refresh': 'Refresh',
     'questions_count': '{count} questions',
