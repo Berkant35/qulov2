@@ -124,7 +124,8 @@ class AuthInterceptor extends Interceptor {
         );
 
         if (attempt < _maxRetries) {
-          await Future.delayed(Duration(seconds: attempt));
+          final delayMs = 1000 * (1 << (attempt - 1)); // 1s, 2s, 4s
+          await Future.delayed(Duration(milliseconds: delayMs));
         }
       }
     }
