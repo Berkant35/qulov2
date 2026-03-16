@@ -46,6 +46,7 @@ class ChatMessageList extends StatelessWidget {
         return ListView.builder(
           controller: scrollCtrl,
           reverse: true,
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           padding: const EdgeInsets.all(AppSpacing.pagePadding),
           itemCount: state.messages.length,
           itemBuilder: (_, i) {
