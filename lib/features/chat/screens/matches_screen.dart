@@ -41,17 +41,20 @@ class _MatchesScreenState extends ConsumerState<MatchesScreen> {
         error: (e, _) => Center(child: Text('Error: $e')),
         data: (matches) {
           if (matches.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+            return RefreshIndicator(
+              onRefresh: () => ref.read(matchListProvider.notifier).fetchMatches(),
+              child: ListView(
                 children: [
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.3),
                   Icon(Icons.favorite_border, size: 64, color: theme.hintColor),
                   const SizedBox(height: AppSpacing.lg),
-                  Text(context.tr('no_matches'), style: theme.textTheme.titleMedium),
+                  Center(child: Text(context.tr('no_matches'), style: theme.textTheme.titleMedium)),
                   const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    context.tr('start_swiping'),
-                    style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                  Center(
+                    child: Text(
+                      context.tr('start_swiping'),
+                      style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                    ),
                   ),
                 ],
               ),
@@ -69,7 +72,9 @@ class _MatchesScreenState extends ConsumerState<MatchesScreen> {
               return bTime.compareTo(aTime);
             });
 
-          return CustomScrollView(
+          return RefreshIndicator(
+            onRefresh: () => ref.read(matchListProvider.notifier).fetchMatches(),
+            child: CustomScrollView(
             slivers: [
               // ─── Top Section: New Matches Horizontal Scroll ───
               if (newMatches.isNotEmpty)
@@ -120,6 +125,7 @@ class _MatchesScreenState extends ConsumerState<MatchesScreen> {
                 ),
               ),
             ],
+          ),
           );
         },
       ),
