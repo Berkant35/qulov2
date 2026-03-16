@@ -9,6 +9,7 @@ import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/core/widgets/diamond_icon.dart';
+import 'package:qulo_v2/core/widgets/error_retry_widget.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/core/widgets/question_gate_banner.dart';
 import 'package:qulo_v2/providers/notification_provider.dart';
@@ -123,7 +124,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       padding: EdgeInsets.zero,
       body: userAsync.when(
         loading: () => const SizedBox.shrink(),
-        error: (e, _) => Center(child: Text('Error: $e')),
+        error: (e, _) => ErrorRetryWidget(
+          onRetry: () => ref.invalidate(userProvider),
+        ),
         data: (user) {
           if (user == null) return const Center(child: Text('No user data'));
           final photos = user.photos ?? [];

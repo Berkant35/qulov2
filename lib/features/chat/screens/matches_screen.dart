@@ -5,6 +5,7 @@ import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
+import 'package:qulo_v2/core/widgets/error_retry_widget.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/routing/route_names.dart';
@@ -38,7 +39,9 @@ class _MatchesScreenState extends ConsumerState<MatchesScreen> {
       isLoading: matchesAsync is AsyncLoading,
       body: matchesAsync.when(
         loading: () => const SizedBox.shrink(),
-        error: (e, _) => Center(child: Text('Error: $e')),
+        error: (e, _) => ErrorRetryWidget(
+          onRetry: () => ref.read(matchListProvider.notifier).fetchMatches(),
+        ),
         data: (matches) {
           if (matches.isEmpty) {
             return RefreshIndicator(

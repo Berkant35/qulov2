@@ -5,6 +5,7 @@ import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
+import 'package:qulo_v2/core/widgets/error_retry_widget.dart';
 import 'package:qulo_v2/core/widgets/question_gate_banner.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
@@ -52,7 +53,9 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen>
           ? const SizedBox.shrink()
           : discoverState.when(
               loading: () => const SizedBox.shrink(),
-              error: (e, _) => Center(child: Text('Error: $e')),
+              error: (e, _) => ErrorRetryWidget(
+                onRetry: () => ref.read(discoverProvider.notifier).loadCards(),
+              ),
               data: (discover) {
                 if (locationState.error != null) {
                   return DiscoverLocationError(error: locationState.error!);
