@@ -32,6 +32,10 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     ref.read(analyticsManagerProvider).logAppOpen();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _setupNotificationCallbacks();
+      _setupVersionManager();
+    });
   }
 
   @override
@@ -193,12 +197,6 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
       AppThemeMode.dark => ThemeMode.dark,
       AppThemeMode.system => ThemeMode.system,
     };
-
-    // Set up callbacks after first build
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _setupNotificationCallbacks();
-      _setupVersionManager();
-    });
 
     return MaterialApp.router(
       title: 'Qulo',
