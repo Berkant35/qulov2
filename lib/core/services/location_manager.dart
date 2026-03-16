@@ -1,5 +1,6 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
 
 class LocationResult {
   final double lat;
@@ -39,7 +40,9 @@ class LocationManager {
       if (placemarks.isNotEmpty) {
         return placemarks.first.locality ?? placemarks.first.administrativeArea;
       }
-    } catch (_) {}
+    } catch (e, stack) {
+      AnalyticsManager.instance.logNonFatalError(e, stack, context: 'geocoding_failed');
+    }
     return null;
   }
 
