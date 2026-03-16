@@ -12,6 +12,7 @@ import 'package:qulo_v2/core/widgets/locked_feature_button.dart';
 import 'package:qulo_v2/core/widgets/safe_tap_button.dart';
 import 'package:qulo_v2/data/models/discover_model.dart';
 import 'package:qulo_v2/features/diamonds/widgets/paywall_bottom_sheet.dart';
+import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/daily_stats_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
@@ -52,6 +53,7 @@ class DiscoverCardView extends ConsumerWidget {
             canUndo: canUndo,
             onUndo: () async => _handleUndo(context, ref),
             onReject: () {
+              ref.read(hapticManagerProvider).light();
               onSwipeLeft();
               ref.read(discoverProvider.notifier).rejectCard(card.userId);
             },
@@ -63,6 +65,7 @@ class DiscoverCardView extends ConsumerWidget {
   }
 
   Future<void> _navigateToQuiz(WidgetRef ref) async {
+    ref.read(hapticManagerProvider).medium();
     onSwipeRight();
     final result = await ref.read(discoverProvider.notifier).swipe(
       targetId: card.userId,

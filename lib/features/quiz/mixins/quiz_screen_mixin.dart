@@ -4,6 +4,7 @@ import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
+import 'package:qulo_v2/core/services/haptic_manager.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/data/models/quiz_model.dart';
 import 'package:qulo_v2/providers/quiz_provider.dart';
@@ -65,6 +66,7 @@ mixin QuizScreenMixin on ConsumerState<QuizScreen> {
       selectedAnswerIndex = wasSelected ? null : index;
     });
     if (!wasSelected) {
+      HapticManager.instance.selection();
       AnalyticsManager.instance.logEvent(
         AnalyticsEvents.quizAnswerSelect,
         params: {
@@ -187,7 +189,12 @@ mixin QuizScreenMixin on ConsumerState<QuizScreen> {
     if (data.awaitingAnswer == true) return;
 
     final isCorrect = data.isCorrect == true;
-    if (isCorrect) totalCorrect++;
+    if (isCorrect) {
+      totalCorrect++;
+      HapticManager.instance.success();
+    } else {
+      HapticManager.instance.error();
+    }
 
     if (data.sessionStatus == 'COMPLETED') {
       sessionStopwatch.stop();
@@ -278,6 +285,7 @@ mixin QuizScreenMixin on ConsumerState<QuizScreen> {
 
   Future<void> onTimeout() async {
     stopwatch.stop();
+    HapticManager.instance.warning();
     await ref.read(quizProvider.notifier).fail();
 
     if (!mounted) return;
@@ -363,6 +371,9 @@ mixin QuizScreenMixin on ConsumerState<QuizScreen> {
 
   void _showGamifiedResult({required bool matched, required String badge}) {
     stopwatch.stop();
+    if (matched) {
+      HapticManager.instance.success();
+    }
     setState(() {
       showCelebration = true;
       celebrationMatched = matched;

@@ -9,6 +9,7 @@ import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/audio_player_manager.dart';
 import 'package:qulo_v2/core/services/share_manager.dart';
 import 'package:qulo_v2/core/services/audio_recorder_manager.dart';
+import 'package:qulo_v2/core/services/haptic_manager.dart';
 import 'package:qulo_v2/core/network/services/auth_service.dart';
 import 'package:qulo_v2/core/network/services/user_service.dart';
 import 'package:qulo_v2/core/network/services/question_service.dart';
@@ -25,6 +26,7 @@ import 'package:qulo_v2/core/network/services/app_config_service.dart';
 import 'package:qulo_v2/core/network/services/referral_service.dart';
 import 'package:qulo_v2/core/network/services/exchange_service.dart';
 import 'package:qulo_v2/core/network/services/chat_question_service.dart';
+import 'package:qulo_v2/core/network/services/block_service.dart';
 import 'package:qulo_v2/data/repositories/repositories.dart';
 
 // ─── Core Services ───
@@ -54,6 +56,9 @@ final audioPlayerManagerProvider = Provider<AudioPlayerManager>(
 );
 final audioRecorderManagerProvider = Provider<AudioRecorderManager>(
   (_) => AudioRecorderManager.instance,
+);
+final hapticManagerProvider = Provider<HapticManager>(
+  (_) => HapticManager.instance,
 );
 
 // ─── NetworkManager ───
@@ -169,4 +174,12 @@ final exchangeServiceProvider = Provider<ExchangeService>(
 
 final exchangeRepositoryProvider = Provider<ExchangeRepository>(
   (ref) => ExchangeRepository(ref.read(exchangeServiceProvider)),
+);
+
+final blockServiceProvider = Provider<BlockService>(
+  (ref) => BlockService(ref.read(networkManagerProvider).dio),
+);
+
+final blockRepositoryProvider = Provider<BlockRepository>(
+  (ref) => BlockRepository(ref.read(blockServiceProvider)),
 );
