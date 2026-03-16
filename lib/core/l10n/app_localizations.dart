@@ -100,6 +100,11 @@ class AppLocalizations {
     'say_hello': 'Merhaba de!',
     'message_hint': 'Mesaj...',
     'type_message': 'Mesaj yaz...',
+    'last_seen_just_now': 'Son görülme: az önce',
+    'last_seen_minutes': 'Son görülme: {count} dk önce',
+    'last_seen_hours': 'Son görülme: {count} saat önce',
+    'last_seen_days': 'Son görülme: {count} gün önce',
+    'last_seen_weeks': 'Son görülme: {count} hafta önce',
 
     // Matches extras
     'new_matches': 'Yeni Eslesmeler',
@@ -761,6 +766,11 @@ class AppLocalizations {
     'say_hello': 'Say hello!',
     'message_hint': 'Message...',
     'type_message': 'Type a message...',
+    'last_seen_just_now': 'Last seen: just now',
+    'last_seen_minutes': 'Last seen: {count} min ago',
+    'last_seen_hours': 'Last seen: {count}h ago',
+    'last_seen_days': 'Last seen: {count}d ago',
+    'last_seen_weeks': 'Last seen: {count}w ago',
 
     // Matches extras
     'new_matches': 'New Matches',

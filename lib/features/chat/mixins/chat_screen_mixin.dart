@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:qulo_v2/core/services/image_picker_manager.dart';
@@ -489,12 +490,19 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
       final dt = DateTime.parse(lastSeen);
       final now = DateTime.now().toUtc();
       final diff = now.difference(dt);
+      final l10n = AppLocalizations.of(context);
 
-      if (diff.inMinutes < 1) return 'Son gorulme: az once';
-      if (diff.inMinutes < 60) return 'Son gorulme: ${diff.inMinutes} dk once';
-      if (diff.inHours < 24) return 'Son gorulme: ${diff.inHours} saat once';
-      if (diff.inDays < 7) return 'Son gorulme: ${diff.inDays} gun once';
-      return 'Son gorulme: ${diff.inDays ~/ 7} hafta once';
+      if (diff.inMinutes < 1) return l10n.get('last_seen_just_now');
+      if (diff.inMinutes < 60) {
+        return l10n.get('last_seen_minutes').replaceFirst('{count}', '${diff.inMinutes}');
+      }
+      if (diff.inHours < 24) {
+        return l10n.get('last_seen_hours').replaceFirst('{count}', '${diff.inHours}');
+      }
+      if (diff.inDays < 7) {
+        return l10n.get('last_seen_days').replaceFirst('{count}', '${diff.inDays}');
+      }
+      return l10n.get('last_seen_weeks').replaceFirst('{count}', '${diff.inDays ~/ 7}');
     } catch (_) {
       return '';
     }
