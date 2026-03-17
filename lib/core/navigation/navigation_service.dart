@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qulo_v2/core/constants/app_durations.dart';
 import 'package:qulo_v2/core/navigation/navigation_event.dart';
 import 'package:qulo_v2/core/navigation/navigation_observer.dart';
 import 'package:qulo_v2/core/navigation/models/app_dialog.dart';
@@ -23,13 +24,24 @@ class NavigationService {
 
   // ─── Route Navigation ───
 
+  DateTime _lastNavTime = DateTime(2000);
+
+  bool _shouldThrottle() {
+    final now = DateTime.now();
+    if (now.difference(_lastNavTime) < AppDurations.navigationThrottle) return true;
+    _lastNavTime = now;
+    return false;
+  }
+
   void go(String name, {Map<String, String>? params, Object? extra}) {
+    if (_shouldThrottle()) return;
     final event = NavigationEvent.go(name, pathParameters: params, extra: extra);
     _notifyNavigate(event);
     _router.goNamed(name, pathParameters: params ?? {}, extra: extra);
   }
 
   Future<T?> push<T extends Object?>(String name, {Map<String, String>? params, Object? extra}) {
+    if (_shouldThrottle()) return Future.value(null);
     final event = NavigationEvent.push(name, pathParameters: params, extra: extra);
     _notifyNavigate(event);
     return _router.pushNamed<T>(name, pathParameters: params ?? {}, extra: extra);

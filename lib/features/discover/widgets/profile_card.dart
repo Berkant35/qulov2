@@ -13,6 +13,11 @@ class ProfileCard extends StatelessWidget {
   final ProfileCardModel card;
   const ProfileCard({super.key, required this.card});
 
+  Widget _photoPlaceholder(ThemeData theme) => Container(
+        color: theme.colorScheme.surface,
+        child: Center(child: QIcon(QIcons.icUser, color: theme.hintColor, size: 80)),
+      );
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -24,9 +29,14 @@ class ProfileCard extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           if (photo != null)
-            CachedNetworkImage(imageUrl: photo, fit: BoxFit.cover)
+            CachedNetworkImage(
+              imageUrl: photo,
+              fit: BoxFit.cover,
+              placeholder: (_, __) => _photoPlaceholder(theme),
+              errorWidget: (_, __, ___) => _photoPlaceholder(theme),
+            )
           else
-            Container(color: theme.colorScheme.surface, child: Center(child: QIcon(QIcons.icUser, color: theme.hintColor, size: 80))),
+            _photoPlaceholder(theme),
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -86,7 +96,6 @@ class ProfileCard extends StatelessWidget {
                     ),
                   ),
                 const SizedBox(height: AppSpacing.sm),
-                // ─── Question Info Section ───
                 _QuestionInfoSection(card: card),
               ],
             ),

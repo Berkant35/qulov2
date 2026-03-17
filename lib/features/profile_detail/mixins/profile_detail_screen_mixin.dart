@@ -4,6 +4,7 @@ import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/features/profile_detail/models/profile_detail_args.dart';
 import 'package:qulo_v2/features/profile_detail/screens/profile_detail_screen.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
@@ -56,8 +57,14 @@ mixin ProfileDetailScreenMixin on ConsumerState<ProfileDetailScreen> {
     final matchId = widget.args?.matchId;
     if (matchId == null) return;
     final nav = ref.read(navigationServiceProvider);
-    nav.pop();
-    nav.push(RouteNames.chat, params: {'matchId': matchId});
+
+    // Chat context'inden geldiyse, zaten chat ekranı altta var — sadece pop yeterli
+    if (widget.args?.context == ProfileDetailContext.chat) {
+      nav.pop();
+    } else {
+      nav.pop();
+      nav.push(RouteNames.chat, params: {'matchId': matchId});
+    }
   }
 
   void onClose() {

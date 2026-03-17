@@ -13,4 +13,5 @@ abstract final class AppDurations {
   // General
   static const snackBar = Duration(seconds: 3);
   static const debounce = Duration(milliseconds: 300);
+  static const navigationThrottle = Duration(milliseconds: 500);
 }

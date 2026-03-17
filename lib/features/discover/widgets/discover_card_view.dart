@@ -35,31 +35,92 @@ class DiscoverCardView extends ConsumerStatefulWidget {
   ConsumerState<DiscoverCardView> createState() => _DiscoverCardViewState();
 }
 
-class _DiscoverCardViewState extends ConsumerState<DiscoverCardView> {
+class _DiscoverCardViewState extends ConsumerState<DiscoverCardView>
+    with SingleTickerProviderStateMixin {
   double _dragOffset = 0;
-  bool _isDragging = false;
+  bool _isProcessing = false;
+  _SwipeDirection? _swipeDirection;
+
+  late final AnimationController _flyAwayCtrl;
+  late final CurveTween _curveTween;
+  Animation<double> _flyAwayAnimation = const AlwaysStoppedAnimation(0);
 
   static const _swipeThreshold = 100.0;
 
+  @override
+  void initState() {
+    super.initState();
+    _flyAwayCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    _curveTween = CurveTween(curve: Curves.easeIn);
+  }
+
+  @override
+  void dispose() {
+    _flyAwayCtrl.dispose();
+    super.dispose();
+  }
+
   void _onHorizontalDragUpdate(DragUpdateDetails details) {
-    setState(() {
-      _dragOffset += details.delta.dx;
-      _isDragging = true;
-    });
+    if (_isProcessing) return;
+    setState(() => _dragOffset += details.delta.dx);
   }
 
   void _onHorizontalDragEnd(DragEndDetails details) {
+    if (_isProcessing) return;
     if (_dragOffset > _swipeThreshold) {
       ref.read(hapticManagerProvider).medium();
-      _navigateToQuiz();
+      _animateAndNavigateQuiz();
     } else if (_dragOffset < -_swipeThreshold) {
       ref.read(hapticManagerProvider).light();
+      _animateAndReject();
+    } else {
+      setState(() => _dragOffset = 0);
+    }
+  }
+
+  void _animateAndReject() {
+    setState(() {
+      _isProcessing = true;
+      _swipeDirection = _SwipeDirection.left;
+    });
+    final screenWidth = MediaQuery.of(context).size.width;
+    _flyAwayAnimation = Tween<double>(begin: _dragOffset, end: -screenWidth)
+        .chain(_curveTween)
+        .animate(_flyAwayCtrl);
+    _flyAwayCtrl.forward(from: 0).then((_) {
       widget.onSwipeLeft();
       ref.read(discoverProvider.notifier).rejectCard(widget.card.userId);
-    }
+      _resetState();
+    });
+  }
+
+  void _animateAndNavigateQuiz() {
+    setState(() {
+      _isProcessing = true;
+      _swipeDirection = _SwipeDirection.right;
+    });
+    final screenWidth = MediaQuery.of(context).size.width;
+    _flyAwayAnimation = Tween<double>(begin: _dragOffset, end: screenWidth)
+        .chain(_curveTween)
+        .animate(_flyAwayCtrl);
+    _flyAwayCtrl.forward(from: 0).then((_) {
+      _navigateToQuiz();
+    });
+  }
+
+  bool get _isWaitingForApi =>
+      _isProcessing && !_flyAwayCtrl.isAnimating && _swipeDirection == _SwipeDirection.right;
+
+  void _resetState() {
+    if (!mounted) return;
+    _flyAwayCtrl.reset();
     setState(() {
       _dragOffset = 0;
-      _isDragging = false;
+      _isProcessing = false;
+      _swipeDirection = null;
     });
   }
 
@@ -73,61 +134,75 @@ class _DiscoverCardViewState extends ConsumerState<DiscoverCardView> {
       child: Column(
         children: [
           Expanded(
-            child: GestureDetector(
-              onTap: _navigateToProfile,
-              onHorizontalDragUpdate: _onHorizontalDragUpdate,
-              onHorizontalDragEnd: _onHorizontalDragEnd,
-              child: AnimatedContainer(
-                duration: _isDragging ? Duration.zero : const Duration(milliseconds: 200),
-                transform: Matrix4.identity()
-                  ..translateByDouble(_dragOffset * 0.3, 0, 0, 0)
-                  ..rotateZ(_dragOffset * 0.0005),
-                transformAlignment: Alignment.center,
-                child: Stack(
-                  children: [
-                    ProfileCard(card: widget.card),
-                    if (_dragOffset.abs() > 30)
-                      Positioned(
-                        top: AppSpacing.xl,
-                        left: _dragOffset > 0 ? AppSpacing.xl : null,
-                        right: _dragOffset < 0 ? AppSpacing.xl : null,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.lg,
-                            vertical: AppSpacing.sm,
-                          ),
-                          decoration: BoxDecoration(
-                            color: _dragOffset > 0
-                                ? AppColors.secondary.withValues(alpha: 0.9)
-                                : AppColors.error.withValues(alpha: 0.9),
-                            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                            border: Border.all(
-                              color: Colors.white,
-                              width: 2,
+            child: _isWaitingForApi
+                ? Center(child: AppLoadingWidget.large())
+                : GestureDetector(
+                    onTap: _isProcessing ? null : _navigateToProfile,
+                    onHorizontalDragUpdate: _onHorizontalDragUpdate,
+                    onHorizontalDragEnd: _onHorizontalDragEnd,
+                    child: AnimatedBuilder(
+                      animation: _flyAwayCtrl,
+                      builder: (context, child) {
+                        final offset = _flyAwayCtrl.isAnimating
+                            ? _flyAwayAnimation.value
+                            : _dragOffset * 0.3;
+                        final rotation = _flyAwayCtrl.isAnimating
+                            ? _flyAwayAnimation.value * 0.001
+                            : _dragOffset * 0.0005;
+                        return Transform(
+                          transform: Matrix4.identity()
+                            ..translate(offset, 0.0, 0.0)
+                            ..rotateZ(rotation),
+                          alignment: Alignment.center,
+                          child: child,
+                        );
+                      },
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          ProfileCard(card: widget.card),
+                          if (_dragOffset.abs() > 30)
+                            Positioned(
+                              top: AppSpacing.xl,
+                              left: _dragOffset > 0 ? AppSpacing.xl : null,
+                              right: _dragOffset < 0 ? AppSpacing.xl : null,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: AppSpacing.lg,
+                                  vertical: AppSpacing.sm,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: _dragOffset > 0
+                                      ? AppColors.secondary.withValues(alpha: 0.9)
+                                      : AppColors.error.withValues(alpha: 0.9),
+                                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                                  border: Border.all(
+                                    color: Colors.white,
+                                    width: 2,
+                                  ),
+                                ),
+                                child: Text(
+                                  _dragOffset > 0
+                                      ? context.tr('solve_questions')
+                                      : context.tr('reject'),
+                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                          child: Text(
-                            _dragOffset > 0
-                                ? context.tr('solve_questions')
-                                : context.tr('reject'),
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
+                        ],
                       ),
-                  ],
-                ),
-              ),
-            ),
+                    ),
+                  ),
           ),
           SafeTapButton(
-            onTap: _navigateToQuiz,
+            onTap: _isProcessing ? null : _navigateToQuiz,
             builder: (context, isLoading, onTap) => DiscoverSolveButton(
               label: context.tr('solve_questions'),
               onTap: onTap,
-              isLoading: isLoading,
+              isLoading: isLoading || _isProcessing,
             ),
           ),
           const SizedBox(height: AppSpacing.sm),
@@ -159,7 +234,10 @@ class _DiscoverCardViewState extends ConsumerState<DiscoverCardView> {
   }
 
   Future<void> _navigateToQuiz() async {
-    ref.read(hapticManagerProvider).medium();
+    if (!_isProcessing) {
+      // Button tap — no fly-away needed, just set processing
+      setState(() => _isProcessing = true);
+    }
     widget.onSwipeRight();
     final result = await ref.read(discoverProvider.notifier).swipe(
       targetId: widget.card.userId,
@@ -167,13 +245,16 @@ class _DiscoverCardViewState extends ConsumerState<DiscoverCardView> {
     );
     result.when(
       success: (_) {
+        if (!mounted) return;
         ref.read(navigationServiceProvider).push(
           RouteNames.quiz,
           params: {'targetId': widget.card.userId},
           extra: widget.card.photos?.isNotEmpty == true ? widget.card.photos!.first : null,
         );
+        _resetState();
       },
       failure: (f) {
+        _resetState();
         if (f is ServerFailure && f.code == 'DAILY_LIMIT_REACHED') {
           PaywallBottomSheetContent.show(ref, trigger: 'swipe_limit');
         }
@@ -315,3 +396,5 @@ class DiscoverActionButtons extends ConsumerWidget {
     );
   }
 }
+
+enum _SwipeDirection { left, right }
