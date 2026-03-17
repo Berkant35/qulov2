@@ -117,6 +117,7 @@ class AppLocalizations {
 
     // Profile
     'profile': 'Profil',
+    'profile_completion': 'Profil Tamamlanma',
     'edit_profile': 'Profili Düzenle',
     'my_questions': 'Sorularım',
     'diamonds': 'Elmaslar',
@@ -786,6 +787,7 @@ class AppLocalizations {
 
     // Profile
     'profile': 'Profile',
+    'profile_completion': 'Profile Completion',
     'edit_profile': 'Edit Profile',
     'my_questions': 'My Questions',
     'diamonds': 'Diamonds',

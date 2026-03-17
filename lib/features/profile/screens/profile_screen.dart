@@ -23,6 +23,7 @@ import 'package:qulo_v2/features/profile/widgets/detail_chips.dart';
 import 'package:qulo_v2/features/profile/widgets/question_vitrin_card.dart';
 import 'package:qulo_v2/features/profile/widgets/section_card.dart';
 import 'package:qulo_v2/features/profile/widgets/pref_chip.dart';
+import 'package:qulo_v2/features/profile/widgets/profile_completion_bar.dart';
 import 'package:qulo_v2/features/profile/widgets/profile_menu_item.dart';
 import 'package:qulo_v2/core/widgets/referral_invite_card.dart';
 
@@ -210,6 +211,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     ],
                   ),
                 ],
+                const SizedBox(height: AppSpacing.md),
+
+                // ─── Profile Completion ───
+                ProfileCompletionBar(
+                  completionPercent: user.profileCompletion,
+                  onTap: () => ref.read(navigationServiceProvider).go(RouteNames.editProfile),
+                ),
                 const SizedBox(height: AppSpacing.lg),
 
                 // ─── Badge Bar ───
