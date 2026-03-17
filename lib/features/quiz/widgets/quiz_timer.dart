@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/services/haptic_manager.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 
@@ -103,13 +104,16 @@ class QuizTimerState extends State<QuizTimer> with TickerProviderStateMixin {
   void _updateAnimations() {
     if (_remaining == 10 && !_pulseController.isAnimating) {
       _pulseController.repeat(reverse: true);
+      HapticManager.instance.warning();
       widget.onWarning?.call();
     }
 
     if (_remaining == 5) {
+      HapticManager.instance.heavy();
       widget.onCritical?.call();
     }
     if (_remaining <= 5) {
+      HapticManager.instance.light();
       _shakeController.forward().then((_) => _shakeController.reverse());
     }
   }
