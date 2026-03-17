@@ -14,3 +14,4 @@ export 'subscription_repository.dart';
 export 'notification_repository.dart';
 export 'app_config_repository.dart';
 export 'user_repository.dart';
+export 'block_repository.dart';

@@ -195,6 +195,14 @@ abstract class AnalyticsEvents {
   static const String uiImageLoadFail = 'ui_image_load_fail';
   static const String uiAnimationComplete = 'ui_animation_complete';
 
+  // ─── Profile Detail (6) ───────────────────────────────────────────
+  static const String profileDetailView = 'profile_detail_view';
+  static const String profileDetailPhotoNav = 'profile_detail_photo_nav';
+  static const String profileDetailAction = 'profile_detail_action';
+  static const String profileDetailReport = 'profile_detail_report';
+  static const String profileDetailBlock = 'profile_detail_block';
+  static const String profileDetailClose = 'profile_detail_close';
+
   // ─── Settings (8) ──────────────────────────────────────────────────
   static const String settingsScreenView = 'settings_screen_view';
   static const String settingsChange = 'settings_change';
@@ -322,4 +330,6 @@ abstract class AnalyticsEvents {
   static const String paramMatched = 'matched';
   static const String paramAnswerIndex = 'answer_index';
   static const String paramSecondsRemaining = 'seconds_remaining';
+  static const String paramContext = 'context';
+  static const String paramTotalPhotos = 'total_photos';
 }

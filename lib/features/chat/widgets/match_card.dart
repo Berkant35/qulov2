@@ -8,7 +8,8 @@ import 'package:qulo_v2/data/models/match_model.dart';
 class MatchCard extends StatelessWidget {
   final MatchModel match;
   final VoidCallback onTap;
-  const MatchCard({super.key, required this.match, required this.onTap});
+  final VoidCallback? onLongPress;
+  const MatchCard({super.key, required this.match, required this.onTap, this.onLongPress});
 
   @override
   Widget build(BuildContext context) {
@@ -103,6 +104,7 @@ class MatchCard extends StatelessWidget {
           ],
         ),
         onTap: onTap,
+        onLongPress: onLongPress,
       ),
     );
   }

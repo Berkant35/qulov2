@@ -12,6 +12,7 @@ import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/data/models/match_model.dart';
 import 'package:qulo_v2/features/chat/widgets/new_match_avatar.dart';
 import 'package:qulo_v2/features/chat/widgets/match_card.dart';
+import 'package:qulo_v2/features/profile_detail/models/profile_detail_args.dart';
 
 class MatchesScreen extends ConsumerStatefulWidget {
   const MatchesScreen({super.key});
@@ -122,6 +123,7 @@ class _MatchesScreenState extends ConsumerState<MatchesScreen> {
                     return MatchCard(
                       match: m,
                       onTap: () => _navigateToChat(m),
+                      onLongPress: () => _navigateToProfile(m),
                     );
                   },
                   childCount: sortedMatches.length,
@@ -131,6 +133,20 @@ class _MatchesScreenState extends ConsumerState<MatchesScreen> {
           ),
           );
         },
+      ),
+    );
+  }
+
+  void _navigateToProfile(MatchModel m) {
+    final userId = m.user?.userId;
+    if (userId == null) return;
+    ref.read(navigationServiceProvider).push(
+      RouteNames.profileDetail,
+      params: {'userId': userId},
+      extra: ProfileDetailArgs(
+        context: ProfileDetailContext.match,
+        userId: userId,
+        matchId: m.matchId,
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:qulo_v2/core/network/network_manager.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/network/services/user_service.dart';
+import 'package:qulo_v2/data/models/public_profile_model.dart';
 import 'package:qulo_v2/data/models/user_model.dart';
 import 'package:qulo_v2/data/models/user_details_model.dart';
 import 'package:qulo_v2/data/repositories/interfaces.dart';
@@ -107,6 +108,16 @@ class UserRepository implements IUserRepository {
   Future<Result<UserModel>> reorderPhotos(List<String> photos) async {
     try {
       final response = await _service.updateProfile({'photos': photos});
+      return Success(response);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
+
+  @override
+  Future<Result<PublicProfileModel>> getPublicProfile(String userId) async {
+    try {
+      final response = await _service.getPublicProfile(userId);
       return Success(response);
     } on DioException catch (e) {
       return Failure(e.toAppFailure());

@@ -7,6 +7,9 @@ import 'package:qulo_v2/providers/auth_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/providers/quiz_summary_provider.dart';
 import 'package:qulo_v2/features/chat/mixins/chat_screen_mixin.dart';
+import 'package:qulo_v2/core/navigation/navigation.dart';
+import 'package:qulo_v2/routing/route_names.dart';
+import 'package:qulo_v2/features/profile_detail/models/profile_detail_args.dart';
 import 'package:qulo_v2/features/chat/widgets/chat_app_bar_content.dart';
 import 'package:qulo_v2/features/chat/widgets/chat_input_bar.dart';
 import 'package:qulo_v2/features/chat/widgets/chat_message_list.dart';
@@ -66,6 +69,17 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with ChatScreenMixin {
           userName: userName,
           isOnline: isOnline,
           statusText: statusText,
+          onTap: matchUser != null
+              ? () => ref.read(navigationServiceProvider).push(
+                    RouteNames.profileDetail,
+                    params: {'userId': matchUser.userId},
+                    extra: ProfileDetailArgs(
+                      context: ProfileDetailContext.chat,
+                      userId: matchUser.userId,
+                      matchId: widget.matchId,
+                    ),
+                  )
+              : null,
         ),
         actions: [
           ChatAppBarActions(

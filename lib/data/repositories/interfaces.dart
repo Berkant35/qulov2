@@ -13,6 +13,7 @@ import 'package:qulo_v2/data/models/question_model.dart';
 import 'package:qulo_v2/data/models/quiz_model.dart';
 import 'package:qulo_v2/data/models/referral_model.dart';
 import 'package:qulo_v2/data/models/subscription_model.dart';
+import 'package:qulo_v2/data/models/public_profile_model.dart';
 import 'package:qulo_v2/data/models/user_details_model.dart';
 import 'package:qulo_v2/data/models/user_model.dart';
 
@@ -198,4 +199,12 @@ abstract class IUserRepository {
   Future<Result<Map<String, dynamic>>> claimBadgeReward(String level);
 
   Future<Result<UserModel>> reorderPhotos(List<String> photos);
+
+  Future<Result<PublicProfileModel>> getPublicProfile(String userId);
+}
+
+// ─── Block ───
+abstract class IBlockRepository {
+  Future<Result<void>> blockUser(String blockedId);
+  Future<Result<void>> unblockUser(String blockedId);
 }

@@ -123,6 +123,17 @@ final _routes = <RouteBase>[
     ),
   ),
 
+  // Profile Detail (root navigator — full screen over bottom nav)
+  GoRoute(
+    parentNavigatorKey: rootNavigatorKey,
+    path: '/profile-detail/:userId',
+    name: RouteNames.profileDetail,
+    builder: (context, state) => ProfileDetailScreen(
+      userId: state.pathParameters['userId']!,
+      args: state.extra as ProfileDetailArgs?,
+    ),
+  ),
+
   // Main shell (bottom nav)
   StatefulShellRoute.indexedStack(
     builder: (context, state, shell) => _MainShell(shell: shell),

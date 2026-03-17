@@ -27,6 +27,7 @@ abstract final class RouteNames {
   static const questionAnalytics = 'question-analytics';
   static const questionOnboarding = 'question-onboarding';
   static const exchange = 'exchange';
+  static const profileDetail = 'profile-detail';
 
   // Referral
   static const invite = 'invite';

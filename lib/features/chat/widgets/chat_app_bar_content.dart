@@ -6,18 +6,23 @@ class ChatAppBarTitle extends StatelessWidget {
   final String userName;
   final bool isOnline;
   final String statusText;
+  final VoidCallback? onTap;
 
   const ChatAppBarTitle({
     super.key,
     required this.userName,
     required this.isOnline,
     required this.statusText,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Row(
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Row(
       children: [
         Container(
           width: 10,
@@ -53,6 +58,7 @@ class ChatAppBarTitle extends StatelessWidget {
           ),
         ),
       ],
+    ),
     );
   }
 }

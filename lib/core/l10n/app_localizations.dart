@@ -370,6 +370,17 @@ class AppLocalizations {
     'solve_questions': 'Soruları Çöz',
     'unknown_user': 'Bilinmeyen',
 
+    // Profile Detail
+    'about': 'Hakkında',
+    'report': 'Şikayet Et',
+    'block': 'Engelle',
+    'last_seen': 'Son görülme',
+    'send_message': 'Mesaj Gönder',
+    'report_or_block': 'Şikayet Et veya Engelle',
+    'report_reason_hint': 'Şikayet nedeninizi yazın...',
+    'block_user_title': 'Kullanıcıyı Engelle',
+    'block_user_message': 'Bu kullanıcıyı engellemek istediğinize emin misiniz? Engelledikten sonra birbirinizi göremezsiniz.',
+
     // Question Gate & Nudge
     'question_nudge_title': 'Keşfedilmek için sorularını ekle!',
     'question_nudge_subtitle': 'Profilin %{percent} hazır — sadece sorular eksik!',
@@ -634,7 +645,6 @@ class AppLocalizations {
     'enrich_profile_more_matches': 'Profilini zenginleştir, daha fazla eşleşme al',
     'show_you_right_people': 'Sana uygun kişileri görelim',
     'let_others_know_what_you_seek': 'Ne aradığını karşı taraf görsün',
-    'profile_completion': 'Profil Tamamlama',
 
     // Relationship goal
     'relationship_goal': 'İlişki Amacı',
@@ -1040,6 +1050,17 @@ class AppLocalizations {
     'solve_questions': 'Solve Questions',
     'unknown_user': 'Unknown',
 
+    // Profile Detail
+    'about': 'About',
+    'report': 'Report',
+    'block': 'Block',
+    'last_seen': 'Last seen',
+    'send_message': 'Send Message',
+    'report_or_block': 'Report or Block',
+    'report_reason_hint': 'Describe the reason for your report...',
+    'block_user_title': 'Block User',
+    'block_user_message': 'Are you sure you want to block this user? You won\'t be able to see each other after blocking.',
+
     // Question Gate & Nudge
     'question_nudge_title': 'Add questions to be discovered!',
     'question_nudge_subtitle': 'Your profile is %{percent} ready — just questions missing!',
@@ -1304,7 +1325,6 @@ class AppLocalizations {
     'enrich_profile_more_matches': 'Enrich your profile, get more matches',
     'show_you_right_people': 'Let us show you the right people',
     'let_others_know_what_you_seek': 'Let others know what you\'re looking for',
-    'profile_completion': 'Profile Completion',
 
     // Relationship goal
     'relationship_goal': 'Relationship Goal',

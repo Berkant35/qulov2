@@ -17,6 +17,7 @@ import 'package:qulo_v2/providers/daily_stats_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/features/discover/widgets/profile_card.dart';
+import 'package:qulo_v2/features/profile_detail/models/profile_detail_args.dart';
 
 class DiscoverCardView extends ConsumerStatefulWidget {
   final ProfileCardModel card;
@@ -73,6 +74,7 @@ class _DiscoverCardViewState extends ConsumerState<DiscoverCardView> {
         children: [
           Expanded(
             child: GestureDetector(
+              onTap: _navigateToProfile,
               onHorizontalDragUpdate: _onHorizontalDragUpdate,
               onHorizontalDragEnd: _onHorizontalDragEnd,
               child: AnimatedContainer(
@@ -140,6 +142,18 @@ class _DiscoverCardViewState extends ConsumerState<DiscoverCardView> {
           ),
           const SizedBox(height: AppSpacing.lg),
         ],
+      ),
+    );
+  }
+
+  void _navigateToProfile() {
+    ref.read(navigationServiceProvider).push(
+      RouteNames.profileDetail,
+      params: {'userId': widget.card.userId},
+      extra: ProfileDetailArgs(
+        context: ProfileDetailContext.discover,
+        userId: widget.card.userId,
+        preloadedCard: widget.card,
       ),
     );
   }

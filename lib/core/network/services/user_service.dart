@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:qulo_v2/data/models/public_profile_model.dart';
 import 'package:qulo_v2/data/models/user_model.dart';
 import 'package:qulo_v2/data/models/user_details_model.dart';
 
@@ -26,4 +27,7 @@ abstract class UserService {
 
   @DELETE('/users/me')
   Future<void> deleteAccount();
+
+  @GET('/users/{id}/profile')
+  Future<PublicProfileModel> getPublicProfile(@Path('id') String userId);
 }
