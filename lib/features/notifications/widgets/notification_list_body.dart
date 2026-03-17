@@ -30,15 +30,45 @@ class NotificationListBody extends StatelessWidget {
     }
 
     if (notifications.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.pagePadding),
-          child: Text(
-            context.tr('no_notifications'),
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
+      return RefreshIndicator(
+        onRefresh: onRefresh,
+        child: CustomScrollView(
+          slivers: [
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.pagePadding),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.notifications_none_outlined,
+                        size: 64,
+                        color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      Text(
+                        context.tr('no_notifications'),
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        context.tr('no_notifications_desc'),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       );
     }
