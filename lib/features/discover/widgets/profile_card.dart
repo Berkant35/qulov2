@@ -80,34 +80,36 @@ class _ProfileCardState extends State<ProfileCard> {
               itemCount: _photos.length,
               onPageChanged: (i) => setState(() => _current = i),
               itemBuilder: (context, index) {
-                return Listener(
-                  behavior: HitTestBehavior.opaque,
-                  onPointerDown: _hasMultiplePhotos && widget.isInteractionEnabled
-                      ? (event) => _pointerDownPosition = event.localPosition
-                      : null,
-                  onPointerUp: _hasMultiplePhotos && widget.isInteractionEnabled
-                      ? (event) {
-                          final down = _pointerDownPosition;
-                          _pointerDownPosition = null;
-                          if (down == null) return;
-                          // Only treat as tap if finger moved less than 20px
-                          final distance = (event.localPosition - down).distance;
-                          if (distance > 20) return;
-                          final width = context.size?.width ?? MediaQuery.of(context).size.width;
-                          final half = width / 2;
-                          if (event.localPosition.dx > half) {
-                            _goTo(_current + 1);
-                          } else {
-                            _goTo(_current - 1);
-                          }
-                        }
-                      : null,
-                  child: CachedNetworkImage(
-                    imageUrl: _photos[index],
-                    fit: BoxFit.cover,
-                    placeholder: (_, __) => _photoPlaceholder(theme),
-                    errorWidget: (_, __, ___) => _photoPlaceholder(theme),
-                  ),
+                return LayoutBuilder(
+                  builder: (context, constraints) {
+                    final half = constraints.maxWidth / 2;
+                    return Listener(
+                      behavior: HitTestBehavior.opaque,
+                      onPointerDown: _hasMultiplePhotos && widget.isInteractionEnabled
+                          ? (event) => _pointerDownPosition = event.localPosition
+                          : null,
+                      onPointerUp: _hasMultiplePhotos && widget.isInteractionEnabled
+                          ? (event) {
+                              final down = _pointerDownPosition;
+                              _pointerDownPosition = null;
+                              if (down == null) return;
+                              final distance = (event.localPosition - down).distance;
+                              if (distance > 20) return;
+                              if (event.localPosition.dx > half) {
+                                _goTo(_current + 1);
+                              } else {
+                                _goTo(_current - 1);
+                              }
+                            }
+                          : null,
+                      child: CachedNetworkImage(
+                        imageUrl: _photos[index],
+                        fit: BoxFit.cover,
+                        placeholder: (_, __) => _photoPlaceholder(theme),
+                        errorWidget: (_, __, ___) => _photoPlaceholder(theme),
+                      ),
+                    );
+                  },
                 );
               },
             ),
