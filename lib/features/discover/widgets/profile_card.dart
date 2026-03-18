@@ -81,6 +81,7 @@ class _ProfileCardState extends State<ProfileCard> {
               onPageChanged: (i) => setState(() => _current = i),
               itemBuilder: (context, index) {
                 return Listener(
+                  behavior: HitTestBehavior.opaque,
                   onPointerDown: _hasMultiplePhotos && widget.isInteractionEnabled
                       ? (event) => _pointerDownPosition = event.localPosition
                       : null,
@@ -111,14 +112,16 @@ class _ProfileCardState extends State<ProfileCard> {
               },
             ),
 
-          // Gradient overlay
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Colors.transparent, Colors.black54],
-                stops: [0.5, 1.0],
+          // Gradient overlay — IgnorePointer so it doesn't block photo taps
+          IgnorePointer(
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.transparent, Colors.black54],
+                  stops: [0.5, 1.0],
+                ),
               ),
             ),
           ),
