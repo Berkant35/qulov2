@@ -28,6 +28,7 @@ class ProfileCard extends StatefulWidget {
 class _ProfileCardState extends State<ProfileCard> {
   final PageController _controller = PageController();
   int _current = 0;
+  Offset? _pointerDownPosition;
 
   List<String> get _photos => widget.card.photos ?? [];
   bool get _hasMultiplePhotos => _photos.length > 1;
@@ -79,12 +80,21 @@ class _ProfileCardState extends State<ProfileCard> {
               itemCount: _photos.length,
               onPageChanged: (i) => setState(() => _current = i),
               itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTapUp: _hasMultiplePhotos && widget.isInteractionEnabled
-                      ? (details) {
+                return Listener(
+                  onPointerDown: _hasMultiplePhotos && widget.isInteractionEnabled
+                      ? (event) => _pointerDownPosition = event.localPosition
+                      : null,
+                  onPointerUp: _hasMultiplePhotos && widget.isInteractionEnabled
+                      ? (event) {
+                          final down = _pointerDownPosition;
+                          _pointerDownPosition = null;
+                          if (down == null) return;
+                          // Only treat as tap if finger moved less than 20px
+                          final distance = (event.localPosition - down).distance;
+                          if (distance > 20) return;
                           final width = context.size?.width ?? MediaQuery.of(context).size.width;
                           final half = width / 2;
-                          if (details.localPosition.dx > half) {
+                          if (event.localPosition.dx > half) {
                             _goTo(_current + 1);
                           } else {
                             _goTo(_current - 1);
