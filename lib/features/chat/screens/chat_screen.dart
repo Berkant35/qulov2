@@ -58,9 +58,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with ChatScreenMixin {
     final isOnline = matchUser?.isOnline ?? false;
     final lastSeen = matchUser?.lastSeen;
     final statusText = isOnline ? 'Online' : formatLastSeen(lastSeen);
-    final mediaEnabled =
-        ref.read(chatProvider(widget.matchId)).valueOrNull?.mediaEnabled ??
-            false;
+    final chatData = chatState.valueOrNull;
+    final mediaEnabled = chatData?.mediaEnabled ?? false;
+    final pendingRequest = chatData?.pendingMediaRequest;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -88,6 +88,18 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with ChatScreenMixin {
             onMediaDisable: handleDisableMedia,
           ),
         ],
+        bottom: pendingRequest != null
+            ? MediaRequestBanner(
+                request: pendingRequest,
+                currentUserId: myId ?? '',
+                onAccept: () => ref
+                    .read(chatProvider(widget.matchId).notifier)
+                    .respondToMediaRequest(pendingRequest.id, 'accept'),
+                onReject: () => ref
+                    .read(chatProvider(widget.matchId).notifier)
+                    .respondToMediaRequest(pendingRequest.id, 'reject'),
+              )
+            : null,
       ),
       body: Column(
         children: [

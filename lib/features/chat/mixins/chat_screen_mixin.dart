@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/services/image_picker_manager.dart';
 import 'package:qulo_v2/core/navigation/navigation_provider.dart';
 import 'package:qulo_v2/core/navigation/models/app_dialog.dart';
@@ -27,6 +28,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
   final scrollCtrl = ScrollController();
   RealtimeChannel? _channel;
   RealtimeChannel? _typingChannel;
+  RealtimeChannel? _mediaChannel;
   final Stopwatch _chatStopwatch = Stopwatch()..start();
   int _messagesSentCount = 0;
   bool isOtherTyping = false;
@@ -51,6 +53,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
       ref.read(chatProvider(widget.matchId).notifier).loadMediaStatus();
       _subscribeRealtime();
       _subscribeTyping();
+      _subscribeMediaRequests();
     });
   }
 
@@ -66,6 +69,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
     );
     _channel?.unsubscribe();
     _typingChannel?.unsubscribe();
+    _mediaChannel?.unsubscribe();
     _typingDebounce?.cancel();
     scrollCtrl.dispose();
     msgCtrl.dispose();
@@ -167,6 +171,26 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
                 if (mounted) setState(() => isOtherTyping = false);
               });
             }
+          },
+        )
+        .subscribe();
+  }
+
+  void _subscribeMediaRequests() {
+    _mediaChannel = Supabase.instance.client
+        .channel('media:${widget.matchId}')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.all,
+          schema: 'public',
+          table: 'media_requests',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'match_id',
+            value: widget.matchId,
+          ),
+          callback: (_) {
+            // Yeni istek veya durum değişikliği → media status'u yeniden yükle
+            ref.read(chatProvider(widget.matchId).notifier).loadMediaStatus();
           },
         )
         .subscribe();
@@ -314,6 +338,18 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
   }
 
   Future<void> _showMediaConsentDialog() async {
+    final chatState = ref.read(chatProvider(widget.matchId)).valueOrNull;
+
+    // Zaten pending request varsa tekrar gönderme
+    if (chatState?.pendingMediaRequest != null) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Medya istegi zaten gonderildi. Karsi tarafin yaniti bekleniyor.')),
+        );
+      }
+      return;
+    }
+
     final confirmed =
         await ref.read(navigationServiceProvider).showAppDialog<bool>(
               const ConfirmDialog(
@@ -326,7 +362,25 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
               ),
             );
     if (confirmed == true) {
-      await ref.read(chatProvider(widget.matchId).notifier).requestMedia();
+      final result = await ref.read(chatProvider(widget.matchId).notifier).requestMedia();
+      result.when(
+        success: (_) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Medya istegi gonderildi!')),
+            );
+          }
+        },
+        failure: (failure) {
+          if (!mounted) return;
+          final msg = switch (failure) {
+            ServerFailure(code: 'MEDIA_REQUEST_PENDING') => 'Medya istegi zaten gonderildi. Karsi tarafin yaniti bekleniyor.',
+            ServerFailure(code: 'MEDIA_ALREADY_ENABLED') => 'Medya paylasimi zaten aktif.',
+            _ => 'Medya istegi gonderilemedi. Lutfen tekrar deneyin.',
+          };
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+        },
+      );
     }
   }
 

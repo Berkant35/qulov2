@@ -124,7 +124,7 @@ class ChatNotifier extends FamilyAsyncNotifier<ChatState, String> {
     );
   }
 
-  Future<void> requestMedia() async {
+  Future<Result<MediaRequestModel>> requestMedia() async {
     final repo = ref.read(chatRepositoryProvider);
     final result = await repo.requestMedia(arg);
     result.when(
@@ -136,6 +136,7 @@ class ChatNotifier extends FamilyAsyncNotifier<ChatState, String> {
       },
       failure: (_) {},
     );
+    return result;
   }
 
   Future<void> respondToMediaRequest(String requestId, String action) async {
