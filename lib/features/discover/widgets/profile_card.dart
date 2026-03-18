@@ -9,34 +9,99 @@ import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/data/models/discover_model.dart';
 import 'package:qulo_v2/features/questions/widgets/difficulty_badge.dart';
 
-class ProfileCard extends StatelessWidget {
+class ProfileCard extends StatefulWidget {
   final ProfileCardModel card;
-  const ProfileCard({super.key, required this.card});
+  final VoidCallback? onInfoTap;
+  final bool isInteractionEnabled;
+
+  const ProfileCard({
+    super.key,
+    required this.card,
+    this.onInfoTap,
+    this.isInteractionEnabled = true,
+  });
+
+  @override
+  State<ProfileCard> createState() => _ProfileCardState();
+}
+
+class _ProfileCardState extends State<ProfileCard> {
+  final PageController _controller = PageController();
+  int _current = 0;
+
+  List<String> get _photos => widget.card.photos ?? [];
+  bool get _hasMultiplePhotos => _photos.length > 1;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _goTo(int page) {
+    if (page < 0 || page >= _photos.length) return;
+    _controller.animateToPage(
+      page,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
 
   Widget _photoPlaceholder(ThemeData theme) => Container(
         color: theme.colorScheme.surface,
         child: Center(child: QIcon(QIcons.icUser, color: theme.hintColor, size: 80)),
       );
 
+  String _relationshipGoalLabel(BuildContext context, String? goal) {
+    return switch (goal) {
+      'SERIOUS' => context.tr('serious_relationship'),
+      'FRIENDSHIP' => context.tr('friendship'),
+      _ => context.tr('not_sure'),
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final photo = card.photos?.isNotEmpty == true ? card.photos!.first : null;
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
       child: Stack(
         fit: StackFit.expand,
         children: [
-          if (photo != null)
-            CachedNetworkImage(
-              imageUrl: photo,
-              fit: BoxFit.cover,
-              placeholder: (_, __) => _photoPlaceholder(theme),
-              errorWidget: (_, __, ___) => _photoPlaceholder(theme),
-            )
+          // Photo area
+          if (_photos.isEmpty)
+            _photoPlaceholder(theme)
           else
-            _photoPlaceholder(theme),
+            PageView.builder(
+              controller: _controller,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: _photos.length,
+              onPageChanged: (i) => setState(() => _current = i),
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTapUp: _hasMultiplePhotos && widget.isInteractionEnabled
+                      ? (details) {
+                          final width = context.size?.width ?? MediaQuery.of(context).size.width;
+                          final half = width / 2;
+                          if (details.localPosition.dx > half) {
+                            _goTo(_current + 1);
+                          } else {
+                            _goTo(_current - 1);
+                          }
+                        }
+                      : null,
+                  child: CachedNetworkImage(
+                    imageUrl: _photos[index],
+                    fit: BoxFit.cover,
+                    placeholder: (_, __) => _photoPlaceholder(theme),
+                    errorWidget: (_, __, ___) => _photoPlaceholder(theme),
+                  ),
+                );
+              },
+            ),
+
+          // Gradient overlay
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -47,70 +112,94 @@ class ProfileCard extends StatelessWidget {
               ),
             ),
           ),
+
+          // Progress bar
+          if (_hasMultiplePhotos)
+            Positioned(
+              top: AppSpacing.sm,
+              left: AppSpacing.lg,
+              right: AppSpacing.lg,
+              child: Row(
+                children: List.generate(_photos.length, (i) {
+                  return Expanded(
+                    child: Container(
+                      height: 3,
+                      margin: EdgeInsets.symmetric(
+                        horizontal: _photos.length > 6 ? 1 : 2,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(2),
+                        color: i == _current
+                            ? Colors.white
+                            : Colors.white.withValues(alpha: 0.4),
+                      ),
+                    ),
+                  );
+                }),
+              ),
+            ),
+
+          // Info section
           Positioned(
             left: AppSpacing.lg,
             right: AppSpacing.lg,
             bottom: AppSpacing.lg,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      '${card.name ?? context.tr('unknown')}, ${card.age ?? ''}',
-                      style: theme.textTheme.headlineSmall?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    if (card.isBoosted) ...[
-                      const SizedBox(width: AppSpacing.sm),
-                      QIcon(QIcons.icZap, color: AppColors.warning, size: 20),
-                    ],
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.xs),
-                if (card.city != null)
+            child: GestureDetector(
+              onTap: widget.onInfoTap,
+              behavior: HitTestBehavior.translucent,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
                   Row(
                     children: [
-                      QIcon(QIcons.icMapPin, color: Colors.white70, size: 16),
-                      const SizedBox(width: AppSpacing.xs),
                       Text(
-                        '${card.city} • ${card.distanceKm < 1.0 ? context.tr('nearby') : '${card.distanceKm.toStringAsFixed(1)} km'}',
-                        style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white70),
+                        '${widget.card.name ?? context.tr('unknown')}, ${widget.card.age ?? ''}',
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
+                      if (widget.card.isBoosted) ...[
+                        const SizedBox(width: AppSpacing.sm),
+                        QIcon(QIcons.icZap, color: AppColors.warning, size: 20),
+                      ],
                     ],
                   ),
-                if (card.relationshipGoal != null && card.relationshipGoal != 'NOT_SURE')
-                  Container(
-                    margin: const EdgeInsets.only(top: AppSpacing.xs),
-                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: AppColors.primarySurface,
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                  const SizedBox(height: AppSpacing.xs),
+                  if (widget.card.city != null)
+                    Row(
+                      children: [
+                        QIcon(QIcons.icMapPin, color: Colors.white70, size: 16),
+                        const SizedBox(width: AppSpacing.xs),
+                        Text(
+                          '${widget.card.city} • ${widget.card.distanceKm < 1.0 ? context.tr('nearby') : '${widget.card.distanceKm.toStringAsFixed(1)} km'}',
+                          style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white70),
+                        ),
+                      ],
                     ),
-                    child: Text(
-                      _relationshipGoalLabel(context, card.relationshipGoal),
-                      style: theme.textTheme.labelSmall?.copyWith(color: AppColors.primary),
+                  if (widget.card.relationshipGoal != null && widget.card.relationshipGoal != 'NOT_SURE')
+                    Container(
+                      margin: const EdgeInsets.only(top: AppSpacing.xs),
+                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: AppColors.primarySurface,
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                      ),
+                      child: Text(
+                        _relationshipGoalLabel(context, widget.card.relationshipGoal),
+                        style: theme.textTheme.labelSmall?.copyWith(color: AppColors.primary),
+                      ),
                     ),
-                  ),
-                const SizedBox(height: AppSpacing.sm),
-                _QuestionInfoSection(card: card),
-              ],
+                  const SizedBox(height: AppSpacing.sm),
+                  _QuestionInfoSection(card: widget.card),
+                ],
+              ),
             ),
           ),
         ],
       ),
     );
-  }
-
-  String _relationshipGoalLabel(BuildContext context, String? goal) {
-    return switch (goal) {
-      'SERIOUS' => context.tr('serious_relationship'),
-      'FRIENDSHIP' => context.tr('friendship'),
-      _ => context.tr('not_sure'),
-    };
   }
 }
 

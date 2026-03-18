@@ -137,7 +137,6 @@ class _DiscoverCardViewState extends ConsumerState<DiscoverCardView>
             child: _isWaitingForApi
                 ? Center(child: AppLoadingWidget.large())
                 : GestureDetector(
-                    onTap: _isProcessing ? null : _navigateToProfile,
                     onHorizontalDragUpdate: _onHorizontalDragUpdate,
                     onHorizontalDragEnd: _onHorizontalDragEnd,
                     child: AnimatedBuilder(
@@ -160,7 +159,12 @@ class _DiscoverCardViewState extends ConsumerState<DiscoverCardView>
                       child: Stack(
                         fit: StackFit.expand,
                         children: [
-                          ProfileCard(card: widget.card),
+                          ProfileCard(
+                            key: ValueKey(widget.card.userId),
+                            card: widget.card,
+                            onInfoTap: _isProcessing ? null : _navigateToProfile,
+                            isInteractionEnabled: !_isProcessing,
+                          ),
                           if (_dragOffset.abs() > 30)
                             Positioned(
                               top: AppSpacing.xl,
