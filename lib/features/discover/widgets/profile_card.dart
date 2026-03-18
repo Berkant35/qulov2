@@ -146,7 +146,7 @@ class _ProfileCardState extends State<ProfileCard> {
             bottom: AppSpacing.lg,
             child: GestureDetector(
               onTap: widget.onInfoTap,
-              behavior: HitTestBehavior.translucent,
+              behavior: HitTestBehavior.opaque,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
