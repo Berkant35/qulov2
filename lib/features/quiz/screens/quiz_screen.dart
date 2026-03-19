@@ -1,127 +1,50 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
-import 'package:qulo_v2/core/navigation/navigation.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
+import 'package:qulo_v2/core/widgets/power_icon.dart';
+import 'package:qulo_v2/core/widgets/safe_tap_button.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/providers/quiz_provider.dart';
-import 'package:qulo_v2/routing/route_names.dart';
+import 'package:qulo_v2/providers/exchange_provider.dart';
+import 'package:qulo_v2/providers/user_provider.dart';
+import 'package:qulo_v2/features/quiz/mixins/quiz_screen_mixin.dart';
 import 'package:qulo_v2/features/quiz/widgets/answer_button.dart';
+import 'package:qulo_v2/features/quiz/widgets/answer_feedback_overlay.dart';
+import 'package:qulo_v2/features/quiz/widgets/power_banner.dart';
 import 'package:qulo_v2/features/quiz/widgets/power_bar.dart';
 import 'package:qulo_v2/features/quiz/widgets/quiz_timer.dart';
-import 'package:qulo_v2/features/quiz/widgets/quiz_result_dialog.dart';
+import 'package:qulo_v2/features/quiz/screens/match_celebration_screen.dart';
 
 class QuizScreen extends ConsumerStatefulWidget {
   final String targetId;
-  const QuizScreen({super.key, required this.targetId});
+  final String? targetPhotoUrl;
+  const QuizScreen({super.key, required this.targetId, this.targetPhotoUrl});
 
   @override
   ConsumerState<QuizScreen> createState() => _QuizScreenState();
 }
 
-class _QuizScreenState extends ConsumerState<QuizScreen> {
-  final _stopwatch = Stopwatch();
-  int _totalTimeSpent = 0;
-  int _totalCorrect = 0;
-  int _powersUsed = 0;
-
+class _QuizScreenState extends ConsumerState<QuizScreen>
+    with QuizScreenMixin {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() async {
-      await ref.read(quizProvider.notifier).startSession(widget.targetId);
-      _startQuestionTimer();
-    });
-  }
-
-  void _startQuestionTimer() {
-    _stopwatch.reset();
-    _stopwatch.start();
+    initMixin();
   }
 
   @override
   void dispose() {
-    _stopwatch.stop();
-    ref.read(quizProvider.notifier).reset();
+    disposeMixin();
     super.dispose();
-  }
-
-  Future<void> _answer(int index, {String? powerUsed}) async {
-    _stopwatch.stop();
-    final timeSpent = _stopwatch.elapsedMilliseconds ~/ 1000;
-    _totalTimeSpent += timeSpent;
-
-    if (powerUsed != null) _powersUsed++;
-
-    final result = await ref.read(quizProvider.notifier).answer(
-          index,
-          powerUsed: powerUsed,
-          timeSpent: timeSpent,
-        );
-    if (!mounted) return;
-    result.when(
-      success: (data) {
-        if (data.isCorrect == true) _totalCorrect++;
-
-        if (data.sessionStatus == 'COMPLETED') {
-          _showGamifiedResult(matched: true);
-        } else if (data.sessionStatus == 'FAILED') {
-          _showGamifiedResult(matched: false);
-        } else if (data.awaitingAnswer != true) {
-          ref.read(quizProvider.notifier).fetchCurrentQuestion();
-          _startQuestionTimer();
-        }
-      },
-      failure: (_) {},
-    );
-  }
-
-  String _determineBadge() {
-    final quiz = ref.read(quizProvider);
-    final total = quiz.totalQuestions;
-
-    // Flawless: all correct, no powers
-    if (_totalCorrect == total && _powersUsed == 0) return 'flawless';
-    // Speed solver: average < 10s per question
-    if (total > 0 && (_totalTimeSpent / total) < 10) return 'speed_solver';
-    // Power master: used 2+ powers
-    if (_powersUsed >= 2) return 'power_master';
-    // Determined: completed but not perfect
-    if (_totalCorrect > 0) return 'determined';
-    return 'none';
-  }
-
-  Future<void> _showGamifiedResult({required bool matched}) async {
-    final nav = ref.read(navigationServiceProvider);
-    final quiz = ref.read(quizProvider);
-    final badge = _determineBadge();
-
-    await nav.showAppDialog(
-      CustomDialog(
-        name: 'quiz_result',
-        barrierDismissible: false,
-        builder: (_) => QuizResultContent(
-          matched: matched,
-          totalCorrect: _totalCorrect,
-          totalQuestions: quiz.totalQuestions,
-          totalTimeSpent: _totalTimeSpent,
-          powersUsed: _powersUsed,
-          performanceBadge: badge,
-          onStartChat: matched
-              ? () {
-                  nav.closeOverlay();
-                  nav.pop();
-                  nav.go(RouteNames.matches);
-                }
-              : null,
-          onGoBack: () {
-            nav.closeOverlay();
-            if (mounted) nav.pop();
-          },
-        ),
-      ),
-    );
   }
 
   @override
@@ -130,50 +53,181 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
     final theme = Theme.of(context);
     final question = quiz.currentQuestion;
 
-    return AppScaffold(
-      title: question != null
-          ? '${question.questionNumber}/${question.totalQuestions}'
-          : '',
-      leading: IconButton(
-        icon: QIcon(QIcons.icX, size: 24),
-        onPressed: () => ref.read(navigationServiceProvider).pop(),
-      ),
-      padding: EdgeInsets.zero,
-      isLoading: quiz.isLoading || question == null,
-      body: quiz.isLoading || question == null
-          ? const SizedBox.shrink()
-          : Padding(
-              padding: const EdgeInsets.all(AppSpacing.pagePadding),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+    if (showCelebration) {
+      final myPhotos = ref.read(userProvider).valueOrNull?.photos;
+      final myPhoto = myPhotos?.isNotEmpty == true ? myPhotos!.first : null;
+      return MatchCelebrationScreen(
+        matched: celebrationMatched,
+        totalCorrect: totalCorrect,
+        totalQuestions: quiz.totalQuestions,
+        totalTimeSpent: totalTimeSpent,
+        powersUsed: powersUsed,
+        performanceBadge: celebrationBadge,
+        myPhotoUrl: myPhoto,
+        targetPhotoUrl: widget.targetPhotoUrl,
+        onStartChat: celebrationMatched ? onStartChat : null,
+        onGoBack: onGoBack,
+      );
+    }
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        await confirmExit();
+      },
+      child: AppScaffold(
+        title: question != null
+            ? '${question.questionNumber}/${question.totalQuestions}'
+            : '',
+        leading: IconButton(
+          icon: QIcon(QIcons.icX, size: 24),
+          onPressed: confirmExit,
+        ),
+        padding: EdgeInsets.zero,
+        isLoading: question == null,
+        body: question == null
+            ? const SizedBox.shrink()
+            : Stack(
                 children: [
-                  QuizTimer(
-                    seconds: question.timeLimitSeconds,
-                    onTimeout: () => _answer(0),
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
-                  Text(
-                    question.questionText,
-                    style: theme.textTheme.titleLarge,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: AppSpacing.xxl),
-                  ...question.answers.map((a) => Padding(
-                        padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                        child: AnswerButton(
-                          text: a.text,
-                          onTap: () => _answer(a.index),
+                  Padding(
+                    padding: const EdgeInsets.all(AppSpacing.pagePadding),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        QuizTimer(
+                          key: timerKey,
+                          seconds: question.timeLimitSeconds,
+                          onTimeout: onTimeout,
+                          onWarning: () {
+                            AnalyticsManager.instance.logEvent(
+                              AnalyticsEvents.quizTimerWarning,
+                              params: {
+                                AnalyticsEvents.paramQuestionIndex:
+                                    question.questionNumber,
+                                AnalyticsEvents.paramSecondsRemaining: 10,
+                              },
+                            );
+                          },
+                          onCritical: () {
+                            AnalyticsManager.instance.logEvent(
+                              AnalyticsEvents.quizTimerCritical,
+                              params: {
+                                AnalyticsEvents.paramQuestionIndex:
+                                    question.questionNumber,
+                                AnalyticsEvents.paramSecondsRemaining: 5,
+                              },
+                            );
+                          },
                         ),
-                      )),
-                  const Spacer(),
-                  PowerBar(
-                    sessionId: quiz.sessionId!,
-                    hasHint: question.hasHint,
-                    onPowerUsed: (power) => _answer(0, powerUsed: power),
+                        const SizedBox(height: AppSpacing.xl),
+                        Text(
+                          question.questionText,
+                          style: theme.textTheme.titleLarge,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: AppSpacing.xxl),
+                        if (oracleSuggestedIndex != null)
+                          PowerBanner(
+                            icon: Icons.auto_awesome,
+                            text: context.tr('power_oracle_desc'),
+                          ),
+                        if (hintText != null && hintText!.isNotEmpty)
+                          PowerBanner(
+                            icon: Icons.lightbulb_outline,
+                            text: hintText!,
+                            color: Colors.amber,
+                          ),
+                        ...question.answers.map((a) {
+                          final isRemoved = removedIndices.contains(a.index);
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                            child: AnswerButton(
+                              text: a.text,
+                              onTap: () {
+                                if (!isRemoved) selectAnswer(a.index);
+                              },
+                              isSelected: selectedAnswerIndex == a.index,
+                              isOracleSuggested: oracleSuggestedIndex == a.index,
+                              isDisabled: isRemoved,
+                            ),
+                          );
+                        }),
+                        if (selectedAnswerIndex != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: AppSpacing.sm),
+                            child: SafeTapButton(
+                              onTap: isSubmitting ? null : () => submitAnswer(),
+                              builder: (context, isLoading, onTap) => ElevatedButton(
+                                onPressed: onTap,
+                                style: ElevatedButton.styleFrom(
+                                  minimumSize: const Size(double.infinity, 52),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(AppSpacing.radiusMd),
+                                  ),
+                                  backgroundColor: AppColors.primary,
+                                ),
+                                child: (isLoading || isSubmitting)
+                                    ? AppLoadingWidget.small()
+                                    : Text(
+                                        context.tr('quiz_confirm_answer'),
+                                        style:
+                                            theme.textTheme.titleMedium?.copyWith(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                              ),
+                            ),
+                          ),
+                        const Spacer(),
+                        PowerBar(
+                          sessionId: quiz.sessionId!,
+                          hasHint: question.hasHint,
+                          onPowerUsed: usePower,
+                          onSheetOpening: () {
+                            timerKey.currentState?.pause();
+                            setState(() => isSheetOpen = true);
+                          },
+                          onSheetClosed: () {
+                            timerKey.currentState?.resume();
+                            setState(() => isSheetOpen = false);
+                          },
+                        ),
+                      ],
+                    ),
                   ),
+                  if (isSheetOpen)
+                    Positioned.fill(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                        child: Container(
+                          color: Colors.black.withValues(alpha: 0.3),
+                        ),
+                      ),
+                    ),
+                  if (showFeedback)
+                    AnswerFeedbackOverlay(
+                      isCorrect: feedbackCorrect,
+                      onComplete: onFeedbackComplete,
+                      canRescue: canRescue,
+                      skipOption: RescuePowerOption(
+                        type: PowerType.skip,
+                        inventoryCount: ref.read(exchangeProvider).getCount('SKIP'),
+                        diamondCost: getPowerCost('SKIP'),
+                      ),
+                      skipAllOption: RescuePowerOption(
+                        type: PowerType.skipAll,
+                        inventoryCount: ref.read(exchangeProvider).getCount('SKIP_ALL'),
+                        diamondCost: getPowerCost('SKIP_ALL'),
+                      ),
+                      onRescue: onRescue,
+                      onDeclineRescue: onDeclineRescue,
+                    ),
                 ],
               ),
-            ),
+      ),
     );
   }
 }

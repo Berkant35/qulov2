@@ -8,6 +8,8 @@ interface Match {
   user1_id: string;
   user2_id: string;
   is_active: boolean;
+  media_enabled_by_user1: boolean;
+  media_enabled_by_user2: boolean;
 }
 
 export class ChatService {
@@ -17,7 +19,7 @@ export class ChatService {
 
     const { data: match, error } = await supabase
       .from("matches")
-      .select("id, user1_id, user2_id, is_active")
+      .select("id, user1_id, user2_id, is_active, media_enabled_by_user1, media_enabled_by_user2")
       .eq("id", matchId)
       .or(`user1_id.eq.${userId},user2_id.eq.${userId}`)
       .single();
@@ -40,8 +42,9 @@ export class ChatService {
 
     const { data: messages, error, count } = await supabase
       .from("messages")
-      .select("*", { count: "exact" })
+      .select("*, reactions:message_reactions(emoji, user_id)", { count: "exact" })
       .eq("match_id", match.id)
+      .is("deleted_at", null)
       .order("created_at", { ascending: false })
       .range(offset, offset + limit - 1);
 
@@ -58,17 +61,38 @@ export class ChatService {
     };
   }
 
-  async sendMessage(userId: string, matchId: string, content: string, isImage = false) {
+  async sendMessage(
+    userId: string,
+    matchId: string,
+    content: string,
+    isImage = false,
+    audioUrl?: string,
+    audioDuration?: number,
+  ) {
     const match = await this.verifyMatchAccess(userId, matchId);
+
+    // Media permission check — both users must have enabled media sharing
+    if (isImage || audioUrl) {
+      if (!match.media_enabled_by_user1 || !match.media_enabled_by_user2) {
+        throw Errors.MEDIA_NOT_ENABLED();
+      }
+    }
+
+    const insertData: Record<string, unknown> = {
+      match_id: match.id,
+      sender_id: userId,
+      content,
+      is_image: isImage,
+    };
+
+    if (audioUrl) {
+      insertData.audio_url = audioUrl;
+      insertData.audio_duration_seconds = audioDuration;
+    }
 
     const { data: message, error } = await supabase
       .from("messages")
-      .insert({
-        match_id: match.id,
-        sender_id: userId,
-        content,
-        is_image: isImage,
-      })
+      .insert(insertData)
       .select("*")
       .single();
 
@@ -81,12 +105,86 @@ export class ChatService {
     const otherUserId = match.user1_id === userId ? match.user2_id : match.user1_id;
     const pushType = isImage ? "new_message_image" : "new_message";
 
-    // Fire-and-forget push notification
-    NotificationService.sendPush(otherUserId, pushType, {}, undefined, {
-      actionUrl: `/matches/chat/${match.id}`,
-    }).catch(() => {});
+    // Fire-and-forget push notification (sender name fetch included)
+    (async () => {
+      const { data: sender } = await supabase
+        .from("users")
+        .select("name")
+        .eq("id", userId)
+        .single();
+      await NotificationService.sendPush(otherUserId, pushType, { name: sender?.name ?? "Someone" }, undefined, {
+        actionUrl: `/matches/chat/${match.id}`,
+      });
+    })().catch(() => {});
 
     return message;
+  }
+
+  async deleteMessage(userId: string, matchId: string, messageId: string) {
+    const match = await this.verifyMatchAccess(userId, matchId);
+    assertUuid(messageId, "messageId");
+
+    // Fetch the message to verify ownership
+    const { data: message, error: fetchError } = await supabase
+      .from("messages")
+      .select("id, sender_id")
+      .eq("id", messageId)
+      .eq("match_id", match.id)
+      .is("deleted_at", null)
+      .single();
+
+    if (fetchError || !message) {
+      throw Errors.MESSAGE_NOT_FOUND();
+    }
+
+    if (message.sender_id !== userId) {
+      throw Errors.MESSAGE_NOT_OWNER();
+    }
+
+    const { error } = await supabase
+      .from("messages")
+      .update({ deleted_at: new Date().toISOString() })
+      .eq("id", messageId);
+
+    if (error) {
+      console.error("[chat] deleteMessage error:", error);
+      throw Errors.SERVER_ERROR();
+    }
+
+    return { success: true };
+  }
+
+  async addReaction(userId: string, matchId: string, messageId: string, emoji: string) {
+    await this.verifyMatchAccess(userId, matchId);
+    assertUuid(messageId, "messageId");
+
+    const { error: insertError } = await supabase
+      .from("message_reactions")
+      .insert({ message_id: messageId, user_id: userId, emoji });
+
+    if (insertError) {
+      // Unique constraint violation → toggle off (remove reaction)
+      if (insertError.code === "23505") {
+        const { error: deleteError } = await supabase
+          .from("message_reactions")
+          .delete()
+          .eq("message_id", messageId)
+          .eq("user_id", userId)
+          .eq("emoji", emoji);
+
+        if (deleteError) {
+          console.error("[chat] removeReaction error:", deleteError);
+          throw Errors.SERVER_ERROR();
+        }
+
+        return { toggled: "removed" as const };
+      }
+
+      console.error("[chat] addReaction error:", insertError);
+      throw Errors.SERVER_ERROR();
+    }
+
+    return { toggled: "added" as const };
   }
 
   async markAsRead(userId: string, matchId: string) {

@@ -60,6 +60,7 @@ ProfileCardModel _$ProfileCardModelFromJson(Map<String, dynamic> json) =>
       questionCount: (json['question_count'] as num).toInt(),
       profileCompletion: (json['profile_completion'] as num?)?.toInt() ?? 0,
       isBoosted: json['is_boosted'] as bool? ?? false,
+      relationshipGoal: json['relationship_goal'] as String?,
       questionInfo: json['question_info'] == null
           ? null
           : QuestionInfoModel.fromJson(
@@ -79,6 +80,7 @@ Map<String, dynamic> _$ProfileCardModelToJson(ProfileCardModel instance) =>
       'question_count': instance.questionCount,
       'profile_completion': instance.profileCompletion,
       'is_boosted': instance.isBoosted,
+      'relationship_goal': instance.relationshipGoal,
       'question_info': instance.questionInfo,
     };
 

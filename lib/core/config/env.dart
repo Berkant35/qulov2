@@ -1,7 +1,7 @@
 abstract final class Env {
   static const apiBaseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://192.168.1.166:3001/api/v1',
+    defaultValue: 'http://172.20.10.5:3001/api/v1',
   );
   static const supabaseUrl = String.fromEnvironment(
     'SUPABASE_URL',
@@ -18,6 +18,6 @@ abstract final class Env {
   );
   static const revenueCatGoogleKey = String.fromEnvironment(
     'REVENUECAT_GOOGLE_KEY',
-    defaultValue: '',
+    defaultValue: 'goog_tAQvpZTakPHMKEYCoFvjSpGmjmv',
   );
 }

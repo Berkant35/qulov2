@@ -2,6 +2,9 @@ import 'dart:async';
 import 'dart:developer' as dev;
 import 'dart:io' show Platform;
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {
@@ -13,6 +16,11 @@ class NotificationManager {
   static final NotificationManager instance = NotificationManager._();
 
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
+  final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
+
+  static const _androidChannelId = 'qulo_default';
+  static const _androidChannelName = 'Qulo Bildirimleri';
+  static const _androidChannelDescription = 'Eşleşme, mesaj ve diğer bildirimler';
 
   String? _token;
   String? get token => _token;
@@ -25,6 +33,9 @@ class NotificationManager {
   Future<void> init() async {
     dev.log('[FCM] init() started', name: 'NotificationManager');
 
+    // Initialize local notifications (Android channel + iOS settings)
+    await _initLocalNotifications();
+
     // Register background handler
     FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundHandler);
 
@@ -35,6 +46,15 @@ class NotificationManager {
       sound: true,
     );
     dev.log('[FCM] Permission status: ${settings.authorizationStatus}', name: 'NotificationManager');
+
+    AnalyticsManager.instance.logEvent(AnalyticsEvents.notificationPermissionAsk);
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      AnalyticsManager.instance.logEvent(AnalyticsEvents.notificationPermissionGrant);
+      AnalyticsManager.instance.setUserProperty('notification_enabled', 'true');
+    } else {
+      AnalyticsManager.instance.logEvent(AnalyticsEvents.notificationPermissionDeny);
+      AnalyticsManager.instance.setUserProperty('notification_enabled', 'false');
+    }
 
     // iOS: wait for APNS token before requesting FCM token
     if (Platform.isIOS) {
@@ -72,6 +92,76 @@ class NotificationManager {
     dev.log('[FCM] init() completed', name: 'NotificationManager');
   }
 
+  Future<void> _initLocalNotifications() async {
+    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const iosSettings = DarwinInitializationSettings();
+    const initSettings = InitializationSettings(
+      android: androidSettings,
+      iOS: iosSettings,
+    );
+
+    await _localNotifications.initialize(
+      settings: initSettings,
+      onDidReceiveNotificationResponse: (response) {
+        dev.log('[LocalNotif] Tapped: ${response.payload}', name: 'NotificationManager');
+      },
+    );
+
+    // Create Android notification channel
+    if (Platform.isAndroid) {
+      const channel = AndroidNotificationChannel(
+        _androidChannelId,
+        _androidChannelName,
+        description: _androidChannelDescription,
+        importance: Importance.high,
+        playSound: true,
+        enableVibration: true,
+      );
+
+      await _localNotifications
+          .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+          ?.createNotificationChannel(channel);
+
+      dev.log('[FCM] Android notification channel created', name: 'NotificationManager');
+    }
+
+    // Set foreground notification presentation for iOS
+    await _messaging.setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+  }
+
+  /// Show a local notification (used for foreground FCM messages on Android)
+  Future<void> showLocalNotification(RemoteMessage message) async {
+    final notification = message.notification;
+    if (notification == null) return;
+
+    const androidDetails = AndroidNotificationDetails(
+      _androidChannelId,
+      _androidChannelName,
+      channelDescription: _androidChannelDescription,
+      importance: Importance.high,
+      priority: Priority.high,
+      playSound: true,
+      enableVibration: true,
+      icon: '@mipmap/ic_launcher',
+    );
+
+    const notificationDetails = NotificationDetails(
+      android: androidDetails,
+    );
+
+    await _localNotifications.show(
+      id: notification.hashCode,
+      title: notification.title,
+      body: notification.body,
+      notificationDetails: notificationDetails,
+      payload: message.data['action_url'],
+    );
+  }
+
   // Callbacks set by provider layer
   void Function(String token)? _onTokenRefresh;
   void Function(RemoteMessage message)? _onForegroundMessage;
@@ -92,11 +182,25 @@ class NotificationManager {
 
     _onMessageSub = FirebaseMessaging.onMessage.listen((message) {
       dev.log('[FCM] Foreground message: ${message.notification?.title}', name: 'NotificationManager');
+      AnalyticsManager.instance.logEvent(AnalyticsEvents.notificationReceiveForeground, params: {
+        AnalyticsEvents.paramType: message.data['type'] ?? 'unknown',
+      });
+
+      // Android: show local notification for foreground messages
+      // (iOS handles this via setForegroundNotificationPresentationOptions)
+      if (Platform.isAndroid) {
+        showLocalNotification(message);
+      }
+
       _onForegroundMessage?.call(message);
     });
 
     _onMessageOpenedAppSub = FirebaseMessaging.onMessageOpenedApp.listen((message) {
       dev.log('[FCM] Message opened app: ${message.notification?.title}', name: 'NotificationManager');
+      AnalyticsManager.instance.logEvent(AnalyticsEvents.notificationTap, params: {
+        AnalyticsEvents.paramType: message.data['type'] ?? 'unknown',
+        AnalyticsEvents.paramActionUrl: message.data['action_url'] ?? '',
+      });
       _onMessageOpenedApp?.call(message);
     });
 

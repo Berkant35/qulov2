@@ -8,6 +8,7 @@ import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/features/questions/widgets/onboarding_slide.dart';
+import 'package:qulo_v2/features/questions/widgets/onboarding_language_slide.dart';
 import 'package:qulo_v2/providers/user_languages_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 
@@ -113,7 +114,20 @@ class _QuestionOnboardingScreenState
                       iconColor: AppColors.secondary,
                     ),
                     // Slide 4: Language selection
-                    _buildLanguageSlide(theme),
+                    OnboardingLanguageSlide(
+                      selectedLanguages: _selectedLanguages,
+                      onToggle: (locale) {
+                        setState(() {
+                          if (_selectedLanguages.contains(locale)) {
+                            if (_selectedLanguages.length > 1) {
+                              _selectedLanguages.remove(locale);
+                            }
+                          } else {
+                            _selectedLanguages.add(locale);
+                          }
+                        });
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -191,76 +205,6 @@ class _QuestionOnboardingScreenState
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildLanguageSlide(ThemeData theme) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.primary.withValues(alpha: 0.1),
-            ),
-            child: const Center(
-              child: Text(
-                '\u{1F30D}',
-                style: TextStyle(fontSize: 56),
-              ),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.xxl),
-          Text(
-            context.tr('onboarding_questions_slide4_title'),
-            style: theme.textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          Text(
-            context.tr('onboarding_questions_slide4_desc'),
-            style: theme.textTheme.bodyLarge?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-              height: 1.5,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: AppSpacing.xl),
-          Wrap(
-            spacing: AppSpacing.sm,
-            runSpacing: AppSpacing.sm,
-            alignment: WrapAlignment.center,
-            children: AppConstants.supportedQuestionLocales.map((locale) {
-              final isSelected = _selectedLanguages.contains(locale);
-              final flag = AppConstants.localeFlagEmojis[locale] ?? '';
-              return FilterChip(
-                label: Text('$flag ${context.tr('locale_$locale')}'),
-                selected: isSelected,
-                onSelected: (selected) {
-                  setState(() {
-                    if (selected) {
-                      _selectedLanguages.add(locale);
-                    } else if (_selectedLanguages.length > 1) {
-                      _selectedLanguages.remove(locale);
-                    }
-                  });
-                },
-                selectedColor: AppColors.primarySurface,
-                checkmarkColor: AppColors.primary,
-                side: BorderSide(
-                  color: isSelected ? AppColors.primary : AppColors.border,
-                ),
-              );
-            }).toList(),
-          ),
-        ],
       ),
     );
   }

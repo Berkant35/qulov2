@@ -5,6 +5,11 @@ import 'package:qulo_v2/core/services/location_manager.dart';
 import 'package:qulo_v2/core/services/notification_manager.dart';
 import 'package:qulo_v2/core/services/url_launcher_manager.dart';
 import 'package:qulo_v2/core/services/version_manager.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/audio_player_manager.dart';
+import 'package:qulo_v2/core/services/share_manager.dart';
+import 'package:qulo_v2/core/services/audio_recorder_manager.dart';
+import 'package:qulo_v2/core/services/haptic_manager.dart';
 import 'package:qulo_v2/core/network/services/auth_service.dart';
 import 'package:qulo_v2/core/network/services/user_service.dart';
 import 'package:qulo_v2/core/network/services/question_service.dart';
@@ -18,6 +23,10 @@ import 'package:qulo_v2/core/network/services/report_service.dart';
 import 'package:qulo_v2/core/network/services/subscription_service.dart';
 import 'package:qulo_v2/core/network/services/notification_service.dart';
 import 'package:qulo_v2/core/network/services/app_config_service.dart';
+import 'package:qulo_v2/core/network/services/referral_service.dart';
+import 'package:qulo_v2/core/network/services/exchange_service.dart';
+import 'package:qulo_v2/core/network/services/chat_question_service.dart';
+import 'package:qulo_v2/core/network/services/block_service.dart';
 import 'package:qulo_v2/data/repositories/repositories.dart';
 
 // ─── Core Services ───
@@ -35,6 +44,21 @@ final notificationManagerProvider = Provider<NotificationManager>(
 );
 final versionManagerProvider = Provider<VersionManager>(
   (_) => VersionManager.instance,
+);
+final analyticsManagerProvider = Provider<AnalyticsManager>(
+  (_) => AnalyticsManager.instance,
+);
+final shareManagerProvider = Provider<ShareManager>(
+  (_) => ShareManager.instance,
+);
+final audioPlayerManagerProvider = Provider<AudioPlayerManager>(
+  (_) => AudioPlayerManager.instance,
+);
+final audioRecorderManagerProvider = Provider<AudioRecorderManager>(
+  (_) => AudioRecorderManager.instance,
+);
+final hapticManagerProvider = Provider<HapticManager>(
+  (_) => HapticManager.instance,
 );
 
 // ─── NetworkManager ───
@@ -82,6 +106,12 @@ final notificationRetrofitServiceProvider =
 );
 final appConfigRetrofitServiceProvider = Provider<AppConfigRetrofitService>(
   (ref) => AppConfigRetrofitService(ref.read(networkManagerProvider).dio),
+);
+final referralServiceProvider = Provider<ReferralService>(
+  (ref) => ReferralService(ref.read(networkManagerProvider).dio),
+);
+final chatQuestionServiceProvider = Provider<ChatQuestionService>(
+  (ref) => ChatQuestionService(ref.read(networkManagerProvider).dio),
 );
 
 // ─── Repositories ───
@@ -133,4 +163,23 @@ final notificationRepositoryProvider = Provider<NotificationRepository>(
 );
 final appConfigRepositoryProvider = Provider<AppConfigRepository>(
   (ref) => AppConfigRepository(ref.read(appConfigRetrofitServiceProvider)),
+);
+final referralRepositoryProvider = Provider<ReferralRepository>(
+  (ref) => ReferralRepository(ref.read(referralServiceProvider)),
+);
+
+final exchangeServiceProvider = Provider<ExchangeService>(
+  (ref) => ExchangeService(ref.read(networkManagerProvider).dio),
+);
+
+final exchangeRepositoryProvider = Provider<ExchangeRepository>(
+  (ref) => ExchangeRepository(ref.read(exchangeServiceProvider)),
+);
+
+final blockServiceProvider = Provider<BlockService>(
+  (ref) => BlockService(ref.read(networkManagerProvider).dio),
+);
+
+final blockRepositoryProvider = Provider<BlockRepository>(
+  (ref) => BlockRepository(ref.read(blockServiceProvider)),
 );

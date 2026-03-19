@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:qulo_v2/core/services/revenuecat_service.dart';
 import 'package:qulo_v2/data/models/subscription_model.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 
 class SubscriptionNotifier extends AsyncNotifier<SubscriptionInfo> {
@@ -15,10 +16,15 @@ class SubscriptionNotifier extends AsyncNotifier<SubscriptionInfo> {
   Future<SubscriptionInfo> fetchStatus() async {
     try {
       final result = await ref.read(subscriptionRepositoryProvider).getStatus();
-      return result.when(
+      final info = result.when(
         success: (data) => data,
         failure: (_) => SubscriptionInfo.free(),
       );
+      AnalyticsManager.instance.setUserProperty(
+        'subscription_tier',
+        info.plan ?? 'free',
+      );
+      return info;
     } catch (_) {
       return SubscriptionInfo.free();
     }

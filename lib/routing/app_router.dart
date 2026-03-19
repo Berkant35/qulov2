@@ -27,8 +27,11 @@ import 'package:qulo_v2/features/questions/screens/question_analytics_screen.dar
 import 'package:qulo_v2/features/questions/screens/question_onboarding_screen.dart';
 import 'package:qulo_v2/data/models/question_model.dart';
 import 'package:qulo_v2/data/models/ai_suggestion_model.dart';
+import 'package:qulo_v2/features/exchange/screens/exchange_screen.dart';
 import 'package:qulo_v2/features/update/force_update_screen.dart';
 import 'package:qulo_v2/features/update/maintenance_screen.dart';
+import 'package:qulo_v2/features/profile_detail/screens/profile_detail_screen.dart';
+import 'package:qulo_v2/features/profile_detail/models/profile_detail_args.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
@@ -36,6 +39,7 @@ import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/navigation/navigation_provider.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 
 part 'app_routes.dart';
 
@@ -62,8 +66,10 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       if (authState.status == AuthStatus.initial) return null;
 
+      final isInviteRoute = state.matchedLocation.startsWith('/invite/');
       final isUpdateRoute = state.matchedLocation == '/force-update' || state.matchedLocation == '/maintenance';
-      if (!isAuth && !isAuthRoute && !isUpdateRoute) return '/auth/login';
+      if (!isAuth && !isAuthRoute && !isInviteRoute && !isUpdateRoute) return '/auth/login';
+      if (isAuth && isInviteRoute) return '/discover';
       if (isAuth && (isAuthRoute || isSplash)) return '/discover';
 
       return null;

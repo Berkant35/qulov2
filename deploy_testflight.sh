@@ -39,7 +39,7 @@ flutter pub get
 log "Building iOS release..."
 
 # Production API URL — update this for your server
-API_BASE_URL="${API_BASE_URL:-https://api.qulo.app/api/v1}"
+API_BASE_URL="${API_BASE_URL:-https://qulo-server-production.up.railway.app/api/v1}"
 
 flutter build ipa \
   --release \

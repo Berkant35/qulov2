@@ -44,6 +44,15 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
           .toList() ??
       const [],
   questionCount: (json['question_count'] as num?)?.toInt() ?? 0,
+  relationshipGoal: json['relationship_goal'] as String?,
+  preferredLanguages:
+      (json['preferred_languages'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      [],
+  completionRewardsClaimed:
+      json['completion_rewards_claimed'] as Map<String, dynamic>? ?? {},
+  referralCode: json['referral_code'] as String?,
   details: json['details'] == null
       ? null
       : UserDetailsModel.fromJson(json['details'] as Map<String, dynamic>),
@@ -83,5 +92,9 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
   'created_at': instance.createdAt,
   'badge_rewards_claimed': instance.badgeRewardsClaimed,
   'question_count': instance.questionCount,
+  'relationship_goal': instance.relationshipGoal,
+  'preferred_languages': instance.preferredLanguages,
+  'completion_rewards_claimed': instance.completionRewardsClaimed,
+  'referral_code': instance.referralCode,
   'details': instance.details,
 };

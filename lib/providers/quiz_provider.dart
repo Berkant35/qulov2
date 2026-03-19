@@ -71,10 +71,9 @@ class QuizNotifier extends Notifier<QuizState> {
     );
   }
 
-  Future<Result<QuizAnswerResponse>> answer(int selectedAnswer, {String? powerUsed, int? timeSpent}) async {
+  Future<Result<QuizAnswerResponse>> answer(int? selectedAnswer, {String? powerUsed, int? timeSpent}) async {
     final sessionId = state.sessionId;
     if (sessionId == null) return Failure(const UnknownFailure(message: 'No active session'));
-    state = state.copyWith(isLoading: true, failure: null);
     final result = await ref.read(quizRepositoryProvider).answerQuestion(
       sessionId,
       selectedAnswer: selectedAnswer,
@@ -82,8 +81,30 @@ class QuizNotifier extends Notifier<QuizState> {
       timeSpent: timeSpent,
     );
     result.when(
-      success: (data) => state = state.copyWith(lastAnswer: data, isLoading: false),
-      failure: (f) => state = state.copyWith(isLoading: false, failure: f),
+      success: (data) => state = state.copyWith(lastAnswer: data),
+      failure: (f) => state = state.copyWith(failure: f),
+    );
+    return result;
+  }
+
+  Future<Result<QuizAnswerResponse>> rescue({String powerType = 'SKIP'}) async {
+    final sessionId = state.sessionId;
+    if (sessionId == null) return Failure(const UnknownFailure(message: 'No active session'));
+    final result = await ref.read(quizRepositoryProvider).rescueWithSkip(sessionId, powerType: powerType);
+    result.when(
+      success: (data) => state = state.copyWith(lastAnswer: data),
+      failure: (f) => state = state.copyWith(failure: f),
+    );
+    return result;
+  }
+
+  Future<Result<QuizAnswerResponse>> fail() async {
+    final sessionId = state.sessionId;
+    if (sessionId == null) return Failure(const UnknownFailure(message: 'No active session'));
+    final result = await ref.read(quizRepositoryProvider).failSession(sessionId);
+    result.when(
+      success: (data) => state = state.copyWith(lastAnswer: data),
+      failure: (f) => state = state.copyWith(failure: f),
     );
     return result;
   }

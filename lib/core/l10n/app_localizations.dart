@@ -80,6 +80,7 @@ class AppLocalizations {
 
     // Discover
     'discover': 'Keşfet',
+    'reject': 'Geç',
     'no_more_profiles': 'Gösterilecek profil kalmadı',
     'refresh': 'Yenile',
     'questions_count': '{count} soru',
@@ -100,15 +101,23 @@ class AppLocalizations {
     'say_hello': 'Merhaba de!',
     'message_hint': 'Mesaj...',
     'type_message': 'Mesaj yaz...',
+    'last_seen_just_now': 'Son görülme: az önce',
+    'last_seen_minutes': 'Son görülme: {count} dk önce',
+    'last_seen_hours': 'Son görülme: {count} saat önce',
+    'last_seen_days': 'Son görülme: {count} gün önce',
+    'last_seen_weeks': 'Son görülme: {count} hafta önce',
 
     // Matches extras
     'new_matches': 'Yeni Eslesmeler',
     'solve_to_meet': 'Sorulari Coz',
     'online': 'Cevrimici',
     'offline': 'Cevrimdisi',
+    'now': 'Simdi',
+    'yesterday': 'Dun',
 
     // Profile
     'profile': 'Profil',
+    'profile_completion': 'Profil Tamamlanma',
     'edit_profile': 'Profili Düzenle',
     'my_questions': 'Sorularım',
     'diamonds': 'Elmaslar',
@@ -174,6 +183,8 @@ class AppLocalizations {
     'theme_system': 'Sistem',
     'theme_light': 'Acik',
     'theme_dark': 'Koyu',
+    'haptic_feedback': 'Dokunsal Geri Bildirim',
+    'haptic_feedback_desc': 'Buton ve kaydırma hareketlerinde titreşim',
     'logout': 'Çıkış Yap',
     'logout_confirm': 'Çıkış yapmak istediğine emin misin?',
     'delete_account': 'Hesabı Sil',
@@ -335,6 +346,8 @@ class AppLocalizations {
 
     'purchase_success': 'Satın alma başarılı!',
     'purchase_failed': 'Satın alma başarısız oldu',
+    'purchase_insufficient_diamonds': 'Yetersiz elmas — {required} gerekli, {current} var',
+    'purchase_get_diamonds': 'Elmas Al',
 
     // Upsell
     'diamonds_empty': 'Elmasların bitti!',
@@ -357,6 +370,17 @@ class AppLocalizations {
     'solve_questions': 'Soruları Çöz',
     'unknown_user': 'Bilinmeyen',
 
+    // Profile Detail
+    'about': 'Hakkında',
+    'report': 'Şikayet Et',
+    'block': 'Engelle',
+    'last_seen': 'Son görülme',
+    'send_message': 'Mesaj Gönder',
+    'report_or_block': 'Şikayet Et veya Engelle',
+    'report_reason_hint': 'Şikayet nedeninizi yazın...',
+    'block_user_title': 'Kullanıcıyı Engelle',
+    'block_user_message': 'Bu kullanıcıyı engellemek istediğinize emin misiniz? Engelledikten sonra birbirinizi göremezsiniz.',
+
     // Question Gate & Nudge
     'question_nudge_title': 'Keşfedilmek için sorularını ekle!',
     'question_nudge_subtitle': 'Profilin %{percent} hazır — sadece sorular eksik!',
@@ -368,11 +392,17 @@ class AppLocalizations {
     'question_nudge_celebration_title': 'Tebrikler! Artık keşfedilebilirsin!',
     'question_nudge_celebration_button': 'Keşfetmeye Başla',
     'question_nudge_menu_required': '2 soru gerekli',
+    'question_nudge_banner_compact': 'Sorularını ekle',
+    'question_word': 'soru',
+    'nearby': 'Yakında',
+    'undo_limit_reached': 'Geri alma hakkın kalmadı',
+    'undo': 'Geri Al',
 
     // Notifications
     'notifications': 'Bildirimler',
     'mark_all_read': 'Tümünü Okundu Yap',
     'no_notifications': 'Henüz bildirim yok',
+    'no_notifications_desc': 'Eşleşmeler ve mesajlar geldiğinde burada göreceksin',
     'just_now': 'Az önce',
     'minutes_ago': '{} dk önce',
     'hours_ago': '{} saat önce',
@@ -415,6 +445,15 @@ class AppLocalizations {
     'question_category_technology': 'Teknoloji',
     'question_category_general': 'Genel',
     'question_category_other': 'Diğer',
+    'question_category_fun': 'Eğlence',
+    'question_category_entertainment': 'Eğlence',
+    'question_category_lifestyle': 'Yaşam Tarzı',
+    'question_category_humor': 'Mizah',
+    'question_category_hobby': 'Hobi',
+    'question_category_science': 'Bilim',
+    'question_category_history': 'Tarih',
+    'question_category_art': 'Sanat',
+    'question_category_nature': 'Doğa',
 
     // Time Presets
     'question_time_fast': 'Hızlı',
@@ -477,6 +516,34 @@ class AppLocalizations {
     'quiz_result_correct_count': '{correct}/{total} doğru',
     'quiz_result_start_chat': 'Sohbete Başla',
     'quiz_result_go_back': 'Geri Dön',
+    'quiz_confirm_answer': 'Cevapla',
+    'quiz_correct': 'Doğru!',
+    'quiz_wrong': 'Yanlış!',
+    'quiz_rescue_title': 'Kurtul!',
+    'quiz_rescue_skip': 'Bu Soruyu Geç',
+    'quiz_rescue_skip_all': 'Hepsini Geç & Matchleş',
+    'quiz_rescue_failed': 'Kurtarma başarısız oldu',
+    'quiz_rescue_decline': 'Vazgeç',
+    'quiz_exit_title': 'Emin misin?',
+    'quiz_exit_message': 'Matchleşme şansından vazgeçiyorsun!',
+    'quiz_exit_confirm': 'Vazgeç',
+    'quiz_exit_cancel': 'Devam Et',
+    'quiz_match_title': 'Eşleşme!',
+    'quiz_failed_title': 'Quiz Başarısız',
+    'quiz_send_message': 'Mesaj Gönder',
+    'quiz_go_back': 'Geri Dön',
+    'quiz_stat_correct': 'Doğru: {correct}/{total}',
+    'quiz_stat_time': 'Harcanan Süre: {time}s',
+    'quiz_stat_powers': 'Kullanılan Güçler: {count}',
+    'quiz_badge_flawless': 'KUSURSUZ',
+    'quiz_badge_speed_solver': 'HIZLI ÇÖZÜCÜ',
+    'quiz_badge_power_master': 'GÜÇ USTASI',
+    'quiz_badge_determined': 'AZİMLİ',
+    'quiz_badge_matched': 'EŞLEŞTİN',
+    'quiz_badge_failed': 'BAŞARISIZ',
+    'quiz_power_failed': 'Power kullanılamadı',
+    'quiz_no_power': 'Bu power\'ın yok',
+    'quiz_buy_power': 'Satın Al',
 
     // Chat Quiz Summary
     'chat_quiz_summary': 'Quiz Özeti',
@@ -571,6 +638,71 @@ class AppLocalizations {
     'locale_nl': 'Nederlands',
     'locale_pl': 'Polski',
     'locale_sv': 'Svenska',
+
+    // Profile sections
+    'first_photo_is_profile': 'İlk fotoğrafın profil fotoğrafın olur',
+    'introduce_yourself': 'Kendini kısaca tanıt',
+    'help_us_know_you': 'Seni tanımamıza yardımcı ol',
+    'enrich_profile_more_matches': 'Profilini zenginleştir, daha fazla eşleşme al',
+    'show_you_right_people': 'Sana uygun kişileri görelim',
+    'let_others_know_what_you_seek': 'Ne aradığını karşı taraf görsün',
+
+    // Relationship goal
+    'relationship_goal': 'İlişki Amacı',
+    'serious_relationship': 'Ciddi İlişki',
+    'friendship': 'Arkadaşlık',
+    'not_sure': 'Henüz Bilmiyorum',
+
+    // Language preference
+    'language_preference': 'Dil Tercihi',
+
+    // Milestone celebration
+    'congratulations': 'Tebrikler!',
+    'profile_completed_percent': 'Profilini %{milestone} tamamladın!',
+    'purple_diamonds_earned': 'Mor elmas kazandın!',
+    'free_boost_earned': '24 saatlik ücretsiz boost kazandın!',
+
+    // Exchange center
+    'exchange_title': 'Dönüşüm Merkezi',
+    'exchange_convert_title': 'Elmas Dönüşümü',
+    'exchange_convert_button': 'Dönüştür',
+    'exchange_powers_title': 'Power Hakları',
+    'power_oracle': 'Kahin',
+    'power_oracle_desc': 'Bir şık önerir — garanti değil!',
+    'power_half_desc': '2 yanlış şıkkı eler',
+    'power_skip_desc': 'Soruyu doğru say ve geç',
+    'power_skip_all_desc': 'Tüm kalan soruları geç',
+    'power_time_extend_desc': 'Süreye 15 saniye ekle',
+    'power_hint_desc': 'İpucu göster',
+
+    // Referral
+    'referral_title': 'Arkadaşını Davet Et',
+    'referral_description': 'Arkadaşını davet et, ikimize de 25 mor elmas hediye!',
+    'referral_compact_cta': 'Arkadaşını getir, elmas kazan',
+    'referral_copy': 'Kopyala',
+    'referral_share': 'Paylaş',
+    'referral_progress': 'Davet kullanıldı',
+    'referral_code_copied': 'Davet kodu kopyalandı!',
+    'referral_have_code': 'Davet kodun var mı?',
+    'referral_code_hint': 'Davet kodunu gir',
+    'referral_code_valid': 'Davet eden: ',
+    'referral_code_invalid': 'Geçersiz davet kodu',
+    'referral_already_logged_in': 'Davet kodu sadece yeni kayıt sırasında kullanılabilir',
+
+    // Paywall
+    'paywall_title_undo': 'Geri Alma\'nın Kilidini Aç',
+    'paywall_title_passport': 'Pasaport Modunu Aç',
+    'paywall_title_questions': 'Daha Fazla Soru Ekle',
+    'paywall_title_swipes': 'Sınırsız Keşfet',
+    'paywall_title_general': 'Tüm Özelliklere Eriş',
+    'feature_daily_discovers': 'Günlük Keşif',
+    'feature_question_slots': 'Soru Slotu',
+    'feature_undo': 'Geri Alma',
+    'feature_monthly_diamonds': 'Aylık Mor Elmas',
+    'feature_passport': 'Pasaport Modu',
+    'feature_no_ads': 'Reklamsız',
+    'feature_unlimited': 'Sınırsız',
+    'feature_per_day': '/gün',
   };
 
   static const _en = <String, String>{
@@ -629,6 +761,7 @@ class AppLocalizations {
 
     // Discover
     'discover': 'Discover',
+    'reject': 'Pass',
     'no_more_profiles': 'No more profiles',
     'refresh': 'Refresh',
     'questions_count': '{count} questions',
@@ -649,15 +782,23 @@ class AppLocalizations {
     'say_hello': 'Say hello!',
     'message_hint': 'Message...',
     'type_message': 'Type a message...',
+    'last_seen_just_now': 'Last seen: just now',
+    'last_seen_minutes': 'Last seen: {count} min ago',
+    'last_seen_hours': 'Last seen: {count}h ago',
+    'last_seen_days': 'Last seen: {count}d ago',
+    'last_seen_weeks': 'Last seen: {count}w ago',
 
     // Matches extras
     'new_matches': 'New Matches',
     'solve_to_meet': 'Solve Questions',
     'online': 'Online',
     'offline': 'Offline',
+    'now': 'Now',
+    'yesterday': 'Yesterday',
 
     // Profile
     'profile': 'Profile',
+    'profile_completion': 'Profile Completion',
     'edit_profile': 'Edit Profile',
     'my_questions': 'My Questions',
     'diamonds': 'Diamonds',
@@ -723,6 +864,8 @@ class AppLocalizations {
     'theme_system': 'System',
     'theme_light': 'Light',
     'theme_dark': 'Dark',
+    'haptic_feedback': 'Haptic Feedback',
+    'haptic_feedback_desc': 'Vibrations on buttons and swipe gestures',
     'logout': 'Logout',
     'logout_confirm': 'Are you sure you want to logout?',
     'delete_account': 'Delete Account',
@@ -884,6 +1027,8 @@ class AppLocalizations {
 
     'purchase_success': 'Purchase successful!',
     'purchase_failed': 'Purchase failed',
+    'purchase_insufficient_diamonds': 'Not enough diamonds — {required} needed, you have {current}',
+    'purchase_get_diamonds': 'Get Diamonds',
 
     // Upsell
     'diamonds_empty': 'Out of diamonds!',
@@ -906,6 +1051,17 @@ class AppLocalizations {
     'solve_questions': 'Solve Questions',
     'unknown_user': 'Unknown',
 
+    // Profile Detail
+    'about': 'About',
+    'report': 'Report',
+    'block': 'Block',
+    'last_seen': 'Last seen',
+    'send_message': 'Send Message',
+    'report_or_block': 'Report or Block',
+    'report_reason_hint': 'Describe the reason for your report...',
+    'block_user_title': 'Block User',
+    'block_user_message': 'Are you sure you want to block this user? You won\'t be able to see each other after blocking.',
+
     // Question Gate & Nudge
     'question_nudge_title': 'Add questions to be discovered!',
     'question_nudge_subtitle': 'Your profile is %{percent} ready — just questions missing!',
@@ -917,11 +1073,17 @@ class AppLocalizations {
     'question_nudge_celebration_title': 'Congratulations! You\'re now discoverable!',
     'question_nudge_celebration_button': 'Start Discovering',
     'question_nudge_menu_required': '2 questions required',
+    'question_nudge_banner_compact': 'Add your questions',
+    'question_word': 'questions',
+    'nearby': 'Nearby',
+    'undo_limit_reached': 'No undo attempts remaining',
+    'undo': 'Undo',
 
     // Notifications
     'notifications': 'Notifications',
     'mark_all_read': 'Mark All Read',
     'no_notifications': 'No notifications yet',
+    'no_notifications_desc': 'You\'ll see matches and messages here',
     'just_now': 'Just now',
     'minutes_ago': '{} min ago',
     'hours_ago': '{} hours ago',
@@ -964,6 +1126,15 @@ class AppLocalizations {
     'question_category_technology': 'Technology',
     'question_category_general': 'General',
     'question_category_other': 'Other',
+    'question_category_fun': 'Fun',
+    'question_category_entertainment': 'Entertainment',
+    'question_category_lifestyle': 'Lifestyle',
+    'question_category_humor': 'Humor',
+    'question_category_hobby': 'Hobby',
+    'question_category_science': 'Science',
+    'question_category_history': 'History',
+    'question_category_art': 'Art',
+    'question_category_nature': 'Nature',
 
     // Time Presets
     'question_time_fast': 'Fast',
@@ -1026,6 +1197,34 @@ class AppLocalizations {
     'quiz_result_correct_count': '{correct}/{total} correct',
     'quiz_result_start_chat': 'Start Chat',
     'quiz_result_go_back': 'Go Back',
+    'quiz_confirm_answer': 'Answer',
+    'quiz_correct': 'Correct!',
+    'quiz_wrong': 'Wrong!',
+    'quiz_rescue_title': 'Rescue!',
+    'quiz_rescue_skip': 'Skip This Question',
+    'quiz_rescue_skip_all': 'Skip All & Match',
+    'quiz_rescue_failed': 'Rescue failed',
+    'quiz_rescue_decline': 'Give Up',
+    'quiz_exit_title': 'Are you sure?',
+    'quiz_exit_message': "You'll lose your chance to match!",
+    'quiz_exit_confirm': 'Give Up',
+    'quiz_exit_cancel': 'Continue',
+    'quiz_match_title': "It's a Match!",
+    'quiz_failed_title': 'Quiz Failed',
+    'quiz_send_message': 'Send a Message',
+    'quiz_go_back': 'Go Back',
+    'quiz_stat_correct': 'Correct: {correct}/{total}',
+    'quiz_stat_time': 'Time spent: {time}s',
+    'quiz_stat_powers': 'Powers used: {count}',
+    'quiz_badge_flawless': 'FLAWLESS',
+    'quiz_badge_speed_solver': 'SPEED SOLVER',
+    'quiz_badge_power_master': 'POWER MASTER',
+    'quiz_badge_determined': 'DETERMINED',
+    'quiz_badge_matched': 'MATCHED',
+    'quiz_badge_failed': 'FAILED',
+    'quiz_power_failed': 'Power could not be used',
+    'quiz_no_power': "You don't have this power",
+    'quiz_buy_power': 'Buy Now',
 
     // Chat Quiz Summary
     'chat_quiz_summary': 'Quiz Summary',
@@ -1120,6 +1319,71 @@ class AppLocalizations {
     'locale_nl': 'Nederlands',
     'locale_pl': 'Polski',
     'locale_sv': 'Svenska',
+
+    // Profile sections
+    'first_photo_is_profile': 'Your first photo is your profile photo',
+    'introduce_yourself': 'Briefly introduce yourself',
+    'help_us_know_you': 'Help us get to know you',
+    'enrich_profile_more_matches': 'Enrich your profile, get more matches',
+    'show_you_right_people': 'Let us show you the right people',
+    'let_others_know_what_you_seek': 'Let others know what you\'re looking for',
+
+    // Relationship goal
+    'relationship_goal': 'Relationship Goal',
+    'serious_relationship': 'Serious Relationship',
+    'friendship': 'Friendship',
+    'not_sure': 'Not Sure Yet',
+
+    // Language preference
+    'language_preference': 'Language Preference',
+
+    // Milestone celebration
+    'congratulations': 'Congratulations!',
+    'profile_completed_percent': 'You completed %{milestone} of your profile!',
+    'purple_diamonds_earned': 'You earned purple diamonds!',
+    'free_boost_earned': 'You earned a free 24-hour boost!',
+
+    // Exchange center
+    'exchange_title': 'Exchange Center',
+    'exchange_convert_title': 'Diamond Conversion',
+    'exchange_convert_button': 'Convert',
+    'exchange_powers_title': 'Power Rights',
+    'power_oracle': 'Oracle',
+    'power_oracle_desc': 'Suggests an answer — not guaranteed!',
+    'power_half_desc': 'Eliminates 2 wrong options',
+    'power_skip_desc': 'Marks question correct and skips',
+    'power_skip_all_desc': 'Skips all remaining questions',
+    'power_time_extend_desc': 'Adds 15 seconds to timer',
+    'power_hint_desc': 'Shows a hint',
+
+    // Referral
+    'referral_title': 'Invite a Friend',
+    'referral_description': 'Invite a friend, both of you get 25 purple diamonds!',
+    'referral_compact_cta': 'Bring a friend, earn diamonds',
+    'referral_copy': 'Copy',
+    'referral_share': 'Share',
+    'referral_progress': 'Invites used',
+    'referral_code_copied': 'Referral code copied!',
+    'referral_have_code': 'Have a referral code?',
+    'referral_code_hint': 'Enter referral code',
+    'referral_code_valid': 'Referred by: ',
+    'referral_code_invalid': 'Invalid referral code',
+    'referral_already_logged_in': 'Referral codes can only be used during registration',
+
+    // Paywall
+    'paywall_title_undo': 'Unlock Undo',
+    'paywall_title_passport': 'Unlock Passport Mode',
+    'paywall_title_questions': 'Add More Questions',
+    'paywall_title_swipes': 'Unlimited Discovers',
+    'paywall_title_general': 'Access All Features',
+    'feature_daily_discovers': 'Daily Discovers',
+    'feature_question_slots': 'Question Slots',
+    'feature_undo': 'Undo',
+    'feature_monthly_diamonds': 'Monthly Purple Diamonds',
+    'feature_passport': 'Passport Mode',
+    'feature_no_ads': 'No Ads',
+    'feature_unlimited': 'Unlimited',
+    'feature_per_day': '/day',
   };
 }
 

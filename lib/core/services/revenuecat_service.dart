@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:qulo_v2/core/config/env.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
 
 class RevenueCatNotConfiguredException implements Exception {
   @override
@@ -35,16 +37,56 @@ class RevenueCatService {
 
   static Future<CustomerInfo> purchasePackage(Package package) async {
     _ensureConfigured();
-    return await Purchases.purchasePackage(package);
+    try {
+      final info = await Purchases.purchasePackage(package);
+      AnalyticsManager.instance.logEvent(
+        AnalyticsEvents.diamondsPurchaseSuccess,
+        params: {AnalyticsEvents.paramProductId: package.storeProduct.identifier},
+      );
+      return info;
+    } catch (e) {
+      AnalyticsManager.instance.logEvent(
+        AnalyticsEvents.diamondsPurchaseFail,
+        params: {
+          AnalyticsEvents.paramProductId: package.storeProduct.identifier,
+          AnalyticsEvents.paramErrorCode: e.toString(),
+        },
+      );
+      rethrow;
+    }
   }
+
+  static const _subscriptionIds = {'quloplusmonthly2', 'qulopremiummonthly'};
 
   static Future<CustomerInfo> purchaseByProductId(String productId) async {
     _ensureConfigured();
-    final products = await Purchases.getProducts([productId]);
-    if (products.isEmpty) {
-      throw Exception('Product not found: $productId');
+    try {
+      final category = _subscriptionIds.contains(productId)
+          ? ProductCategory.subscription
+          : ProductCategory.nonSubscription;
+      final products = await Purchases.getProducts(
+        [productId],
+        productCategory: category,
+      );
+      if (products.isEmpty) {
+        throw Exception('Product not found: $productId');
+      }
+      final info = await Purchases.purchaseStoreProduct(products.first);
+      AnalyticsManager.instance.logEvent(
+        AnalyticsEvents.diamondsPurchaseSuccess,
+        params: {AnalyticsEvents.paramProductId: productId},
+      );
+      return info;
+    } catch (e) {
+      AnalyticsManager.instance.logEvent(
+        AnalyticsEvents.diamondsPurchaseFail,
+        params: {
+          AnalyticsEvents.paramProductId: productId,
+          AnalyticsEvents.paramErrorCode: e.toString(),
+        },
+      );
+      rethrow;
     }
-    return await Purchases.purchaseStoreProduct(products.first);
   }
 
   static Future<CustomerInfo> restorePurchases() async {

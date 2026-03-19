@@ -26,6 +26,21 @@ class LocationNotifier extends Notifier<LocationState> {
   @override
   LocationState build() => const LocationState();
 
+  /// Login sonrası user profildeki mevcut lat/lng ile state'i doldur.
+  /// GPS çağrısı yapmadan hemen discover'ı kullanılabilir hale getirir.
+  void seedFromProfile({required double lat, required double lng, String? city}) {
+    if (state.lat != null) return; // Zaten set edilmişse atla
+    state = state.copyWith(lat: lat, lng: lng, city: city);
+  }
+
+  /// App resume olduğunda çağrılır.
+  /// Permission hatası varsa tekrar kontrol eder.
+  void onAppResumed() {
+    if (state.error != null && !state.isLoading) {
+      getCurrentLocation();
+    }
+  }
+
   Future<void> getCurrentLocation() async {
     state = state.copyWith(isLoading: true, error: null);
     try {

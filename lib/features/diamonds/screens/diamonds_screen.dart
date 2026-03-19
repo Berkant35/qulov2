@@ -1,6 +1,6 @@
+import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
@@ -19,6 +19,12 @@ import 'package:qulo_v2/features/diamonds/widgets/diamond_balance_card.dart';
 import 'package:qulo_v2/features/diamonds/widgets/monthly_benefits_card.dart';
 import 'package:qulo_v2/features/diamonds/widgets/subscription_banner.dart';
 import 'package:qulo_v2/features/diamonds/widgets/purchase_grid.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/features/diamonds/widgets/transaction_tile.dart';
+import 'package:qulo_v2/core/widgets/referral_invite_card.dart';
+import 'package:qulo_v2/providers/referral_provider.dart';
+import 'package:qulo_v2/providers/api_provider.dart';
 
 class DiamondsScreen extends ConsumerStatefulWidget {
   const DiamondsScreen({super.key});
@@ -38,7 +44,17 @@ class _DiamondsScreenState extends ConsumerState<DiamondsScreen> {
     Future.microtask(() {
       ref.read(diamondProvider.notifier).fetchBalance();
       ref.read(dailyStatsProvider.notifier).fetchStats();
+      ref.read(referralProvider.notifier).fetchAll();
       _loadHistory();
+
+      final balance = ref.read(diamondProvider).valueOrNull;
+      AnalyticsManager.instance.logEvent(
+        AnalyticsEvents.diamondsScreenView,
+        params: {
+          if (balance != null)
+            AnalyticsEvents.paramCurrentBalance: balance.purple,
+        },
+      );
     });
   }
 
@@ -51,18 +67,29 @@ class _DiamondsScreenState extends ConsumerState<DiamondsScreen> {
           _history = response.items;
           _loadingHistory = false;
         }),
-        failure: (_) => setState(() => _loadingHistory = false),
+        failure: (f) {
+          dev.log('fetchHistory failed: $f', name: 'DiamondsScreen');
+          setState(() => _loadingHistory = false);
+        },
       );
     }
   }
 
   void _onViewPlans() {
-    context.pushNamed(RouteNames.subscription);
+    ref.read(navigationServiceProvider).go(RouteNames.subscription);
   }
 
   Future<void> _onPurchase(PurchasePackage package) async {
     if (_purchasing) return;
     setState(() => _purchasing = true);
+
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.diamondsPurchaseStart,
+      params: {
+        AnalyticsEvents.paramProductId: package.tier.productId,
+      },
+    );
+
     try {
       final success = await ref
           .read(diamondProvider.notifier)
@@ -117,6 +144,25 @@ class _DiamondsScreenState extends ConsumerState<DiamondsScreen> {
               ),
             ),
 
+            const SizedBox(height: AppSpacing.md),
+
+            // Exchange Center Button
+            OutlinedButton.icon(
+              onPressed: () {
+                ref.read(navigationServiceProvider).go(RouteNames.exchange);
+              },
+              icon: QIcon(QIcons.icGem, size: 18, color: AppColors.primary),
+              label: Text(context.tr('exchange_title')),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.primary,
+                side: const BorderSide(color: AppColors.primary),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.sm,
+                ),
+              ),
+            ),
+
             const SizedBox(height: AppSpacing.sectionGap),
 
             // 2. Subscription Banner
@@ -152,6 +198,29 @@ class _DiamondsScreenState extends ConsumerState<DiamondsScreen> {
                     ),
                   );
                 },
+              );
+            }),
+
+            const SizedBox(height: AppSpacing.sectionGap),
+
+            // Referral Invite Card
+            Builder(builder: (context) {
+              final referralAsync = ref.watch(referralProvider);
+              return referralAsync.when(
+                loading: () => const Center(child: AppLoadingWidget.small()),
+                error: (_, __) => const SizedBox.shrink(),
+                data: (referralState) => ReferralInviteCard(
+                  code: referralState.code,
+                  stats: referralState.stats,
+                  onShare: () {
+                    if (referralState.code != null) {
+                      final code = referralState.code!;
+                      final message =
+                          "Qulo'ya katıl! Davet kodumu kullan, ikimize de 25 mor elmas hediye: $code\nhttps://qulo.app/invite/$code";
+                      ref.read(shareManagerProvider).share(message);
+                    }
+                  },
+                ),
               );
             }),
 
@@ -211,54 +280,11 @@ class _DiamondsScreenState extends ConsumerState<DiamondsScreen> {
               )
             else
               ..._history.take(5).map(
-                    (tx) => _TransactionTile(transaction: tx),
+                    (tx) => TransactionTile(transaction: tx),
                   ),
 
             const SizedBox(height: AppSpacing.xl),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _TransactionTile extends StatelessWidget {
-  final DiamondTransaction transaction;
-
-  const _TransactionTile({required this.transaction});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isPositive = transaction.amount > 0;
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-      child: Container(
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surface,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-        ),
-        child: ListTile(
-          dense: true,
-          leading: QIcon(
-            isPositive ? QIcons.icPlusCircle : QIcons.icMinusCircle,
-            color: isPositive ? AppColors.success : AppColors.error,
-          ),
-          title: Text(transaction.reason),
-          subtitle: Text(
-            transaction.type,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
-          trailing: Text(
-            '${isPositive ? '+' : ''}${transaction.amount}',
-            style: theme.textTheme.titleSmall?.copyWith(
-              color: isPositive ? AppColors.success : AppColors.error,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
         ),
       ),
     );

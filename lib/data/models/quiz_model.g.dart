@@ -61,6 +61,8 @@ QuizAnswerResponse _$QuizAnswerResponseFromJson(Map<String, dynamic> json) =>
       sessionStatus: json['session_status'] as String?,
       powerResult: json['power_result'] as Map<String, dynamic>?,
       awaitingAnswer: json['awaiting_answer'] as bool?,
+      canRescue: json['can_rescue'] as bool?,
+      badge: json['badge'] as String?,
     );
 
 Map<String, dynamic> _$QuizAnswerResponseToJson(QuizAnswerResponse instance) =>
@@ -71,6 +73,8 @@ Map<String, dynamic> _$QuizAnswerResponseToJson(QuizAnswerResponse instance) =>
       'session_status': instance.sessionStatus,
       'power_result': instance.powerResult,
       'awaiting_answer': instance.awaitingAnswer,
+      'can_rescue': instance.canRescue,
+      'badge': instance.badge,
     };
 
 QuizResultModel _$QuizResultModelFromJson(Map<String, dynamic> json) =>

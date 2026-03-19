@@ -14,8 +14,11 @@ class NotificationRepository {
   ) async {
     try {
       final response = await _service.getNotifications(page, limit);
-      final list = (response['notifications'] as List)
-          .map((e) => NotificationModel.fromJson(e as Map<String, dynamic>))
+      final raw = response['notifications'];
+      if (raw is! List) return const Success([]);
+      final list = raw
+          .whereType<Map<String, dynamic>>()
+          .map(NotificationModel.fromJson)
           .toList();
       return Success(list);
     } on DioException catch (e) {

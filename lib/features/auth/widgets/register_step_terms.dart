@@ -4,6 +4,8 @@ import 'package:qulo_v2/core/l10n/app_localizations.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_button.dart';
+import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
+import 'package:qulo_v2/core/widgets/app_text_field.dart';
 
 class RegisterStepTerms extends StatelessWidget {
   final bool termsAccepted;
@@ -12,6 +14,14 @@ class RegisterStepTerms extends StatelessWidget {
   final bool isLoading;
   final VoidCallback onRegister;
   final ValueChanged<String>? onOpenUrl;
+  // Referral code
+  final TextEditingController? referralCodeCtrl;
+  final bool referralExpanded;
+  final VoidCallback? onToggleReferral;
+  final VoidCallback? onValidateReferral;
+  final bool validatingReferral;
+  final String? referralValidName;
+  final String? referralError;
 
   const RegisterStepTerms({
     super.key,
@@ -21,6 +31,13 @@ class RegisterStepTerms extends StatelessWidget {
     this.isLoading = false,
     required this.onRegister,
     this.onOpenUrl,
+    this.referralCodeCtrl,
+    this.referralExpanded = false,
+    this.onToggleReferral,
+    this.onValidateReferral,
+    this.validatingReferral = false,
+    this.referralValidName,
+    this.referralError,
   });
 
   @override
@@ -96,6 +113,63 @@ class RegisterStepTerms extends StatelessWidget {
               ),
             ),
           ],
+          const SizedBox(height: AppSpacing.lg),
+
+          // ─── Referral Code (optional expandable) ───
+          if (referralCodeCtrl != null) ...[
+            GestureDetector(
+              onTap: onToggleReferral,
+              child: Row(
+                children: [
+                  Icon(
+                    referralExpanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: AppColors.primary,
+                    size: 20,
+                  ),
+                  const SizedBox(width: AppSpacing.xs),
+                  Text(
+                    l10n.get('referral_have_code'),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (referralExpanded) ...[
+              const SizedBox(height: AppSpacing.md),
+              AppTextField(
+                controller: referralCodeCtrl!,
+                label: l10n.get('referral_code_hint'),
+                errorText: referralError,
+                prefixIcon: const Icon(Icons.card_giftcard_outlined),
+                suffixIcon: validatingReferral
+                    ? const Padding(
+                        padding: EdgeInsets.all(12),
+                        child: AppLoadingWidget.small(),
+                      )
+                    : null,
+                textInputAction: TextInputAction.done,
+                onFieldSubmitted: (_) => onValidateReferral?.call(),
+              ),
+              if (referralValidName != null) ...[
+                const SizedBox(height: AppSpacing.xs),
+                Padding(
+                  padding: const EdgeInsets.only(left: AppSpacing.lg),
+                  child: Text(
+                    '${l10n.get('referral_code_valid')}$referralValidName',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: AppColors.success,
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ],
+
           const Spacer(),
           AppButton(
             label: l10n.get('register'),

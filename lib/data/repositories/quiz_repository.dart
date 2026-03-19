@@ -33,16 +33,36 @@ class QuizRepository implements IQuizRepository {
   @override
   Future<Result<QuizAnswerResponse>> answerQuestion(
     String sessionId, {
-    required int selectedAnswer,
+    int? selectedAnswer,
     String? powerUsed,
     int? timeSpent,
   }) async {
     try {
       final response = await _service.answerQuestion(sessionId, {
-        'selected_answer': selectedAnswer,
+        if (selectedAnswer != null) 'selected_answer': selectedAnswer,
         if (powerUsed != null) 'power_used': powerUsed,
         if (timeSpent != null) 'time_spent': timeSpent,
       });
+      return Success(response);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
+
+  @override
+  Future<Result<QuizAnswerResponse>> rescueWithSkip(String sessionId, {String powerType = 'SKIP'}) async {
+    try {
+      final response = await _service.rescueWithSkip(sessionId, {'power_type': powerType});
+      return Success(response);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
+
+  @override
+  Future<Result<QuizAnswerResponse>> failSession(String sessionId) async {
+    try {
+      final response = await _service.failSession(sessionId);
       return Success(response);
     } on DioException catch (e) {
       return Failure(e.toAppFailure());

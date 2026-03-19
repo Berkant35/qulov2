@@ -1,3 +1,5 @@
+// @deprecated: Use PaywallBottomSheetContent instead. These sheets are not connected anywhere.
+// Will be removed in a future cleanup.
 import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';

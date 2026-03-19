@@ -14,6 +14,8 @@ class AppConfigRepository {
       return Success(AppConfigModel.fromJson(response));
     } on DioException catch (e) {
       return Failure(e.toAppFailure());
+    } catch (e) {
+      return Failure(UnknownFailure(error: e, message: 'Failed to parse app config'));
     }
   }
 }

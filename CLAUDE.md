@@ -37,6 +37,22 @@
 - BottomSheets: Use `ListBottomSheet` or `CustomBottomSheet` via `NavigationService.showAppBottomSheet()`
 - API base URL configured via environment
 
+## Flutter File Structure Rule
+- Screen dosyaları max ~200 satır — sadece orchestration (lifecycle, state routing, analytics)
+- UI parçaları `features/<feature>/widgets/` altında ayrı widget dosyaları olarak yaz
+- Her widget tek sorumluluk (ör. location error state, question gate, card view)
+- Bottom sheet içerikleri büyükse ayrı widget dosyasına taşı
+- Private widget'lar (`_Widget`) ayrı dosyaya taşınırken public yapılır
+- **ASLA** `Widget _buildSomething()` pattern'i kullanma — ayrı widget class'ları oluştur
+- Screen logic (lifecycle, callbacks, analytics) → `features/<feature>/mixins/<screen>_mixin.dart`
+- Mixin pattern: `mixin XScreenMixin on ConsumerState<XScreen>` → `initMixin()` + `disposeMixin()`
+
+## App Resume Permission Re-check Pattern
+- Permission-dependent provider'lara `onAppResumed()` metodu ekle
+- `app.dart` → `didChangeAppLifecycleState(resumed)` içinden çağır
+- Sadece error state varsa re-check yap (gereksiz çağrı önleme)
+- Screen'lerde `ref.listenManual` ile error→success geçişini dinle
+
 ## Hardware/Device Package Rule
 - Donanımsal paketler (image_picker, geolocator, url_launcher, firebase_messaging vb.) ASLA doğrudan ekranlarda/widget'larda kullanılmaz
 - Her paket için `lib/core/services/` altında singleton manager oluştur (ör. `ImagePickerManager.instance`)

@@ -4,12 +4,15 @@ import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/mixins/loading_mixin.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/providers/passport_provider.dart';
+import 'package:qulo_v2/features/diamonds/widgets/paywall_bottom_sheet.dart';
 import 'package:qulo_v2/providers/subscription_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 
@@ -21,6 +24,19 @@ class PassportScreen extends ConsumerStatefulWidget {
 }
 
 class _PassportScreenState extends ConsumerState<PassportScreen> with LoadingMixin {
+  final _analytics = AnalyticsManager.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final passport = ref.read(passportProvider);
+      _analytics.logEvent(AnalyticsEvents.passportScreenView, params: {
+        AnalyticsEvents.paramIsActive: passport.isActive ? 1 : 0,
+      });
+    });
+  }
+
   Future<void> _openMapPicker() async {
     final nav = ref.read(navigationServiceProvider);
     final result = await nav.push<Map<String, dynamic>>(RouteNames.mapPicker);
@@ -34,6 +50,10 @@ class _PassportScreenState extends ConsumerState<PassportScreen> with LoadingMix
 
     await withLoading(() async {
       await ref.read(passportProvider.notifier).activate(city: city, lat: lat, lng: lng);
+    });
+
+    _analytics.logEvent(AnalyticsEvents.passportActivate, params: {
+      AnalyticsEvents.paramDestinationCity: city,
     });
   }
 
@@ -72,7 +92,7 @@ class _PassportScreenState extends ConsumerState<PassportScreen> with LoadingMix
                   width: double.infinity,
                   height: 52,
                   child: FilledButton(
-                    onPressed: () => ref.read(navigationServiceProvider).push(RouteNames.subscription),
+                    onPressed: () => PaywallBottomSheetContent.show(ref, trigger: 'passport_locked'),
                     style: FilledButton.styleFrom(backgroundColor: AppColors.primaryDark),
                     child: Text(context.tr('upgrade_to_premium')),
                   ),
@@ -148,7 +168,14 @@ class _PassportScreenState extends ConsumerState<PassportScreen> with LoadingMix
               child: OutlinedButton(
                 onPressed: isLoading
                     ? null
-                    : () => withLoading(() => ref.read(passportProvider.notifier).deactivate()),
+                    : () {
+                        final city = ref.read(passportProvider).city ?? '';
+                        withLoading(() => ref.read(passportProvider.notifier).deactivate()).then((_) {
+                          _analytics.logEvent(AnalyticsEvents.passportDeactivate, params: {
+                            AnalyticsEvents.paramDestinationCity: city,
+                          });
+                        });
+                      },
                 child: isLoading
                     ? const SizedBox(height: 20, width: 20, child: AppLoadingWidget.small())
                     : Text(context.tr('passport_deactivate')),

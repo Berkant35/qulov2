@@ -6,19 +6,7 @@ class PendingChangesNotifier extends AsyncNotifier<List<PendingChangeModel>> {
   @override
   Future<List<PendingChangeModel>> build() async => [];
 
-  Future<void> fetchPending() async {
-    state = const AsyncLoading();
-    final result = await ref.read(questionRepositoryProvider).getPendingChanges();
-    state = result.when(
-      success: (data) => AsyncData(data),
-      failure: (f) => AsyncError(f, StackTrace.current),
-    );
-  }
-
-  Future<void> cancelChange(String changeId) async {
-    await ref.read(questionRepositoryProvider).cancelPendingChange(changeId);
-    await fetchPending();
-  }
+  
 }
 
 final pendingChangesProvider =

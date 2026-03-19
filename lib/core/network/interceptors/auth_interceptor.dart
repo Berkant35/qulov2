@@ -86,8 +86,20 @@ class AuthInterceptor extends Interceptor {
           data: {'refreshToken': refreshToken},
         );
 
-        final newAccess = response.data['accessToken'] as String;
-        final newRefresh = response.data['refreshToken'] as String;
+        final data = response.data;
+        final newAccess = data is Map ? data['accessToken'] as String? : null;
+        final newRefresh = data is Map ? data['refreshToken'] as String? : null;
+
+        if (newAccess == null || newRefresh == null) {
+          LogManager.instance.logError(
+            'POST',
+            '/auth/refresh',
+            response.statusCode,
+            'Malformed token response — missing accessToken or refreshToken',
+          );
+          break;
+        }
+
         await _storage.write(key: 'access_token', value: newAccess);
         await _storage.write(key: 'refresh_token', value: newRefresh);
 
@@ -99,9 +111,10 @@ class AuthInterceptor extends Interceptor {
       } on DioException catch (e) {
         final statusCode = e.response?.statusCode;
         String? errorCode;
-        if (e.response?.data is Map) {
-          final errorMap = (e.response!.data as Map)['error'];
-          if (errorMap is Map) {
+        final responseData = e.response?.data;
+        if (responseData is Map<String, dynamic>) {
+          final errorMap = responseData['error'];
+          if (errorMap is Map<String, dynamic>) {
             errorCode = errorMap['code'] as String?;
           }
         }
@@ -124,7 +137,8 @@ class AuthInterceptor extends Interceptor {
         );
 
         if (attempt < _maxRetries) {
-          await Future.delayed(Duration(seconds: attempt));
+          final delayMs = 1000 * (1 << (attempt - 1)); // 1s, 2s, 4s
+          await Future.delayed(Duration(milliseconds: delayMs));
         }
       }
     }

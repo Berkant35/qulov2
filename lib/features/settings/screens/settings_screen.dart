@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
@@ -9,21 +11,34 @@ import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/language_picker_sheet.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
+import 'package:qulo_v2/providers/haptic_provider.dart';
 import 'package:qulo_v2/providers/locale_provider.dart';
 import 'package:qulo_v2/providers/theme_provider.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/providers/user_languages_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
+import 'package:qulo_v2/core/widgets/safe_tap_button.dart';
 
 final _packageInfoProvider = FutureProvider<PackageInfo>(
   (_) => PackageInfo.fromPlatform(),
 );
 
-class SettingsScreen extends ConsumerWidget {
+class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    AnalyticsManager.instance.logEvent(AnalyticsEvents.settingsScreenView);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final locale = ref.watch(localeProvider);
     final languagesAsync = ref.watch(userLanguagesProvider);
     final theme = Theme.of(context);
@@ -53,7 +68,17 @@ class SettingsScreen extends ConsumerWidget {
                 ],
                 selected: {locale.languageCode},
                 onSelectionChanged: (s) {
-                  ref.read(localeProvider.notifier).setLocale(Locale(s.first));
+                  final oldLang = locale.languageCode;
+                  final newLang = s.first;
+                  AnalyticsManager.instance.logEvent(AnalyticsEvents.settingsLanguageChange, params: {
+                    AnalyticsEvents.paramLanguage: newLang,
+                  });
+                  AnalyticsManager.instance.logEvent(AnalyticsEvents.settingsChange, params: {
+                    AnalyticsEvents.paramSettingName: 'language',
+                    AnalyticsEvents.paramOldValue: oldLang,
+                    AnalyticsEvents.paramNewValue: newLang,
+                  });
+                  ref.read(localeProvider.notifier).setLocale(Locale(newLang));
                 },
               ),
             ),
@@ -126,11 +151,40 @@ class SettingsScreen extends ConsumerWidget {
                     ],
                     selected: {ref.watch(themeProvider)},
                     onSelectionChanged: (s) {
-                      ref.read(themeProvider.notifier).setThemeMode(s.first);
+                      final oldTheme = ref.read(themeProvider).name;
+                      final newTheme = s.first;
+                      AnalyticsManager.instance.logEvent(AnalyticsEvents.settingsChange, params: {
+                        AnalyticsEvents.paramSettingName: 'theme',
+                        AnalyticsEvents.paramOldValue: oldTheme,
+                        AnalyticsEvents.paramNewValue: newTheme.name,
+                      });
+                      ref.read(themeProvider.notifier).setThemeMode(newTheme);
                     },
                   ),
                 ),
               ],
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surface,
+              borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            ),
+            child: SwitchListTile(
+              secondary: Icon(Icons.vibration, color: theme.colorScheme.onSurfaceVariant),
+              title: Text(
+                context.tr('haptic_feedback'),
+                style: TextStyle(color: theme.colorScheme.onSurface),
+              ),
+              subtitle: Text(
+                context.tr('haptic_feedback_desc'),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+              value: ref.watch(hapticProvider),
+              onChanged: (_) => ref.read(hapticProvider.notifier).toggle(),
             ),
           ),
           const SizedBox(height: AppSpacing.sm),
@@ -140,12 +194,7 @@ class SettingsScreen extends ConsumerWidget {
               color: theme.colorScheme.surface,
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             ),
-            child: ListTile(
-              leading: Icon(Icons.logout, color: theme.colorScheme.onSurfaceVariant),
-              title: Text(
-                context.tr('logout'),
-                style: TextStyle(color: theme.colorScheme.onSurface),
-              ),
+            child: SafeTapButton(
               onTap: () async {
                 final nav = ref.read(navigationServiceProvider);
                 final authNotifier = ref.read(authProvider.notifier);
@@ -161,6 +210,16 @@ class SettingsScreen extends ConsumerWidget {
                   await authNotifier.logout();
                 }
               },
+              builder: (context, isLoading, onTap) => ListTile(
+                leading: isLoading
+                    ? const SizedBox(width: 24, height: 24, child: AppLoadingWidget.small())
+                    : Icon(Icons.logout, color: theme.colorScheme.onSurfaceVariant),
+                title: Text(
+                  context.tr('logout'),
+                  style: TextStyle(color: theme.colorScheme.onSurface),
+                ),
+                onTap: onTap,
+              ),
             ),
           ),
           Container(
@@ -169,13 +228,9 @@ class SettingsScreen extends ConsumerWidget {
               color: theme.colorScheme.surface,
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             ),
-            child: ListTile(
-              leading: const Icon(Icons.delete_forever, color: AppColors.error),
-              title: Text(
-                context.tr('delete_account'),
-                style: const TextStyle(color: AppColors.error),
-              ),
+            child: SafeTapButton(
               onTap: () async {
+                AnalyticsManager.instance.logEvent(AnalyticsEvents.settingsDeleteAccountStart);
                 final nav = ref.read(navigationServiceProvider);
                 final userNotifier = ref.read(userProvider.notifier);
                 final authNotifier = ref.read(authProvider.notifier);
@@ -193,6 +248,16 @@ class SettingsScreen extends ConsumerWidget {
                   await authNotifier.logout();
                 }
               },
+              builder: (context, isLoading, onTap) => ListTile(
+                leading: isLoading
+                    ? const SizedBox(width: 24, height: 24, child: AppLoadingWidget.small())
+                    : const Icon(Icons.delete_forever, color: AppColors.error),
+                title: Text(
+                  context.tr('delete_account'),
+                  style: const TextStyle(color: AppColors.error),
+                ),
+                onTap: onTap,
+              ),
             ),
           ),
           const SizedBox(height: AppSpacing.xl),

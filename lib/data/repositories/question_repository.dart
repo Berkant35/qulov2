@@ -4,7 +4,6 @@ import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/network/services/question_service.dart';
 import 'package:qulo_v2/data/models/question_model.dart';
 import 'package:qulo_v2/data/models/question_analytics_model.dart';
-import 'package:qulo_v2/data/models/pending_change_model.dart';
 import 'package:qulo_v2/data/repositories/interfaces.dart';
 
 class QuestionRepository implements IQuestionRepository {
@@ -57,7 +56,11 @@ class QuestionRepository implements IQuestionRepository {
   Future<Result<int>> getQuestionCount() async {
     return _network.get<int>(
       '/questions/count/me',
-      parser: (json) => (json as Map<String, dynamic>)['count'] as int,
+      parser: (json) {
+        if (json is! Map<String, dynamic>) return 0;
+        final count = json['count'];
+        return count is int ? count : 0;
+      },
     );
   }
 
@@ -83,24 +86,6 @@ class QuestionRepository implements IQuestionRepository {
     try {
       final data = await _service.getAiSuggestions(body);
       return Success(data);
-    } on DioException catch (e) {
-      return Failure(e.toAppFailure());
-    }
-  }
-
-  Future<Result<List<PendingChangeModel>>> getPendingChanges() async {
-    try {
-      final data = await _service.getPendingChanges();
-      return Success(data);
-    } on DioException catch (e) {
-      return Failure(e.toAppFailure());
-    }
-  }
-
-  Future<Result<void>> cancelPendingChange(String changeId) async {
-    try {
-      await _service.cancelPendingChange(changeId);
-      return const Success(null);
     } on DioException catch (e) {
       return Failure(e.toAppFailure());
     }

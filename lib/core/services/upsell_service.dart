@@ -1,4 +1,8 @@
+// @deprecated: Use PaywallBottomSheetContent.show() instead. This service is not connected anywhere.
+// Will be removed in a future cleanup.
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
 
 class UpsellService {
   static const _maxUpsellsPerSession = 2;
@@ -20,6 +24,10 @@ class UpsellService {
     _sessionUpsellCount++;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_keyOnboardingShown, true);
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.upsellShown,
+      params: {AnalyticsEvents.paramTrigger: 'onboarding'},
+    );
   }
 
   static Future<bool> shouldShowDiamondEmpty() async {
@@ -37,6 +45,10 @@ class UpsellService {
       _keyLastDiamondEmpty,
       DateTime.now().millisecondsSinceEpoch,
     );
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.upsellShown,
+      params: {AnalyticsEvents.paramTrigger: 'diamond_empty'},
+    );
   }
 
   static Future<bool> shouldShowFirstMatch() async {
@@ -49,6 +61,10 @@ class UpsellService {
     _sessionUpsellCount++;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_keyFirstMatchShown, true);
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.upsellShown,
+      params: {AnalyticsEvents.paramTrigger: 'first_match'},
+    );
   }
 
   static Future<bool> shouldShowSwipeLimit() async {
@@ -67,6 +83,10 @@ class UpsellService {
     _sessionUpsellCount++;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_keyDay3Shown, true);
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.upsellShown,
+      params: {AnalyticsEvents.paramTrigger: 'day3'},
+    );
   }
 
   static Future<bool> shouldShowBoostNeed() async {
@@ -83,6 +103,10 @@ class UpsellService {
     await prefs.setInt(
       _keyLastBoostNeed,
       DateTime.now().millisecondsSinceEpoch,
+    );
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.upsellShown,
+      params: {AnalyticsEvents.paramTrigger: 'boost_need'},
     );
   }
 

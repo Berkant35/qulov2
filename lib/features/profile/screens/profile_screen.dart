@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/core/widgets/diamond_icon.dart';
+import 'package:qulo_v2/core/widgets/error_retry_widget.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/core/widgets/question_gate_banner.dart';
 import 'package:qulo_v2/providers/notification_provider.dart';
@@ -18,6 +21,11 @@ import 'package:qulo_v2/features/profile/widgets/photo_grid.dart';
 import 'package:qulo_v2/features/profile/widgets/badge_bar.dart';
 import 'package:qulo_v2/features/profile/widgets/detail_chips.dart';
 import 'package:qulo_v2/features/profile/widgets/question_vitrin_card.dart';
+import 'package:qulo_v2/features/profile/widgets/section_card.dart';
+import 'package:qulo_v2/features/profile/widgets/pref_chip.dart';
+import 'package:qulo_v2/features/profile/widgets/profile_completion_bar.dart';
+import 'package:qulo_v2/features/profile/widgets/profile_menu_item.dart';
+import 'package:qulo_v2/core/widgets/referral_invite_card.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -33,6 +41,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     Future.microtask(() {
       ref.read(userProvider.notifier).fetchMe();
     });
+    AnalyticsManager.instance.logEvent(AnalyticsEvents.profileViewOwn);
   }
 
   String _genderPrefLabel(BuildContext context, String? pref) {
@@ -46,6 +55,27 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       default:
         return '';
     }
+  }
+
+  String _relationshipGoalLabel(BuildContext context, String? goal) {
+    return switch (goal) {
+      'SERIOUS' => context.tr('serious_relationship'),
+      'FRIENDSHIP' => context.tr('friendship'),
+      _ => context.tr('not_sure'),
+    };
+  }
+
+  String _languageFlag(String code) {
+    return switch (code) {
+      'tr' => 'TR',
+      'en' => 'EN',
+      'de' => 'DE',
+      'fr' => 'FR',
+      'ar' => 'AR',
+      'ru' => 'RU',
+      'es' => 'ES',
+      _ => code.toUpperCase(),
+    };
   }
 
   @override
@@ -86,13 +116,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         ),
         IconButton(
           icon: QIcon(QIcons.icSettings, color: theme.colorScheme.onSurfaceVariant, size: 24),
-          onPressed: () => ref.read(navigationServiceProvider).go(RouteNames.settings),
+          onPressed: () {
+            AnalyticsManager.instance.logEvent(AnalyticsEvents.profileSettingsOpen);
+            ref.read(navigationServiceProvider).go(RouteNames.settings);
+          },
         ),
       ],
       padding: EdgeInsets.zero,
       body: userAsync.when(
         loading: () => const SizedBox.shrink(),
-        error: (e, _) => Center(child: Text('Error: $e')),
+        error: (e, _) => ErrorRetryWidget(
+          onRetry: () => ref.invalidate(userProvider),
+        ),
         data: (user) {
           if (user == null) return const Center(child: Text('No user data'));
           final photos = user.photos ?? [];
@@ -152,6 +187,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     ),
                   );
                 }),
+                const SizedBox(height: AppSpacing.md),
+
+                // ─── Referral Invite (Compact) ───
+                ReferralInviteCard(
+                  compact: true,
+                  onTap: () => ref.read(navigationServiceProvider).go(RouteNames.diamonds),
+                ),
+
                 if (user.city != null) ...[
                   const SizedBox(height: AppSpacing.xs),
                   Row(
@@ -168,6 +211,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     ],
                   ),
                 ],
+                const SizedBox(height: AppSpacing.md),
+
+                // ─── Profile Completion ───
+                ProfileCompletionBar(
+                  completionPercent: user.profileCompletion,
+                  onTap: () => ref.read(navigationServiceProvider).go(RouteNames.editProfile),
+                ),
                 const SizedBox(height: AppSpacing.lg),
 
                 // ─── Badge Bar ───
@@ -188,7 +238,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 const SizedBox(height: AppSpacing.lg),
 
                 // ─── About Me Card ───
-                _SectionCard(
+                SectionCard(
                   title: context.tr('about_me'),
                   onTap: () => ref.read(navigationServiceProvider).go(RouteNames.editProfile),
                   child: Text(
@@ -205,7 +255,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 const SizedBox(height: AppSpacing.md),
 
                 // ─── Details Card ───
-                _SectionCard(
+                SectionCard(
                   title: context.tr('details'),
                   onTap: () => ref.read(navigationServiceProvider).go(RouteNames.editProfile),
                   child: DetailChips(
@@ -216,7 +266,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 const SizedBox(height: AppSpacing.md),
 
                 // ─── Preferences Card ───
-                _SectionCard(
+                SectionCard(
                   title: context.tr('preferences'),
                   onTap: () => ref.read(navigationServiceProvider).go(RouteNames.editProfile),
                   child: Wrap(
@@ -224,19 +274,28 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     runSpacing: AppSpacing.sm,
                     children: [
                       if (user.genderPref != null)
-                        _PrefChip(
+                        PrefChip(
                           iconPath: QIcons.icGenderPref,
                           label: _genderPrefLabel(context, user.genderPref),
                         ),
                       if (user.agePrefMin != null && user.agePrefMax != null)
-                        _PrefChip(
+                        PrefChip(
                           iconPath: QIcons.icAgeRange,
                           label: '${user.agePrefMin} - ${user.agePrefMax}',
                         ),
-                      if (user.matchRadiusKm != null)
-                        _PrefChip(
+                      PrefChip(
                           iconPath: QIcons.icMapPin,
                           label: '${user.matchRadiusKm} km',
+                        ),
+                      if (user.relationshipGoal != null && user.relationshipGoal != 'NOT_SURE')
+                        PrefChip(
+                          iconPath: QIcons.icHeart,
+                          label: _relationshipGoalLabel(context, user.relationshipGoal),
+                        ),
+                      if (user.preferredLanguages.isNotEmpty)
+                        PrefChip(
+                          iconPath: QIcons.icGlobe,
+                          label: user.preferredLanguages.map(_languageFlag).join(', '),
                         ),
                     ],
                   ),
@@ -244,12 +303,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 const SizedBox(height: AppSpacing.lg),
 
                 // ─── Menu Items ───
-                _MenuItem(
+                ProfileMenuItem(
                   iconPath: QIcons.icPencil,
                   title: context.tr('edit_profile'),
                   onTap: () => ref.read(navigationServiceProvider).go(RouteNames.editProfile),
                 ),
-                _MenuItem(
+                ProfileMenuItem(
                   iconPath: QIcons.icHelpCircle,
                   title: context.tr('my_questions'),
                   subtitle: user.questionCount < AppConstants.minQuestions
@@ -258,12 +317,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   showBadge: user.questionCount < AppConstants.minQuestions,
                   onTap: () => ref.read(navigationServiceProvider).go(RouteNames.questions),
                 ),
-                _MenuItem(
+                ProfileMenuItem(
                   iconWidget: const DiamondIcon.purple(size: 24),
                   title: context.tr('diamonds'),
                   onTap: () => ref.read(navigationServiceProvider).go(RouteNames.diamonds),
                 ),
-                _MenuItem(
+                ProfileMenuItem(
                   iconPath: QIcons.icCrown,
                   title: context.tr('sub_my_subscription'),
                   subtitle: (() {
@@ -281,7 +340,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   })(),
                   onTap: () => ref.read(navigationServiceProvider).go(RouteNames.subscription),
                 ),
-                _MenuItem(
+                ProfileMenuItem(
                   iconPath: QIcons.icPlane,
                   title: context.tr('passport'),
                   onTap: () => ref.read(navigationServiceProvider).go(RouteNames.passport),
@@ -290,156 +349,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-// ─── Section Card ───
-
-class _SectionCard extends StatelessWidget {
-  final String title;
-  final Widget child;
-  final VoidCallback? onTap;
-
-  const _SectionCard({
-    required this.title,
-    required this.child,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.cardPadding),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          GestureDetector(
-            onTap: onTap,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    title,
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                QIcon(QIcons.icChevronRight, color: theme.hintColor, size: 20),
-              ],
-            ),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          child,
-        ],
-      ),
-    );
-  }
-}
-
-// ─── Pref Chip ───
-
-class _PrefChip extends StatelessWidget {
-  final String iconPath;
-  final String label;
-
-  const _PrefChip({
-    required this.iconPath,
-    required this.label,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm,
-        vertical: AppSpacing.xs,
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.secondarySurface,
-        border: Border.all(color: AppColors.secondary.withAlpha(77)),
-        borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          QIcon(iconPath, size: 14, color: AppColors.secondary),
-          const SizedBox(width: 4),
-          Text(
-            label,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: AppColors.secondary,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ─── Menu Item ───
-
-class _MenuItem extends StatelessWidget {
-  final String? iconPath;
-  final Widget? iconWidget;
-  final String title;
-  final String? subtitle;
-  final bool showBadge;
-  final VoidCallback onTap;
-
-  const _MenuItem({
-    this.iconPath,
-    this.iconWidget,
-    required this.title,
-    this.subtitle,
-    this.showBadge = false,
-    required this.onTap,
-  }) : assert(iconPath != null || iconWidget != null);
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-      ),
-      child: ListTile(
-        leading: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            iconWidget ?? QIcon(iconPath!, color: AppColors.primary, size: 24),
-            if (showBadge)
-              Positioned(
-                right: -4,
-                top: -4,
-                child: Container(
-                  width: 10,
-                  height: 10,
-                  decoration: const BoxDecoration(
-                    color: AppColors.error,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-              ),
-          ],
-        ),
-        title: Text(title),
-        subtitle: subtitle != null
-            ? Text(subtitle!, style: theme.textTheme.bodySmall?.copyWith(color: AppColors.error))
-            : null,
-        trailing: QIcon(QIcons.icChevronRight, color: theme.hintColor, size: 20),
-        onTap: onTap,
       ),
     );
   }

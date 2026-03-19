@@ -18,12 +18,12 @@ class _NotificationRetrofitService implements NotificationRetrofitService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<Map<String, dynamic>> getNotifications(int page, int limit) async {
+  Future<dynamic> getNotifications(int page, int limit) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'page': page, r'limit': limit};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<Map<String, dynamic>>(
+    final _options = _setStreamType<dynamic>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -33,18 +33,18 @@ class _NotificationRetrofitService implements NotificationRetrofitService {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    final _value = _result.data!;
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
     return _value;
   }
 
   @override
-  Future<Map<String, dynamic>> getUnreadCount() async {
+  Future<dynamic> getUnreadCount() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<Map<String, dynamic>>(
+    final _options = _setStreamType<dynamic>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -54,8 +54,8 @@ class _NotificationRetrofitService implements NotificationRetrofitService {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    final _value = _result.data!;
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
     return _value;
   }
 

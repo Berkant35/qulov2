@@ -10,19 +10,45 @@ class MatchModel extends Equatable {
   @JsonKey(name: 'matched_at')
   final String matchedAt;
   final MatchUserModel? user;
+  @JsonKey(name: 'media_enabled_by_user1')
+  final bool mediaEnabledByUser1;
+  @JsonKey(name: 'media_enabled_by_user2')
+  final bool mediaEnabledByUser2;
+  @JsonKey(name: 'last_message')
+  final String? lastMessage;
+  @JsonKey(name: 'last_message_sent_at')
+  final String? lastMessageSentAt;
+  @JsonKey(name: 'last_message_sender_id')
+  final String? lastMessageSenderId;
+  @JsonKey(name: 'unread_count')
+  final int unreadCount;
 
   const MatchModel({
     required this.matchId,
     required this.matchedAt,
     this.user,
+    this.mediaEnabledByUser1 = false,
+    this.mediaEnabledByUser2 = false,
+    this.lastMessage,
+    this.lastMessageSentAt,
+    this.lastMessageSenderId,
+    this.unreadCount = 0,
   });
 
   factory MatchModel.fromJson(Map<String, dynamic> json) =>
       _$MatchModelFromJson(json);
   Map<String, dynamic> toJson() => _$MatchModelToJson(this);
 
+  bool get isMediaEnabled => mediaEnabledByUser1 && mediaEnabledByUser2;
+
   @override
-  List<Object?> get props => [matchId];
+  List<Object?> get props => [
+        matchId,
+        lastMessage,
+        lastMessageSentAt,
+        lastMessageSenderId,
+        unreadCount,
+      ];
 }
 
 @JsonSerializable()

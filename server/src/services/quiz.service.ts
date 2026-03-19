@@ -2,6 +2,7 @@ import { supabase } from "../config/supabase.js";
 import { Errors } from "../utils/errors.js";
 import { calculatePowerCost, calculateGreenReward, shuffleArray } from "../utils/math.js";
 import { diamondService } from "./diamond.service.js";
+import { exchangeService } from "./exchange.service.js";
 import { NotificationService } from "./notification.service.js";
 import { pendingChangeService } from "./pending-change.service.js";
 import { userLanguageService } from "./user-language.service.js";
@@ -102,9 +103,6 @@ export class QuizService {
 
     if (createErr || !session) throw Errors.SERVER_ERROR();
 
-    // 4. Notify target
-    await NotificationService.sendPush(targetId, "quiz_started");
-
     return { session_id: session.id as string, total_questions: totalQuestions };
   }
 
@@ -161,7 +159,7 @@ export class QuizService {
   async answerQuestion(
     sessionId: string,
     solverId: string,
-    selectedAnswer: number,
+    selectedAnswer: number | undefined,
     powerUsed?: PowerName,
     timeSpent?: number,
   ) {
@@ -204,7 +202,7 @@ export class QuizService {
       // Get power from powers table
       const { data: power, error: powerErr } = await supabase
         .from("powers")
-        .select("id, name, base_cost, is_active")
+        .select("id, name, base_cost, is_active, accuracy_rate")
         .eq("name", powerUsed)
         .eq("is_active", true)
         .maybeSingle();
@@ -212,34 +210,40 @@ export class QuizService {
       if (powerErr || !power) throw Errors.SERVER_ERROR();
 
       const powerData = power as unknown as PowerRow;
-      const cost = calculatePowerCost(powerData.base_cost, session.total_questions);
-      const greenReward = calculateGreenReward(cost);
 
-      // Spend purple diamonds from solver
-      await diamondService.spendPurple(solverId, cost, "POWER_USED", `${powerUsed}:${sessionId}`);
-      // Earn green diamonds for target
-      await diamondService.earnGreen(session.target_id, greenReward, "POWER_REWARD", `${powerUsed}:${sessionId}`);
+      // Envanter kontrolü — hak varsa envanterden düş, yoksa anlık ödeme
+      const usedFromInventory = await exchangeService.tryUseInventory(solverId, powerUsed);
 
-      // Track green earned on the question
-      const { data: currentQData } = await supabase
-        .from('questions')
-        .select('stats_green_earned')
-        .eq('id', currentQuestion.id)
-        .single();
+      if (!usedFromInventory) {
+        const cost = calculatePowerCost(powerData.base_cost, session.total_questions);
+        const greenReward = calculateGreenReward(cost);
 
-      if (currentQData) {
-        await supabase
+        // Spend purple diamonds from solver
+        await diamondService.spendPurple(solverId, cost, "POWER_USED", `${powerUsed}:${sessionId}`);
+        // Earn green diamonds for target
+        await diamondService.earnGreen(session.target_id, greenReward, "POWER_REWARD", `${powerUsed}:${sessionId}`);
+
+        // Track green earned on the question
+        const { data: currentQData } = await supabase
           .from('questions')
-          .update({ stats_green_earned: currentQData.stats_green_earned + greenReward })
-          .eq('id', currentQuestion.id);
+          .select('stats_green_earned')
+          .eq('id', currentQuestion.id)
+          .single();
+
+        if (currentQData) {
+          await supabase
+            .from('questions')
+            .update({ stats_green_earned: currentQData.stats_green_earned + greenReward })
+            .eq('id', currentQuestion.id);
+        }
       }
 
       // ─── Power effects ───
       switch (powerUsed) {
         case "SKIP": {
           // Mark correct, record answer, proceed
-          await this.recordAnswer(sessionId, currentQuestion.id, selectedAnswer, true, powerUsed, timeSpent ?? null);
-          await this.updateQuestionStats(currentQuestion.id, true, powerUsed ?? null, timeSpent ?? null, selectedAnswer);
+          await this.recordAnswer(sessionId, currentQuestion.id, selectedAnswer ?? 0, true, powerUsed, timeSpent ?? null);
+          await this.updateQuestionStats(currentQuestion.id, true, powerUsed ?? null, timeSpent ?? null, selectedAnswer ?? 0);
 
           if (session.current_q >= session.total_questions) {
             return await this.completeSession(session);
@@ -271,9 +275,20 @@ export class QuizService {
           return await this.completeSession(session);
         }
 
-        case "COPY": {
+        case "ORACLE": {
+          const accuracyRate = (powerData as unknown as { accuracy_rate?: number }).accuracy_rate ?? 0.7;
+          const isAccurate = Math.random() < accuracyRate;
+
+          let suggestedIndex: number;
+          if (isAccurate) {
+            suggestedIndex = currentQuestion.correct_answer;
+          } else {
+            const wrongIndices = [1, 2, 3, 4].filter((i) => i !== currentQuestion.correct_answer);
+            suggestedIndex = wrongIndices[Math.floor(Math.random() * wrongIndices.length)];
+          }
+
           return {
-            power_result: { correct_answer_index: currentQuestion.correct_answer },
+            power_result: { suggested_answer_index: suggestedIndex, is_guaranteed: false },
             awaiting_answer: true,
           };
         }
@@ -306,7 +321,10 @@ export class QuizService {
       }
     }
 
-    // ─── Normal answer (no power or after SKIP) ───
+    // ─── Normal answer (no power) ───
+    if (selectedAnswer == null) {
+      throw Errors.VALIDATION_ERROR({ selected_answer: "Required when no power is used" });
+    }
     const isCorrect = selectedAnswer === currentQuestion.correct_answer;
 
     // Record answer
@@ -315,18 +333,12 @@ export class QuizService {
     await this.updateQuestionStats(currentQuestion.id, isCorrect, powerUsed ?? null, timeSpent ?? null, selectedAnswer);
 
     if (!isCorrect) {
-      // FAILED
-      await supabase
-        .from("quiz_sessions")
-        .update({ status: "FAILED", completed_at: new Date().toISOString() })
-        .eq("id", sessionId);
-
-      await this.saveSessionSummary(sessionId);
-
-      // Apply any pending question changes for the target user
-      await pendingChangeService.applyPendingChanges(session.target_id);
-
-      return { is_correct: false, session_status: "FAILED" };
+      // Session'ı hemen FAILED yapma — client'a SKIP kurtulma şansı ver
+      return {
+        is_correct: false,
+        session_status: "IN_PROGRESS",
+        can_rescue: true,
+      };
     }
 
     // Correct AND last question
@@ -406,7 +418,7 @@ export class QuizService {
 
     const { error: matchErr } = await supabase
       .from("matches")
-      .insert({ user1_id: user1, user2_id: user2, quiz_session_id: sessionId });
+      .insert({ user1_id: user1, user2_id: user2 });
 
     if (matchErr && matchErr.code !== "23505") {
       console.error("[quiz] Match insert error:", matchErr);
@@ -418,11 +430,51 @@ export class QuizService {
       .update({ status: "COMPLETED", completed_at: new Date().toISOString() })
       .eq("id", sessionId);
 
-    // Send push to both users
+    // Calculate badge for the solver's performance
+    const badge = await this.calculateBadge(sessionId);
+
+    // Send push to both users (target gets badge info)
+    const badgeParams: Record<string, string> = badge !== "none" ? { badge } : {};
     await Promise.all([
       NotificationService.sendPush(solverId, "new_match"),
-      NotificationService.sendPush(targetId, "new_match"),
+      NotificationService.sendPush(targetId, "new_match", badgeParams),
     ]);
+  }
+
+  private async calculateBadge(sessionId: string): Promise<string> {
+    // Get session info
+    const { data: session } = await supabase
+      .from("quiz_sessions")
+      .select("total_time_spent, total_questions")
+      .eq("id", sessionId)
+      .single();
+
+    if (!session) return "none";
+
+    // Get answers for this session
+    const { data: answers } = await supabase
+      .from("quiz_answers")
+      .select("is_correct, power_used, time_spent")
+      .eq("session_id", sessionId);
+
+    if (!answers || answers.length === 0) return "none";
+
+    const totalCorrect = answers.filter((a: any) => a.is_correct).length;
+    const totalQuestions = answers.length;
+    const totalPowers = answers.filter((a: any) => a.power_used).length;
+    const totalTimeSpent = session.total_time_spent ?? answers.reduce((s: number, a: any) => s + (a.time_spent ?? 0), 0);
+
+    if (totalCorrect === totalQuestions && totalPowers === 0) {
+      return "flawless";
+    } else if (totalTimeSpent < totalQuestions * 15) {
+      return "speed_solver";
+    } else if (totalPowers >= 3) {
+      return "power_master";
+    } else if (totalCorrect === totalQuestions) {
+      return "determined";
+    }
+
+    return "none";
   }
 
   private async completeSession(session: SessionRow) {
@@ -432,7 +484,8 @@ export class QuizService {
     // Apply any pending question changes for the target user
     await pendingChangeService.applyPendingChanges(session.target_id);
 
-    return { is_correct: true, matched: true, session_status: "COMPLETED" };
+    const badge = await this.calculateBadge(session.id);
+    return { is_correct: true, matched: true, session_status: "COMPLETED", badge };
   }
 
   private async recordAnswer(
@@ -532,6 +585,91 @@ export class QuizService {
 
     if (error) throw Errors.SERVER_ERROR();
   }
+  // ─── Rescue with SKIP (after wrong answer) ──────────────────
+  async rescueWithSkip(sessionId: string, solverId: string) {
+    const session = await this.getActiveSession(sessionId, solverId);
+
+    // Son cevabı bul — yanlış olmalı
+    const { data: lastAnswer, error: ansErr } = await supabase
+      .from("quiz_answers")
+      .select("id, question_id, is_correct")
+      .eq("session_id", sessionId)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (ansErr || !lastAnswer || lastAnswer.is_correct !== false) {
+      throw Errors.VALIDATION_ERROR({ rescue: "No wrong answer to rescue" });
+    }
+
+    // SKIP power envanter/elmas kontrolü
+    const { data: power, error: powerErr } = await supabase
+      .from("powers")
+      .select("id, name, base_cost, is_active")
+      .eq("name", "SKIP")
+      .eq("is_active", true)
+      .maybeSingle();
+
+    if (powerErr || !power) throw Errors.SERVER_ERROR();
+
+    const usedFromInventory = await exchangeService.tryUseInventory(solverId, "SKIP");
+
+    if (!usedFromInventory) {
+      const cost = calculatePowerCost(power.base_cost, session.total_questions);
+      const greenReward = calculateGreenReward(cost);
+
+      await diamondService.spendPurple(solverId, cost, "POWER_USED", `SKIP_RESCUE:${sessionId}`);
+      await diamondService.earnGreen(session.target_id, greenReward, "POWER_REWARD", `SKIP_RESCUE:${sessionId}`);
+    }
+
+    // Yanlış cevabı override et
+    await supabase
+      .from("quiz_answers")
+      .update({ is_correct: true, power_used: "SKIP" })
+      .eq("id", lastAnswer.id);
+
+    // Soru stats güncelle
+    const { data: qStats } = await supabase
+      .from("questions")
+      .select("stats_correct, stats_wrong, stats_skip_used")
+      .eq("id", lastAnswer.question_id)
+      .single();
+
+    if (qStats) {
+      await supabase
+        .from("questions")
+        .update({
+          stats_correct: qStats.stats_correct + 1,
+          stats_wrong: Math.max(0, qStats.stats_wrong - 1),
+          stats_skip_used: (qStats.stats_skip_used ?? 0) + 1,
+        })
+        .eq("id", lastAnswer.question_id);
+    }
+
+    // Son soru muydu?
+    if (session.current_q >= session.total_questions) {
+      return await this.completeSession(session);
+    }
+
+    await this.incrementCurrentQ(sessionId, session.current_q);
+    return { is_correct: true, next_question: session.current_q + 1, session_status: "IN_PROGRESS" };
+  }
+
+  // ─── Fail Session (user declined rescue) ────────────────────
+  async failSession(sessionId: string, solverId: string) {
+    const session = await this.getActiveSession(sessionId, solverId);
+
+    await supabase
+      .from("quiz_sessions")
+      .update({ status: "FAILED", completed_at: new Date().toISOString() })
+      .eq("id", sessionId);
+
+    await this.saveSessionSummary(sessionId);
+    await pendingChangeService.applyPendingChanges(session.target_id);
+
+    return { session_status: "FAILED" };
+  }
+
   // ─── Match Quiz Summary (for chat card) ──────────────────────
   async getMatchQuizSummary(matchId: string, userId: string) {
     // Find the match

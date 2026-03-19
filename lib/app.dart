@@ -9,8 +9,11 @@ import 'package:qulo_v2/core/widgets/in_app_banner.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/app_config_provider.dart';
 import 'package:qulo_v2/providers/locale_provider.dart';
+import 'package:qulo_v2/providers/location_provider.dart';
 import 'package:qulo_v2/providers/notification_provider.dart';
 import 'package:qulo_v2/providers/theme_provider.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/routing/app_router.dart';
 
 class QuloApp extends ConsumerStatefulWidget {
@@ -20,9 +23,41 @@ class QuloApp extends ConsumerStatefulWidget {
   ConsumerState<QuloApp> createState() => _QuloAppState();
 }
 
-class _QuloAppState extends ConsumerState<QuloApp> {
+class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
   bool _callbacksSet = false;
   bool _versionManagerSet = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    ref.read(analyticsManagerProvider).logAppOpen();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _setupNotificationCallbacks();
+      _setupVersionManager();
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final analytics = ref.read(analyticsManagerProvider);
+    switch (state) {
+      case AppLifecycleState.resumed:
+        analytics.logAppForeground();
+        // Permission-dependent provider'ları tekrar kontrol et
+        ref.read(locationProvider.notifier).onAppResumed();
+      case AppLifecycleState.paused:
+        analytics.logAppBackground();
+      default:
+        break;
+    }
+  }
 
   void _setupVersionManager() {
     if (_versionManagerSet) return;
@@ -111,6 +146,10 @@ class _QuloAppState extends ConsumerState<QuloApp> {
           entry.remove();
         }
 
+        AnalyticsManager.instance.logEvent(AnalyticsEvents.notificationBannerShow, params: {
+          AnalyticsEvents.paramType: message.data['type'] ?? 'unknown',
+        });
+
         entry = OverlayEntry(
           builder: (_) => Positioned(
             top: 0,
@@ -122,12 +161,20 @@ class _QuloAppState extends ConsumerState<QuloApp> {
                 title: title,
                 body: body,
                 onTap: () {
+                  AnalyticsManager.instance.logEvent(AnalyticsEvents.notificationBannerTap, params: {
+                    AnalyticsEvents.paramType: message.data['type'] ?? 'unknown',
+                  });
                   removeEntry();
                   if (actionUrl != null && actionUrl.isNotEmpty) {
                     ref.read(routerProvider).go(actionUrl);
                   }
                 },
-                onDismiss: removeEntry,
+                onDismiss: () {
+                  AnalyticsManager.instance.logEvent(AnalyticsEvents.notificationBannerDismiss, params: {
+                    AnalyticsEvents.paramType: message.data['type'] ?? 'unknown',
+                  });
+                  removeEntry();
+                },
               ),
             ),
           ),
@@ -150,12 +197,6 @@ class _QuloAppState extends ConsumerState<QuloApp> {
       AppThemeMode.dark => ThemeMode.dark,
       AppThemeMode.system => ThemeMode.system,
     };
-
-    // Set up callbacks after first build
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _setupNotificationCallbacks();
-      _setupVersionManager();
-    });
 
     return MaterialApp.router(
       title: 'Qulo',

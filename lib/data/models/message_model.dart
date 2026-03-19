@@ -15,6 +15,13 @@ class MessageModel extends Equatable {
   final bool isImage;
   @JsonKey(name: 'read_at')
   final String? readAt;
+  @JsonKey(name: 'deleted_at')
+  final String? deletedAt;
+  @JsonKey(name: 'audio_url')
+  final String? audioUrl;
+  @JsonKey(name: 'audio_duration_seconds')
+  final int? audioDurationSeconds;
+  final List<MessageReaction>? reactions;
   @JsonKey(name: 'created_at')
   final String? createdAt;
 
@@ -25,6 +32,10 @@ class MessageModel extends Equatable {
     required this.content,
     this.isImage = false,
     this.readAt,
+    this.deletedAt,
+    this.audioUrl,
+    this.audioDurationSeconds,
+    this.reactions,
     this.createdAt,
   });
 
@@ -32,8 +43,26 @@ class MessageModel extends Equatable {
       _$MessageModelFromJson(json);
   Map<String, dynamic> toJson() => _$MessageModelToJson(this);
 
+  bool get isDeleted => deletedAt != null;
+  bool get isAudio => audioUrl != null;
+
   @override
   List<Object?> get props => [id];
+}
+
+@JsonSerializable()
+class MessageReaction extends Equatable {
+  final String emoji;
+  @JsonKey(name: 'user_id')
+  final String userId;
+
+  const MessageReaction({required this.emoji, required this.userId});
+
+  factory MessageReaction.fromJson(Map<String, dynamic> json) =>
+      _$MessageReactionFromJson(json);
+
+  @override
+  List<Object?> get props => [emoji, userId];
 }
 
 @JsonSerializable()

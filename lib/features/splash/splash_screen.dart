@@ -14,6 +14,8 @@ import 'package:qulo_v2/core/navigation/models/app_dialog.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -29,6 +31,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   late final Animation<double> _logoFade;
   late final Animation<double> _logoScale;
   late final Animation<double> _textFade;
+  final Stopwatch _splashStopwatch = Stopwatch()..start();
 
   @override
   void initState() {
@@ -79,17 +82,25 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   }
 
   Future<void> _checkVersionAndAuth() async {
+    _splashStopwatch.stop();
+    AnalyticsManager.instance.logEvent(AnalyticsEvents.appSplashDuration, params: {
+      AnalyticsEvents.paramDurationMs: _splashStopwatch.elapsedMilliseconds,
+    });
+
     final status = await ref.read(appConfigProvider.notifier).checkVersion();
     if (!mounted) return;
 
     switch (status) {
       case UpdateStatus.maintenance:
+        AnalyticsManager.instance.logEvent(AnalyticsEvents.appMaintenanceShown);
         ref.read(navigationServiceProvider).go(RouteNames.maintenance);
         return;
       case UpdateStatus.forceUpdate:
+        AnalyticsManager.instance.logEvent(AnalyticsEvents.appForceUpdateShown);
         ref.read(navigationServiceProvider).go(RouteNames.forceUpdate);
         return;
       case UpdateStatus.optionalUpdate:
+        AnalyticsManager.instance.logEvent(AnalyticsEvents.appOptionalUpdateShown);
         await _showOptionalUpdateThenContinue();
         return;
       case UpdateStatus.none:

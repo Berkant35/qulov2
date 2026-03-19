@@ -1,3 +1,4 @@
+import 'dart:developer' as dev;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/data/models/user_model.dart';
@@ -16,20 +17,36 @@ class UserNotifier extends AsyncNotifier<UserModel?> {
     );
   }
 
+  /// Returns the old completionRewardsClaimed map (snapshot before any update).
+  Map<String, dynamic> get currentRewardsClaimed =>
+      Map<String, dynamic>.from(state.value?.completionRewardsClaimed ?? {});
+
   Future<Result<UserModel>> updateProfile(Map<String, dynamic> data) async {
     final result = await ref.read(userRepositoryProvider).updateProfile(data);
     result.when(
       success: (updated) => state = AsyncData(updated),
-      failure: (_) {},
+      failure: (f) => dev.log('updateProfile failed: $f', name: 'UserNotifier'),
     );
     return result;
+  }
+
+  /// Compares old and new completionRewardsClaimed to find newly claimed milestones.
+  List<int> detectNewMilestones(Map<String, dynamic> oldClaimed) {
+    final newClaimed = state.value?.completionRewardsClaimed ?? {};
+    final milestones = <int>[];
+    for (final m in [25, 50, 75, 100]) {
+      if (newClaimed[m.toString()] == true && oldClaimed[m.toString()] != true) {
+        milestones.add(m);
+      }
+    }
+    return milestones;
   }
 
   Future<Result<void>> updateDetails(Map<String, dynamic> data) async {
     final result = await ref.read(userRepositoryProvider).updateDetails(data);
     result.when(
       success: (_) => fetchMe(),
-      failure: (_) {},
+      failure: (f) => dev.log('updateDetails failed: $f', name: 'UserNotifier'),
     );
     return result;
   }
@@ -56,7 +73,10 @@ class UserNotifier extends AsyncNotifier<UserModel?> {
 
   Future<Result<Map<String, dynamic>>> boost() async {
     final result = await ref.read(userRepositoryProvider).boost();
-    result.when(success: (_) => fetchMe(), failure: (_) {});
+    result.when(
+      success: (_) => fetchMe(),
+      failure: (f) => dev.log('boost failed: $f', name: 'UserNotifier'),
+    );
     return result;
   }
 
@@ -66,7 +86,10 @@ class UserNotifier extends AsyncNotifier<UserModel?> {
 
   Future<Result<Map<String, dynamic>>> claimBadgeReward(String level) async {
     final result = await ref.read(userRepositoryProvider).claimBadgeReward(level);
-    result.when(success: (_) => fetchMe(), failure: (_) {});
+    result.when(
+      success: (_) => fetchMe(),
+      failure: (f) => dev.log('claimBadgeReward failed: $f', name: 'UserNotifier'),
+    );
     return result;
   }
 
@@ -74,7 +97,7 @@ class UserNotifier extends AsyncNotifier<UserModel?> {
     final result = await ref.read(userRepositoryProvider).reorderPhotos(photos);
     result.when(
       success: (updated) => state = AsyncData(updated),
-      failure: (_) {},
+      failure: (f) => dev.log('reorderPhotos failed: $f', name: 'UserNotifier'),
     );
     return result;
   }

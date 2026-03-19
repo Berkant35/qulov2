@@ -110,4 +110,37 @@ export const Errors = {
 
   PASSPORT_ALREADY_ACTIVE: () =>
     new AppError("PASSPORT_ALREADY_ACTIVE", 409, "Passport is already active"),
+
+  INVALID_REFERRAL_CODE: () =>
+    new AppError("INVALID_REFERRAL_CODE", 404, "Referral code not found"),
+
+  REFERRAL_LIMIT_REACHED: () =>
+    new AppError("REFERRAL_LIMIT_REACHED", 409, "Referral limit reached (max 10)"),
+
+  SELF_REFERRAL: () =>
+    new AppError("SELF_REFERRAL", 400, "Cannot refer yourself"),
+
+  ALREADY_REFERRED: () =>
+    new AppError("ALREADY_REFERRED", 409, "User already has a referrer"),
+
+  MESSAGE_NOT_FOUND: () =>
+    new AppError("MESSAGE_NOT_FOUND", 404, "Message not found"),
+
+  MESSAGE_NOT_OWNER: () =>
+    new AppError("MESSAGE_NOT_OWNER", 403, "Cannot delete another user's message"),
+
+  MEDIA_ALREADY_ENABLED: () =>
+    new AppError("MEDIA_ALREADY_ENABLED", 400, "Media already enabled"),
+
+  MEDIA_REQUEST_PENDING: () =>
+    new AppError("MEDIA_REQUEST_PENDING", 400, "Pending media request exists"),
+
+  MEDIA_REQUEST_NOT_FOUND: () =>
+    new AppError("MEDIA_REQUEST_NOT_FOUND", 404, "Media request not found"),
+
+  MEDIA_REQUEST_NOT_RECIPIENT: () =>
+    new AppError("MEDIA_REQUEST_NOT_RECIPIENT", 403, "Only the recipient can respond"),
+
+  MEDIA_NOT_ENABLED: () =>
+    new AppError("MEDIA_NOT_ENABLED", 403, "Both users must enable media sharing"),
 } as const;

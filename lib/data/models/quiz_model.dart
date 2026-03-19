@@ -88,6 +88,9 @@ class QuizAnswerResponse extends Equatable {
   final Map<String, dynamic>? powerResult;
   @JsonKey(name: 'awaiting_answer')
   final bool? awaitingAnswer;
+  @JsonKey(name: 'can_rescue')
+  final bool? canRescue;
+  final String? badge;
 
   const QuizAnswerResponse({
     this.isCorrect,
@@ -96,6 +99,8 @@ class QuizAnswerResponse extends Equatable {
     this.sessionStatus,
     this.powerResult,
     this.awaitingAnswer,
+    this.canRescue,
+    this.badge,
   });
 
   factory QuizAnswerResponse.fromJson(Map<String, dynamic> json) =>
@@ -103,7 +108,7 @@ class QuizAnswerResponse extends Equatable {
   Map<String, dynamic> toJson() => _$QuizAnswerResponseToJson(this);
 
   @override
-  List<Object?> get props => [isCorrect, sessionStatus];
+  List<Object?> get props => [isCorrect, sessionStatus, canRescue, badge];
 }
 
 @JsonSerializable()

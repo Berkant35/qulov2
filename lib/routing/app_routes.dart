@@ -25,6 +25,16 @@ final _routes = <RouteBase>[
     builder: (context, state) => const MaintenanceScreen(),
   ),
 
+  // Invite deep link
+  GoRoute(
+    path: '/invite/:code',
+    name: RouteNames.invite,
+    redirect: (context, state) {
+      final code = state.pathParameters['code'] ?? '';
+      return '/auth/login/register?referralCode=$code';
+    },
+  ),
+
   // Auth
   GoRoute(
     path: '/auth/login',
@@ -41,7 +51,10 @@ final _routes = <RouteBase>[
       GoRoute(
         path: 'register',
         name: RouteNames.register,
-        builder: (context, state) => const RegisterScreen(),
+        builder: (context, state) {
+          final referralCode = state.uri.queryParameters['referralCode'];
+          return RegisterScreen(referralCode: referralCode);
+        },
       ),
       GoRoute(
         path: 'forgot-password',
@@ -79,8 +92,45 @@ final _routes = <RouteBase>[
     parentNavigatorKey: rootNavigatorKey,
     path: '/quiz/:targetId',
     name: RouteNames.quiz,
-    builder: (context, state) => QuizScreen(
-      targetId: state.pathParameters['targetId']!,
+    pageBuilder: (context, state) => CustomTransitionPage(
+      key: state.pageKey,
+      child: QuizScreen(
+        targetId: state.pathParameters['targetId']!,
+        targetPhotoUrl: state.extra is String ? state.extra as String : null,
+      ),
+      transitionDuration: const Duration(milliseconds: 500),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: ScaleTransition(
+            scale: Tween<double>(begin: 0.85, end: 1.0).animate(
+              CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+            ),
+            child: child,
+          ),
+        );
+      },
+    ),
+  ),
+
+  // Chat (root navigator — full screen, no bottom nav)
+  GoRoute(
+    parentNavigatorKey: rootNavigatorKey,
+    path: '/chat/:matchId',
+    name: RouteNames.chat,
+    builder: (context, state) => ChatScreen(
+      matchId: state.pathParameters['matchId']!,
+    ),
+  ),
+
+  // Profile Detail (root navigator — full screen over bottom nav)
+  GoRoute(
+    parentNavigatorKey: rootNavigatorKey,
+    path: '/profile-detail/:userId',
+    name: RouteNames.profileDetail,
+    builder: (context, state) => ProfileDetailScreen(
+      userId: state.pathParameters['userId']!,
+      args: state.extra is ProfileDetailArgs ? state.extra as ProfileDetailArgs : null,
     ),
   ),
 
@@ -101,15 +151,6 @@ final _routes = <RouteBase>[
           path: '/matches',
           name: RouteNames.matches,
           builder: (context, state) => const MatchesScreen(),
-          routes: [
-            GoRoute(
-              path: 'chat/:matchId',
-              name: RouteNames.chat,
-              builder: (context, state) => ChatScreen(
-                matchId: state.pathParameters['matchId']!,
-              ),
-            ),
-          ],
         ),
       ]),
       StatefulShellBranch(routes: [
@@ -167,6 +208,18 @@ final _routes = <RouteBase>[
               path: 'passport',
               name: RouteNames.passport,
               builder: (context, state) => const PassportScreen(),
+            ),
+            GoRoute(
+              path: 'exchange',
+              name: RouteNames.exchange,
+              pageBuilder: (context, state) => CustomTransitionPage(
+                key: state.pageKey,
+                child: const ExchangeScreen(),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(opacity: animation, child: child);
+                },
+                transitionDuration: const Duration(milliseconds: 500),
+              ),
             ),
             GoRoute(
               path: 'subscription',
@@ -238,12 +291,12 @@ class _MainShellState extends ConsumerState<_MainShell> {
               NavigationDestination(
                 icon: QIcon(QIcons.icCompass, size: 24),
                 selectedIcon: QIcon(QIcons.icCompassFilled, size: 24),
-                label: 'Discover',
+                label: context.tr('discover'),
               ),
               NavigationDestination(
                 icon: QIcon(QIcons.icHeart, size: 24),
                 selectedIcon: QIcon(QIcons.icHeartFilled, size: 24),
-                label: 'Matches',
+                label: context.tr('matches'),
               ),
               NavigationDestination(
                 icon: Badge(
@@ -258,7 +311,7 @@ class _MainShellState extends ConsumerState<_MainShell> {
                   backgroundColor: AppColors.error,
                   child: QIcon(QIcons.icUserFilled, size: 24),
                 ),
-                label: 'Profile',
+                label: context.tr('profile'),
               ),
             ],
           ),

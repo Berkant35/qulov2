@@ -8,5 +8,5 @@ abstract class AppConfigRetrofitService {
   factory AppConfigRetrofitService(Dio dio) = _AppConfigRetrofitService;
 
   @GET('/app/config')
-  Future<Map<String, dynamic>> getConfig();
+  Future<dynamic> getConfig();
 }

@@ -17,6 +17,8 @@
         android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission
         android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission
+        android:name="android.permission.RECORD_AUDIO"/>
     <queries>
         <intent>
             <action
@@ -45,6 +47,9 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@android:color/transparent"/>
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="qulo_default"/>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBWDZYMXb8qBFMeCGuqDE2m_D2L6uBjtBQ"/>

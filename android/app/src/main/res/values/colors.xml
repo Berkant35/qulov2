@@ -2,4 +2,5 @@
 <resources>
     <color name="gradientstart">#502989</color>
     <color name="gradientend">#2A132E</color>
+    <color name="ic_launcher_background">#2A132E</color>
 </resources>

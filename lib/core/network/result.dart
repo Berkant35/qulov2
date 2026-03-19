@@ -90,13 +90,15 @@ extension DioExceptionToFailure on DioException {
         final data = response?.data;
         // Her zaman önce body'deki error code'u parse et
         if (data is Map<String, dynamic>) {
-          final error = data['error'] as Map<String, dynamic>?;
-          if (error != null) {
+          final error = data['error'];
+          if (error is Map<String, dynamic>) {
+            final code = error['code'];
+            final message = error['message'];
             return ServerFailure(
-              code: error['code'] as String? ?? 'SERVER_ERROR',
+              code: code is String ? code : 'SERVER_ERROR',
               params: error['params'],
               statusCode: statusCode,
-              message: error['message'] as String?,
+              message: message is String ? message : null,
             );
           }
         }

@@ -44,6 +44,16 @@ class MatchRepository implements IMatchRepository {
   }
 
   @override
+  Future<Result<ProfileCardModel>> undoSwipe(String targetId) async {
+    try {
+      final response = await _service.undoSwipe(targetId);
+      return Success(response);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
+
+  @override
   Future<Result<void>> unmatch(String matchId) async {
     try {
       await _service.unmatch(matchId);

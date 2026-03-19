@@ -4,12 +4,16 @@ import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/data/models/auth_model.dart';
 import 'package:qulo_v2/data/models/diamond_model.dart';
 import 'package:qulo_v2/data/models/discover_model.dart';
+import 'package:qulo_v2/data/models/exchange_model.dart';
 import 'package:qulo_v2/data/models/match_model.dart';
+import 'package:qulo_v2/data/models/media_request_model.dart';
 import 'package:qulo_v2/data/models/message_model.dart';
 import 'package:qulo_v2/data/models/power_model.dart';
 import 'package:qulo_v2/data/models/question_model.dart';
 import 'package:qulo_v2/data/models/quiz_model.dart';
+import 'package:qulo_v2/data/models/referral_model.dart';
 import 'package:qulo_v2/data/models/subscription_model.dart';
+import 'package:qulo_v2/data/models/public_profile_model.dart';
 import 'package:qulo_v2/data/models/user_details_model.dart';
 import 'package:qulo_v2/data/models/user_model.dart';
 
@@ -25,6 +29,7 @@ abstract class IAuthRepository {
     double? lat,
     double? lng,
     String locale = 'tr',
+    String? referralCode,
   });
 
   Future<Result<AuthTokens>> login({
@@ -50,9 +55,29 @@ abstract class IAuthRepository {
 abstract class IChatRepository {
   Future<Result<MessagesResponse>> getMessages(String matchId, {int page = 1, int limit = 30});
 
-  Future<Result<MessageModel>> sendMessage(String matchId, {required String content, bool isImage = false});
+  Future<Result<MessageModel>> sendMessage(String matchId, {required String content, bool isImage = false, String? audioUrl, int? audioDurationSeconds});
 
   Future<Result<void>> markAsRead(String matchId);
+
+  Future<Result<void>> deleteMessage(String matchId, String messageId);
+
+  Future<Result<Map<String, dynamic>>> addReaction(String matchId, String messageId, String emoji);
+
+  Future<Result<MediaRequestModel>> requestMedia(String matchId);
+
+  Future<Result<Map<String, dynamic>>> respondToMediaRequest(String matchId, String requestId, String action);
+
+  Future<Result<void>> disableMedia(String matchId);
+
+  Future<Result<MediaStatusResponse>> getMediaStatus(String matchId);
+}
+
+// ─── Exchange ───
+abstract class IExchangeRepository {
+  Future<Result<ConvertResponse>> convert(int greenAmount);
+  Future<Result<BuyPowerResponse>> buyPower(String powerName, String diamondType, int quantity);
+  Future<Result<InventoryResponse>> getInventory();
+  Future<Result<RatesResponse>> getRates();
 }
 
 // ─── Diamond ───
@@ -71,6 +96,8 @@ abstract class IMatchRepository {
   Future<Result<SwipeResponse>> swipe({required String targetId, required String action});
 
   Future<Result<List<MatchModel>>> getMatches();
+
+  Future<Result<ProfileCardModel>> undoSwipe(String targetId);
 
   Future<Result<void>> unmatch(String matchId);
 }
@@ -112,10 +139,14 @@ abstract class IQuizRepository {
 
   Future<Result<QuizAnswerResponse>> answerQuestion(
     String sessionId, {
-    required int selectedAnswer,
+    int? selectedAnswer,
     String? powerUsed,
     int? timeSpent,
   });
+
+  Future<Result<QuizAnswerResponse>> rescueWithSkip(String sessionId, {String powerType = 'SKIP'});
+
+  Future<Result<QuizAnswerResponse>> failSession(String sessionId);
 
   Future<Result<QuizResultModel>> getSessionResult(String sessionId);
 }
@@ -132,6 +163,17 @@ abstract class IReportRepository {
 // ─── Subscription ───
 abstract class ISubscriptionRepository {
   Future<Result<SubscriptionInfo>> getStatus();
+}
+
+// ─── Referral ───
+abstract class IReferralRepository {
+  Future<Result<String>> getMyCode();
+
+  Future<Result<ReferralStats>> getStats();
+
+  Future<Result<List<ReferralItem>>> getHistory();
+
+  Future<Result<ValidateCodeResponse>> validateCode(String code);
 }
 
 // ─── User ───
@@ -157,4 +199,12 @@ abstract class IUserRepository {
   Future<Result<Map<String, dynamic>>> claimBadgeReward(String level);
 
   Future<Result<UserModel>> reorderPhotos(List<String> photos);
+
+  Future<Result<PublicProfileModel>> getPublicProfile(String userId);
+}
+
+// ─── Block ───
+abstract class IBlockRepository {
+  Future<Result<void>> blockUser(String blockedId);
+  Future<Result<void>> unblockUser(String blockedId);
 }
