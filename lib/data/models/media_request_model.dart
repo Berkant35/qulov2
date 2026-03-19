@@ -36,7 +36,7 @@ class MediaRequestModel extends Equatable {
   List<Object?> get props => [id];
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class MediaStatusResponse extends Equatable {
   @JsonKey(name: 'media_enabled')
   final bool mediaEnabled;

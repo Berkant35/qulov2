@@ -71,11 +71,3 @@ ChatQuestionAnswerResponse _$ChatQuestionAnswerResponseFromJson(
       : ChatQuestionModel.fromJson(json['question'] as Map<String, dynamic>),
 );
 
-Map<String, dynamic> _$ChatQuestionAnswerResponseToJson(
-  ChatQuestionAnswerResponse instance,
-) => <String, dynamic>{
-  'is_correct': instance.isCorrect,
-  'unmatched': instance.unmatched,
-  'reward_media_url': instance.rewardMediaUrl,
-  'question': instance.question,
-};

@@ -50,7 +50,7 @@ class MessageModel extends Equatable {
   List<Object?> get props => [id];
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class MessageReaction extends Equatable {
   final String emoji;
   @JsonKey(name: 'user_id')

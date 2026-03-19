@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/data/models/pending_change_model.dart';
-import 'package:qulo_v2/providers/api_provider.dart';
 
 class PendingChangesNotifier extends AsyncNotifier<List<PendingChangeModel>> {
   @override

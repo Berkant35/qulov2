@@ -38,11 +38,3 @@ MediaStatusResponse _$MediaStatusResponseFromJson(Map<String, dynamic> json) =>
             ),
     );
 
-Map<String, dynamic> _$MediaStatusResponseToJson(
-  MediaStatusResponse instance,
-) => <String, dynamic>{
-  'media_enabled': instance.mediaEnabled,
-  'my_enabled': instance.myEnabled,
-  'other_enabled': instance.otherEnabled,
-  'pending_request': instance.pendingRequest,
-};

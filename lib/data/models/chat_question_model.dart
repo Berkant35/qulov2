@@ -93,7 +93,7 @@ class ChatQuestionModel extends Equatable {
   List<Object?> get props => [id];
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class ChatQuestionAnswerResponse extends Equatable {
   @JsonKey(name: 'is_correct')
   final bool isCorrect;
