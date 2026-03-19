@@ -137,7 +137,7 @@ final quizRepositoryProvider = Provider<QuizRepository>(
   (ref) => QuizRepository(ref.read(quizServiceProvider)),
 );
 final chatRepositoryProvider = Provider<ChatRepository>(
-  (ref) => ChatRepository(ref.read(chatServiceProvider)),
+  (ref) => ChatRepository(ref.read(chatServiceProvider), ref.read(networkManagerProvider)),
 );
 final diamondRepositoryProvider = Provider<DiamondRepository>(
   (ref) => DiamondRepository(ref.read(diamondServiceProvider)),

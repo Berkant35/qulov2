@@ -344,9 +344,13 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
   // ─── Media ───
 
   Future<void> handlePhotoTap() async {
-    final chatState = ref.read(chatProvider(widget.matchId)).valueOrNull;
+    var chatState = ref.read(chatProvider(widget.matchId)).valueOrNull;
     if (chatState == null) return;
-    if (chatState.mediaEnabled) {
+    if (!chatState.mediaEnabled) {
+      await ref.read(chatProvider(widget.matchId).notifier).loadMediaStatus();
+      chatState = ref.read(chatProvider(widget.matchId)).valueOrNull;
+    }
+    if (chatState?.mediaEnabled == true) {
       _showPhotoSourceSheet();
     } else {
       _autoRequestMedia();
@@ -375,9 +379,12 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
       },
       failure: (failure) {
         if (!mounted) return;
+        if (failure is ServerFailure && failure.code == 'MEDIA_ALREADY_ENABLED') {
+          ref.read(chatProvider(widget.matchId).notifier).loadMediaStatus();
+          return;
+        }
         final msg = switch (failure) {
           ServerFailure(code: 'MEDIA_REQUEST_PENDING') => _pendingMediaMsg,
-          ServerFailure(code: 'MEDIA_ALREADY_ENABLED') => 'Medya paylasimi zaten aktif.',
           _ => 'Medya istegi gonderilemedi. Lutfen tekrar deneyin.',
         };
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
@@ -430,17 +437,14 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
         : await picker.pickFromCamera();
     if (picked == null) return;
 
-    final fileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
-    final storagePath = 'chat-media/${widget.matchId}/$fileName';
-
     try {
-      await Supabase.instance.client.storage
-          .from('chat-media')
-          .uploadBinary(storagePath, picked.bytes);
-
-      final url = Supabase.instance.client.storage
-          .from('chat-media')
-          .getPublicUrl(storagePath);
+      final uploadResult = await ref.read(chatRepositoryProvider).uploadMedia(
+        widget.matchId,
+        bytes: picked.bytes,
+        mimeType: picked.mimeType,
+      );
+      final url = uploadResult.when(success: (u) => u, failure: (_) => null);
+      if (url == null) throw Exception('Upload failed');
 
       await ref
           .read(chatProvider(widget.matchId).notifier)
@@ -465,14 +469,18 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
 
   // ─── Voice ───
 
-  void startVoiceRecording() {
-    final chatState = ref.read(chatProvider(widget.matchId)).valueOrNull;
+  Future<void> startVoiceRecording() async {
+    var chatState = ref.read(chatProvider(widget.matchId)).valueOrNull;
     if (chatState == null) return;
     if (!chatState.mediaEnabled) {
-      _autoRequestMedia();
-      return;
+      await ref.read(chatProvider(widget.matchId).notifier).loadMediaStatus();
+      chatState = ref.read(chatProvider(widget.matchId)).valueOrNull;
     }
-    setState(() => isRecording = true);
+    if (chatState?.mediaEnabled == true) {
+      setState(() => isRecording = true);
+    } else {
+      _autoRequestMedia();
+    }
   }
 
   Future<void> handleVoiceComplete(
@@ -480,17 +488,15 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
     setState(() => isRecording = false);
 
     final file = File(filePath);
-    final fileName = '${DateTime.now().millisecondsSinceEpoch}.m4a';
-    final storagePath = 'chat-media/${widget.matchId}/$fileName';
 
     try {
-      await Supabase.instance.client.storage
-          .from('chat-media')
-          .upload(storagePath, file);
-
-      final url = Supabase.instance.client.storage
-          .from('chat-media')
-          .getPublicUrl(storagePath);
+      final uploadResult = await ref.read(chatRepositoryProvider).uploadMedia(
+        widget.matchId,
+        file: file,
+        mimeType: 'audio/m4a',
+      );
+      final url = uploadResult.when(success: (u) => u, failure: (_) => null);
+      if (url == null) throw Exception('Upload failed');
 
       await ref.read(chatProvider(widget.matchId).notifier).sendMessage(
           'Sesli mesaj',

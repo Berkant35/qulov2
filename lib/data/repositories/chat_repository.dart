@@ -1,4 +1,8 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:dio/dio.dart';
+import 'package:qulo_v2/core/network/network_manager.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/network/services/chat_service.dart';
 import 'package:qulo_v2/data/models/media_request_model.dart';
@@ -7,8 +11,9 @@ import 'package:qulo_v2/data/repositories/interfaces.dart';
 
 class ChatRepository implements IChatRepository {
   final ChatService _service;
+  final NetworkManager _network;
 
-  ChatRepository(this._service);
+  ChatRepository(this._service, this._network);
 
   @override
   Future<Result<MessagesResponse>> getMessages(String matchId, {int page = 1, int limit = 30}) async {
@@ -104,5 +109,23 @@ class ChatRepository implements IChatRepository {
     } on DioException catch (e) {
       return Failure(e.toAppFailure());
     }
+  }
+
+  Future<Result<String>> uploadMedia(String matchId, {Uint8List? bytes, File? file, required String mimeType}) async {
+    final fileName = mimeType.startsWith('audio/') ? 'audio.m4a' : 'photo.jpg';
+    final MultipartFile multipart;
+    if (bytes != null) {
+      multipart = MultipartFile.fromBytes(bytes, filename: fileName, contentType: DioMediaType.parse(mimeType));
+    } else if (file != null) {
+      multipart = await MultipartFile.fromFile(file.path, filename: fileName, contentType: DioMediaType.parse(mimeType));
+    } else {
+      return const Failure(UnknownFailure());
+    }
+    final formData = FormData.fromMap({'file': multipart});
+    final result = await _network.upload<Map<String, dynamic>>('/chat/$matchId/upload', data: formData);
+    return result.when(
+      success: (data) => Success(data['url'] as String),
+      failure: (f) => Failure(f),
+    );
   }
 }
