@@ -41,6 +41,7 @@ class _ProfileCardState extends State<ProfileCard> {
 
   void _goTo(int page) {
     if (page < 0 || page >= _photos.length) return;
+    if (!_controller.hasClients) return;
     _controller.animateToPage(
       page,
       duration: const Duration(milliseconds: 300),

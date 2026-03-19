@@ -56,7 +56,11 @@ class QuestionRepository implements IQuestionRepository {
   Future<Result<int>> getQuestionCount() async {
     return _network.get<int>(
       '/questions/count/me',
-      parser: (json) => (json as Map<String, dynamic>)['count'] as int,
+      parser: (json) {
+        if (json is! Map<String, dynamic>) return 0;
+        final count = json['count'];
+        return count is int ? count : 0;
+      },
     );
   }
 

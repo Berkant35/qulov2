@@ -13,9 +13,15 @@ class ReferralRepository implements IReferralRepository {
   Future<Result<String>> getMyCode() async {
     try {
       final response = await _service.getMyCode();
-      return Success(response['code'] as String);
+      final code = response['code'];
+      if (code is! String) {
+        return const Failure(UnknownFailure(message: 'Missing referral code in response'));
+      }
+      return Success(code);
     } on DioException catch (e) {
       return Failure(e.toAppFailure());
+    } catch (e) {
+      return Failure(UnknownFailure(error: e));
     }
   }
 
