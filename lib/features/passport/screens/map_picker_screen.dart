@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -52,7 +53,9 @@ class _MapPickerScreenState extends ConsumerState<MapPickerScreen> {
       setState(() => _mapStyle = style);
 
       // setState triggers rebuild, GoogleMap.style property handles it
-    } catch (_) {}
+    } catch (e) {
+      dev.log('Failed to load map style: $e', name: 'MapPicker');
+    }
   }
 
   Future<void> _initCurrentLocation() async {
@@ -70,10 +73,13 @@ class _MapPickerScreenState extends ConsumerState<MapPickerScreen> {
           controller.animateCamera(CameraUpdate.newLatLng(_selectedPosition));
         }
       }
-    } catch (_) {}
+    } catch (e) {
+      dev.log('Failed to get current location: $e', name: 'MapPicker');
+    }
   }
 
   Future<void> _onCameraIdle() async {
+    if (!mounted) return;
     setState(() => _isLoadingCity = true);
     try {
       final manager = ref.read(locationManagerProvider);

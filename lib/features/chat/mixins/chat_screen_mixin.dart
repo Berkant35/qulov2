@@ -24,11 +24,15 @@ import 'package:qulo_v2/features/chat/sheets/create_question_sheet.dart';
 import 'package:qulo_v2/features/chat/widgets/reaction_picker.dart';
 
 mixin ChatScreenMixin on ConsumerState<ChatScreen> {
+  static const _pendingMediaMsg =
+      'Medya istegi zaten gonderildi. Karsi tarafin yaniti bekleniyor.';
+
   final msgCtrl = TextEditingController();
   final scrollCtrl = ScrollController();
   RealtimeChannel? _channel;
   RealtimeChannel? _typingChannel;
   RealtimeChannel? _mediaChannel;
+  Timer? _mediaDebounce;
   final Stopwatch _chatStopwatch = Stopwatch()..start();
   int _messagesSentCount = 0;
   bool isOtherTyping = false;
@@ -70,6 +74,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
     _channel?.unsubscribe();
     _typingChannel?.unsubscribe();
     _mediaChannel?.unsubscribe();
+    _mediaDebounce?.cancel();
     _typingDebounce?.cancel();
     scrollCtrl.dispose();
     msgCtrl.dispose();
@@ -189,8 +194,11 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
             value: widget.matchId,
           ),
           callback: (_) {
-            // Yeni istek veya durum değişikliği → media status'u yeniden yükle
-            ref.read(chatProvider(widget.matchId).notifier).loadMediaStatus();
+            // Debounce: hızlı ardışık değişikliklerde tek API çağrısı yap
+            _mediaDebounce?.cancel();
+            _mediaDebounce = Timer(const Duration(milliseconds: 500), () {
+              ref.read(chatProvider(widget.matchId).notifier).loadMediaStatus();
+            });
           },
         )
         .subscribe();
@@ -338,13 +346,12 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
   }
 
   Future<void> _showMediaConsentDialog() async {
-    final chatState = ref.read(chatProvider(widget.matchId)).valueOrNull;
-
     // Zaten pending request varsa tekrar gönderme
-    if (chatState?.pendingMediaRequest != null) {
+    final pending = ref.read(chatProvider(widget.matchId)).valueOrNull?.pendingMediaRequest;
+    if (pending != null) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Medya istegi zaten gonderildi. Karsi tarafin yaniti bekleniyor.')),
+          const SnackBar(content: Text(_pendingMediaMsg)),
         );
       }
       return;
@@ -361,27 +368,39 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
                 cancelText: 'Iptal',
               ),
             );
-    if (confirmed == true) {
-      final result = await ref.read(chatProvider(widget.matchId).notifier).requestMedia();
-      result.when(
-        success: (_) {
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Medya istegi gonderildi!')),
-            );
-          }
-        },
-        failure: (failure) {
-          if (!mounted) return;
-          final msg = switch (failure) {
-            ServerFailure(code: 'MEDIA_REQUEST_PENDING') => 'Medya istegi zaten gonderildi. Karsi tarafin yaniti bekleniyor.',
-            ServerFailure(code: 'MEDIA_ALREADY_ENABLED') => 'Medya paylasimi zaten aktif.',
-            _ => 'Medya istegi gonderilemedi. Lutfen tekrar deneyin.',
-          };
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
-        },
-      );
+    if (confirmed != true) return;
+
+    // Dialog süresince state değişmiş olabilir — tekrar kontrol et
+    final freshPending =
+        ref.read(chatProvider(widget.matchId)).valueOrNull?.pendingMediaRequest;
+    if (freshPending != null) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text(_pendingMediaMsg)),
+        );
+      }
+      return;
     }
+
+    final result = await ref.read(chatProvider(widget.matchId).notifier).requestMedia();
+    result.when(
+      success: (_) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Medya istegi gonderildi!')),
+          );
+        }
+      },
+      failure: (failure) {
+        if (!mounted) return;
+        final msg = switch (failure) {
+          ServerFailure(code: 'MEDIA_REQUEST_PENDING') => _pendingMediaMsg,
+          ServerFailure(code: 'MEDIA_ALREADY_ENABLED') => 'Medya paylasimi zaten aktif.',
+          _ => 'Medya istegi gonderilemedi. Lutfen tekrar deneyin.',
+        };
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+      },
+    );
   }
 
   void _showPhotoSourceSheet() {

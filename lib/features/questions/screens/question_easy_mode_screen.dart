@@ -108,7 +108,7 @@ class _QuestionEasyModeScreenState
                               multiSelect: false,
                             ),
                           );
-                          if (result != null && result.isNotEmpty) {
+                          if (mounted && result != null && result.isNotEmpty) {
                             setState(() => _selectedLocale = result.first);
                           }
                         },
