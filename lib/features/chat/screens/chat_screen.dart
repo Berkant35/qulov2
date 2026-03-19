@@ -15,6 +15,7 @@ import 'package:qulo_v2/features/chat/widgets/chat_input_bar.dart';
 import 'package:qulo_v2/features/chat/widgets/chat_message_list.dart';
 import 'package:qulo_v2/features/chat/widgets/quiz_summary_card.dart';
 import 'package:qulo_v2/features/chat/widgets/typing_indicator.dart';
+import 'package:qulo_v2/features/chat/widgets/chat_lock_banner.dart';
 import 'package:qulo_v2/features/chat/widgets/voice_recorder_overlay.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
@@ -61,6 +62,20 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with ChatScreenMixin {
     final chatData = chatState.valueOrNull;
     final mediaEnabled = chatData?.mediaEnabled ?? false;
     final pendingRequest = chatData?.pendingMediaRequest;
+
+    // Derive chat-lock state from the question cache
+    final questionCache = ref.watch(chatQuestionCacheProvider);
+    const qPrefix = '__QUESTION__:';
+    final isChatLocked = chatData?.messages.any((msg) {
+          if (!msg.content.startsWith(qPrefix)) return false;
+          final qId = msg.content.replaceFirst(qPrefix, '');
+          final question = questionCache[qId];
+          if (question == null) return false;
+          return question.hasChatLock &&
+              !question.isAnswered &&
+              question.senderId != (myId ?? '');
+        }) ??
+        false;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -140,6 +155,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with ChatScreenMixin {
               child: const TypingIndicator(),
             ),
 
+          // Chat lock banner
+          if (isChatLocked) const ChatLockBanner(),
+
           // Voice Recorder or Input Bar
           if (isRecording)
             VoiceRecorderOverlay(
@@ -149,12 +167,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with ChatScreenMixin {
           else
             ChatInputBar(
               controller: msgCtrl,
-              hasText: hasText,
-              onSend: send,
-              onPhotoTap: handlePhotoTap,
+              hasText: hasText && !isChatLocked,
+              onSend: isChatLocked ? () {} : send,
+              onPhotoTap: isChatLocked ? () {} : handlePhotoTap,
               onQuestionTap: showCreateQuestionSheet,
-              onVoiceStart: startVoiceRecording,
-              onChanged: (_) => sendTypingEvent(),
+              onVoiceStart: isChatLocked ? () {} : startVoiceRecording,
+              onChanged: isChatLocked ? (_) {} : (_) => sendTypingEvent(),
+              isLocked: isChatLocked,
             ),
         ],
       ),
