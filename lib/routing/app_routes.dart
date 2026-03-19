@@ -96,7 +96,7 @@ final _routes = <RouteBase>[
       key: state.pageKey,
       child: QuizScreen(
         targetId: state.pathParameters['targetId']!,
-        targetPhotoUrl: state.extra as String?,
+        targetPhotoUrl: state.extra is String ? state.extra as String : null,
       ),
       transitionDuration: const Duration(milliseconds: 500),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -130,7 +130,7 @@ final _routes = <RouteBase>[
     name: RouteNames.profileDetail,
     builder: (context, state) => ProfileDetailScreen(
       userId: state.pathParameters['userId']!,
-      args: state.extra as ProfileDetailArgs?,
+      args: state.extra is ProfileDetailArgs ? state.extra as ProfileDetailArgs : null,
     ),
   ),
 
