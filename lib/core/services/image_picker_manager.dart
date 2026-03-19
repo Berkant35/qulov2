@@ -77,7 +77,7 @@ class ImagePickerManager {
       ),
     );
 
-    if (croppedBytes == null) return null;
+    if (!context.mounted || croppedBytes == null) return null;
 
     return PickedImage(
       bytes: croppedBytes,

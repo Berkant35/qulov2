@@ -111,9 +111,10 @@ class AuthInterceptor extends Interceptor {
       } on DioException catch (e) {
         final statusCode = e.response?.statusCode;
         String? errorCode;
-        if (e.response?.data is Map) {
-          final errorMap = (e.response!.data as Map)['error'];
-          if (errorMap is Map) {
+        final responseData = e.response?.data;
+        if (responseData is Map<String, dynamic>) {
+          final errorMap = responseData['error'];
+          if (errorMap is Map<String, dynamic>) {
             errorCode = errorMap['code'] as String?;
           }
         }
