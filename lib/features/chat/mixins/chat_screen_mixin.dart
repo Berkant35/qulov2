@@ -76,6 +76,8 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
     _mediaChannel?.unsubscribe();
     _mediaDebounce?.cancel();
     _typingDebounce?.cancel();
+    msgCtrl.removeListener(_onTextChanged);
+    scrollCtrl.removeListener(_onScroll);
     scrollCtrl.dispose();
     msgCtrl.dispose();
   }

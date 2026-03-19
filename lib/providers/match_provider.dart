@@ -1,3 +1,4 @@
+import 'dart:developer' as dev;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/data/models/discover_model.dart';
@@ -45,7 +46,10 @@ class DiscoverNotifier extends AsyncNotifier<DiscoverState> {
             ));
           }
         },
-        failure: (_) => _updatePrefetchingState(false),
+        failure: (f) {
+          dev.log('prefetch failed: $f', name: 'DiscoverNotifier');
+          _updatePrefetchingState(false);
+        },
       );
     } finally {
       _isPrefetching = false;
@@ -93,7 +97,7 @@ class DiscoverNotifier extends AsyncNotifier<DiscoverState> {
           _maybePrefetch();
         }
       },
-      failure: (_) {},
+      failure: (f) => dev.log('swipe failed: $f', name: 'DiscoverNotifier'),
     );
     return result;
   }
@@ -113,7 +117,7 @@ class DiscoverNotifier extends AsyncNotifier<DiscoverState> {
           ));
         }
       },
-      failure: (_) {},
+      failure: (f) => dev.log('undoSwipe failed: $f', name: 'DiscoverNotifier'),
     );
     return result;
   }
@@ -180,7 +184,10 @@ class MatchListNotifier extends AsyncNotifier<List<MatchModel>> {
 
   Future<Result<void>> unmatch(String matchId) async {
     final result = await ref.read(matchRepositoryProvider).unmatch(matchId);
-    result.when(success: (_) => fetchMatches(), failure: (_) {});
+    result.when(
+      success: (_) => fetchMatches(),
+      failure: (f) => dev.log('unmatch failed: $f', name: 'MatchListNotifier'),
+    );
     return result;
   }
 }

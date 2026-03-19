@@ -1,3 +1,4 @@
+import 'dart:developer' as dev;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/data/models/question_model.dart';
@@ -24,14 +25,17 @@ class QuestionNotifier extends AsyncNotifier<List<QuestionModel>> {
         fetchQuestions();
         ref.read(userProvider.notifier).fetchMe();
       },
-      failure: (_) {},
+      failure: (f) => dev.log('createQuestion failed: $f', name: 'QuestionNotifier'),
     );
     return result;
   }
 
   Future<Result<QuestionModel>> updateQuestion(int orderNum, Map<String, dynamic> data) async {
     final result = await ref.read(questionRepositoryProvider).updateQuestion(orderNum, data);
-    result.when(success: (_) => fetchQuestions(), failure: (_) {});
+    result.when(
+      success: (_) => fetchQuestions(),
+      failure: (f) => dev.log('updateQuestion failed: $f', name: 'QuestionNotifier'),
+    );
     return result;
   }
 
@@ -42,7 +46,7 @@ class QuestionNotifier extends AsyncNotifier<List<QuestionModel>> {
         fetchQuestions();
         ref.read(userProvider.notifier).fetchMe();
       },
-      failure: (_) {},
+      failure: (f) => dev.log('deleteQuestion failed: $f', name: 'QuestionNotifier'),
     );
     return result;
   }
