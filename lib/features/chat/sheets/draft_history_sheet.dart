@@ -61,10 +61,14 @@ class _DraftHistorySheetState extends ConsumerState<DraftHistorySheet>
     if (!mounted) return;
     result.when(
       success: (data) {
-        final questions = (data['questions'] as List?)
-                ?.map((e) => e as Map<String, dynamic>)
-                .toList() ??
-            [];
+        final questions = data.items
+            .map((item) => {
+                  'id': item.id,
+                  'question_text': item.questionText,
+                  'option_count': item.optionCount,
+                  'created_at': item.createdAt,
+                })
+            .toList();
         setState(() {
           _history = questions;
           _isHistoryLoading = false;

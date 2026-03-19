@@ -110,21 +110,15 @@ class _SolveChatQuestionScreenState
 
         switch (powerName) {
           case 'ORACLE':
-            final suggested = data['suggested_option'] as String?;
-            if (suggested != null) {
-              setState(() => _suggestedOption = suggested);
+            if (data.suggestedOption != null) {
+              setState(() => _suggestedOption = data.suggestedOption);
             }
           case 'HALF':
-            final removed = (data['removed_options'] as List?)
-                    ?.map((e) => e.toString())
-                    .toSet() ??
-                {};
-            setState(() => _removedOptions = removed);
+            setState(() => _removedOptions = data.eliminatedOptions?.toSet() ?? {});
           case 'HINT':
             setState(() {
               _hintVisible = true;
-              _hintText = data['hint_text'] as String? ??
-                  widget.question.hintText;
+              _hintText = data.hintText ?? widget.question.hintText;
             });
           case 'TIME_EXTEND':
             _timerKey.currentState?.addSeconds(15);
@@ -240,7 +234,7 @@ class _SolveChatQuestionScreenState
           _answered = true;
           _result = ChatQuestionAnswerResponse(
             isCorrect: false,
-            unmatched: data['unmatched'] == true,
+            unmatched: false,
           );
         });
       },

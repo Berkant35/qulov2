@@ -167,19 +167,19 @@ class ChatRepository implements IChatRepository {
     }
   }
 
-  Future<Result<dynamic>> usePower(String questionId, String powerName) async {
+  Future<Result<UsePowerResponse>> usePower(String questionId, String powerName) async {
     try {
       final response = await _service.usePower(questionId, {'power_name': powerName});
-      return Success(response);
+      return Success(UsePowerResponse.fromJson(response as Map<String, dynamic>));
     } on DioException catch (e) {
       return Failure(e.toAppFailure());
     }
   }
 
-  Future<Result<dynamic>> handleTimeout(String questionId) async {
+  Future<Result<HandleTimeoutResponse>> handleTimeout(String questionId) async {
     try {
       final response = await _service.handleTimeout(questionId);
-      return Success(response);
+      return Success(HandleTimeoutResponse.fromJson(response as Map<String, dynamic>));
     } on DioException catch (e) {
       return Failure(e.toAppFailure());
     }
@@ -212,10 +212,10 @@ class ChatRepository implements IChatRepository {
     }
   }
 
-  Future<Result<dynamic>> getHistory({int page = 1}) async {
+  Future<Result<ChatQuestionHistoryResponse>> getHistory({int page = 1}) async {
     try {
       final response = await _service.getHistory(page);
-      return Success(response);
+      return Success(ChatQuestionHistoryResponse.fromJson(response as Map<String, dynamic>));
     } on DioException catch (e) {
       return Failure(e.toAppFailure());
     }
