@@ -14,6 +14,7 @@ import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/data/models/message_model.dart';
+import 'package:qulo_v2/data/models/chat_question_model.dart';
 import 'package:qulo_v2/providers/chat_provider.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
@@ -31,6 +32,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
   RealtimeChannel? _channel;
   RealtimeChannel? _typingChannel;
   RealtimeChannel? _mediaChannel;
+  RealtimeChannel? _questionChannel;
   Timer? _mediaDebounce;
   bool _disposed = false;
   final Stopwatch _chatStopwatch = Stopwatch()..start();
@@ -52,6 +54,9 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
     scrollCtrl.addListener(_onScroll);
     _loadQuizSummaryDismissState();
     Future.microtask(() {
+      // Clear question cache so cards re-fetch fresh data
+      ref.read(chatQuestionCacheProvider.notifier).state = {};
+
       final notifier = ref.read(chatProvider(widget.matchId).notifier);
       notifier.loadMessages();
       notifier.markAsRead();
@@ -59,6 +64,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
       _subscribeRealtime();
       _subscribeTyping();
       _subscribeMediaRequests();
+      _subscribeQuestionUpdates();
     });
   }
 
@@ -76,6 +82,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
     _channel?.unsubscribe();
     _typingChannel?.unsubscribe();
     _mediaChannel?.unsubscribe();
+    _questionChannel?.unsubscribe();
     _mediaDebounce?.cancel();
     _typingDebounce?.cancel();
     msgCtrl.removeListener(_onTextChanged);
@@ -206,6 +213,47 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
             _mediaDebounce = Timer(const Duration(milliseconds: 500), () {
               ref.read(chatProvider(widget.matchId).notifier).loadMediaStatus();
             });
+          },
+        )
+        .subscribe();
+  }
+
+  void _subscribeQuestionUpdates() {
+    _questionChannel = Supabase.instance.client
+        .channel('questions:${widget.matchId}')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.update,
+          schema: 'public',
+          table: 'chat_questions',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'match_id',
+            value: widget.matchId,
+          ),
+          callback: (payload) {
+            if (_disposed) return;
+            debugPrint('[RT] chat_questions update: ${payload.newRecord}');
+            final record = payload.newRecord;
+            final questionId = record['id'] as String?;
+            if (questionId != null) {
+              try {
+                final updated = ChatQuestionModel.fromJson(record);
+                // Update cache with fresh data from realtime
+                ref.read(chatQuestionCacheProvider.notifier).update((state) {
+                  final copy = Map<String, ChatQuestionModel>.from(state);
+                  copy[questionId] = updated;
+                  return copy;
+                });
+              } catch (_) {
+                // Fallback: clear cache so it re-fetches from API
+                ref.read(chatQuestionCacheProvider.notifier).update((state) {
+                  final copy = Map<String, ChatQuestionModel>.from(state);
+                  copy.remove(questionId);
+                  return copy;
+                });
+              }
+              ref.invalidate(chatQuestionProvider(questionId));
+            }
           },
         )
         .subscribe();

@@ -102,10 +102,10 @@ class ChatInputBar extends StatelessWidget {
             ),
             const SizedBox(width: AppSpacing.sm),
             IconButton(
-              onPressed: onQuestionTap,
+              onPressed: isLocked ? null : onQuestionTap,
               icon: Icon(
                 Icons.help_outline,
-                color: AppColors.primary,
+                color: isLocked ? AppColors.primary.withValues(alpha: 0.4) : AppColors.primary,
                 size: 22,
               ),
             ),

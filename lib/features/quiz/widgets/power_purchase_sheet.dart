@@ -6,6 +6,7 @@ import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/diamond_icon.dart';
+import 'package:qulo_v2/features/diamonds/widgets/paywall_bottom_sheet.dart';
 import 'package:qulo_v2/core/widgets/power_icon.dart';
 import 'package:qulo_v2/data/models/exchange_model.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
@@ -46,18 +47,12 @@ class _PowerPurchaseSheetState extends ConsumerState<PowerPurchaseSheet> {
         Navigator.of(context).pop();
       },
       failure: (f) {
-        String message;
         if (f is ServerFailure && f.code == 'INSUFFICIENT_DIAMONDS') {
-          final params = f.params as Map<String, dynamic>?;
-          final required = params?['required'] ?? '';
-          final current = params?['current'] ?? '';
-          message = context
-              .tr('purchase_insufficient_diamonds')
-              .replaceAll('{required}', '$required')
-              .replaceAll('{current}', '$current');
-        } else {
-          message = f.message ?? context.tr('purchase_failed');
+          Navigator.of(context).pop();
+          PaywallBottomSheetContent.show(ref, trigger: 'power_purchase');
+          return;
         }
+        final message = f.message ?? context.tr('purchase_failed');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(message),
@@ -187,6 +182,7 @@ class _PowerRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final powerType = PowerType.fromApiName(power.name);
+    if (powerType == null) return const SizedBox.shrink();
 
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.sm),

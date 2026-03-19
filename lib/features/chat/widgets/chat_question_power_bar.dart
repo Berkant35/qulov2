@@ -136,6 +136,8 @@ class _ChatPowerButton extends StatelessWidget {
         PowerType.hint => 'İpucu',
         PowerType.timeExtend => '+15s',
         PowerType.skipAll => 'Hepsini Geç',
+        PowerType.powerBlock => 'Engel',
+        PowerType.powerUnblock => 'Kilidi Aç',
       };
 }
 

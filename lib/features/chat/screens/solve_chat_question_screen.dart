@@ -15,6 +15,8 @@ import 'package:qulo_v2/features/chat/widgets/chat_question_result.dart';
 import 'package:qulo_v2/features/quiz/widgets/answer_button.dart';
 import 'package:qulo_v2/features/quiz/widgets/power_banner.dart';
 import 'package:qulo_v2/features/quiz/widgets/quiz_timer.dart';
+import 'package:qulo_v2/core/network/result.dart';
+import 'package:qulo_v2/features/diamonds/widgets/paywall_bottom_sheet.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
 
@@ -57,10 +59,14 @@ class _SolveChatQuestionScreenState
 
   Future<void> _submitAnswer() async {
     if (_selectedOption == null || _isSubmitting) return;
+    _timerKey.currentState?.pause();
+
+    // Client-side correctness check — don't send to backend yet if wrong (rescue chance)
+    // correct_option may be hidden by server, so we send to backend and check response
     setState(() => _isSubmitting = true);
 
-    final timeSpent = _startTime - (_timerKey.currentState != null ? 0 : 0);
-    _timerKey.currentState?.pause();
+    final remaining = _timerKey.currentState?.remainingSeconds ?? 0;
+    final timeSpent = _startTime - remaining;
 
     final result = await ref.read(chatRepositoryProvider).answerQuestion(
       widget.question.id,
@@ -123,7 +129,15 @@ class _SolveChatQuestionScreenState
           case 'TIME_EXTEND':
             _timerKey.currentState?.addSeconds(15);
           case 'SKIP':
-            _submitWithSkip();
+            // usePower SKIP already answered the question on backend
+            setState(() {
+              _answered = true;
+              _result = ChatQuestionAnswerResponse(
+                isCorrect: true,
+                unmatched: false,
+                rewardMediaUrl: widget.question.rewardMediaUrl,
+              );
+            });
             return;
           case 'POWER_UNBLOCK':
             setState(() => _powerBlockActive = false);
@@ -131,11 +145,16 @@ class _SolveChatQuestionScreenState
 
         _timerKey.currentState?.resume();
       },
-      failure: (f) {
-        _timerKey.currentState?.resume();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(f.message ?? 'Bir hata oluştu')),
-        );
+      failure: (f) async {
+        if (f is ServerFailure && f.code == 'INSUFFICIENT_DIAMONDS') {
+          await PaywallBottomSheetContent.show(ref, trigger: 'chat_question_power');
+          if (mounted) _timerKey.currentState?.resume();
+        } else {
+          _timerKey.currentState?.resume();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(f.message ?? 'Bir hata oluştu')),
+          );
+        }
       },
     );
   }
@@ -144,7 +163,7 @@ class _SolveChatQuestionScreenState
     setState(() => _isSubmitting = true);
     final result = await ref.read(chatRepositoryProvider).answerQuestion(
       widget.question.id,
-      {'selected_option': 'SKIP', 'power_used': 'SKIP'},
+      {'selected_option': 'A', 'power_used': 'SKIP'},
     );
 
     if (!mounted) return;
@@ -159,6 +178,10 @@ class _SolveChatQuestionScreenState
       },
       failure: (f) {
         setState(() => _isSubmitting = false);
+        if (f is ServerFailure && f.code == 'INSUFFICIENT_DIAMONDS') {
+          PaywallBottomSheetContent.show(ref, trigger: 'chat_question_skip');
+          return;
+        }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(f.message ?? 'Bir hata oluştu')),
         );
@@ -230,6 +253,34 @@ class _SolveChatQuestionScreenState
     );
   }
 
+  // ── Rescue (after wrong answer) ────────────────────────────
+
+  Future<void> _handleRescue() async {
+    final result = await ref.read(chatRepositoryProvider).rescueQuestion(
+      widget.question.id,
+    );
+
+    if (!mounted) return;
+
+    result.when(
+      success: (response) {
+        ref.invalidate(diamondProvider);
+        setState(() {
+          _result = response;
+        });
+      },
+      failure: (f) {
+        if (f is ServerFailure && f.code == 'INSUFFICIENT_DIAMONDS') {
+          PaywallBottomSheetContent.show(ref, trigger: 'chat_question_rescue');
+          return;
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(f.message ?? 'Kurtarma başarısız')),
+        );
+      },
+    );
+  }
+
   // ── Build ──────────────────────────────────────────────────
 
   @override
@@ -238,6 +289,7 @@ class _SolveChatQuestionScreenState
       return ChatQuestionResultScreen(
         result: _result!,
         question: widget.question,
+        onRescue: !_result!.isCorrect ? _handleRescue : null,
       );
     }
 

@@ -30,6 +30,7 @@ class ChatQuestionMessage extends ConsumerWidget {
   ) async {
     await ref.read(navigationServiceProvider).push(
       RouteNames.solveChatQuestion,
+      params: {'questionId': question.id},
       extra: question,
     );
 

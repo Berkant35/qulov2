@@ -9,6 +9,7 @@ import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_button.dart';
 import 'package:qulo_v2/core/widgets/diamond_icon.dart';
 import 'package:qulo_v2/features/diamonds/widgets/celebration_dialog.dart';
+import 'package:qulo_v2/features/diamonds/widgets/purchase_grid.dart';
 import 'package:qulo_v2/providers/daily_stats_provider.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
 import 'package:qulo_v2/providers/subscription_provider.dart';
@@ -18,12 +19,12 @@ class PaywallBottomSheetContent extends ConsumerStatefulWidget {
 
   const PaywallBottomSheetContent({super.key, required this.trigger});
 
-  static void show(WidgetRef ref, {required String trigger}) {
+  static Future<void> show(WidgetRef ref, {required String trigger}) async {
     AnalyticsManager.instance.logEvent(
       AnalyticsEvents.paywallView,
       params: {AnalyticsEvents.paramTrigger: trigger},
     );
-    ref.read(navigationServiceProvider).showAppBottomSheet(
+    await ref.read(navigationServiceProvider).showAppBottomSheet(
       CustomBottomSheet(
         name: 'paywall',
         maxHeightFactor: 0.92,
@@ -97,6 +98,38 @@ class _PaywallBottomSheetContentState
           ),
         );
       }
+    } else {
+      setState(() => _isPurchasing = false);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.tr('purchase_failed'))),
+        );
+      }
+    }
+  }
+
+  Future<void> _handleConsumablePurchase(PurchasePackage package) async {
+    if (_isPurchasing) return;
+    setState(() => _isPurchasing = true);
+
+    AnalyticsManager.instance.logEvent(
+      'diamond_purchase_start',
+      params: {
+        'product_id': package.tier.productId,
+        'amount': package.amount,
+        AnalyticsEvents.paramTrigger: widget.trigger,
+      },
+    );
+
+    final success = await ref
+        .read(diamondProvider.notifier)
+        .purchaseByProductId(package.tier.productId);
+
+    if (!mounted) return;
+
+    if (success) {
+      Navigator.of(context).pop();
+      ref.invalidate(diamondProvider);
     } else {
       setState(() => _isPurchasing = false);
       if (context.mounted) {
@@ -195,6 +228,30 @@ class _PaywallBottomSheetContentState
 
             if (isPremium)
               _CurrentPlanBadge(label: context.tr('sub_plan_premium')),
+
+            const SizedBox(height: AppSpacing.xl),
+
+            // Diamond purchase section
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Row(
+                children: [
+                  const DiamondIcon.purple(size: 18, showGlow: false),
+                  const SizedBox(width: AppSpacing.sm),
+                  Text(
+                    'Mor Elmas Satin Al',
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            PurchaseGrid(
+              onPurchase: _isPurchasing ? null : _handleConsumablePurchase,
+              isLoading: _isPurchasing,
+            ),
 
             const SizedBox(height: AppSpacing.lg),
 

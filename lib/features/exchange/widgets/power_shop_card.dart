@@ -29,7 +29,7 @@ class PowerShopCard extends ConsumerStatefulWidget {
 class _PowerShopCardState extends ConsumerState<PowerShopCard> {
   String? _buyingWith; // 'purple' or 'green' or null
 
-  PowerType get _powerType => PowerType.fromApiName(widget.power.name);
+  PowerType get _powerType => PowerType.fromApiName(widget.power.name) ?? PowerType.oracle;
 
   String get _powerLabel {
     final key = switch (widget.power.name) {

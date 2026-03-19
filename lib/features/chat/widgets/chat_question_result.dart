@@ -9,11 +9,13 @@ import 'package:qulo_v2/features/chat/widgets/reward_media_reveal.dart';
 class ChatQuestionResultScreen extends ConsumerWidget {
   final ChatQuestionAnswerResponse result;
   final ChatQuestionModel question;
+  final VoidCallback? onRescue;
 
   const ChatQuestionResultScreen({
     super.key,
     required this.result,
     required this.question,
+    this.onRescue,
   });
 
   @override
@@ -50,7 +52,7 @@ class ChatQuestionResultScreen extends ConsumerWidget {
               ),
               textAlign: TextAlign.center,
             )
-          else
+          else ...[
             Text(
               'Bir dahaki sefere daha şanslı olursun.',
               style: theme.textTheme.bodyMedium?.copyWith(
@@ -58,6 +60,31 @@ class ChatQuestionResultScreen extends ConsumerWidget {
               ),
               textAlign: TextAlign.center,
             ),
+            if (onRescue != null) ...[
+              const SizedBox(height: AppSpacing.lg),
+              OutlinedButton.icon(
+                onPressed: onRescue,
+                icon: const Icon(Icons.skip_next, color: AppColors.warning),
+                label: Text(
+                  'Kurtarma Hakkı (Skip)',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: AppColors.warning,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: AppColors.warning),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.xl,
+                    vertical: AppSpacing.md,
+                  ),
+                ),
+              ),
+            ],
+          ],
           const SizedBox(height: AppSpacing.xxl),
           // Reward media reveal
           if (isCorrect && _hasRewardMedia)

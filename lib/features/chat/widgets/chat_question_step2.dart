@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/widgets/diamond_icon.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 
 class ChatQuestionStep2 extends ConsumerStatefulWidget {
@@ -150,12 +151,12 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
           _SettingSwitch(
             title: 'Guc Blogu',
             subtitle: widget.hasPowerBlock
-                ? 'Aktif — 40 mor elmas'
-                : 'Karsi tarafin guclerini engeller (40 mor elmas)',
+                ? 'Aktif'
+                : 'Karsi tarafin guclerini engeller',
             value: widget.hasPowerBlock,
             activeColor: AppColors.primaryDark,
             icon: Icons.shield_outlined,
-            badge: widget.hasPowerBlock ? '40' : null,
+            badge: '40',
             badgeColor: AppColors.primaryDark,
             onChanged: (v) => widget.onChanged(hasPowerBlock: v),
           ),
@@ -461,12 +462,19 @@ class _SettingSwitch extends StatelessWidget {
                   color: (badgeColor ?? activeColor).withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
-                child: Text(
-                  '$badge\u{1F48E}',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: badgeColor ?? activeColor,
-                    fontWeight: FontWeight.w600,
-                  ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      badge!,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: badgeColor ?? activeColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(width: 2),
+                    DiamondIcon.purple(size: 12, showGlow: false),
+                  ],
                 ),
               ),
             ],

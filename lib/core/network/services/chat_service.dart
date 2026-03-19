@@ -75,13 +75,18 @@ abstract class ChatService {
   );
 
   @POST('/chat/questions/{questionId}/use-power')
-  Future<Map<String, dynamic>> usePower(
+  Future<dynamic> usePower(
     @Path('questionId') String questionId,
     @Body() Map<String, dynamic> data,
   );
 
   @POST('/chat/questions/{questionId}/timeout')
-  Future<Map<String, dynamic>> handleTimeout(
+  Future<dynamic> handleTimeout(
+    @Path('questionId') String questionId,
+  );
+
+  @POST('/chat/questions/{questionId}/rescue')
+  Future<ChatQuestionAnswerResponse> rescueQuestion(
     @Path('questionId') String questionId,
   );
 
@@ -95,5 +100,5 @@ abstract class ChatService {
   Future<void> deleteDraft(@Path('draftId') String draftId);
 
   @GET('/chat/questions/history')
-  Future<Map<String, dynamic>> getHistory(@Query('page') int page);
+  Future<dynamic> getHistory(@Query('page') int page);
 }

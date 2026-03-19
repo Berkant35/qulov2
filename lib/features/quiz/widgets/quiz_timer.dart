@@ -27,6 +27,8 @@ class QuizTimerState extends State<QuizTimer> with TickerProviderStateMixin {
   Timer? _timer;
   bool _isPaused = false;
 
+  int get remainingSeconds => _remaining;
+
   late final AnimationController _pulseController;
   late final Animation<double> _pulseAnimation;
 

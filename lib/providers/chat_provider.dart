@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/data/models/chat_question_model.dart';
@@ -267,23 +268,31 @@ final chatProvider = AsyncNotifierProvider.family<ChatNotifier, ChatState, Strin
 final chatQuestionCacheProvider =
     StateProvider<Map<String, ChatQuestionModel>>((ref) => {});
 
-/// Provider that fetches a single chat question by ID, using cache.
+/// Provider that fetches a single chat question by ID.
+/// autoDispose ensures fresh data when widget rebuilds.
 final chatQuestionProvider =
-    FutureProvider.family<ChatQuestionModel?, String>((ref, questionId) async {
-  // Check cache first
-  final cache = ref.read(chatQuestionCacheProvider);
-  if (cache.containsKey(questionId)) return cache[questionId];
-
+    FutureProvider.autoDispose.family<ChatQuestionModel?, String>((ref, questionId) async {
+  // Always fetch from API — cache only used as fallback
   try {
-    final service = ref.read(chatQuestionServiceProvider);
-    final question = await service.getQuestion(questionId);
-    // Update cache
-    ref.read(chatQuestionCacheProvider.notifier).update((state) => {
-          ...state,
-          questionId: question,
+    final repo = ref.read(chatRepositoryProvider);
+    final result = await repo.getQuestion(questionId);
+    return result.when(
+      success: (question) {
+        debugPrint('[chatQuestion] fetched $questionId answered=${question.answeredOption}');
+        ref.read(chatQuestionCacheProvider.notifier).update((state) {
+          final copy = Map<String, ChatQuestionModel>.from(state);
+          copy[questionId] = question;
+          return copy;
         });
-    return question;
+        return question;
+      },
+      failure: (_) {
+        final cache = ref.read(chatQuestionCacheProvider);
+        return cache[questionId];
+      },
+    );
   } catch (_) {
-    return null;
+    final cache = ref.read(chatQuestionCacheProvider);
+    return cache[questionId];
   }
 });

@@ -9,7 +9,9 @@ enum PowerType {
   skip(QIcons.icSkipForward, 'SKIP'),
   skipAll(QIcons.icFastForward, 'SKIP_ALL'),
   timeExtend(QIcons.icClock, 'TIME_EXTEND'),
-  hint(QIcons.icLightbulb, 'HINT');
+  hint(QIcons.icLightbulb, 'HINT'),
+  powerBlock(QIcons.icLock, 'POWER_BLOCK'),
+  powerUnblock(QIcons.icLock, 'POWER_UNBLOCK');
 
   final String iconPath;
   final String apiName;
@@ -22,10 +24,12 @@ enum PowerType {
     PowerType.skipAll => AppColors.primary,
     PowerType.timeExtend => AppColors.success,
     PowerType.hint => AppColors.warning,
+    PowerType.powerBlock => AppColors.primaryDark,
+    PowerType.powerUnblock => AppColors.warning,
   };
 
-  static PowerType fromApiName(String name) {
-    return PowerType.values.firstWhere((p) => p.apiName == name);
+  static PowerType? fromApiName(String name) {
+    return PowerType.values.where((p) => p.apiName == name).firstOrNull;
   }
 }
 
