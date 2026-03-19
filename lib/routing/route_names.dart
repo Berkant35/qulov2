@@ -31,6 +31,7 @@ abstract final class RouteNames {
 
   // Chat
   static const createChatQuestion = 'create-chat-question';
+  static const solveChatQuestion = 'solve-chat-question';
 
   // Referral
   static const invite = 'invite';

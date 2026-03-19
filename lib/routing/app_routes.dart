@@ -133,6 +133,31 @@ final _routes = <RouteBase>[
     ),
   ),
 
+  // Solve Chat Question (root navigator — full screen over bottom nav)
+  GoRoute(
+    parentNavigatorKey: rootNavigatorKey,
+    path: '/chat-question/:questionId/solve',
+    name: RouteNames.solveChatQuestion,
+    pageBuilder: (context, state) => CustomTransitionPage(
+      key: state.pageKey,
+      child: SolveChatQuestionScreen(
+        question: state.extra as ChatQuestionModel,
+      ),
+      transitionDuration: const Duration(milliseconds: 500),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: ScaleTransition(
+            scale: Tween<double>(begin: 0.85, end: 1.0).animate(
+              CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+            ),
+            child: child,
+          ),
+        );
+      },
+    ),
+  ),
+
   // Profile Detail (root navigator — full screen over bottom nav)
   GoRoute(
     parentNavigatorKey: rootNavigatorKey,

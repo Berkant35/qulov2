@@ -33,6 +33,8 @@ import 'package:qulo_v2/features/update/maintenance_screen.dart';
 import 'package:qulo_v2/features/profile_detail/screens/profile_detail_screen.dart';
 import 'package:qulo_v2/features/profile_detail/models/profile_detail_args.dart';
 import 'package:qulo_v2/features/chat/screens/create_chat_question_screen.dart';
+import 'package:qulo_v2/features/chat/screens/solve_chat_question_screen.dart';
+import 'package:qulo_v2/data/models/chat_question_model.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
