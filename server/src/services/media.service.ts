@@ -89,7 +89,7 @@ export class MediaService {
     // Notify the other user (fire-and-forget with sender name)
     const otherUserId = isUser1 ? match.user2_id : match.user1_id;
     (async () => {
-      const { data: sender } = await supabase.from("users").select("name").eq("id", userId).single();
+      const { data: sender } = await supabase.from("users").select("name").eq("id", requesterId).single();
       await NotificationService.sendPush(otherUserId, "new_message", { name: sender?.name ?? "Someone" }, undefined, {
         actionUrl: `/matches/chat/${match.id}`,
       });

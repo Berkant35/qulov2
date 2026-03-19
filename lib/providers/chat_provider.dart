@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/data/models/chat_question_model.dart';
@@ -278,7 +277,6 @@ final chatQuestionProvider =
     final result = await repo.getQuestion(questionId);
     return result.when(
       success: (question) {
-        debugPrint('[chatQuestion] fetched $questionId answered=${question.answeredOption}');
         ref.read(chatQuestionCacheProvider.notifier).update((state) {
           final copy = Map<String, ChatQuestionModel>.from(state);
           copy[questionId] = question;

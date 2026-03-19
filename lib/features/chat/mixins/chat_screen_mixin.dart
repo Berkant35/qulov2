@@ -232,7 +232,6 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
           ),
           callback: (payload) {
             if (_disposed) return;
-            debugPrint('[RT] chat_questions update: ${payload.newRecord}');
             final record = payload.newRecord;
             final questionId = record['id'] as String?;
             if (questionId != null) {
