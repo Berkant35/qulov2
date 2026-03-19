@@ -1,3 +1,4 @@
+import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
@@ -66,7 +67,10 @@ class _DiamondsScreenState extends ConsumerState<DiamondsScreen> {
           _history = response.items;
           _loadingHistory = false;
         }),
-        failure: (_) => setState(() => _loadingHistory = false),
+        failure: (f) {
+          dev.log('fetchHistory failed: $f', name: 'DiamondsScreen');
+          setState(() => _loadingHistory = false);
+        },
       );
     }
   }

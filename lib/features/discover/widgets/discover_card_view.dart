@@ -70,11 +70,12 @@ class _DiscoverCardViewState extends ConsumerState<DiscoverCardView>
 
   void _onHorizontalDragEnd(DragEndDetails details) {
     if (_isProcessing) return;
+    final haptic = ref.read(hapticManagerProvider);
     if (_dragOffset > _swipeThreshold) {
-      ref.read(hapticManagerProvider).medium();
+      haptic.medium();
       _animateAndNavigateQuiz();
     } else if (_dragOffset < -_swipeThreshold) {
-      ref.read(hapticManagerProvider).light();
+      haptic.light();
       _animateAndReject();
     } else {
       setState(() => _dragOffset = 0);

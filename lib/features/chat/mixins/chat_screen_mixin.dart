@@ -53,9 +53,10 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
     scrollCtrl.addListener(_onScroll);
     _loadQuizSummaryDismissState();
     Future.microtask(() {
-      ref.read(chatProvider(widget.matchId).notifier).loadMessages();
-      ref.read(chatProvider(widget.matchId).notifier).markAsRead();
-      ref.read(chatProvider(widget.matchId).notifier).loadMediaStatus();
+      final notifier = ref.read(chatProvider(widget.matchId).notifier);
+      notifier.loadMessages();
+      notifier.markAsRead();
+      notifier.loadMediaStatus();
       _subscribeRealtime();
       _subscribeTyping();
       _subscribeMediaRequests();
