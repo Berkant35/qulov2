@@ -114,14 +114,14 @@ class _DetailChipItem extends StatelessWidget {
     final bgColor =
         isFilled ? AppColors.primarySurface : colors.surface;
     final borderColor = isFilled
-        ? AppColors.primary.withAlpha(77)
+        ? AppColors.primary.withValues(alpha: 0.3)
         : colors.outline;
     final iconColor = isFilled
         ? AppColors.primary
-        : colors.onSurfaceVariant.withAlpha(102);
+        : colors.onSurfaceVariant.withValues(alpha: 0.4);
     final textColor = isFilled
         ? null
-        : colors.onSurfaceVariant.withAlpha(102);
+        : colors.onSurfaceVariant.withValues(alpha: 0.4);
 
     return Container(
       padding: const EdgeInsets.symmetric(

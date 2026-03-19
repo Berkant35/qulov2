@@ -108,7 +108,7 @@ class _CropScreenState extends State<CropScreen> {
         aspectRatio: 1,
         withCircleUi: true,
         baseColor: AppColors.background,
-        maskColor: AppColors.background.withAlpha(200),
+        maskColor: AppColors.background.withValues(alpha: 0.78),
         cornerDotBuilder: (size, edgeAlignment) => const SizedBox.shrink(),
         onCropped: _onCropped,
         initialSize: 0.8,

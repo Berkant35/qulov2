@@ -31,7 +31,7 @@ class MonthlyBenefitsCard extends StatelessWidget {
         border: Border.all(
           color: isFree
               ? theme.colorScheme.outline.withValues(alpha: 0.3)
-              : AppColors.primary.withAlpha(77),
+              : AppColors.primary.withValues(alpha: 0.3),
         ),
       ),
       child: Column(

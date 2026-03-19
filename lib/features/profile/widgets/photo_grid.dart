@@ -143,7 +143,7 @@ class _PhotoSlot extends StatelessWidget {
           border: _isFilled
               ? null
               : Border.all(
-                  color: Theme.of(context).hintColor.withAlpha(100),
+                  color: Theme.of(context).hintColor.withValues(alpha: 0.39),
                   width: 1.5,
                 ),
         ),
@@ -194,7 +194,7 @@ class _PhotoSlot extends StatelessWidget {
               width: 28,
               height: 28,
               decoration: BoxDecoration(
-                color: Colors.black.withAlpha(150),
+                color: Colors.black.withValues(alpha: 0.59),
                 shape: BoxShape.circle,
               ),
               child: Center(

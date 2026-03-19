@@ -49,6 +49,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
               email: _emailCtrl.text.trim(),
               password: _passwordCtrl.text,
             );
+        if (!mounted) return;
         result.when(
           success: (_) {},
           failure: (f) {

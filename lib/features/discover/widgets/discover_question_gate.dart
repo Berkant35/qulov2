@@ -52,7 +52,7 @@ class DiscoverQuestionGate extends ConsumerWidget {
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
-                color: theme.colorScheme.surface.withAlpha(180),
+                color: theme.colorScheme.surface.withValues(alpha: 0.71),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
               ),
               child: Column(

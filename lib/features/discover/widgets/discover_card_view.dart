@@ -151,7 +151,7 @@ class _DiscoverCardViewState extends ConsumerState<DiscoverCardView>
                             : _dragOffset * 0.0005;
                         return Transform(
                           transform: Matrix4.identity()
-                            ..translate(offset, 0.0, 0.0)
+                            ..setTranslationRaw(offset, 0.0, 0.0)
                             ..rotateZ(rotation),
                           alignment: Alignment.center,
                           child: child,

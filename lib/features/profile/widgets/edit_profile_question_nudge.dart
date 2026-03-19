@@ -26,9 +26,9 @@ class EditProfileQuestionNudge extends ConsumerWidget {
         width: double.infinity,
         padding: const EdgeInsets.all(AppSpacing.cardPadding),
         decoration: BoxDecoration(
-          color: AppColors.primary.withAlpha(15),
+          color: AppColors.primary.withValues(alpha: 0.06),
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          border: Border.all(color: AppColors.primary.withAlpha(40)),
+          border: Border.all(color: AppColors.primary.withValues(alpha: 0.16)),
         ),
         child: Row(
           children: [

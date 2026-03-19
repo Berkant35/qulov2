@@ -23,7 +23,7 @@ class PrefChip extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: AppColors.secondarySurface,
-        border: Border.all(color: AppColors.secondary.withAlpha(77)),
+        border: Border.all(color: AppColors.secondary.withValues(alpha: 0.3)),
         borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
       ),
       child: Row(
