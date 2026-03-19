@@ -70,8 +70,12 @@ class _VoiceRecorderOverlayState extends ConsumerState<VoiceRecorderOverlay>
 
       setState(() => _hasStarted = true);
 
+      _timer?.cancel();
       _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-        if (!mounted) return;
+        if (!mounted) {
+          _timer?.cancel();
+          return;
+        }
 
         setState(() => _seconds++);
 

@@ -33,6 +33,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
   RealtimeChannel? _typingChannel;
   RealtimeChannel? _mediaChannel;
   Timer? _mediaDebounce;
+  bool _disposed = false;
   final Stopwatch _chatStopwatch = Stopwatch()..start();
   int _messagesSentCount = 0;
   bool isOtherTyping = false;
@@ -62,6 +63,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
   }
 
   void disposeMixin() {
+    _disposed = true;
     _chatStopwatch.stop();
     AnalyticsManager.instance.logEvent(
       AnalyticsEvents.chatClose,
@@ -148,6 +150,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
             value: widget.matchId,
           ),
           callback: (payload) {
+            if (_disposed) return;
             final newMsg = MessageModel.fromJson(payload.newRecord);
             if (newMsg.senderId != myId) {
               ref
@@ -170,6 +173,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
         .onBroadcast(
           event: 'typing',
           callback: (payload) {
+            if (_disposed) return;
             final senderId = payload['user_id'] as String?;
             if (senderId != null && senderId != myId) {
               setState(() => isOtherTyping = true);
@@ -196,6 +200,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
             value: widget.matchId,
           ),
           callback: (_) {
+            if (_disposed) return;
             // Debounce: hızlı ardışık değişikliklerde tek API çağrısı yap
             _mediaDebounce?.cancel();
             _mediaDebounce = Timer(const Duration(milliseconds: 500), () {

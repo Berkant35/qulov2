@@ -76,6 +76,7 @@ class _AnswerFeedbackOverlayState extends State<AnswerFeedbackOverlay>
     );
 
     _controller.forward().then((_) {
+      if (!mounted) return;
       if (widget.isCorrect) {
         Future.delayed(const Duration(milliseconds: 200), () {
           if (mounted) widget.onComplete();
