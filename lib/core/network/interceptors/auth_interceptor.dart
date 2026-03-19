@@ -86,8 +86,20 @@ class AuthInterceptor extends Interceptor {
           data: {'refreshToken': refreshToken},
         );
 
-        final newAccess = response.data['accessToken'] as String;
-        final newRefresh = response.data['refreshToken'] as String;
+        final data = response.data;
+        final newAccess = data is Map ? data['accessToken'] as String? : null;
+        final newRefresh = data is Map ? data['refreshToken'] as String? : null;
+
+        if (newAccess == null || newRefresh == null) {
+          LogManager.instance.logError(
+            'POST',
+            '/auth/refresh',
+            response.statusCode,
+            'Malformed token response — missing accessToken or refreshToken',
+          );
+          break;
+        }
+
         await _storage.write(key: 'access_token', value: newAccess);
         await _storage.write(key: 'refresh_token', value: newRefresh);
 
