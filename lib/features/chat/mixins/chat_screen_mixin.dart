@@ -349,39 +349,13 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
     if (chatState.mediaEnabled) {
       _showPhotoSourceSheet();
     } else {
-      _showMediaConsentDialog();
+      _autoRequestMedia();
     }
   }
 
-  Future<void> _showMediaConsentDialog() async {
-    // Zaten pending request varsa tekrar gönderme
+  Future<void> _autoRequestMedia() async {
     final pending = ref.read(chatProvider(widget.matchId)).valueOrNull?.pendingMediaRequest;
     if (pending != null) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text(_pendingMediaMsg)),
-        );
-      }
-      return;
-    }
-
-    final confirmed =
-        await ref.read(navigationServiceProvider).showAppDialog<bool>(
-              const ConfirmDialog(
-                name: 'media_consent',
-                title: 'Medya Paylasimi',
-                message:
-                    'Medya paylasmak icin karsi tarafin da onay vermesi gerekiyor. Istek gonderilsin mi?',
-                confirmText: 'Istek Gonder',
-                cancelText: 'Iptal',
-              ),
-            );
-    if (confirmed != true) return;
-
-    // Dialog süresince state değişmiş olabilir — tekrar kontrol et
-    final freshPending =
-        ref.read(chatProvider(widget.matchId)).valueOrNull?.pendingMediaRequest;
-    if (freshPending != null) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text(_pendingMediaMsg)),
@@ -395,7 +369,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
       success: (_) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Medya istegi gonderildi!')),
+            const SnackBar(content: Text('Medya paylasim istegi gonderildi!')),
           );
         }
       },
@@ -495,7 +469,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
     final chatState = ref.read(chatProvider(widget.matchId)).valueOrNull;
     if (chatState == null) return;
     if (!chatState.mediaEnabled) {
-      _showMediaConsentDialog();
+      _autoRequestMedia();
       return;
     }
     setState(() => isRecording = true);
