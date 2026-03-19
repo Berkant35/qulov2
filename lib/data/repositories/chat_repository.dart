@@ -5,6 +5,8 @@ import 'package:dio/dio.dart';
 import 'package:qulo_v2/core/network/network_manager.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/network/services/chat_service.dart';
+import 'package:qulo_v2/data/models/chat_question_draft_model.dart';
+import 'package:qulo_v2/data/models/chat_question_model.dart';
 import 'package:qulo_v2/data/models/media_request_model.dart';
 import 'package:qulo_v2/data/models/message_model.dart';
 import 'package:qulo_v2/data/repositories/interfaces.dart';
@@ -127,5 +129,86 @@ class ChatRepository implements IChatRepository {
       success: (data) => Success(data['url'] as String),
       failure: (f) => Failure(f),
     );
+  }
+
+  Future<Result<ChatQuestionModel>> createQuestion(String matchId, Map<String, dynamic> data) async {
+    try {
+      final response = await _service.createQuestion(matchId, data);
+      return Success(response);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
+
+  Future<Result<ChatQuestionModel>> getQuestion(String questionId) async {
+    try {
+      final response = await _service.getQuestion(questionId);
+      return Success(response);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
+
+  Future<Result<ChatQuestionAnswerResponse>> answerQuestion(String questionId, Map<String, dynamic> data) async {
+    try {
+      final response = await _service.answerQuestion(questionId, data);
+      return Success(response);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
+
+  Future<Result<Map<String, dynamic>>> usePower(String questionId, String powerName) async {
+    try {
+      final response = await _service.usePower(questionId, {'power_name': powerName});
+      return Success(response);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
+
+  Future<Result<Map<String, dynamic>>> handleTimeout(String questionId) async {
+    try {
+      final response = await _service.handleTimeout(questionId);
+      return Success(response);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
+
+  Future<Result<List<ChatQuestionDraftModel>>> getDrafts() async {
+    try {
+      final response = await _service.getDrafts();
+      return Success(response);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
+
+  Future<Result<ChatQuestionDraftModel>> saveDraft(Map<String, dynamic> data) async {
+    try {
+      final response = await _service.saveDraft(data);
+      return Success(response);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
+
+  Future<Result<void>> deleteDraft(String draftId) async {
+    try {
+      await _service.deleteDraft(draftId);
+      return const Success(null);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
+
+  Future<Result<Map<String, dynamic>>> getHistory({int page = 1}) async {
+    try {
+      final response = await _service.getHistory(page);
+      return Success(response);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
   }
 }
