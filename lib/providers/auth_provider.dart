@@ -331,7 +331,11 @@ class AuthNotifier extends Notifier<AuthState> {
   Future<void> forceLogout() async {
     try {
       await RevenueCatService.logOut();
-    } catch (_) {}
+    } catch (e) {
+      // RevenueCat logout may fail during force logout (e.g., service not initialized)
+      // — continue with local cleanup regardless
+      debugPrint('[auth] forceLogout: RevenueCat error (ignored): $e');
+    }
 
     ref.read(notificationManagerProvider).dispose();
 
