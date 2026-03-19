@@ -191,6 +191,7 @@ class AppLocalizations {
     'delete_account_desc': 'Bu işlem geri alınamaz. Tüm verilerin silinecek.',
 
     // Powers
+    'my_powers': 'Güçlerim',
     'power_copy': 'Kopya',
     'power_half': '50/50',
     'power_skip': 'Geç',
@@ -872,6 +873,7 @@ class AppLocalizations {
     'delete_account_desc': 'This action is irreversible. All your data will be deleted.',
 
     // Powers
+    'my_powers': 'My Powers',
     'power_copy': 'Copy',
     'power_half': '50/50',
     'power_skip': 'Skip',
