@@ -42,7 +42,10 @@ class _ProfilePhotoGalleryState extends State<ProfilePhotoGallery> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height * 0.55;
+    final mq = MediaQuery.of(context);
+    final height = mq.size.height * 0.55;
+    final halfWidth = mq.size.width / 2;
+    final topPadding = mq.padding.top;
 
     return SizedBox(
       height: height,
@@ -72,8 +75,7 @@ class _ProfilePhotoGalleryState extends State<ProfilePhotoGallery> {
               }
               return GestureDetector(
                 onTapUp: (details) {
-                  final half = MediaQuery.of(context).size.width / 2;
-                  if (details.globalPosition.dx > half) {
+                  if (details.globalPosition.dx > halfWidth) {
                     _goTo(_current + 1);
                   } else {
                     _goTo(_current - 1);
@@ -120,7 +122,7 @@ class _ProfilePhotoGalleryState extends State<ProfilePhotoGallery> {
           // Bar indicators (top)
           if (_photos.length > 1)
             Positioned(
-              top: MediaQuery.of(context).padding.top + AppSpacing.sm,
+              top: topPadding + AppSpacing.sm,
               left: AppSpacing.lg,
               right: AppSpacing.lg,
               child: Row(
@@ -145,7 +147,7 @@ class _ProfilePhotoGalleryState extends State<ProfilePhotoGallery> {
 
           // Close button
           Positioned(
-            top: MediaQuery.of(context).padding.top + AppSpacing.sm,
+            top: topPadding + AppSpacing.sm,
             left: AppSpacing.md,
             child: GestureDetector(
               onTap: widget.onClose,
@@ -163,7 +165,7 @@ class _ProfilePhotoGalleryState extends State<ProfilePhotoGallery> {
           // Photo counter (top right)
           if (_photos.length > 1)
             Positioned(
-              top: MediaQuery.of(context).padding.top + AppSpacing.sm + AppSpacing.md,
+              top: topPadding + AppSpacing.sm + AppSpacing.md,
               right: AppSpacing.md,
               child: Container(
                 padding: const EdgeInsets.symmetric(
