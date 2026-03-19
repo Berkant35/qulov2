@@ -26,6 +26,8 @@ import 'package:qulo_v2/features/profile/widgets/pref_chip.dart';
 import 'package:qulo_v2/features/profile/widgets/profile_completion_bar.dart';
 import 'package:qulo_v2/features/profile/widgets/profile_menu_item.dart';
 import 'package:qulo_v2/core/widgets/referral_invite_card.dart';
+import 'package:qulo_v2/features/profile/widgets/power_inventory_grid.dart';
+import 'package:qulo_v2/providers/exchange_provider.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -40,6 +42,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     super.initState();
     Future.microtask(() {
       ref.read(userProvider.notifier).fetchMe();
+      final exchangeState = ref.read(exchangeProvider);
+      if (exchangeState.rates == null) {
+        ref.read(exchangeProvider.notifier).fetchAll();
+      }
     });
     AnalyticsManager.instance.logEvent(AnalyticsEvents.profileViewOwn);
   }
@@ -235,6 +241,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     );
                   },
                 ),
+                const SizedBox(height: AppSpacing.lg),
+
+                // ─── Power Inventory ───
+                const PowerInventoryGrid(),
                 const SizedBox(height: AppSpacing.lg),
 
                 // ─── About Me Card ───
