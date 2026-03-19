@@ -29,6 +29,9 @@ abstract final class RouteNames {
   static const exchange = 'exchange';
   static const profileDetail = 'profile-detail';
 
+  // Chat
+  static const createChatQuestion = 'create-chat-question';
+
   // Referral
   static const invite = 'invite';
 

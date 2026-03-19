@@ -16,11 +16,10 @@ import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/data/models/message_model.dart';
 import 'package:qulo_v2/providers/chat_provider.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
-import 'package:qulo_v2/providers/diamond_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/features/chat/screens/chat_screen.dart';
-import 'package:qulo_v2/features/chat/sheets/create_question_sheet.dart';
+import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/features/chat/widgets/reaction_picker.dart';
 
 mixin ChatScreenMixin on ConsumerState<ChatScreen> {
@@ -291,32 +290,16 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
     );
   }
 
-  // ─── Question Sheet ───
+  // ─── Question Screen ───
 
-  void showCreateQuestionSheet() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => CreateQuestionSheet(
-        matchId: widget.matchId,
-        onSubmit: (data) async {
-          final service = ref.read(chatQuestionServiceProvider);
-          final question =
-              await service.createQuestion(widget.matchId, data);
-          ref.read(chatQuestionCacheProvider.notifier).update((state) => {
-                ...state,
-                question.id: question,
-              });
-          ref.invalidate(diamondProvider);
-          await ref
-              .read(chatProvider(widget.matchId).notifier)
-              .loadMessages();
-          WidgetsBinding.instance
-              .addPostFrameCallback((_) => scrollToBottom());
-        },
-      ),
+  Future<void> showCreateQuestionSheet() async {
+    final result = await ref.read(navigationServiceProvider).push<bool>(
+      RouteNames.createChatQuestion,
+      params: {'matchId': widget.matchId},
     );
+    if (result == true && mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => scrollToBottom());
+    }
   }
 
   // ─── Unmatch ───

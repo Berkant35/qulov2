@@ -123,6 +123,16 @@ final _routes = <RouteBase>[
     ),
   ),
 
+  // Create Chat Question (root navigator — full screen stepper)
+  GoRoute(
+    parentNavigatorKey: rootNavigatorKey,
+    path: '/chat/:matchId/create-question',
+    name: RouteNames.createChatQuestion,
+    builder: (context, state) => CreateChatQuestionScreen(
+      matchId: state.pathParameters['matchId']!,
+    ),
+  ),
+
   // Profile Detail (root navigator — full screen over bottom nav)
   GoRoute(
     parentNavigatorKey: rootNavigatorKey,
