@@ -272,6 +272,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   onTap: () => ref.read(navigationServiceProvider).go(RouteNames.editProfile),
                   child: DetailChips(
                     user: user,
+                    isOwnProfile: true,
                     onTap: () => ref.read(navigationServiceProvider).go(RouteNames.editProfile),
                   ),
                 ),
