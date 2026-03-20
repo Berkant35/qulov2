@@ -42,14 +42,15 @@ class ChatQuestionMessage extends ConsumerWidget {
   }
 
   void _refreshQuestion(WidgetRef ref) {
-    // Invalidate the FutureProvider so it re-fetches from API
-    ref.invalidate(chatQuestionProvider(questionId));
-    // Also clear from cache to force re-fetch
+    // Cache'den sil + fetch provider'i invalidate et
+    // Cache temizlenince chatQuestionProvider rebuild olur,
+    // fetch provider invalidate edilince API'den taze veri cekilir
     ref.read(chatQuestionCacheProvider.notifier).update((state) {
       final updated = Map<String, ChatQuestionModel>.from(state);
       updated.remove(questionId);
       return updated;
     });
+    ref.invalidate(chatQuestionFetchProvider(questionId));
   }
 
   @override
