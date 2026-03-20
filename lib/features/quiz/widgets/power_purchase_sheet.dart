@@ -173,6 +173,8 @@ class _PowerRow extends StatelessWidget {
       'SKIP_ALL' => 'power_skip_all',
       'TIME_EXTEND' => 'power_time',
       'HINT' => 'power_hint',
+      'POWER_BLOCK' => 'power_block',
+      'POWER_UNBLOCK' => 'power_unblock',
       _ => power.name,
     };
     return context.tr(key);
@@ -186,6 +188,8 @@ class _PowerRow extends StatelessWidget {
       'SKIP_ALL' => 'power_skip_all_desc',
       'TIME_EXTEND' => 'power_time_extend_desc',
       'HINT' => 'power_hint_desc',
+      'POWER_BLOCK' => 'power_block_desc',
+      'POWER_UNBLOCK' => 'power_unblock_desc',
       _ => '',
     };
     return key.isEmpty ? '' : context.tr(key);
@@ -288,7 +292,7 @@ class _BuyChip extends StatelessWidget {
           vertical: AppSpacing.xs,
         ),
         decoration: BoxDecoration(
-          color: AppColors.surfaceElevated,
+          color: theme.colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
           border: Border.all(
             color: theme.colorScheme.outline.withValues(alpha: 0.2),

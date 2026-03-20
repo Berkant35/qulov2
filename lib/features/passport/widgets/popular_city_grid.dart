@@ -18,7 +18,7 @@ class PopularCityGrid extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
-          child: Text(context.tr('passport_popular_cities'), style: theme.textTheme.titleSmall?.copyWith(color: AppColors.textSecondary, fontWeight: FontWeight.w600)),
+          child: Text(context.tr('passport_popular_cities'), style: theme.textTheme.titleSmall?.copyWith(color: context.appColors.textSecondary, fontWeight: FontWeight.w600)),
         ),
         const SizedBox(height: AppSpacing.md),
         GridView.builder(

@@ -311,7 +311,7 @@ class _StepIndicator extends StatelessWidget {
               decoration: BoxDecoration(
                 color: currentStep >= 1
                     ? AppColors.primary
-                    : AppColors.textHint.withValues(alpha: 0.3),
+                    : context.appColors.textHint.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -354,15 +354,15 @@ class _BottomButtons extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: theme.scaffoldBackgroundColor,
-        border: const Border(top: BorderSide(color: AppColors.border)),
+        border: Border(top: BorderSide(color: context.appColors.border)),
       ),
       child: currentStep == 0
-          ? _buildStep1Buttons(theme)
-          : _buildStep2Buttons(theme),
+          ? _buildStep1Buttons(context, theme)
+          : _buildStep2Buttons(context, theme),
     );
   }
 
-  Widget _buildStep1Buttons(ThemeData theme) {
+  Widget _buildStep1Buttons(BuildContext context, ThemeData theme) {
     final enabled = isStep1Valid && !isLoading;
     return SizedBox(
       width: double.infinity,
@@ -370,7 +370,7 @@ class _BottomButtons extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           gradient: enabled ? AppColors.primaryButtonGradient : null,
-          color: enabled ? null : AppColors.textHint.withValues(alpha: 0.3),
+          color: enabled ? null : context.appColors.textHint.withValues(alpha: 0.3),
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         ),
         child: MaterialButton(
@@ -381,7 +381,7 @@ class _BottomButtons extends StatelessWidget {
           child: Text(
             'Ileri',
             style: theme.textTheme.titleSmall?.copyWith(
-              color: AppColors.textPrimary,
+              color: context.appColors.textPrimary,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -390,7 +390,7 @@ class _BottomButtons extends StatelessWidget {
     );
   }
 
-  Widget _buildStep2Buttons(ThemeData theme) {
+  Widget _buildStep2Buttons(BuildContext context, ThemeData theme) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -403,7 +403,7 @@ class _BottomButtons extends StatelessWidget {
               gradient:
                   !isLoading ? AppColors.primaryButtonGradient : null,
               color: isLoading
-                  ? AppColors.textHint.withValues(alpha: 0.3)
+                  ? context.appColors.textHint.withValues(alpha: 0.3)
                   : null,
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             ),
@@ -417,7 +417,7 @@ class _BottomButtons extends StatelessWidget {
                   : Text(
                       'Gonder',
                       style: theme.textTheme.titleSmall?.copyWith(
-                        color: AppColors.textPrimary,
+                        color: context.appColors.textPrimary,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -434,7 +434,7 @@ class _BottomButtons extends StatelessWidget {
                 child: OutlinedButton(
                   onPressed: !isLoading ? onBack : null,
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: AppColors.border),
+                    side: BorderSide(color: context.appColors.border),
                     shape: RoundedRectangleBorder(
                       borderRadius:
                           BorderRadius.circular(AppSpacing.radiusMd),
@@ -443,7 +443,7 @@ class _BottomButtons extends StatelessWidget {
                   child: Text(
                     'Geri',
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondary,
+                      color: context.appColors.textSecondary,
                     ),
                   ),
                 ),
@@ -456,7 +456,7 @@ class _BottomButtons extends StatelessWidget {
                 child: OutlinedButton(
                   onPressed: !isLoading ? onSaveDraft : null,
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: AppColors.border),
+                    side: BorderSide(color: context.appColors.border),
                     shape: RoundedRectangleBorder(
                       borderRadius:
                           BorderRadius.circular(AppSpacing.radiusMd),
@@ -465,7 +465,7 @@ class _BottomButtons extends StatelessWidget {
                   child: Text(
                     'Taslak Kaydet',
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondary,
+                      color: context.appColors.textSecondary,
                     ),
                   ),
                 ),

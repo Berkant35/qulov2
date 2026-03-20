@@ -18,14 +18,14 @@ class ProfileBioSection extends StatelessWidget {
             context.tr('about'),
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
+              color: context.appColors.textPrimary,
             ),
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
             bio,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppColors.textSecondary,
+              color: context.appColors.textSecondary,
               height: 1.5,
             ),
           ),

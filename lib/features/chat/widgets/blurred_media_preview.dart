@@ -38,9 +38,9 @@ class BlurredMediaPreview extends StatelessWidget {
             CachedNetworkImage(
               imageUrl: mediaUrl!,
               fit: BoxFit.cover,
-              errorWidget: (_, __, ___) => Container(
-                color: AppColors.surfaceElevated,
-                child: const Icon(Icons.image, color: AppColors.textHint),
+              errorWidget: (context, __, ___) => Container(
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                child: Icon(Icons.image, color: context.appColors.textHint),
               ),
             ),
             if (!isRevealed) ...[
@@ -83,13 +83,14 @@ class _AudioPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       height: height,
       decoration: BoxDecoration(
-        color: AppColors.surfaceElevated,
+        color: theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         border: Border.all(
-          color: AppColors.border,
+          color: context.appColors.border,
         ),
       ),
       child: Center(
@@ -104,7 +105,7 @@ class _AudioPreview extends StatelessWidget {
                   size: 36,
                   color: isRevealed
                       ? AppColors.primary
-                      : AppColors.textHint,
+                      : context.appColors.textHint,
                 ),
                 if (!isRevealed)
                   Icon(
@@ -120,7 +121,7 @@ class _AudioPreview extends StatelessWidget {
               style: TextStyle(
                 color: isRevealed
                     ? AppColors.primary
-                    : AppColors.textHint,
+                    : context.appColors.textHint,
                 fontSize: 11,
                 fontWeight: FontWeight.w500,
               ),

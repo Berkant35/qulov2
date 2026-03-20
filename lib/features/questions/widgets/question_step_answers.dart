@@ -63,7 +63,7 @@ class QuestionStepAnswers extends StatelessWidget {
                         border: Border.all(
                           color: isCorrect
                               ? AppColors.secondary
-                              : AppColors.textHint,
+                              : context.appColors.textHint,
                           width: 2,
                         ),
                       ),
@@ -99,7 +99,7 @@ class QuestionStepAnswers extends StatelessWidget {
           Text(
             context.tr('correct_answer'),
             style: theme.textTheme.bodySmall?.copyWith(
-              color: AppColors.textSecondary,
+              color: context.appColors.textSecondary,
             ),
           ),
           const SizedBox(height: AppSpacing.xl),

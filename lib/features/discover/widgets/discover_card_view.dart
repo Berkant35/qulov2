@@ -365,11 +365,11 @@ class DiscoverActionButtons extends ConsumerWidget {
                 onTap: canUndo ? onUndo : null,
                 builder: (context, isLoading, safeTap) => CircleIconButton(
                   iconPath: QIcons.icArrowLeft,
-                  iconColor: canUndo && !isLoading ? AppColors.warning : AppColors.textHint,
+                  iconColor: canUndo && !isLoading ? AppColors.warning : context.appColors.textHint,
                   backgroundColor: Theme.of(context).colorScheme.surface,
                   borderColor: canUndo && !isLoading
                       ? AppColors.warning
-                      : AppColors.textHint.withValues(alpha: 0.3),
+                      : context.appColors.textHint.withValues(alpha: 0.3),
                   size: 44,
                   onTap: safeTap ?? () {},
                 ),
@@ -382,8 +382,8 @@ class DiscoverActionButtons extends ConsumerWidget {
                   : context.tr('undo'),
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
                 color: hasUndoRight
-                    ? (canUndo ? AppColors.warning : AppColors.textHint)
-                    : AppColors.textHint,
+                    ? (canUndo ? AppColors.warning : context.appColors.textHint)
+                    : context.appColors.textHint,
                 fontSize: 10,
               ),
             ),

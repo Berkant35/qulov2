@@ -44,6 +44,7 @@ class _ProfilePhotoGalleryState extends State<ProfilePhotoGallery> {
   @override
   Widget build(BuildContext context) {
     final mq = MediaQuery.of(context);
+    final theme = Theme.of(context);
     final height = mq.size.height * 0.55;
     final halfWidth = mq.size.width / 2;
     final topPadding = mq.padding.top;
@@ -64,12 +65,12 @@ class _ProfilePhotoGalleryState extends State<ProfilePhotoGallery> {
               final url = _photos[index];
               if (url.isEmpty) {
                 return Container(
-                  color: AppColors.surface,
-                  child: const Center(
+                  color: theme.colorScheme.surface,
+                  child: Center(
                     child: Icon(
                       Icons.person,
                       size: 80,
-                      color: AppColors.textSecondary,
+                      color: context.appColors.textSecondary,
                     ),
                   ),
                 );
@@ -85,13 +86,13 @@ class _ProfilePhotoGalleryState extends State<ProfilePhotoGallery> {
                 child: CachedNetworkImage(
                   imageUrl: url,
                   fit: BoxFit.cover,
-                  placeholder: (_, __) => Container(color: AppColors.surface),
+                  placeholder: (ctx, __) => Container(color: Theme.of(ctx).colorScheme.surface),
                   errorWidget: (_, __, ___) => Container(
-                    color: AppColors.surface,
-                    child: const Center(
+                    color: theme.colorScheme.surface,
+                    child: Center(
                       child: Icon(
                         Icons.broken_image,
-                        color: AppColors.textSecondary,
+                        color: context.appColors.textSecondary,
                       ),
                     ),
                   ),

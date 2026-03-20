@@ -35,7 +35,7 @@ class ChatQuestionCard extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: AppSpacing.sm),
           padding: const EdgeInsets.all(AppSpacing.cardPadding),
           decoration: BoxDecoration(
-            color: AppColors.surface,
+            color: theme.colorScheme.surface,
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             border: Border.all(color: borderColor),
           ),
@@ -51,7 +51,7 @@ class ChatQuestionCard extends StatelessWidget {
                 question.questionText,
                 style: theme.textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
+                  color: context.appColors.textPrimary,
                 ),
               ),
               const SizedBox(height: AppSpacing.md),
@@ -121,7 +121,7 @@ class _BadgesRow extends StatelessWidget {
       badges.add(_Badge(
         icon: '\u23f1',
         label: '${question.timeLimitSeconds}s',
-        color: AppColors.textSecondary,
+        color: context.appColors.textSecondary,
       ));
     }
 
@@ -231,7 +231,7 @@ class _WaitingOptions extends StatelessWidget {
         Text(
           AppLocalizations.of(context).get('chat_waiting_answer'),
           style: theme.textTheme.bodySmall?.copyWith(
-            color: AppColors.textHint,
+            color: context.appColors.textHint,
             fontStyle: FontStyle.italic,
           ),
         ),
@@ -322,7 +322,7 @@ class _OptionText extends StatelessWidget {
         Text(
           '$label.',
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: AppColors.textSecondary,
+            color: context.appColors.textSecondary,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -331,7 +331,7 @@ class _OptionText extends StatelessWidget {
           child: Text(
             text,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: AppColors.textSecondary,
+              color: context.appColors.textSecondary,
             ),
           ),
         ),
@@ -359,9 +359,9 @@ class _AnsweredOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color bgColor = AppColors.surfaceInput;
-    Color textColor = AppColors.textSecondary;
-    Color labelColor = AppColors.textHint;
+    Color bgColor = theme.colorScheme.surfaceContainerHighest;
+    Color textColor = context.appColors.textSecondary;
+    Color labelColor = context.appColors.textHint;
 
     if (isCorrectChoice) {
       bgColor = AppColors.success.withValues(alpha: 0.15);

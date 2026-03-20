@@ -22,9 +22,9 @@ class QuestionAnalyticsCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.appColors.border),
       ),
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
@@ -38,7 +38,7 @@ class QuestionAnalyticsCard extends StatelessWidget {
           Text(
             item.questionText,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: AppColors.textPrimary,
+              color: context.appColors.textPrimary,
             ),
             maxLines: 3,
             overflow: TextOverflow.ellipsis,

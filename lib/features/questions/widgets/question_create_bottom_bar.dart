@@ -45,12 +45,13 @@ class QuestionCreateBottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(AppSpacing.pagePadding),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: theme.colorScheme.surface,
         border: Border(
-          top: BorderSide(color: AppColors.border),
+          top: BorderSide(color: context.appColors.border),
         ),
       ),
       child: SafeArea(
@@ -77,7 +78,7 @@ class QuestionCreateBottomBar extends StatelessWidget {
                     child: OutlinedButton(
                       onPressed: onBack,
                       style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: AppColors.border),
+                        side: BorderSide(color: context.appColors.border),
                         padding: const EdgeInsets.symmetric(
                             vertical: AppSpacing.md),
                       ),

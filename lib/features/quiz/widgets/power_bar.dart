@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/power_icon.dart';
@@ -91,6 +90,7 @@ class _PowerButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final color = type.color;
 
     return SafeTapButton(
@@ -112,7 +112,7 @@ class _PowerButton extends StatelessWidget {
                       shape: BoxShape.circle,
                       color: hasInventory
                           ? color.withValues(alpha: 0.15)
-                          : AppColors.surfaceElevated,
+                          : theme.colorScheme.surfaceContainerHighest,
                       border: Border.all(
                         color: hasInventory
                             ? color.withValues(alpha: 0.5)

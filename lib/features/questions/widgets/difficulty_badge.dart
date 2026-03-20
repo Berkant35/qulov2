@@ -14,7 +14,7 @@ class DifficultyBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final config = _getConfig();
+    final config = _getConfig(context);
 
     Widget chip = Container(
       padding: const EdgeInsets.symmetric(
@@ -64,7 +64,7 @@ class DifficultyBadge extends StatelessWidget {
     return chip;
   }
 
-  _DifficultyConfig _getConfig() {
+  _DifficultyConfig _getConfig(BuildContext context) {
     switch (difficulty) {
       case 'easy':
         return _DifficultyConfig(
@@ -88,7 +88,7 @@ class DifficultyBadge extends StatelessWidget {
         );
       default:
         return _DifficultyConfig(
-          color: AppColors.textHint,
+          color: context.appColors.textHint,
           icon: Icons.help_outline,
         );
     }

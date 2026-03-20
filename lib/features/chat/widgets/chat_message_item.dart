@@ -290,6 +290,7 @@ class _ReactionsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Wrap(
@@ -299,7 +300,7 @@ class _ReactionsRow extends StatelessWidget {
           return Container(
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
             decoration: BoxDecoration(
-              color: AppColors.surfaceInput,
+              color: theme.colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             ),
             child: Text(

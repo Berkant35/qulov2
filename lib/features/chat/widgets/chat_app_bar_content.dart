@@ -93,7 +93,7 @@ class ChatAppBarActions extends StatelessWidget {
               child: Row(
                 children: [
                   Icon(Icons.no_photography,
-                      color: AppColors.textSecondary, size: 20),
+                      color: context.appColors.textSecondary, size: 20),
                   const SizedBox(width: 8),
                   Text(AppLocalizations.of(ctx).get('chat_disable_media')),
                 ],
@@ -163,8 +163,8 @@ class MediaRequestBanner extends StatelessWidget implements PreferredSizeWidget 
         Expanded(
           child: Text(
             AppLocalizations.of(context).get('chat_media_request_pending_short'),
-            style: const TextStyle(
-              color: AppColors.textSecondary,
+            style: TextStyle(
+              color: context.appColors.textSecondary,
               fontSize: 13,
             ),
           ),
@@ -181,8 +181,8 @@ class MediaRequestBanner extends StatelessWidget implements PreferredSizeWidget 
         Expanded(
           child: Text(
             AppLocalizations.of(context).get('chat_media_sharing_request'),
-            style: const TextStyle(
-              color: AppColors.textPrimary,
+            style: TextStyle(
+              color: context.appColors.textPrimary,
               fontSize: 13,
               fontWeight: FontWeight.w500,
             ),
@@ -194,7 +194,7 @@ class MediaRequestBanner extends StatelessWidget implements PreferredSizeWidget 
             onPressed: onReject,
             style: TextButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
-              foregroundColor: AppColors.textSecondary,
+              foregroundColor: context.appColors.textSecondary,
             ),
             child: Text(AppLocalizations.of(context).get('chat_reject'), style: const TextStyle(fontSize: 13)),
           ),

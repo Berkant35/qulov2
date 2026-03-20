@@ -81,7 +81,7 @@ class QuizResultContent extends StatelessWidget {
                   onPressed: onStartChat,
                   style: FilledButton.styleFrom(
                     backgroundColor: AppColors.secondary,
-                    foregroundColor: AppColors.background,
+                    foregroundColor: context.appColors.background,
                     padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
@@ -152,20 +152,20 @@ class _Badge extends StatelessWidget {
 
   const _Badge({required this.performanceBadge});
 
-  (String icon, Color color, String labelKey) get _badgeConfig {
+  (String icon, Color color, String labelKey) _badgeConfig(BuildContext context) {
     return switch (performanceBadge) {
       'flawless' => (QIcons.icCrown, AppColors.gold, 'quiz_result_flawless'),
       'speed_solver' => (QIcons.icZap, AppColors.info, 'quiz_result_speed_solver'),
       'power_master' => (QIcons.icGem, AppColors.primary, 'quiz_result_power_master'),
       'determined' => (QIcons.icFire, AppColors.warning, 'quiz_result_determined'),
-      _ => (QIcons.icTarget, AppColors.textSecondary, 'quiz_result_determined'),
+      _ => (QIcons.icTarget, context.appColors.textSecondary, 'quiz_result_determined'),
     };
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final (icon, color, labelKey) = _badgeConfig;
+    final (icon, color, labelKey) = _badgeConfig(context);
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -215,7 +215,7 @@ class _Stats extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.surfaceElevated,
+        color: theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       ),
       child: Column(

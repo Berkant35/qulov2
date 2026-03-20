@@ -36,7 +36,7 @@ class QuestionPreviewCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surfaceElevated,
+        color: theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
         border: Border.all(
           color: AppColors.primary.withValues(alpha: 0.3),
@@ -78,7 +78,7 @@ class QuestionPreviewCard extends StatelessWidget {
             questionText.isEmpty ? '...' : questionText,
             style: theme.textTheme.titleSmall?.copyWith(
               fontWeight: FontWeight.w600,
-              color: questionText.isEmpty ? AppColors.textHint : null,
+              color: questionText.isEmpty ? context.appColors.textHint : null,
             ),
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
@@ -137,24 +137,25 @@ class _TimeBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm,
         vertical: 2,
       ),
       decoration: BoxDecoration(
-        color: AppColors.surfaceInput,
+        color: theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          QIcon(QIcons.icClock, size: 10, color: AppColors.textSecondary),
+          QIcon(QIcons.icClock, size: 10, color: context.appColors.textSecondary),
           const SizedBox(width: 3),
           Text(
             '${timeLimit}s',
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: AppColors.textSecondary,
+              color: context.appColors.textSecondary,
               fontSize: 10,
             ),
           ),
@@ -177,6 +178,7 @@ class _AnswerPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       constraints: const BoxConstraints(minWidth: 100),
       padding: const EdgeInsets.symmetric(
@@ -186,22 +188,22 @@ class _AnswerPill extends StatelessWidget {
       decoration: BoxDecoration(
         color: isCorrect
             ? AppColors.secondary.withValues(alpha: 0.15)
-            : AppColors.surface,
+            : theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         border: Border.all(
           color: isCorrect
               ? AppColors.secondary.withValues(alpha: 0.5)
-              : AppColors.border,
+              : context.appColors.border,
         ),
       ),
       child: Text(
         label,
         style: Theme.of(context).textTheme.bodySmall?.copyWith(
           color: isEmpty
-              ? AppColors.textHint
+              ? context.appColors.textHint
               : isCorrect
                   ? AppColors.secondary
-                  : AppColors.textPrimary,
+                  : context.appColors.textPrimary,
           fontWeight: isCorrect ? FontWeight.w600 : FontWeight.normal,
         ),
         maxLines: 1,

@@ -122,7 +122,7 @@ class _DraftHistorySheetState extends ConsumerState<DraftHistorySheet>
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.textHint,
+                color: context.appColors.textHint,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -132,7 +132,7 @@ class _DraftHistorySheetState extends ConsumerState<DraftHistorySheet>
           TabBar(
             controller: _tabCtrl,
             labelColor: AppColors.primary,
-            unselectedLabelColor: AppColors.textSecondary,
+            unselectedLabelColor: context.appColors.textSecondary,
             indicatorColor: AppColors.primary,
             tabs: const [
               Tab(text: 'Taslaklar'),
@@ -163,7 +163,7 @@ class _DraftHistorySheetState extends ConsumerState<DraftHistorySheet>
         child: Text(
           'Taslaklar yuklenemedi',
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: AppColors.textHint,
+            color: context.appColors.textHint,
           ),
         ),
       );
@@ -173,7 +173,7 @@ class _DraftHistorySheetState extends ConsumerState<DraftHistorySheet>
         child: Text(
           'Henuz taslak yok',
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: AppColors.textHint,
+            color: context.appColors.textHint,
           ),
         ),
       );
@@ -219,7 +219,7 @@ class _DraftHistorySheetState extends ConsumerState<DraftHistorySheet>
         child: Text(
           'Gecmis yuklenemedi',
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: AppColors.textHint,
+            color: context.appColors.textHint,
           ),
         ),
       );
@@ -229,7 +229,7 @@ class _DraftHistorySheetState extends ConsumerState<DraftHistorySheet>
         child: Text(
           'Henuz soru gecmisi yok',
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: AppColors.textHint,
+            color: context.appColors.textHint,
           ),
         ),
       );
@@ -262,7 +262,7 @@ class _DraftItem extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          color: AppColors.surfaceInput,
+          color: theme.colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         ),
         child: Row(
@@ -276,14 +276,14 @@ class _DraftItem extends StatelessWidget {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textPrimary,
+                      color: context.appColors.textPrimary,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     '${draft.optionCount} sik',
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: AppColors.textHint,
+                      color: context.appColors.textHint,
                     ),
                   ),
                 ],
@@ -328,7 +328,7 @@ class _HistoryItem extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.surfaceInput,
+        color: theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       ),
       child: Row(
@@ -342,14 +342,14 @@ class _HistoryItem extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: AppColors.textPrimary,
+                    color: context.appColors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   '$optionCount sik',
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: AppColors.textHint,
+                    color: context.appColors.textHint,
                   ),
                 ),
               ],

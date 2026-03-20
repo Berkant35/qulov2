@@ -80,7 +80,7 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
             'Ayarlar',
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
+              color: context.appColors.textPrimary,
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -103,9 +103,9 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
             maxLength: 200,
             maxLines: 2,
             minLines: 1,
-            style: TextStyle(color: AppColors.textPrimary),
+            style: TextStyle(color: context.appColors.textPrimary),
             onChanged: (v) => widget.onChanged(hintText: v),
-            decoration: _inputDecoration('Bir ipucu ekleyin...'),
+            decoration: _inputDecoration(context, 'Bir ipucu ekleyin...'),
           ),
           const SizedBox(height: AppSpacing.xl),
 
@@ -171,18 +171,19 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
     return Text(
       text,
       style: theme.textTheme.bodyMedium?.copyWith(
-        color: AppColors.textSecondary,
+        color: context.appColors.textSecondary,
         fontWeight: FontWeight.w500,
       ),
     );
   }
 
-  InputDecoration _inputDecoration(String hint) {
+  InputDecoration _inputDecoration(BuildContext context, String hint) {
+    final theme = Theme.of(context);
     return InputDecoration(
       hintText: hint,
-      hintStyle: TextStyle(color: AppColors.textHint),
+      hintStyle: TextStyle(color: context.appColors.textHint),
       filled: true,
-      fillColor: AppColors.surfaceInput,
+      fillColor: theme.colorScheme.surfaceContainerHighest,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         borderSide: BorderSide.none,
@@ -260,12 +261,12 @@ class _TimerChips extends StatelessWidget {
           selected: isSelected,
           onSelected: (_) => onChanged(seconds),
           selectedColor: AppColors.primarySurface,
-          backgroundColor: AppColors.surfaceInput,
+          backgroundColor: theme.colorScheme.surfaceContainerHighest,
           side: BorderSide(
-            color: isSelected ? AppColors.primary : AppColors.border,
+            color: isSelected ? AppColors.primary : context.appColors.border,
           ),
           labelStyle: theme.textTheme.bodyMedium?.copyWith(
-            color: isSelected ? AppColors.primary : AppColors.textSecondary,
+            color: isSelected ? AppColors.primary : context.appColors.textSecondary,
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
           ),
           showCheckmark: false,
@@ -299,7 +300,7 @@ class _RewardMediaRow extends StatelessWidget {
       return Container(
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          color: AppColors.surfaceInput,
+          color: theme.colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         ),
         child: Row(
@@ -314,8 +315,8 @@ class _RewardMediaRow extends StatelessWidget {
                 errorBuilder: (_, __, ___) => Container(
                   width: 48,
                   height: 48,
-                  color: AppColors.surfaceElevated,
-                  child: const Icon(Icons.image, color: AppColors.textHint),
+                  color: theme.colorScheme.surfaceContainerHighest,
+                  child: Icon(Icons.image, color: context.appColors.textHint),
                 ),
               ),
             ),
@@ -329,7 +330,7 @@ class _RewardMediaRow extends StatelessWidget {
               ),
             ),
             IconButton(
-              icon: const Icon(Icons.close, color: AppColors.textHint),
+              icon: Icon(Icons.close, color: context.appColors.textHint),
               onPressed: onRemove,
               iconSize: 20,
             ),
@@ -376,9 +377,9 @@ class _MediaButton extends StatelessWidget {
           vertical: AppSpacing.sm,
         ),
         decoration: BoxDecoration(
-          color: AppColors.surfaceInput,
+          color: theme.colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: context.appColors.border),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -393,12 +394,12 @@ class _MediaButton extends StatelessWidget {
                 ),
               )
             else
-              Icon(icon, size: 18, color: AppColors.textSecondary),
+              Icon(icon, size: 18, color: context.appColors.textSecondary),
             const SizedBox(width: AppSpacing.sm),
             Text(
               label,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: AppColors.textSecondary,
+                color: context.appColors.textSecondary,
               ),
             ),
           ],
@@ -435,20 +436,20 @@ class _SettingSwitch extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surfaceInput,
+        color: theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       ),
       child: SwitchListTile(
         value: value,
         onChanged: onChanged,
         activeThumbColor: activeColor,
-        secondary: Icon(icon, color: value ? activeColor : AppColors.textHint),
+        secondary: Icon(icon, color: value ? activeColor : context.appColors.textHint),
         title: Row(
           children: [
             Text(
               title,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: value ? activeColor : AppColors.textPrimary,
+                color: value ? activeColor : context.appColors.textPrimary,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -484,7 +485,7 @@ class _SettingSwitch extends StatelessWidget {
         subtitle: Text(
           subtitle,
           style: theme.textTheme.bodySmall?.copyWith(
-            color: AppColors.textHint,
+            color: context.appColors.textHint,
           ),
         ),
         contentPadding: const EdgeInsets.symmetric(

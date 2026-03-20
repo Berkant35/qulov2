@@ -72,8 +72,8 @@ class CelebrationPhotoCircle extends StatelessWidget {
             ? CachedNetworkImage(
                 imageUrl: photoUrl!,
                 fit: BoxFit.cover,
-                placeholder: (_, __) => Container(
-                  color: AppColors.surfaceElevated,
+                placeholder: (ctx, __) => Container(
+                  color: Theme.of(ctx).colorScheme.surfaceContainerHighest,
                   child: AppLoadingWidget.small(),
                 ),
                 errorWidget: (_, __, ___) => const _PersonPlaceholder(),
@@ -89,11 +89,12 @@ class _PersonPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
-      color: AppColors.surfaceElevated,
-      child: const Icon(
+      color: theme.colorScheme.surfaceContainerHighest,
+      child: Icon(
         Icons.person,
-        color: AppColors.textSecondary,
+        color: context.appColors.textSecondary,
         size: 40,
       ),
     );

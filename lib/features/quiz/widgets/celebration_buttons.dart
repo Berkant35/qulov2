@@ -62,9 +62,9 @@ class CelebrationButtons extends StatelessWidget {
               onGoBack();
             },
             style: OutlinedButton.styleFrom(
-              foregroundColor: AppColors.textPrimary,
+              foregroundColor: context.appColors.textPrimary,
               padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
-              side: const BorderSide(color: AppColors.border),
+              side: BorderSide(color: context.appColors.border),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
               ),

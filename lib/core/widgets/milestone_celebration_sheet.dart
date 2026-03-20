@@ -27,7 +27,7 @@ class MilestoneCelebrationSheet extends StatelessWidget {
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: AppColors.textHint,
+              color: context.appColors.textHint,
               borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
             ),
           ),
@@ -46,7 +46,7 @@ class MilestoneCelebrationSheet extends StatelessWidget {
             'Tebrikler!',
             style: theme.textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
+              color: context.appColors.textPrimary,
             ),
           ),
           const SizedBox(height: AppSpacing.sm),
@@ -55,7 +55,7 @@ class MilestoneCelebrationSheet extends StatelessWidget {
           Text(
             'Profilini %$milestone tamamladın!',
             style: theme.textTheme.bodyLarge?.copyWith(
-              color: AppColors.textSecondary,
+              color: context.appColors.textSecondary,
             ),
             textAlign: TextAlign.center,
           ),
@@ -82,7 +82,7 @@ class MilestoneCelebrationSheet extends StatelessWidget {
           Text(
             'Mor elmas kazandın!',
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: AppColors.textSecondary,
+              color: context.appColors.textSecondary,
             ),
           ),
 

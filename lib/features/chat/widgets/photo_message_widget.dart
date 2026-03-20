@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 
 class PhotoMessageWidget extends StatelessWidget {
@@ -37,7 +36,7 @@ class PhotoMessageWidget extends StatelessWidget {
             placeholder: (context, url) => Container(
               width: 200,
               height: 200,
-              color: AppColors.surfaceInput,
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
               child: const Center(
                 child: AppLoadingWidget.small(),
               ),
@@ -45,7 +44,7 @@ class PhotoMessageWidget extends StatelessWidget {
             errorWidget: (context, url, error) => Container(
               width: 200,
               height: 200,
-              color: AppColors.surfaceInput,
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
               child: const Center(
                 child: Icon(
                   Icons.broken_image_outlined,

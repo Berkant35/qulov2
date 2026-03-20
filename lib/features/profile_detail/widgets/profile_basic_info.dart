@@ -31,7 +31,7 @@ class ProfileBasicInfo extends StatelessWidget {
                   '${profile.name ?? ''}, ${profile.age ?? ''}',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
+                    color: context.appColors.textPrimary,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -62,13 +62,13 @@ class ProfileBasicInfo extends StatelessWidget {
                 QIcon(
                   QIcons.icMapPin,
                   size: 16,
-                  color: AppColors.textSecondary,
+                  color: context.appColors.textSecondary,
                 ),
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   '${profile.city} ${_formatDistance(context)}',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.textSecondary,
+                    color: context.appColors.textSecondary,
                   ),
                 ),
               ],
@@ -182,8 +182,8 @@ class _OnlineStatusChip extends StatelessWidget {
                 : '${diff.inDays}d';
         return Text(
           '${context.tr('last_seen')} $label',
-          style: const TextStyle(
-            color: AppColors.textSecondary,
+          style: TextStyle(
+            color: context.appColors.textSecondary,
             fontSize: 12,
           ),
         );

@@ -547,7 +547,7 @@ class _CellValue extends StatelessWidget {
       flex: 2,
       child: Center(
         child: value == null
-            ? Icon(Icons.close, size: 14, color: AppColors.textHint)
+            ? Icon(Icons.close, size: 14, color: context.appColors.textHint)
             : Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [

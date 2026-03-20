@@ -31,7 +31,7 @@ class PassportActiveCard extends StatelessWidget {
               children: [
                 Text(city, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
                 const SizedBox(height: 2),
-                Text(context.tr('passport_active_desc'), style: theme.textTheme.bodySmall?.copyWith(color: AppColors.textSecondary)),
+                Text(context.tr('passport_active_desc'), style: theme.textTheme.bodySmall?.copyWith(color: context.appColors.textSecondary)),
               ],
             ),
           ),

@@ -68,7 +68,7 @@ class _LanguagePickerSheetState extends State<LanguagePickerSheet> {
                 selectedColor: AppColors.primarySurface,
                 checkmarkColor: AppColors.primary,
                 side: BorderSide(
-                  color: isSelected ? AppColors.primary : AppColors.border,
+                  color: isSelected ? AppColors.primary : context.appColors.border,
                 ),
               );
             }).toList(),

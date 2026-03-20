@@ -57,7 +57,7 @@ class BestQuestionHighlight extends StatelessWidget {
                 Text(
                   item.questionText,
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: AppColors.textPrimary,
+                    color: context.appColors.textPrimary,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,

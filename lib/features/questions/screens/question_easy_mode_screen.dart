@@ -140,7 +140,7 @@ class _QuestionEasyModeScreenState
                         side: BorderSide(
                           color: isSelected
                               ? AppColors.primary
-                              : AppColors.border,
+                              : context.appColors.border,
                         ),
                       );
                     }).toList(),
@@ -169,8 +169,8 @@ class _QuestionEasyModeScreenState
           ),
 
           // Divider
-          const SliverToBoxAdapter(
-            child: Divider(height: 1, color: AppColors.border),
+          SliverToBoxAdapter(
+            child: Divider(height: 1, color: context.appColors.border),
           ),
 
           // Results
@@ -191,7 +191,7 @@ class _QuestionEasyModeScreenState
                     Text(
                       e.toString(),
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: AppColors.textSecondary,
+                        color: context.appColors.textSecondary,
                       ),
                     ),
                   ],
@@ -205,12 +205,12 @@ class _QuestionEasyModeScreenState
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        QIcon(QIcons.icWand, size: 48, color: AppColors.textHint),
+                        QIcon(QIcons.icWand, size: 48, color: context.appColors.textHint),
                         const SizedBox(height: AppSpacing.lg),
                         Text(
                           context.tr('ai_suggest_empty'),
                           style: theme.textTheme.bodyMedium?.copyWith(
-                            color: AppColors.textSecondary,
+                            color: context.appColors.textSecondary,
                           ),
                           textAlign: TextAlign.center,
                         ),

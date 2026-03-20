@@ -25,7 +25,7 @@ class DiscoverLocationError extends ConsumerWidget {
             Icon(
               isMockError ? Icons.gps_off : Icons.location_off,
               size: 64,
-              color: isMockError ? AppColors.error : AppColors.textHint,
+              color: isMockError ? AppColors.error : context.appColors.textHint,
             ),
             const SizedBox(height: AppSpacing.lg),
             Text(
@@ -39,7 +39,7 @@ class DiscoverLocationError extends ConsumerWidget {
               const SizedBox(height: AppSpacing.sm),
               Text(
                 context.tr('location_required_desc'),
-                style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+                style: theme.textTheme.bodyMedium?.copyWith(color: context.appColors.textSecondary),
                 textAlign: TextAlign.center,
               ),
             ],

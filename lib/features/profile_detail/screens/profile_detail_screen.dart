@@ -52,7 +52,7 @@ class _ProfileDetailScreenState extends ConsumerState<ProfileDetailScreen>
         detailContext == ProfileDetailContext.match || detailContext == ProfileDetailContext.chat;
 
     return Scaffold(
-      backgroundColor: AppColors.scaffold,
+      backgroundColor: context.appColors.scaffold,
       body: asyncProfile.when(
         loading: () => _buildWithPreloaded(detailContext, isMatchContext),
         error: (err, _) => ErrorRetryWidget(

@@ -62,7 +62,7 @@ class QuestionStepQuestion extends StatelessWidget {
                 Text(
                   context.tr('question_create_motto_tip'),
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: AppColors.textSecondary,
+                    color: context.appColors.textSecondary,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -137,7 +137,7 @@ class QuestionStepQuestion extends StatelessWidget {
                 selectedColor: AppColors.primarySurface,
                 checkmarkColor: AppColors.primary,
                 side: BorderSide(
-                  color: isSelected ? AppColors.primary : AppColors.border,
+                  color: isSelected ? AppColors.primary : context.appColors.border,
                 ),
               );
             }).toList(),

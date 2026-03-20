@@ -48,7 +48,7 @@ class ChatQuestionResultScreen extends ConsumerWidget {
             Text(
               'Soruyu doğru cevapladın!',
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: AppColors.textSecondary,
+                color: context.appColors.textSecondary,
               ),
               textAlign: TextAlign.center,
             )
@@ -56,7 +56,7 @@ class ChatQuestionResultScreen extends ConsumerWidget {
             Text(
               'Bir dahaki sefere daha şanslı olursun.',
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: AppColors.textSecondary,
+                color: context.appColors.textSecondary,
               ),
               textAlign: TextAlign.center,
             ),

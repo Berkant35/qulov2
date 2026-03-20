@@ -21,7 +21,7 @@ class ProfileQuestionInfo extends StatelessWidget {
             context.tr('questions'),
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
+              color: context.appColors.textPrimary,
             ),
           ),
           const SizedBox(height: AppSpacing.sm),
@@ -117,13 +117,13 @@ class _CategoryChip extends StatelessWidget {
         vertical: AppSpacing.xs,
       ),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
       ),
       child: Text(
         label,
-        style: const TextStyle(
-          color: AppColors.textSecondary,
+        style: TextStyle(
+          color: context.appColors.textSecondary,
           fontSize: 11,
         ),
       ),
@@ -143,13 +143,13 @@ class _LanguageChip extends StatelessWidget {
         vertical: AppSpacing.xs,
       ),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
       ),
       child: Text(
         '${AppConstants.localeFlagEmojis[locale] ?? ''} ${locale.toUpperCase()}',
-        style: const TextStyle(
-          color: AppColors.textSecondary,
+        style: TextStyle(
+          color: context.appColors.textSecondary,
           fontSize: 11,
         ),
       ),

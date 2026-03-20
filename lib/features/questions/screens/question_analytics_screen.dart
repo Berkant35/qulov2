@@ -44,7 +44,7 @@ class _QuestionAnalyticsScreenState
               child: Text(
                 context.tr('analytics_no_data'),
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondary,
+                      color: context.appColors.textSecondary,
                     ),
               ),
             )

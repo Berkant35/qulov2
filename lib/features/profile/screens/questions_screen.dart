@@ -185,7 +185,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
 
   Color _difficultyColor(QuestionModel q) {
     final total = q.statsCorrect + q.statsWrong;
-    if (total < 10) return AppColors.textHint;
+    if (total < 10) return context.appColors.textHint;
     final rate = q.statsCorrect / total;
     if (rate >= 0.8) return AppColors.secondary;
     if (rate >= 0.5) return AppColors.info;
@@ -211,7 +211,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
           onPressed: () {
             // TODO: Navigate to analytics screen when implemented
           },
-          icon: QIcon(QIcons.icChart, size: 22, color: AppColors.textSecondary),
+          icon: QIcon(QIcons.icChart, size: 22, color: context.appColors.textSecondary),
         ),
       ],
       floatingActionButton: Builder(
@@ -222,7 +222,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
           final isAtLimit = questions.length >= questionsLimit;
 
           return FloatingActionButton(
-            backgroundColor: isAtLimit ? AppColors.textHint : AppColors.primaryDark,
+            backgroundColor: isAtLimit ? context.appColors.textHint : AppColors.primaryDark,
             onPressed: _showModeSheet,
             child: isAtLimit
                 ? QIcon(QIcons.icLock, size: 22, color: Colors.white)
@@ -242,12 +242,12 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    QIcon(QIcons.icWand, size: 56, color: AppColors.textHint),
+                    QIcon(QIcons.icWand, size: 56, color: context.appColors.textHint),
                     const SizedBox(height: AppSpacing.lg),
                     Text(
                       context.tr('min_questions'),
                       style: theme.textTheme.bodyLarge?.copyWith(
-                        color: AppColors.textSecondary,
+                        color: context.appColors.textSecondary,
                       ),
                       textAlign: TextAlign.center,
                     ),

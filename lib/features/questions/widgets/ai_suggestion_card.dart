@@ -21,9 +21,9 @@ class AiSuggestionCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.surfaceElevated,
+        color: theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.appColors.border),
       ),
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
@@ -74,11 +74,11 @@ class AiSuggestionCard extends StatelessWidget {
                       shape: BoxShape.circle,
                       color: isCorrect
                           ? AppColors.secondary.withValues(alpha: 0.15)
-                          : AppColors.surface,
+                          : theme.colorScheme.surface,
                       border: Border.all(
                         color: isCorrect
                             ? AppColors.secondary
-                            : AppColors.border,
+                            : context.appColors.border,
                       ),
                     ),
                     child: isCorrect
@@ -92,7 +92,7 @@ class AiSuggestionCard extends StatelessWidget {
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: isCorrect
                             ? AppColors.secondary
-                            : AppColors.textPrimary,
+                            : context.appColors.textPrimary,
                         fontWeight:
                             isCorrect ? FontWeight.w600 : FontWeight.normal,
                       ),

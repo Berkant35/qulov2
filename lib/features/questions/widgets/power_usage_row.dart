@@ -28,7 +28,7 @@ class PowerUsageRow extends StatelessWidget {
         Text(
           context.tr('analytics_power_usage'),
           style: theme.textTheme.labelSmall?.copyWith(
-            color: AppColors.textSecondary,
+            color: context.appColors.textSecondary,
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
@@ -44,7 +44,7 @@ class PowerUsageRow extends StatelessWidget {
                 Text(
                   '$count',
                   style: theme.textTheme.labelSmall?.copyWith(
-                    color: AppColors.textPrimary,
+                    color: context.appColors.textPrimary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

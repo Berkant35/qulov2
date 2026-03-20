@@ -26,6 +26,7 @@ class _VoiceMessageWidgetState extends ConsumerState<VoiceMessageWidget> {
   @override
   Widget build(BuildContext context) {
     final manager = ref.read(audioPlayerManagerProvider);
+    final theme = Theme.of(context);
 
     return Container(
       constraints: const BoxConstraints(maxWidth: 260),
@@ -35,7 +36,7 @@ class _VoiceMessageWidgetState extends ConsumerState<VoiceMessageWidget> {
       ),
       decoration: BoxDecoration(
         gradient: widget.isMine ? AppColors.purpleGradient : null,
-        color: widget.isMine ? null : AppColors.surfaceInput,
+        color: widget.isMine ? null : theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
       ),
       child: StreamBuilder<PlayerState>(
@@ -99,7 +100,7 @@ class _VoiceMessageWidgetState extends ConsumerState<VoiceMessageWidget> {
                                 : AppColors.primary,
                             inactiveTrackColor: widget.isMine
                                 ? Colors.white38
-                                : AppColors.textHint,
+                                : context.appColors.textHint,
                             thumbColor: widget.isMine
                                 ? Colors.white
                                 : AppColors.primary,
@@ -124,7 +125,7 @@ class _VoiceMessageWidgetState extends ConsumerState<VoiceMessageWidget> {
                           fontSize: 11,
                           color: widget.isMine
                               ? Colors.white70
-                              : AppColors.textSecondary,
+                              : context.appColors.textSecondary,
                         ),
                       ),
                     ],

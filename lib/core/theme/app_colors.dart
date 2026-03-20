@@ -54,6 +54,69 @@ abstract final class AppColors {
   );
 }
 
+/// Brightness-aware color accessor via BuildContext.
+/// Usage: `context.appColors.surface` instead of `AppColors.surface`
+extension AppColorsOf on BuildContext {
+  AppColorsResolved get appColors {
+    final brightness = Theme.of(this).brightness;
+    return brightness == Brightness.light
+        ? AppColorsResolved.light
+        : AppColorsResolved.dark;
+  }
+}
+
+class AppColorsResolved {
+  final Color background;
+  final Color scaffold;
+  final Color surface;
+  final Color surfaceElevated;
+  final Color surfaceInput;
+  final Color textPrimary;
+  final Color textSecondary;
+  final Color textHint;
+  final Color border;
+  final Color divider;
+
+  const AppColorsResolved({
+    required this.background,
+    required this.scaffold,
+    required this.surface,
+    required this.surfaceElevated,
+    required this.surfaceInput,
+    required this.textPrimary,
+    required this.textSecondary,
+    required this.textHint,
+    required this.border,
+    required this.divider,
+  });
+
+  static const dark = AppColorsResolved(
+    background: AppColors.background,
+    scaffold: AppColors.scaffold,
+    surface: AppColors.surface,
+    surfaceElevated: AppColors.surfaceElevated,
+    surfaceInput: AppColors.surfaceInput,
+    textPrimary: AppColors.textPrimary,
+    textSecondary: AppColors.textSecondary,
+    textHint: AppColors.textHint,
+    border: AppColors.border,
+    divider: AppColors.divider,
+  );
+
+  static const light = AppColorsResolved(
+    background: AppColorsLight.background,
+    scaffold: AppColorsLight.scaffold,
+    surface: AppColorsLight.surface,
+    surfaceElevated: AppColorsLight.surfaceElevated,
+    surfaceInput: AppColorsLight.surfaceInput,
+    textPrimary: AppColorsLight.textPrimary,
+    textSecondary: AppColorsLight.textSecondary,
+    textHint: AppColorsLight.textHint,
+    border: AppColorsLight.border,
+    divider: AppColorsLight.divider,
+  );
+}
+
 /// Light theme colors
 abstract final class AppColorsLight {
   // ─── Background & Surface ───

@@ -23,6 +23,7 @@ class LockedFeatureButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     if (!isLocked) return child;
 
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: () => PaywallBottomSheetContent.show(ref, trigger: trigger),
       child: lockedChild ??
@@ -34,7 +35,7 @@ class LockedFeatureButton extends ConsumerWidget {
                 width: 28,
                 height: 28,
                 decoration: BoxDecoration(
-                  color: AppColors.surfaceElevated,
+                  color: theme.colorScheme.surfaceContainerHighest,
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(

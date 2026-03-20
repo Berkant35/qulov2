@@ -14,6 +14,7 @@ class StepIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Row(
       children: List.generate(labels.length * 2 - 1, (i) {
         if (i.isOdd) {
@@ -23,7 +24,7 @@ class StepIndicator extends StatelessWidget {
               height: 2,
               color: stepBefore < currentStep
                   ? AppColors.primary
-                  : AppColors.border,
+                  : context.appColors.border,
             ),
           );
         }
@@ -40,11 +41,11 @@ class StepIndicator extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: isActive || isDone
                     ? AppColors.primary
-                    : AppColors.surface,
+                    : theme.colorScheme.surface,
                 border: Border.all(
                   color: isActive || isDone
                       ? AppColors.primary
-                      : AppColors.border,
+                      : context.appColors.border,
                   width: 2,
                 ),
               ),
@@ -57,7 +58,7 @@ class StepIndicator extends StatelessWidget {
                             Theme.of(context).textTheme.labelSmall?.copyWith(
                           color: isActive
                               ? Colors.white
-                              : AppColors.textSecondary,
+                              : context.appColors.textSecondary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -67,7 +68,7 @@ class StepIndicator extends StatelessWidget {
             Text(
               labels[step],
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: isActive ? AppColors.primary : AppColors.textSecondary,
+                color: isActive ? AppColors.primary : context.appColors.textSecondary,
                 fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
                 fontSize: 10,
               ),

@@ -88,6 +88,7 @@ class _PassportBadgeState extends ConsumerState<PassportBadge>
           child: AnimatedBuilder(
             animation: _glowController,
             builder: (context, child) {
+              final theme = Theme.of(context);
               return Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.sm,
@@ -96,13 +97,13 @@ class _PassportBadgeState extends ConsumerState<PassportBadge>
                 decoration: BoxDecoration(
                   color: isActive
                       ? AppColors.primarySurface
-                      : AppColors.surfaceInput,
+                      : theme.colorScheme.surfaceContainerHighest,
                   borderRadius:
                       BorderRadius.circular(AppSpacing.radiusFull),
                   border: Border.all(
                     color: isActive
                         ? AppColors.primary.withValues(alpha: 0.3)
-                        : AppColors.border,
+                        : context.appColors.border,
                   ),
                   boxShadow: isActive
                       ? [
@@ -127,7 +128,7 @@ class _PassportBadgeState extends ConsumerState<PassportBadge>
                   size: 14,
                   color: isActive
                       ? AppColors.primary
-                      : AppColors.textSecondary,
+                      : context.appColors.textSecondary,
                 ),
                 const SizedBox(width: 4),
                 Text(
@@ -135,7 +136,7 @@ class _PassportBadgeState extends ConsumerState<PassportBadge>
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
                         color: isActive
                             ? AppColors.primary
-                            : AppColors.textSecondary,
+                            : context.appColors.textSecondary,
                         fontWeight: FontWeight.w600,
                       ),
                 ),

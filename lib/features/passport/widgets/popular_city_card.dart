@@ -21,7 +21,7 @@ class PopularCityCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
           decoration: BoxDecoration(
-            border: Border.all(color: AppColors.border),
+            border: Border.all(color: context.appColors.border),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           ),
           child: Row(
@@ -34,7 +34,7 @@ class PopularCityCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(city.name, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600), maxLines: 1, overflow: TextOverflow.ellipsis),
-                    Text(city.country, style: theme.textTheme.bodySmall?.copyWith(color: AppColors.textSecondary), maxLines: 1, overflow: TextOverflow.ellipsis),
+                    Text(city.country, style: theme.textTheme.bodySmall?.copyWith(color: context.appColors.textSecondary), maxLines: 1, overflow: TextOverflow.ellipsis),
                   ],
                 ),
               ),

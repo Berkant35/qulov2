@@ -35,7 +35,7 @@ class ChatQuestionRescue extends StatelessWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.textHint,
+                color: context.appColors.textHint,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -65,7 +65,7 @@ class ChatQuestionRescue extends StatelessWidget {
             Text(
               'Cevap vermek için süren bitti. Güç kullanarak kurtulabilirsin.',
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: AppColors.textSecondary,
+                color: context.appColors.textSecondary,
               ),
               textAlign: TextAlign.center,
             ),
@@ -154,9 +154,9 @@ class ChatQuestionRescue extends StatelessWidget {
               child: OutlinedButton(
                 onPressed: onGiveUp,
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.textSecondary,
+                  foregroundColor: context.appColors.textSecondary,
                   side: BorderSide(
-                    color: AppColors.border,
+                    color: context.appColors.border,
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppSpacing.radiusMd),

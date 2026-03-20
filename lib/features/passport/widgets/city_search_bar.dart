@@ -75,16 +75,16 @@ class _CitySearchBarState extends ConsumerState<CitySearchBar> {
           onChanged: _onSearchChanged,
           decoration: InputDecoration(
             hintText: context.tr('passport_search_placeholder'),
-            prefixIcon: const Icon(Icons.search, color: AppColors.textHint),
+            prefixIcon: Icon(Icons.search, color: context.appColors.textHint),
             suffixIcon: _isSearching
                 ? const Padding(padding: EdgeInsets.all(12), child: SizedBox(width: 20, height: 20, child: AppLoadingWidget.small()))
                 : _controller.text.isNotEmpty
-                    ? IconButton(icon: const Icon(Icons.clear, color: AppColors.textHint), onPressed: () { _controller.clear(); setState(() { _results = []; _showResults = false; }); })
+                    ? IconButton(icon: Icon(Icons.clear, color: context.appColors.textHint), onPressed: () { _controller.clear(); setState(() { _results = []; _showResults = false; }); })
                     : null,
             filled: true,
             fillColor: theme.colorScheme.surface,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusMd), borderSide: BorderSide(color: AppColors.border)),
-            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusMd), borderSide: BorderSide(color: AppColors.border)),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusMd), borderSide: BorderSide(color: context.appColors.border)),
+            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusMd), borderSide: BorderSide(color: context.appColors.border)),
             focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusMd), borderSide: BorderSide(color: AppColors.primary)),
             contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.md),
           ),
@@ -94,29 +94,29 @@ class _CitySearchBarState extends ConsumerState<CitySearchBar> {
           if (_hasError)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
-              child: Center(child: Text(context.tr('passport_search_failed'), style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary))),
+              child: Center(child: Text(context.tr('passport_search_failed'), style: theme.textTheme.bodyMedium?.copyWith(color: context.appColors.textSecondary))),
             )
           else if (_results.isEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
-              child: Center(child: Text(context.tr('passport_no_results'), style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary))),
+              child: Center(child: Text(context.tr('passport_no_results'), style: theme.textTheme.bodyMedium?.copyWith(color: context.appColors.textSecondary))),
             )
           else
             Container(
               constraints: const BoxConstraints(maxHeight: 260),
-              decoration: BoxDecoration(color: theme.colorScheme.surface, borderRadius: BorderRadius.circular(AppSpacing.radiusMd), border: Border.all(color: AppColors.border)),
+              decoration: BoxDecoration(color: theme.colorScheme.surface, borderRadius: BorderRadius.circular(AppSpacing.radiusMd), border: Border.all(color: context.appColors.border)),
               child: ListView.separated(
                 shrinkWrap: true,
                 padding: EdgeInsets.zero,
                 itemCount: _results.length,
-                separatorBuilder: (_, __) => Divider(height: 1, color: AppColors.border),
+                separatorBuilder: (_, __) => Divider(height: 1, color: context.appColors.border),
                 itemBuilder: (context, index) {
                   final city = _results[index];
                   return ListTile(
                     dense: true,
                     leading: const Icon(Icons.location_city, size: 20, color: AppColors.primary),
                     title: Text(city.name, style: theme.textTheme.bodyMedium),
-                    subtitle: Text(city.fullName, style: theme.textTheme.bodySmall?.copyWith(color: AppColors.textSecondary), maxLines: 1, overflow: TextOverflow.ellipsis),
+                    subtitle: Text(city.fullName, style: theme.textTheme.bodySmall?.copyWith(color: context.appColors.textSecondary), maxLines: 1, overflow: TextOverflow.ellipsis),
                     onTap: () => _selectCity(city),
                   );
                 },

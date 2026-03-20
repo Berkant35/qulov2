@@ -27,7 +27,7 @@ class SuccessRateBar extends StatelessWidget {
             Text(
               context.tr('analytics_success_rate'),
               style: theme.textTheme.labelSmall?.copyWith(
-                color: AppColors.textSecondary,
+                color: context.appColors.textSecondary,
               ),
             ),
             Text(
@@ -44,7 +44,7 @@ class SuccessRateBar extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
           child: LinearProgressIndicator(
             value: successRate / 100.0,
-            backgroundColor: AppColors.border,
+            backgroundColor: context.appColors.border,
             valueColor: AlwaysStoppedAnimation<Color>(_color),
             minHeight: 6,
           ),

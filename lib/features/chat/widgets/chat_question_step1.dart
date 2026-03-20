@@ -98,7 +98,7 @@ class _ChatQuestionStep1State extends State<ChatQuestionStep1> {
             'Soru Icerigi',
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
+              color: context.appColors.textPrimary,
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -126,9 +126,9 @@ class _ChatQuestionStep1State extends State<ChatQuestionStep1> {
             maxLength: 200,
             maxLines: 3,
             minLines: 1,
-            style: TextStyle(color: AppColors.textPrimary),
+            style: TextStyle(color: context.appColors.textPrimary),
             onChanged: (v) => widget.onChanged(questionText: v),
-            decoration: _inputDecoration('Sorunuzu yazin...'),
+            decoration: _inputDecoration(context, 'Sorunuzu yazin...'),
           ),
           const SizedBox(height: AppSpacing.md),
 
@@ -174,12 +174,12 @@ class _ChatQuestionStep1State extends State<ChatQuestionStep1> {
           Row(
             children: [
               Icon(Icons.info_outline,
-                  size: 14, color: AppColors.textHint),
+                  size: 14, color: context.appColors.textHint),
               const SizedBox(width: AppSpacing.xs),
               Text(
                 'Dogru cevabi secmek icin secenek yanindaki daireye dokunun',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppColors.textHint,
+                  color: context.appColors.textHint,
                 ),
               ),
             ],
@@ -194,18 +194,19 @@ class _ChatQuestionStep1State extends State<ChatQuestionStep1> {
     return Text(
       text,
       style: theme.textTheme.bodyMedium?.copyWith(
-        color: AppColors.textSecondary,
+        color: context.appColors.textSecondary,
         fontWeight: FontWeight.w500,
       ),
     );
   }
 
-  InputDecoration _inputDecoration(String hint) {
+  InputDecoration _inputDecoration(BuildContext context, String hint) {
+    final theme = Theme.of(context);
     return InputDecoration(
       hintText: hint,
-      hintStyle: TextStyle(color: AppColors.textHint),
+      hintStyle: TextStyle(color: context.appColors.textHint),
       filled: true,
-      fillColor: AppColors.surfaceInput,
+      fillColor: theme.colorScheme.surfaceContainerHighest,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         borderSide: BorderSide.none,
@@ -241,14 +242,14 @@ class _OptionCountToggle extends StatelessWidget {
 
     return Row(
       children: [
-        _buildChip(theme, '2 Sik', 2),
+        _buildChip(context, theme, '2 Sik', 2),
         const SizedBox(width: AppSpacing.sm),
-        _buildChip(theme, '4 Sik', 4),
+        _buildChip(context, theme, '4 Sik', 4),
       ],
     );
   }
 
-  Widget _buildChip(ThemeData theme, String label, int value) {
+  Widget _buildChip(BuildContext context, ThemeData theme, String label, int value) {
     final isSelected = optionCount == value;
     return GestureDetector(
       onTap: () => onChanged(value),
@@ -260,17 +261,17 @@ class _OptionCountToggle extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? AppColors.primarySurface
-              : AppColors.surfaceInput,
+              : theme.colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
           border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.border,
+            color: isSelected ? AppColors.primary : context.appColors.border,
             width: 1,
           ),
         ),
         child: Text(
           label,
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: isSelected ? AppColors.primary : AppColors.textSecondary,
+            color: isSelected ? AppColors.primary : context.appColors.textSecondary,
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
           ),
         ),
@@ -296,16 +297,17 @@ class _OptionField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return TextFormField(
       controller: controller,
       maxLength: 100,
-      style: TextStyle(color: AppColors.textPrimary),
+      style: TextStyle(color: context.appColors.textPrimary),
       onChanged: onChanged,
       decoration: InputDecoration(
         hintText: 'Secenek $label',
-        hintStyle: TextStyle(color: AppColors.textHint),
+        hintStyle: TextStyle(color: context.appColors.textHint),
         filled: true,
-        fillColor: AppColors.surfaceInput,
+        fillColor: theme.colorScheme.surfaceContainerHighest,
         counterText: '',
         suffixIcon: Padding(
           padding: const EdgeInsets.only(right: AppSpacing.sm),
@@ -321,7 +323,7 @@ class _OptionField extends StatelessWidget {
                     : Colors.transparent,
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isCorrect ? AppColors.success : AppColors.textHint,
+                  color: isCorrect ? AppColors.success : context.appColors.textHint,
                   width: 1.5,
                 ),
               ),

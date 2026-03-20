@@ -30,7 +30,7 @@ class ProfileActionBar extends StatelessWidget {
         bottom: MediaQuery.of(context).padding.bottom + AppSpacing.md,
       ),
       decoration: BoxDecoration(
-        color: AppColors.scaffold,
+        color: context.appColors.scaffold,
         border: Border(
           top: BorderSide(
             color: AppColors.primary.withValues(alpha: 0.2),

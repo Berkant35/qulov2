@@ -114,7 +114,7 @@ class _PerformanceBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final config = _badgeConfig(badge);
+    final config = _badgeConfig(context, badge);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -141,7 +141,7 @@ class _PerformanceBadge extends StatelessWidget {
     );
   }
 
-  _BadgeConfig _badgeConfig(String badge) {
+  _BadgeConfig _badgeConfig(BuildContext context, String badge) {
     switch (badge) {
       case 'flawless':
         return _BadgeConfig(color: AppColors.success, icon: Icons.auto_awesome);
@@ -152,7 +152,7 @@ class _PerformanceBadge extends StatelessWidget {
       case 'determined':
         return _BadgeConfig(color: AppColors.primary, icon: Icons.psychology);
       default:
-        return _BadgeConfig(color: AppColors.textHint, icon: Icons.emoji_events_outlined);
+        return _BadgeConfig(color: context.appColors.textHint, icon: Icons.emoji_events_outlined);
     }
   }
 }

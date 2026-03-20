@@ -41,12 +41,13 @@ class _TypingIndicatorState extends State<TypingIndicator>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
-          color: AppColors.surfaceInput,
+          color: theme.colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(16),
         ),
         child: AnimatedBuilder(
@@ -63,7 +64,7 @@ class _TypingIndicatorState extends State<TypingIndicator>
                       width: 8,
                       height: 8,
                       decoration: BoxDecoration(
-                        color: AppColors.textHint,
+                        color: context.appColors.textHint,
                         shape: BoxShape.circle,
                       ),
                     ),

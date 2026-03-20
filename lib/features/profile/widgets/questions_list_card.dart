@@ -49,9 +49,9 @@ class QuestionsListCard extends StatelessWidget {
           onTap: onTap,
           child: Container(
             decoration: BoxDecoration(
-              color: AppColors.surfaceElevated,
+              color: theme.colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-              border: Border.all(color: AppColors.border),
+              border: Border.all(color: context.appColors.border),
             ),
             padding: const EdgeInsets.all(AppSpacing.lg),
             child: Column(
@@ -106,13 +106,13 @@ class QuestionsListCard extends StatelessWidget {
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.surfaceInput,
+                          color: theme.colorScheme.surfaceContainerHighest,
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
                           '${AppConstants.localeFlagEmojis[question.locale] ?? ''} ${question.locale!.toUpperCase()}',
                           style: theme.textTheme.labelSmall?.copyWith(
-                            color: AppColors.textSecondary,
+                            color: context.appColors.textSecondary,
                             fontSize: 10,
                           ),
                         ),
@@ -125,7 +125,7 @@ class QuestionsListCard extends StatelessWidget {
                         vertical: 2,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.surfaceInput,
+                        color: theme.colorScheme.surfaceContainerHighest,
                         borderRadius:
                             BorderRadius.circular(AppSpacing.radiusFull),
                       ),
@@ -133,12 +133,12 @@ class QuestionsListCard extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           QIcon(QIcons.icClock,
-                              size: 10, color: AppColors.textSecondary),
+                              size: 10, color: context.appColors.textSecondary),
                           const SizedBox(width: 3),
                           Text(
                             '${question.timeLimit}s',
                             style: theme.textTheme.labelSmall?.copyWith(
-                              color: AppColors.textSecondary,
+                              color: context.appColors.textSecondary,
                               fontSize: 10,
                             ),
                           ),
@@ -171,7 +171,7 @@ class QuestionsListCard extends StatelessWidget {
                     Text(
                       '${question.statsSolveCount} ${context.tr('profile_vitrin_solves')}',
                       style: theme.textTheme.labelSmall?.copyWith(
-                        color: AppColors.textSecondary,
+                        color: context.appColors.textSecondary,
                       ),
                     ),
                     const SizedBox(width: AppSpacing.sm),
@@ -180,7 +180,7 @@ class QuestionsListCard extends StatelessWidget {
                       height: 4,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: AppColors.textHint,
+                        color: context.appColors.textHint,
                       ),
                     ),
                     const SizedBox(width: AppSpacing.sm),

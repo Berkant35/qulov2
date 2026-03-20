@@ -76,6 +76,7 @@ class _ChatPowerButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = type.color;
+    final theme = Theme.of(context);
 
     return SafeTapButton(
       onTap: onTap,
@@ -92,7 +93,7 @@ class _ChatPowerButton extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: isUsed
-                      ? AppColors.surfaceElevated
+                      ? theme.colorScheme.surfaceContainerHighest
                       : color.withValues(alpha: 0.15),
                   border: Border.all(
                     color: isUsed

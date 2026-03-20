@@ -111,7 +111,7 @@ class _PassportScreenState extends ConsumerState<PassportScreen> with LoadingMix
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                QIcon(QIcons.icLock, size: 64, color: AppColors.textHint),
+                QIcon(QIcons.icLock, size: 64, color: context.appColors.textHint),
                 const SizedBox(height: AppSpacing.lg),
                 Text(
                   context.tr('passport_premium_only'),
@@ -121,7 +121,7 @@ class _PassportScreenState extends ConsumerState<PassportScreen> with LoadingMix
                 const SizedBox(height: AppSpacing.sm),
                 Text(
                   context.tr('passport_premium_desc'),
-                  style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+                  style: theme.textTheme.bodyMedium?.copyWith(color: context.appColors.textSecondary),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: AppSpacing.xl),
@@ -196,7 +196,7 @@ class _PassportScreenState extends ConsumerState<PassportScreen> with LoadingMix
             const SizedBox(height: AppSpacing.sm),
             Text(
               context.tr('passport_explore'),
-              style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+              style: theme.textTheme.bodyMedium?.copyWith(color: context.appColors.textSecondary),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.xl),

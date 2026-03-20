@@ -13,6 +13,7 @@ import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/features/passport/widgets/q_map_pin.dart';
+import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/passport_provider.dart';
 
 class MapConfirmScreen extends ConsumerStatefulWidget {
@@ -40,9 +41,16 @@ class _MapConfirmScreenState extends ConsumerState<MapConfirmScreen> with Loadin
   bool _isMapReady = false;
   String? _mapStyle;
 
+  // Draggable position state
+  late LatLng _currentPosition;
+  late String _currentCity;
+  bool _isLoadingCity = false;
+
   @override
   void initState() {
     super.initState();
+    _currentPosition = LatLng(widget.lat, widget.lng);
+    _currentCity = widget.cityName;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       AnalyticsManager.instance.logEvent(AnalyticsEvents.passportMapConfirmView, params: {
         AnalyticsEvents.paramDestinationCity: widget.cityName,
@@ -67,25 +75,53 @@ class _MapConfirmScreenState extends ConsumerState<MapConfirmScreen> with Loadin
     } catch (_) {}
   }
 
+  void _onCameraMove(CameraPosition position) {
+    _currentPosition = position.target;
+  }
+
+  Future<void> _onCameraIdle() async {
+    if (!mounted) return;
+    setState(() => _isLoadingCity = true);
+    try {
+      final service = ref.read(teleportServiceProvider);
+      final city = await service.reverseGeocode(
+        _currentPosition.latitude,
+        _currentPosition.longitude,
+      );
+      if (mounted) {
+        setState(() {
+          if (city != null && city.isNotEmpty) _currentCity = city;
+          _isLoadingCity = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) setState(() => _isLoadingCity = false);
+    }
+  }
+
   Future<void> _onConfirm() async {
     final nav = ref.read(navigationServiceProvider);
+    final cityToActivate = _currentCity;
+    final latToActivate = _currentPosition.latitude;
+    final lngToActivate = _currentPosition.longitude;
+
     await withLoading(() async {
       final passport = ref.read(passportProvider);
       final Result result;
       if (passport.isActive) {
         result = await ref.read(passportProvider.notifier).changeCity(
-          city: widget.cityName, lat: widget.lat, lng: widget.lng,
+          city: cityToActivate, lat: latToActivate, lng: lngToActivate,
         );
       } else {
         result = await ref.read(passportProvider.notifier).activate(
-          city: widget.cityName, lat: widget.lat, lng: widget.lng,
+          city: cityToActivate, lat: latToActivate, lng: lngToActivate,
         );
       }
 
       result.when(
         success: (_) {
           AnalyticsManager.instance.logEvent(AnalyticsEvents.passportExploreStart, params: {
-            AnalyticsEvents.paramDestinationCity: widget.cityName,
+            AnalyticsEvents.paramDestinationCity: cityToActivate,
           });
           nav.pop();
         },
@@ -103,7 +139,7 @@ class _MapConfirmScreenState extends ConsumerState<MapConfirmScreen> with Loadin
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final target = LatLng(widget.lat, widget.lng);
+    final initialTarget = LatLng(widget.lat, widget.lng);
 
     return Scaffold(
       body: Stack(
@@ -115,12 +151,12 @@ class _MapConfirmScreenState extends ConsumerState<MapConfirmScreen> with Loadin
               child: const Center(child: AppLoadingWidget.large()),
             ),
 
-          // Google Map (read-only)
+          // Google Map — draggable
           AnimatedOpacity(
             opacity: _isMapReady ? 1.0 : 0.0,
             duration: const Duration(milliseconds: 400),
             child: GoogleMap(
-              initialCameraPosition: CameraPosition(target: target, zoom: 12),
+              initialCameraPosition: CameraPosition(target: initialTarget, zoom: 12),
               style: _mapStyle,
               onMapCreated: (controller) async {
                 if (!_mapController.isCompleted) {
@@ -132,13 +168,16 @@ class _MapConfirmScreenState extends ConsumerState<MapConfirmScreen> with Loadin
                 if (mounted) {
                   controller.animateCamera(
                     CameraUpdate.newCameraPosition(
-                      CameraPosition(target: target, zoom: 14),
+                      CameraPosition(target: initialTarget, zoom: 14),
                     ),
                   );
                 }
               },
-              scrollGesturesEnabled: false,
-              zoomGesturesEnabled: false,
+              onCameraMove: _onCameraMove,
+              onCameraIdle: _onCameraIdle,
+              // Draggable — user can fine-tune location
+              scrollGesturesEnabled: true,
+              zoomGesturesEnabled: true,
               tiltGesturesEnabled: false,
               rotateGesturesEnabled: false,
               zoomControlsEnabled: false,
@@ -164,26 +203,6 @@ class _MapConfirmScreenState extends ConsumerState<MapConfirmScreen> with Loadin
                     );
                   },
                   child: const QMapPin(size: 56),
-                ),
-              ),
-            ),
-
-          // City name top center
-          if (_isMapReady)
-            Positioned(
-              top: MediaQuery.of(context).padding.top + AppSpacing.lg,
-              left: 60,
-              right: 60,
-              child: Text(
-                widget.cityName,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                  shadows: [
-                    Shadow(color: Colors.black.withValues(alpha: 0.6), blurRadius: 8),
-                    Shadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 16),
-                  ],
                 ),
               ),
             ),
@@ -223,19 +242,28 @@ class _MapConfirmScreenState extends ConsumerState<MapConfirmScreen> with Loadin
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  // City name row
                   Row(
                     children: [
-                      Text(widget.flag, style: const TextStyle(fontSize: 28)),
+                      const Icon(Icons.location_on, color: AppColors.primary, size: 20),
                       const SizedBox(width: AppSpacing.sm),
                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(widget.cityName, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
-                            Text(widget.country, style: theme.textTheme.bodySmall?.copyWith(color: AppColors.textSecondary)),
-                          ],
+                        child: AnimatedOpacity(
+                          opacity: _isLoadingCity ? 0.4 : 1.0,
+                          duration: const Duration(milliseconds: 200),
+                          child: Text(
+                            _currentCity,
+                            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ),
+                      if (_isLoadingCity)
+                        const Padding(
+                          padding: EdgeInsets.only(left: AppSpacing.sm),
+                          child: SizedBox(width: 16, height: 16, child: AppLoadingWidget.small()),
+                        ),
                     ],
                   ),
                   const SizedBox(height: AppSpacing.lg),

@@ -160,8 +160,8 @@ class _VoiceRecorderOverlayState extends ConsumerState<VoiceRecorderOverlay>
               // Timer
               Text(
                 _hasStarted ? _formatTime(_seconds) : '0:00',
-                style: const TextStyle(
-                  color: AppColors.textPrimary,
+                style: TextStyle(
+                  color: context.appColors.textPrimary,
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   fontFeatures: [FontFeature.tabularFigures()],
