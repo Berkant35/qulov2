@@ -169,6 +169,13 @@ class AppLocalizations {
     'passport_activate_failed': 'Pasaport aktifleştirilemedi, tekrar deneyin',
     'passport_deactivate_failed': 'Pasaport deaktifleştirilemedi',
     'passport_active_label': 'Pasaport aktif',
+    'passport_search_placeholder': 'Şehir ara...',
+    'passport_popular_cities': 'Popüler Şehirler',
+    'passport_start_exploring': 'Keşfetmeye Başla',
+    'passport_return_home': 'Gerçek Konumuma Dön',
+    'passport_exploring_in': '{city} şehrinde keşfediyorsun',
+    'passport_search_failed': 'Arama başarısız',
+    'passport_no_results': 'Sonuç bulunamadı',
 
     // Discover Empty State
     'no_more_profiles_hint': 'Mesafe aralığını artırarak daha fazla kişi görebilirsin',
@@ -901,6 +908,13 @@ class AppLocalizations {
     'passport_activate_failed': 'Failed to activate passport, please try again',
     'passport_deactivate_failed': 'Failed to deactivate passport',
     'passport_active_label': 'Passport active',
+    'passport_search_placeholder': 'Search city...',
+    'passport_popular_cities': 'Popular Cities',
+    'passport_start_exploring': 'Start Exploring',
+    'passport_return_home': 'Return to My Location',
+    'passport_exploring_in': 'You\'re exploring in {city}',
+    'passport_search_failed': 'Search failed',
+    'passport_no_results': 'No results found',
 
     // Discover Empty State
     'no_more_profiles_hint': 'Increase your distance range to see more people',

@@ -151,6 +151,11 @@ abstract class AnalyticsEvents {
   static const String passportCitySelect = 'passport_city_select';
   static const String passportScreenView = 'passport_screen_view';
   static const String passportMapInteract = 'passport_map_interact';
+  static const String passportCitySearch = 'passport_city_search';
+  static const String passportPopularCityTap = 'passport_popular_city_tap';
+  static const String passportMapConfirmView = 'passport_map_confirm_view';
+  static const String passportExploreStart = 'passport_explore_start';
+  static const String passportChangeCity = 'passport_change_city';
 
   // ─── Notifications (10) ────────────────────────────────────────────
   static const String notificationPermissionAsk = 'notification_permission_ask';
@@ -332,4 +337,7 @@ abstract class AnalyticsEvents {
   static const String paramSecondsRemaining = 'seconds_remaining';
   static const String paramContext = 'context';
   static const String paramTotalPhotos = 'total_photos';
+  static const String paramFromCity = 'from_city';
+  static const String paramToCity = 'to_city';
+  static const String paramSearchQuery = 'search_query';
 }
