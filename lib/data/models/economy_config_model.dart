@@ -435,6 +435,8 @@ class PowerCostsConfig extends Equatable {
   final PowerCostConfig skipAll;
   final PowerCostConfig timeExtend;
   final PowerCostConfig hint;
+  final PowerCostConfig powerBlock;
+  final PowerCostConfig powerUnblock;
 
   const PowerCostsConfig({
     required this.oracle,
@@ -443,6 +445,8 @@ class PowerCostsConfig extends Equatable {
     required this.skipAll,
     required this.timeExtend,
     required this.hint,
+    required this.powerBlock,
+    required this.powerUnblock,
   });
 
   /// Get cost for a power by its API name (e.g. 'ORACLE', 'HALF')
@@ -453,6 +457,8 @@ class PowerCostsConfig extends Equatable {
     'SKIP_ALL' => skipAll,
     'TIME_EXTEND' => timeExtend,
     'HINT' => hint,
+    'POWER_BLOCK' => powerBlock,
+    'POWER_UNBLOCK' => powerUnblock,
     _ => null,
   };
 
@@ -463,6 +469,8 @@ class PowerCostsConfig extends Equatable {
     skipAll: PowerCostConfig(greenCost: 180, purpleCost: 60),
     timeExtend: PowerCostConfig(greenCost: 15, purpleCost: 5),
     hint: PowerCostConfig(greenCost: 24, purpleCost: 8),
+    powerBlock: PowerCostConfig(greenCost: 45, purpleCost: 15),
+    powerUnblock: PowerCostConfig(greenCost: 45, purpleCost: 15),
   );
 
   factory PowerCostsConfig.fromJson(Map<String, dynamic> json) {
@@ -485,6 +493,12 @@ class PowerCostsConfig extends Equatable {
       hint: json['HINT'] != null
           ? PowerCostConfig.fromJson(json['HINT'] as Map<String, dynamic>)
           : fallback.hint,
+      powerBlock: json['POWER_BLOCK'] != null
+          ? PowerCostConfig.fromJson(json['POWER_BLOCK'] as Map<String, dynamic>)
+          : fallback.powerBlock,
+      powerUnblock: json['POWER_UNBLOCK'] != null
+          ? PowerCostConfig.fromJson(json['POWER_UNBLOCK'] as Map<String, dynamic>)
+          : fallback.powerUnblock,
     );
   }
 
@@ -495,8 +509,10 @@ class PowerCostsConfig extends Equatable {
     'SKIP_ALL': skipAll.toJson(),
     'TIME_EXTEND': timeExtend.toJson(),
     'HINT': hint.toJson(),
+    'POWER_BLOCK': powerBlock.toJson(),
+    'POWER_UNBLOCK': powerUnblock.toJson(),
   };
 
   @override
-  List<Object?> get props => [oracle, half, skip, skipAll, timeExtend, hint];
+  List<Object?> get props => [oracle, half, skip, skipAll, timeExtend, hint, powerBlock, powerUnblock];
 }

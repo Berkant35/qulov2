@@ -723,6 +723,10 @@ class AppLocalizations {
     'power_skip_all_desc': 'Tüm kalan soruları geç',
     'power_time_extend_desc': 'Süreye 15 saniye ekle',
     'power_hint_desc': 'İpucu göster',
+    'power_block': 'Engel',
+    'power_block_desc': 'Soruya engel koy — rakip güç kullanamaz',
+    'power_unblock': 'Kilit Aç',
+    'power_unblock_desc': 'Engellenmiş sorunun kilidini aç',
 
     // Referral
     'referral_title': 'Arkadaşını Davet Et',
@@ -1462,6 +1466,10 @@ class AppLocalizations {
     'power_skip_all_desc': 'Skips all remaining questions',
     'power_time_extend_desc': 'Adds 15 seconds to timer',
     'power_hint_desc': 'Shows a hint',
+    'power_block': 'Block',
+    'power_block_desc': 'Block the question — opponent can\'t use powers',
+    'power_unblock': 'Unblock',
+    'power_unblock_desc': 'Unlock a blocked question',
 
     // Referral
     'referral_title': 'Invite a Friend',

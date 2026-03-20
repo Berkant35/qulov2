@@ -22,7 +22,6 @@ class PowerInventoryGrid extends ConsumerStatefulWidget {
 class _PowerInventoryGridState extends ConsumerState<PowerInventoryGrid> {
   bool _expanded = false;
 
-  /// Aktif güç tipleri (powerBlock/powerUnblock hariç).
   static const _activePowers = [
     PowerType.oracle,
     PowerType.half,
@@ -30,6 +29,8 @@ class _PowerInventoryGridState extends ConsumerState<PowerInventoryGrid> {
     PowerType.skipAll,
     PowerType.timeExtend,
     PowerType.hint,
+    PowerType.powerBlock,
+    PowerType.powerUnblock,
   ];
 
   static const _powerNameKeys = {
@@ -39,6 +40,8 @@ class _PowerInventoryGridState extends ConsumerState<PowerInventoryGrid> {
     PowerType.skipAll: 'power_skip_all',
     PowerType.timeExtend: 'power_time',
     PowerType.hint: 'power_hint',
+    PowerType.powerBlock: 'power_block',
+    PowerType.powerUnblock: 'power_unblock',
   };
 
   static const _powerDescKeys = {
@@ -48,6 +51,8 @@ class _PowerInventoryGridState extends ConsumerState<PowerInventoryGrid> {
     PowerType.skipAll: 'power_skip_all_desc',
     PowerType.timeExtend: 'power_time_extend_desc',
     PowerType.hint: 'power_hint_desc',
+    PowerType.powerBlock: 'power_block_desc',
+    PowerType.powerUnblock: 'power_unblock_desc',
   };
 
   void _openPurchaseSheet(BuildContext context) {
@@ -82,10 +87,22 @@ class _PowerInventoryGridState extends ConsumerState<PowerInventoryGrid> {
           ? const Center(child: AppLoadingWidget.small())
           : Column(
               children: [
-                // ─── Power Grid ───
+                // ─── Power Grid (2 rows) ───
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: _activePowers.map((type) {
+                  children: _activePowers.sublist(0, 4).map((type) {
+                    final count = exchange.getCount(type.apiName);
+                    return _PowerGridItem(
+                      type: type,
+                      count: count,
+                      onTap: () => _openPurchaseSheet(context),
+                    );
+                  }).toList(),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: _activePowers.sublist(4).map((type) {
                     final count = exchange.getCount(type.apiName);
                     return _PowerGridItem(
                       type: type,
