@@ -44,10 +44,10 @@ class _QMapPinPainter extends CustomPainter {
 
     // Shadow
     final shadowPaint = Paint()
-      ..color = Colors.black.withValues(alpha: 0.3)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
+      ..color = Colors.black.withValues(alpha: 0.5)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10);
 
-    final shadowPath = _buildPinPath(centerX, centerY + 2, circleRadius, h);
+    final shadowPath = _buildPinPath(centerX, centerY + 3, circleRadius, h);
     canvas.drawPath(shadowPath, shadowPaint);
 
     // Gradient fill
