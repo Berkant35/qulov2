@@ -166,6 +166,9 @@ class AppLocalizations {
     'passport_explore_hint': 'Pasaport ile başka şehirleri keşfet',
     'passport_premium_explore_hint': 'Premium ile başka şehirleri keşfet',
     'upgrade_to_premium': 'Premium\'a Yükselt',
+    'passport_activate_failed': 'Pasaport aktifleştirilemedi, tekrar deneyin',
+    'passport_deactivate_failed': 'Pasaport deaktifleştirilemedi',
+    'passport_active_label': 'Pasaport aktif',
 
     // Discover Empty State
     'no_more_profiles_hint': 'Mesafe aralığını artırarak daha fazla kişi görebilirsin',
@@ -175,6 +178,9 @@ class AppLocalizations {
     // Location
     'location_required': 'Konum izni gerekli',
     'location_required_desc': 'Yakınındaki kişileri görebilmek için konum iznini etkinleştir',
+    'location_mock_detected': 'Sahte konum algılandı. Gerçek konumunuzu kullanmanız gerekiyor.',
+    'location_retry': 'Tekrar Dene',
+    'location_current': 'Mevcut Konum',
 
     // Settings
     'settings': 'Ayarlar',
@@ -546,6 +552,41 @@ class AppLocalizations {
     'quiz_no_power': 'Bu power\'ın yok',
     'quiz_buy_power': 'Satın Al',
 
+    // General Errors
+    'error_general': 'Bir şeyler ters gitti',
+    'error_try_again': 'Bir şeyler ters gitti. Lütfen tekrar deneyin.',
+    'question_save_failed': 'Soru kaydedilemedi',
+    'badge_claim_failed': 'Ödül alınamadı',
+
+    // Chat Question
+    'chat_question_sent': 'Soru gönderildi',
+    'chat_question_send_failed': 'Soru gönderilemedi',
+    'chat_open_question': 'Soruyu Aç',
+    'chat_waiting_answer': 'Cevap bekleniyor...',
+    'chat_unmatch_occurred': 'Unmatch gerçekleşti',
+    'chat_draft_saved': 'Taslak kaydedildi',
+    'chat_draft_save_failed': 'Taslak kaydedilemedi',
+    'chat_draft_delete_failed': 'Taslak silinemedi',
+    'chat_media_pending': 'Medya isteği zaten gönderildi. Karşı tarafın yanıtı bekleniyor.',
+    'chat_media_request_sent': 'Medya paylaşım isteği gönderildi!',
+    'chat_media_request_failed': 'Medya isteği gönderilemedi. Lütfen tekrar deneyin.',
+    'chat_photo_send_failed': 'Fotoğraf gönderilemedi. Lütfen tekrar deneyin.',
+    'chat_voice_send_failed': 'Sesli mesaj gönderilemedi. Lütfen tekrar deneyin.',
+    'chat_media_upload_failed': 'Medya yüklenemedi',
+    'chat_delete_message': 'Mesajı Sil',
+    'chat_media_disable_title': 'Medya Paylaşımını Kapat',
+    'chat_media_disable_message': 'Medya paylaşımını kapatmak istediğinize emin misiniz?',
+    'chat_media_disable_confirm': 'Kapat',
+    'chat_unlock': 'Kilidi Aç',
+    'chat_skip': 'Geç',
+    'chat_give_up': 'Vazgeç',
+    'chat_media_added': 'Medya eklendi',
+    'chat_add_photo': 'Fotoğraf Ekle',
+    'chat_disable_media': 'Medya paylaşımını kapat',
+    'chat_media_request_pending_short': 'Medya isteği gönderildi, yanıt bekleniyor...',
+    'chat_media_sharing_request': 'Medya paylaşımı isteği',
+    'chat_reject': 'Reddet',
+
     // Chat Quiz Summary
     'chat_quiz_summary': 'Quiz Özeti',
     'chat_quiz_summary_solved': '{count} soruyu {time}sn\'de çözdü',
@@ -848,6 +889,9 @@ class AppLocalizations {
     'passport_explore_hint': 'Explore other cities with Passport',
     'passport_premium_explore_hint': 'Explore other cities with Premium',
     'upgrade_to_premium': 'Upgrade to Premium',
+    'passport_activate_failed': 'Failed to activate passport, please try again',
+    'passport_deactivate_failed': 'Failed to deactivate passport',
+    'passport_active_label': 'Passport active',
 
     // Discover Empty State
     'no_more_profiles_hint': 'Increase your distance range to see more people',
@@ -857,6 +901,9 @@ class AppLocalizations {
     // Location
     'location_required': 'Location permission required',
     'location_required_desc': 'Enable location to see people nearby',
+    'location_mock_detected': 'Fake location detected. Please use your real location.',
+    'location_retry': 'Try Again',
+    'location_current': 'Current Location',
 
     // Settings
     'settings': 'Settings',
@@ -1227,6 +1274,41 @@ class AppLocalizations {
     'quiz_power_failed': 'Power could not be used',
     'quiz_no_power': "You don't have this power",
     'quiz_buy_power': 'Buy Now',
+
+    // General Errors
+    'error_general': 'Something went wrong',
+    'error_try_again': 'Something went wrong. Please try again.',
+    'question_save_failed': 'Question could not be saved',
+    'badge_claim_failed': 'Reward could not be claimed',
+
+    // Chat Question
+    'chat_question_sent': 'Question sent',
+    'chat_question_send_failed': 'Question could not be sent',
+    'chat_open_question': 'Open Question',
+    'chat_waiting_answer': 'Waiting for answer...',
+    'chat_unmatch_occurred': 'Unmatch occurred',
+    'chat_draft_saved': 'Draft saved',
+    'chat_draft_save_failed': 'Draft could not be saved',
+    'chat_draft_delete_failed': 'Draft could not be deleted',
+    'chat_media_pending': 'Media request already sent. Waiting for the other person to respond.',
+    'chat_media_request_sent': 'Media sharing request sent!',
+    'chat_media_request_failed': 'Media request failed. Please try again.',
+    'chat_photo_send_failed': 'Photo could not be sent. Please try again.',
+    'chat_voice_send_failed': 'Voice message could not be sent. Please try again.',
+    'chat_media_upload_failed': 'Media could not be uploaded',
+    'chat_delete_message': 'Delete Message',
+    'chat_media_disable_title': 'Disable Media Sharing',
+    'chat_media_disable_message': 'Are you sure you want to disable media sharing?',
+    'chat_media_disable_confirm': 'Disable',
+    'chat_unlock': 'Unlock',
+    'chat_skip': 'Skip',
+    'chat_give_up': 'Give Up',
+    'chat_media_added': 'Media added',
+    'chat_add_photo': 'Add Photo',
+    'chat_disable_media': 'Disable media sharing',
+    'chat_media_request_pending_short': 'Media request sent, waiting for response...',
+    'chat_media_sharing_request': 'Media sharing request',
+    'chat_reject': 'Reject',
 
     // Chat Quiz Summary
     'chat_quiz_summary': 'Quiz Summary',
