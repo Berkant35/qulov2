@@ -757,6 +757,11 @@ class AppLocalizations {
     'feature_unlimited': 'Sınırsız',
     'feature_per_day': '/gün',
 
+    // Photo picker
+    'add_photo': 'Fotoğraf Ekle',
+    'gallery': 'Galeri',
+    'camera': 'Kamera',
+
     // Profile section headers
     'about_me': 'Hakkımda',
     'details': 'Detaylar',
@@ -1499,6 +1504,11 @@ class AppLocalizations {
     'feature_no_ads': 'No Ads',
     'feature_unlimited': 'Unlimited',
     'feature_per_day': '/day',
+
+    // Photo picker
+    'add_photo': 'Add Photo',
+    'gallery': 'Gallery',
+    'camera': 'Camera',
 
     // Profile section headers
     'about_me': 'About Me',
