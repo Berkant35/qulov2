@@ -42,7 +42,7 @@ class MatchCard extends StatelessWidget {
                   width: 12,
                   height: 12,
                   decoration: BoxDecoration(
-                    color: AppColors.secondary,
+                    color: context.appColors.secondary,
                     shape: BoxShape.circle,
                     border: Border.all(color: theme.colorScheme.surface, width: 2),
                   ),
@@ -75,21 +75,21 @@ class MatchCard extends StatelessWidget {
               Text(
                 _formatRelativeTime(context, match.lastMessageSentAt!),
                 style: theme.textTheme.labelSmall?.copyWith(
-                  color: hasUnread ? AppColors.primary : theme.colorScheme.onSurfaceVariant,
+                  color: hasUnread ? context.appColors.primary : theme.colorScheme.onSurfaceVariant,
                   fontWeight: hasUnread ? FontWeight.w600 : FontWeight.normal,
                 ),
               )
             else if (u?.isOnline == true)
               Text(
                 context.tr('online'),
-                style: theme.textTheme.labelSmall?.copyWith(color: AppColors.secondary),
+                style: theme.textTheme.labelSmall?.copyWith(color: context.appColors.secondary),
               ),
             if (hasUnread) ...[
               const SizedBox(height: 4),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: AppColors.primary,
+                  color: context.appColors.primary,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(

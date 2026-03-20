@@ -15,14 +15,14 @@ class PassportActiveCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.appColors.primarySurface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+        border: Border.all(color: context.appColors.primary.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
           Container(
             width: 48, height: 48,
-            decoration: BoxDecoration(color: AppColors.primary.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(AppSpacing.radiusSm)),
-            child: const Icon(Icons.flight_takeoff, color: AppColors.primary),
+            decoration: BoxDecoration(color: context.appColors.primary.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(AppSpacing.radiusSm)),
+            child: Icon(Icons.flight_takeoff, color: context.appColors.primary),
           ),
           const SizedBox(width: AppSpacing.md),
           Expanded(

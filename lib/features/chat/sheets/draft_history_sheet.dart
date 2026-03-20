@@ -131,9 +131,9 @@ class _DraftHistorySheetState extends ConsumerState<DraftHistorySheet>
           // Tab bar
           TabBar(
             controller: _tabCtrl,
-            labelColor: AppColors.primary,
+            labelColor: context.appColors.primary,
             unselectedLabelColor: context.appColors.textSecondary,
-            indicatorColor: AppColors.primary,
+            indicatorColor: context.appColors.primary,
             tabs: const [
               Tab(text: 'Taslaklar'),
               Tab(text: 'Gecmis'),
@@ -192,10 +192,10 @@ class _DraftHistorySheetState extends ConsumerState<DraftHistorySheet>
             alignment: Alignment.centerRight,
             padding: const EdgeInsets.only(right: AppSpacing.lg),
             decoration: BoxDecoration(
-              color: AppColors.error.withValues(alpha: 0.2),
+              color: context.appColors.error.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             ),
-            child: const Icon(Icons.delete_outline, color: AppColors.error),
+            child: Icon(Icons.delete_outline, color: context.appColors.error),
           ),
           onDismissed: (_) => _deleteDraft(draft.id),
           child: _DraftItem(
@@ -301,7 +301,7 @@ class _DraftItem extends StatelessWidget {
               child: Text(
                 '${draft.optionCount}',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppColors.primary,
+                  color: context.appColors.primary,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -358,7 +358,7 @@ class _HistoryItem extends StatelessWidget {
           if (isCorrect != null)
             Icon(
               isCorrect ? Icons.check_circle : Icons.cancel,
-              color: isCorrect ? AppColors.success : AppColors.error,
+              color: isCorrect ? context.appColors.success : context.appColors.error,
               size: 20,
             ),
         ],

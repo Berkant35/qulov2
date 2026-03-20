@@ -51,7 +51,7 @@ class DifficultyBadge extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
           boxShadow: [
             BoxShadow(
-              color: AppColors.primary.withValues(alpha: 0.3),
+              color: context.appColors.primary.withValues(alpha: 0.3),
               blurRadius: 8,
               spreadRadius: 1,
             ),
@@ -68,12 +68,12 @@ class DifficultyBadge extends StatelessWidget {
     switch (difficulty) {
       case 'easy':
         return _DifficultyConfig(
-          color: AppColors.success,
+          color: context.appColors.success,
           icon: Icons.sentiment_satisfied_alt,
         );
       case 'medium':
         return _DifficultyConfig(
-          color: AppColors.warning,
+          color: context.appColors.warning,
           icon: Icons.trending_up,
         );
       case 'hard':
@@ -83,7 +83,7 @@ class DifficultyBadge extends StatelessWidget {
         );
       case 'legendary':
         return _DifficultyConfig(
-          color: AppColors.primary,
+          color: context.appColors.primary,
           icon: Icons.auto_awesome,
         );
       default:

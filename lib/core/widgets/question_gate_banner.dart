@@ -32,28 +32,28 @@ class QuestionGateBanner extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              AppColors.primary.withValues(alpha: 0.12),
-              AppColors.secondary.withValues(alpha: 0.12),
+              context.appColors.primary.withValues(alpha: 0.12),
+              context.appColors.secondary.withValues(alpha: 0.12),
             ],
           ),
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+          border: Border.all(color: context.appColors.primary.withValues(alpha: 0.2)),
         ),
         child: Row(
           children: [
-            QIcon(QIcons.icLock, color: AppColors.primary, size: 20),
+            QIcon(QIcons.icLock, color: context.appColors.primary, size: 20),
             const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: Text(
                 '${context.tr('question_nudge_banner_compact')} — $questionCount/2 ${context.tr('question_word')}',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppColors.primary,
+                  color: context.appColors.primary,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ),
             const SizedBox(width: AppSpacing.sm),
-            QIcon(QIcons.icPlus, color: AppColors.primary, size: 18),
+            QIcon(QIcons.icPlus, color: context.appColors.primary, size: 18),
           ],
         ),
       ),

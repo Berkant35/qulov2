@@ -23,7 +23,7 @@ class StepIndicator extends StatelessWidget {
             child: Container(
               height: 2,
               color: stepBefore < currentStep
-                  ? AppColors.primary
+                  ? context.appColors.primary
                   : context.appColors.border,
             ),
           );
@@ -40,11 +40,11 @@ class StepIndicator extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: isActive || isDone
-                    ? AppColors.primary
+                    ? context.appColors.primary
                     : theme.colorScheme.surface,
                 border: Border.all(
                   color: isActive || isDone
-                      ? AppColors.primary
+                      ? context.appColors.primary
                       : context.appColors.border,
                   width: 2,
                 ),
@@ -68,7 +68,7 @@ class StepIndicator extends StatelessWidget {
             Text(
               labels[step],
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: isActive ? AppColors.primary : context.appColors.textSecondary,
+                color: isActive ? context.appColors.primary : context.appColors.textSecondary,
                 fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
                 fontSize: 10,
               ),

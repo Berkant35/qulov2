@@ -139,7 +139,7 @@ class _DiamondsScreenState extends ConsumerState<DiamondsScreen> {
                 child: Text(
                   context.tr('failed_load_balance'),
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: AppColors.error,
+                    color: context.appColors.error,
                   ),
                 ),
               ),
@@ -152,11 +152,11 @@ class _DiamondsScreenState extends ConsumerState<DiamondsScreen> {
               onPressed: () {
                 ref.read(navigationServiceProvider).go(RouteNames.exchange);
               },
-              icon: QIcon(QIcons.icGem, size: 18, color: AppColors.primary),
+              icon: QIcon(QIcons.icGem, size: 18, color: context.appColors.primary),
               label: Text(context.tr('exchange_title')),
               style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.primary,
-                side: const BorderSide(color: AppColors.primary),
+                foregroundColor: context.appColors.primary,
+                side: BorderSide(color: context.appColors.primary),
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.md,
                   vertical: AppSpacing.sm,
@@ -261,7 +261,7 @@ class _DiamondsScreenState extends ConsumerState<DiamondsScreen> {
                     child: Text(
                       context.tr('see_all'),
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: AppColors.primary,
+                        color: context.appColors.primary,
                         fontWeight: FontWeight.w600,
                       ),
                     ),

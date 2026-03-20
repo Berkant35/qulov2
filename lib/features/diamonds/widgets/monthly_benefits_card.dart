@@ -31,7 +31,7 @@ class MonthlyBenefitsCard extends StatelessWidget {
         border: Border.all(
           color: isFree
               ? theme.colorScheme.outline.withValues(alpha: 0.3)
-              : AppColors.primary.withValues(alpha: 0.3),
+              : context.appColors.primary.withValues(alpha: 0.3),
         ),
       ),
       child: Column(
@@ -57,7 +57,7 @@ class MonthlyBenefitsCard extends StatelessWidget {
                 : stats.dailyDiscoversLimit > 0
                     ? stats.dailyDiscoversUsed / stats.dailyDiscoversLimit
                     : 0,
-            color: AppColors.primary,
+            color: context.appColors.primary,
           ),
 
           // Question Slots
@@ -68,7 +68,7 @@ class MonthlyBenefitsCard extends StatelessWidget {
             progress: stats.questionsLimit > 0
                 ? stats.questionsCreated / stats.questionsLimit
                 : 0,
-            color: AppColors.secondary,
+            color: context.appColors.secondary,
           ),
 
           // Daily Undos
@@ -87,7 +87,7 @@ class MonthlyBenefitsCard extends StatelessWidget {
                     : stats.dailyUndosLimit > 0
                         ? stats.dailyUndosUsed / stats.dailyUndosLimit
                         : 0,
-            color: AppColors.primary,
+            color: context.appColors.primary,
           ),
 
           // Monthly Diamonds
@@ -97,7 +97,7 @@ class MonthlyBenefitsCard extends StatelessWidget {
             value: stats.monthlyPurpleBonus > 0
                 ? '${stats.monthlyPurpleBonus} \u2713'
                 : context.tr('benefit_none'),
-            color: AppColors.primary,
+            color: context.appColors.primary,
           ),
 
           // Passport Mode
@@ -107,7 +107,7 @@ class MonthlyBenefitsCard extends StatelessWidget {
             value: stats.passportMode
                 ? context.tr('benefit_active')
                 : context.tr('benefit_inactive'),
-            color: stats.passportMode ? AppColors.secondary : theme.colorScheme.onSurfaceVariant,
+            color: stats.passportMode ? context.appColors.secondary : theme.colorScheme.onSurfaceVariant,
           ),
 
           // Ads
@@ -117,7 +117,7 @@ class MonthlyBenefitsCard extends StatelessWidget {
             value: stats.hasAds
                 ? context.tr('benefit_has_ads')
                 : context.tr('benefit_no_ads'),
-            color: stats.hasAds ? theme.colorScheme.onSurfaceVariant : AppColors.secondary,
+            color: stats.hasAds ? theme.colorScheme.onSurfaceVariant : context.appColors.secondary,
             showDivider: false,
           ),
 
@@ -129,7 +129,7 @@ class MonthlyBenefitsCard extends StatelessWidget {
               child: OutlinedButton(
                 onPressed: onUpgrade,
                 style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: AppColors.primary),
+                  side: BorderSide(color: context.appColors.primary),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                   ),
@@ -137,7 +137,7 @@ class MonthlyBenefitsCard extends StatelessWidget {
                 child: Text(
                   context.tr('get_started'),
                   style: theme.textTheme.labelLarge?.copyWith(
-                    color: AppColors.primary,
+                    color: context.appColors.primary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

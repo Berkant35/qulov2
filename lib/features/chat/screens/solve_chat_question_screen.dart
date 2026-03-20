@@ -364,7 +364,7 @@ class _SolveChatQuestionScreenState
                           borderRadius:
                               BorderRadius.circular(AppSpacing.radiusMd),
                         ),
-                        backgroundColor: AppColors.primary,
+                        backgroundColor: context.appColors.primary,
                       ),
                       child: (isLoading || _isSubmitting)
                           ? const AppLoadingWidget.small()

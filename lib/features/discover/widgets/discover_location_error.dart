@@ -25,7 +25,7 @@ class DiscoverLocationError extends ConsumerWidget {
             Icon(
               isMockError ? Icons.gps_off : Icons.location_off,
               size: 64,
-              color: isMockError ? AppColors.error : context.appColors.textHint,
+              color: isMockError ? context.appColors.error : context.appColors.textHint,
             ),
             const SizedBox(height: AppSpacing.lg),
             Text(
@@ -61,7 +61,7 @@ class DiscoverLocationError extends ConsumerWidget {
                   }
                 },
                 style: FilledButton.styleFrom(
-                  backgroundColor: isMockError ? AppColors.error : context.appColors.primaryDark,
+                  backgroundColor: isMockError ? context.appColors.error : context.appColors.primaryDark,
                 ),
                 child: Text(
                   isMockError

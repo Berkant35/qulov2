@@ -251,14 +251,14 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
               if (isMe) ...[
                 const SizedBox(height: AppSpacing.lg),
                 ListTile(
-                  leading: const Icon(Icons.delete_outline,
-                      color: AppColors.error),
+                  leading: Icon(Icons.delete_outline,
+                      color: context.appColors.error),
                   title: Text(
                     AppLocalizations.of(context).get('chat_delete_message'),
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge
-                        ?.copyWith(color: AppColors.error),
+                        ?.copyWith(color: context.appColors.error),
                   ),
                   onTap: () {
                     Navigator.pop(context);

@@ -53,7 +53,7 @@ class CompactPlanRow extends StatelessWidget {
               child: Text(
                 context.tr('sub_current_plan'),
                 style: theme.textTheme.labelSmall?.copyWith(
-                  color: AppColors.primary,
+                  color: context.appColors.primary,
                   fontWeight: FontWeight.bold,
                 ),
               ),

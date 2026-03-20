@@ -110,12 +110,12 @@ class _FullCard extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: [
             context.appColors.primaryDark.withValues(alpha: 0.6),
-            AppColors.primary.withValues(alpha: 0.3),
+            context.appColors.primary.withValues(alpha: 0.3),
           ],
         ),
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.3),
+          color: context.appColors.primary.withValues(alpha: 0.3),
         ),
       ),
       child: Column(
@@ -160,7 +160,7 @@ class _FullCard extends StatelessWidget {
                 child: Text(
                   code!,
                   style: theme.textTheme.headlineSmall?.copyWith(
-                    color: AppColors.primary,
+                    color: context.appColors.primary,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 3,
                   ),
@@ -195,7 +195,7 @@ class _FullCard extends StatelessWidget {
                     icon: const Icon(Icons.share, size: 16),
                     label: Text(context.tr('referral_share')),
                     style: FilledButton.styleFrom(
-                      backgroundColor: AppColors.primary,
+                      backgroundColor: context.appColors.primary,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
@@ -222,7 +222,7 @@ class _FullCard extends StatelessWidget {
               Text(
                 '$used/$total',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppColors.primary,
+                  color: context.appColors.primary,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -235,7 +235,7 @@ class _FullCard extends StatelessWidget {
               value: progress,
               minHeight: 6,
               backgroundColor: Colors.white.withValues(alpha: 0.15),
-              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+              valueColor: AlwaysStoppedAnimation<Color>(context.appColors.primary),
             ),
           ),
         ],

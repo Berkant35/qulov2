@@ -37,7 +37,7 @@ class ChatQuestionResultScreen extends ConsumerWidget {
             isCorrect ? 'Tebrikler!' : 'Yanlış Cevap',
             style: theme.textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
-              color: isCorrect ? AppColors.success : AppColors.error,
+              color: isCorrect ? context.appColors.success : context.appColors.error,
             ),
           ),
           const SizedBox(height: AppSpacing.md),
@@ -64,16 +64,16 @@ class ChatQuestionResultScreen extends ConsumerWidget {
               const SizedBox(height: AppSpacing.lg),
               OutlinedButton.icon(
                 onPressed: onRescue,
-                icon: const Icon(Icons.skip_next, color: AppColors.warning),
+                icon: Icon(Icons.skip_next, color: context.appColors.warning),
                 label: Text(
                   'Kurtarma Hakkı (Skip)',
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: AppColors.warning,
+                    color: context.appColors.warning,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: AppColors.warning),
+                  side: BorderSide(color: context.appColors.warning),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                   ),
@@ -109,7 +109,7 @@ class ChatQuestionResultScreen extends ConsumerWidget {
               child: ElevatedButton(
                 onPressed: () => Navigator.of(context).pop(),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: context.appColors.primary,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                   ),
@@ -168,7 +168,7 @@ class _ResultIconState extends State<_ResultIcon>
 
   @override
   Widget build(BuildContext context) {
-    final color = widget.isCorrect ? AppColors.success : AppColors.error;
+    final color = widget.isCorrect ? context.appColors.success : context.appColors.error;
 
     return AnimatedBuilder(
       animation: _scaleAnimation,
@@ -207,19 +207,19 @@ class _UnmatchWarning extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: AppSpacing.pagePadding),
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.error.withValues(alpha: 0.1),
+        color: context.appColors.error.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
+        border: Border.all(color: context.appColors.error.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
-          const Icon(Icons.warning_amber_rounded, color: AppColors.error),
+          Icon(Icons.warning_amber_rounded, color: context.appColors.error),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
               'Eşleşme sona erdi',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.error,
+                    color: context.appColors.error,
                     fontWeight: FontWeight.w600,
                   ),
             ),

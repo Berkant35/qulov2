@@ -58,11 +58,11 @@ class QuestionStepAnswers extends StatelessWidget {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: isCorrect
-                            ? AppColors.secondary
+                            ? context.appColors.secondary
                             : Colors.transparent,
                         border: Border.all(
                           color: isCorrect
-                              ? AppColors.secondary
+                              ? context.appColors.secondary
                               : context.appColors.textHint,
                           width: 2,
                         ),
@@ -86,7 +86,7 @@ class QuestionStepAnswers extends StatelessWidget {
                           : TextInputAction.done,
                       suffixIcon: isCorrect
                           ? Icon(Icons.check_circle,
-                              color: AppColors.secondary, size: 20)
+                              color: context.appColors.secondary, size: 20)
                           : null,
                     ),
                   ),
@@ -110,7 +110,7 @@ class QuestionStepAnswers extends StatelessWidget {
             label: context.tr('question_create_hint_label'),
             maxLines: 2,
             textCapitalization: TextCapitalization.sentences,
-            prefixIcon: QIcon(QIcons.icLightbulb, size: 18, color: AppColors.warning),
+            prefixIcon: QIcon(QIcons.icLightbulb, size: 18, color: context.appColors.warning),
           ),
         ],
       ),

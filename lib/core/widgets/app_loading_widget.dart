@@ -33,7 +33,7 @@ class _AppLoadingWidgetState extends State<AppLoadingWidget>
   @override
   void initState() {
     super.initState();
-    _painter = _QLogoPainter(color: AppColors.primary);
+    _painter = _QLogoPainter(color: context.appColors.primary);
     _rotationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1500),
@@ -97,9 +97,9 @@ class _AppLoadingWidgetState extends State<AppLoadingWidget>
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      AppColors.primary.withValues(alpha: 0.20 + glow * 0.10),
-                      AppColors.primary.withValues(alpha: 0.05),
-                      AppColors.primary.withValues(alpha: 0.0),
+                      context.appColors.primary.withValues(alpha: 0.20 + glow * 0.10),
+                      context.appColors.primary.withValues(alpha: 0.05),
+                      context.appColors.primary.withValues(alpha: 0.0),
                     ],
                     stops: const [0.0, 0.5, 1.0],
                   ),

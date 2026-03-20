@@ -85,7 +85,7 @@ class _CitySearchBarState extends ConsumerState<CitySearchBar> {
             fillColor: theme.colorScheme.surface,
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusMd), borderSide: BorderSide(color: context.appColors.border)),
             enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusMd), borderSide: BorderSide(color: context.appColors.border)),
-            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusMd), borderSide: BorderSide(color: AppColors.primary)),
+            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusMd), borderSide: BorderSide(color: context.appColors.primary)),
             contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.md),
           ),
         ),
@@ -114,7 +114,7 @@ class _CitySearchBarState extends ConsumerState<CitySearchBar> {
                   final city = _results[index];
                   return ListTile(
                     dense: true,
-                    leading: const Icon(Icons.location_city, size: 20, color: AppColors.primary),
+                    leading: Icon(Icons.location_city, size: 20, color: context.appColors.primary),
                     title: Text(city.name, style: theme.textTheme.bodyMedium),
                     subtitle: Text(city.fullName, style: theme.textTheme.bodySmall?.copyWith(color: context.appColors.textSecondary), maxLines: 1, overflow: TextOverflow.ellipsis),
                     onTap: () => _selectCity(city),

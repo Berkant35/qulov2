@@ -33,7 +33,7 @@ class GreenEarnedBanner extends StatelessWidget {
                   .tr('analytics_green_question')
                   .replaceAll('{n}', '$greenEarned'),
               style: theme.textTheme.bodySmall?.copyWith(
-                color: AppColors.secondary,
+                color: context.appColors.secondary,
                 fontWeight: FontWeight.w600,
               ),
             ),

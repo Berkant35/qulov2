@@ -41,6 +41,7 @@ mixin QuizScreenMixin on ConsumerState<QuizScreen> {
   void initMixin() {
     Future.microtask(() async {
       if (!mounted) return;
+      ref.read(quizProvider.notifier).reset();
       ref.read(exchangeProvider.notifier).fetchAll();
       await ref.read(quizProvider.notifier).startSession(widget.targetId);
       if (!mounted) return;
@@ -179,7 +180,7 @@ mixin QuizScreenMixin on ConsumerState<QuizScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(f.message ?? context.tr('quiz_power_failed')),
-              backgroundColor: AppColors.error,
+              backgroundColor: context.appColors.error,
             ),
           );
         }
@@ -262,7 +263,7 @@ mixin QuizScreenMixin on ConsumerState<QuizScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(f.message ?? context.tr('quiz_rescue_failed')),
-              backgroundColor: AppColors.error,
+              backgroundColor: context.appColors.error,
             ),
           );
         }

@@ -112,7 +112,7 @@ class _QuestionEasyModeScreenState
                             setState(() => _selectedLocale = result.first);
                           }
                         },
-                        side: BorderSide(color: AppColors.primary),
+                        side: BorderSide(color: context.appColors.primary),
                       ),
                     ],
                   ),
@@ -136,10 +136,10 @@ class _QuestionEasyModeScreenState
                             context.tr('question_category_$cat')),
                         onSelected: (_) => _fetchByCategory(cat),
                         selectedColor: context.appColors.primarySurface,
-                        checkmarkColor: AppColors.primary,
+                        checkmarkColor: context.appColors.primary,
                         side: BorderSide(
                           color: isSelected
-                              ? AppColors.primary
+                              ? context.appColors.primary
                               : context.appColors.border,
                         ),
                       );
@@ -152,11 +152,11 @@ class _QuestionEasyModeScreenState
                     width: double.infinity,
                     child: OutlinedButton.icon(
                       onPressed: _fetchByProfile,
-                      icon: QIcon(QIcons.icWand, size: 18, color: AppColors.primary),
+                      icon: QIcon(QIcons.icWand, size: 18, color: context.appColors.primary),
                       label: Text(context.tr('ai_suggest_profile')),
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: AppColors.primary,
-                        side: BorderSide(color: AppColors.primary),
+                        foregroundColor: context.appColors.primary,
+                        side: BorderSide(color: context.appColors.primary),
                         padding: const EdgeInsets.symmetric(
                           vertical: AppSpacing.md,
                         ),

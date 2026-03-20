@@ -61,7 +61,7 @@ class RegisterStepTerms extends StatelessWidget {
               Checkbox(
                 value: termsAccepted,
                 onChanged: onTermsChanged,
-                activeColor: AppColors.primary,
+                activeColor: context.appColors.primary,
               ),
               Expanded(
                 child: Padding(
@@ -76,7 +76,7 @@ class RegisterStepTerms extends StatelessWidget {
                         TextSpan(
                           text: l10n.get('terms_of_service'),
                           style: TextStyle(
-                            color: AppColors.primary,
+                            color: context.appColors.primary,
                             fontWeight: FontWeight.w600,
                             decoration: TextDecoration.underline,
                           ),
@@ -87,7 +87,7 @@ class RegisterStepTerms extends StatelessWidget {
                         TextSpan(
                           text: l10n.get('privacy_policy'),
                           style: TextStyle(
-                            color: AppColors.primary,
+                            color: context.appColors.primary,
                             fontWeight: FontWeight.w600,
                             decoration: TextDecoration.underline,
                           ),
@@ -108,7 +108,7 @@ class RegisterStepTerms extends StatelessWidget {
               child: Text(
                 errorText!,
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppColors.error,
+                  color: context.appColors.error,
                 ),
               ),
             ),
@@ -125,14 +125,14 @@ class RegisterStepTerms extends StatelessWidget {
                     referralExpanded
                         ? Icons.keyboard_arrow_up
                         : Icons.keyboard_arrow_down,
-                    color: AppColors.primary,
+                    color: context.appColors.primary,
                     size: 20,
                   ),
                   const SizedBox(width: AppSpacing.xs),
                   Text(
                     l10n.get('referral_have_code'),
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: AppColors.primary,
+                      color: context.appColors.primary,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -162,7 +162,7 @@ class RegisterStepTerms extends StatelessWidget {
                   child: Text(
                     '${l10n.get('referral_code_valid')}$referralValidName',
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: AppColors.success,
+                      color: context.appColors.success,
                     ),
                   ),
                 ),

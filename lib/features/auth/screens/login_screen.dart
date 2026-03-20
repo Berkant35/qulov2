@@ -90,14 +90,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with FormMixin, Loadi
                   AppAssets.logoSvg,
                   width: AppSizes.logoMd,
                   height: AppSizes.logoMd,
-                  colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
+                  colorFilter: ColorFilter.mode(context.appColors.primary, BlendMode.srcIn),
                 ),
               ),
               const SizedBox(height: AppSpacing.md),
               Text(
                 context.tr('app_name'),
                 textAlign: TextAlign.center,
-                style: theme.textTheme.displaySmall?.copyWith(color: AppColors.primary, fontWeight: FontWeight.bold),
+                style: theme.textTheme.displaySmall?.copyWith(color: context.appColors.primary, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(

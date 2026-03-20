@@ -37,7 +37,7 @@ class CelebrationPhotoSection extends StatelessWidget {
               opacity: 1.0 - (photoSlide.value / 50.0).clamp(0.0, 1.0),
               child: Icon(
                 Icons.favorite,
-                color: matched ? AppColors.primary : AppColors.error,
+                color: matched ? context.appColors.primary : context.appColors.error,
                 size: 32,
               ),
             ),
@@ -65,7 +65,7 @@ class CelebrationPhotoCircle extends StatelessWidget {
       height: 80,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(color: AppColors.primary, width: 2),
+        border: Border.all(color: context.appColors.primary, width: 2),
       ),
       child: ClipOval(
         child: photoUrl != null && photoUrl!.isNotEmpty

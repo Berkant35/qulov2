@@ -124,7 +124,7 @@ class _PowerInventoryGridState extends ConsumerState<PowerInventoryGrid> {
                             ? context.tr('hide_info')
                             : context.tr('what_are_powers'),
                         style: theme.textTheme.labelSmall?.copyWith(
-                          color: AppColors.primary,
+                          color: context.appColors.primary,
                         ),
                       ),
                       const SizedBox(width: AppSpacing.xs),
@@ -134,7 +134,7 @@ class _PowerInventoryGridState extends ConsumerState<PowerInventoryGrid> {
                         child: Icon(
                           Icons.keyboard_arrow_down,
                           size: 16,
-                          color: AppColors.primary,
+                          color: context.appColors.primary,
                         ),
                       ),
                     ],

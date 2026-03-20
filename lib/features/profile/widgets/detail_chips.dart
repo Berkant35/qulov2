@@ -134,10 +134,10 @@ class _DetailChipItem extends StatelessWidget {
     final bgColor =
         isFilled ? context.appColors.primarySurface : colors.surface;
     final borderColor = isFilled
-        ? AppColors.primary.withValues(alpha: 0.3)
+        ? context.appColors.primary.withValues(alpha: 0.3)
         : colors.outline;
     final iconColor = isFilled
-        ? AppColors.primary
+        ? context.appColors.primary
         : colors.onSurfaceVariant.withValues(alpha: 0.4);
     final textColor = isFilled
         ? null

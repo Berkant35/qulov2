@@ -41,12 +41,12 @@ class ProfileBasicInfo extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(AppSpacing.xs),
                   decoration: BoxDecoration(
-                    color: AppColors.warning.withValues(alpha: 0.2),
+                    color: context.appColors.warning.withValues(alpha: 0.2),
                     shape: BoxShape.circle,
                   ),
                   child: QIcon(
                     QIcons.icZap,
-                    color: AppColors.warning,
+                    color: context.appColors.warning,
                     size: 16,
                   ),
                 ),
@@ -109,9 +109,9 @@ class _RelationshipGoalChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (icon, color, label) = switch (goal) {
-      'SERIOUS' => (Icons.favorite, AppColors.error, context.tr('serious_relationship')),
-      'FRIENDSHIP' => (Icons.people, AppColors.secondary, context.tr('friendship')),
-      _ => (Icons.help_outline, AppColors.warning, context.tr('not_sure')),
+      'SERIOUS' => (Icons.favorite, context.appColors.error, context.tr('serious_relationship')),
+      'FRIENDSHIP' => (Icons.people, context.appColors.secondary, context.tr('friendship')),
+      _ => (Icons.help_outline, context.appColors.warning, context.tr('not_sure')),
     };
 
     return Container(
@@ -153,8 +153,8 @@ class _OnlineStatusChip extends StatelessWidget {
           Container(
             width: 8,
             height: 8,
-            decoration: const BoxDecoration(
-              color: AppColors.secondary,
+            decoration: BoxDecoration(
+              color: context.appColors.secondary,
               shape: BoxShape.circle,
             ),
           ),
@@ -162,7 +162,7 @@ class _OnlineStatusChip extends StatelessWidget {
           Text(
             'Online',
             style: TextStyle(
-              color: AppColors.secondary,
+              color: context.appColors.secondary,
               fontSize: 12,
               fontWeight: FontWeight.w500,
             ),

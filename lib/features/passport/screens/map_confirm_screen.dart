@@ -245,7 +245,7 @@ class _MapConfirmScreenState extends ConsumerState<MapConfirmScreen> with Loadin
                   // City name row
                   Row(
                     children: [
-                      const Icon(Icons.location_on, color: AppColors.primary, size: 20),
+                      Icon(Icons.location_on, color: context.appColors.primary, size: 20),
                       const SizedBox(width: AppSpacing.sm),
                       Expanded(
                         child: AnimatedOpacity(

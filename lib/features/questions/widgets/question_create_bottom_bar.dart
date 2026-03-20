@@ -96,7 +96,7 @@ class QuestionCreateBottomBar extends StatelessWidget {
                             ? (canGoNext ? onSave : null)
                             : (canGoNext ? onNext : null),
                     style: FilledButton.styleFrom(
-                      backgroundColor: AppColors.primary,
+                      backgroundColor: context.appColors.primary,
                       padding: const EdgeInsets.symmetric(
                           vertical: AppSpacing.md),
                     ),

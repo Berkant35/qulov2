@@ -55,7 +55,7 @@ class AnswerDistributionChart extends StatelessWidget {
                       value: fraction,
                       backgroundColor: context.appColors.border,
                       valueColor: AlwaysStoppedAnimation<Color>(
-                        AppColors.primary.withValues(
+                        context.appColors.primary.withValues(
                           alpha: 0.4 + fraction * 0.6,
                         ),
                       ),

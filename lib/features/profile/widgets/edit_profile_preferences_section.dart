@@ -50,7 +50,7 @@ class EditProfilePreferencesSection extends ConsumerWidget {
             },
             style: SegmentedButton.styleFrom(
               selectedBackgroundColor: context.appColors.primarySurface,
-              selectedForegroundColor: AppColors.primary,
+              selectedForegroundColor: context.appColors.primary,
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -71,7 +71,7 @@ class EditProfilePreferencesSection extends ConsumerWidget {
               epState.ageRange.start.round().toString(),
               epState.ageRange.end.round().toString(),
             ),
-            activeColor: AppColors.primary,
+            activeColor: context.appColors.primary,
             inactiveColor: theme.colorScheme.surfaceContainerHigh,
             onChanged: (values) =>
                 ref.read(editProfileProvider.notifier).setAgeRange(values),
@@ -91,7 +91,7 @@ class EditProfilePreferencesSection extends ConsumerWidget {
             max: 200,
             divisions: 39,
             label: '${epState.distanceKm.round()} km',
-            activeColor: AppColors.primary,
+            activeColor: context.appColors.primary,
             inactiveColor: theme.colorScheme.surfaceContainerHigh,
             onChanged: (value) =>
                 ref.read(editProfileProvider.notifier).setDistanceKm(value),
@@ -117,8 +117,8 @@ class EditProfilePreferencesSection extends ConsumerWidget {
                 selected: isSelected,
                 onSelected: (_) =>
                     ref.read(editProfileProvider.notifier).toggleLanguage(lang),
-                selectedColor: AppColors.primary.withValues(alpha: 0.2),
-                checkmarkColor: AppColors.primary,
+                selectedColor: context.appColors.primary.withValues(alpha: 0.2),
+                checkmarkColor: context.appColors.primary,
               );
             }).toList(),
           ),

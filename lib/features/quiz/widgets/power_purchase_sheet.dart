@@ -56,7 +56,7 @@ class _PowerPurchaseSheetState extends ConsumerState<PowerPurchaseSheet> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(message),
-            backgroundColor: AppColors.error,
+            backgroundColor: context.appColors.error,
           ),
         );
       },
@@ -110,7 +110,7 @@ class _PowerPurchaseSheetState extends ConsumerState<PowerPurchaseSheet> {
                   Text(
                     '${bal.green}',
                     style: theme.textTheme.titleSmall?.copyWith(
-                      color: AppColors.secondary,
+                      color: context.appColors.secondary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -120,7 +120,7 @@ class _PowerPurchaseSheetState extends ConsumerState<PowerPurchaseSheet> {
                   Text(
                     '${bal.purple}',
                     style: theme.textTheme.titleSmall?.copyWith(
-                      color: AppColors.primary,
+                      color: context.appColors.primary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

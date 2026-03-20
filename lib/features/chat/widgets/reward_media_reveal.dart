@@ -119,23 +119,23 @@ class _AudioReveal extends StatelessWidget {
           color: context.appColors.primarySurface,
           borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
           border: Border.all(
-            color: AppColors.primary.withValues(alpha: 0.3),
+            color: context.appColors.primary.withValues(alpha: 0.3),
           ),
         ),
-        child: const Center(
+        child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
                 Icons.audiotrack_rounded,
                 size: 40,
-                color: AppColors.primary,
+                color: context.appColors.primary,
               ),
               SizedBox(height: AppSpacing.sm),
               Text(
                 'Ses Ödülü Açıldı!',
                 style: TextStyle(
-                  color: AppColors.primary,
+                  color: context.appColors.primary,
                   fontWeight: FontWeight.w600,
                 ),
               ),

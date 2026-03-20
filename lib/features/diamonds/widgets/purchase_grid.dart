@@ -95,7 +95,7 @@ class _PackageCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           border: Border.all(
             color: isBestValue
-                ? AppColors.primary.withValues(alpha: 0.7)
+                ? context.appColors.primary.withValues(alpha: 0.7)
                 : theme.colorScheme.outline.withValues(alpha: 0.3),
             width: isBestValue ? 1.5 : 1,
           ),
@@ -123,7 +123,7 @@ class _PackageCard extends StatelessWidget {
                     Text(
                       tier.price,
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: AppColors.primary,
+                        color: context.appColors.primary,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -226,7 +226,7 @@ class _DiamondPile extends StatelessWidget {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primary.withValues(alpha: 0.25),
+                  color: context.appColors.primary.withValues(alpha: 0.25),
                   blurRadius: 12,
                   spreadRadius: 4,
                 ),

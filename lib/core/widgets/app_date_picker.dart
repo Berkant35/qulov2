@@ -103,7 +103,7 @@ class AppDatePicker extends StatelessWidget {
                         child: Text(
                           l10n.get('ok'),
                           style: TextStyle(
-                            color: AppColors.primary,
+                            color: context.appColors.primary,
                             fontWeight: FontWeight.w600,
                             fontSize: 16,
                           ),

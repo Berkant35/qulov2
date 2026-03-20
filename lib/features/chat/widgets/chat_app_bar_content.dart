@@ -31,7 +31,7 @@ class ChatAppBarTitle extends StatelessWidget {
           height: 10,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: isOnline ? AppColors.secondary : theme.colorScheme.outline,
+            color: isOnline ? context.appColors.secondary : theme.colorScheme.outline,
           ),
         ),
         const SizedBox(width: AppSpacing.sm),
@@ -51,7 +51,7 @@ class ChatAppBarTitle extends StatelessWidget {
                   statusText,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: isOnline
-                        ? AppColors.secondary
+                        ? context.appColors.secondary
                         : theme.colorScheme.onSurfaceVariant,
                     fontSize: 12,
                   ),
@@ -103,7 +103,7 @@ class ChatAppBarActions extends StatelessWidget {
             value: 'unmatch',
             child: Row(
               children: [
-                Icon(Icons.heart_broken, color: AppColors.error, size: 20),
+                Icon(Icons.heart_broken, color: context.appColors.error, size: 20),
                 const SizedBox(width: 8),
                 const Text('Unmatch'),
               ],
@@ -144,10 +144,10 @@ class MediaRequestBanner extends StatelessWidget implements PreferredSizeWidget 
         vertical: AppSpacing.sm,
       ),
       decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.12),
+        color: context.appColors.primary.withValues(alpha: 0.12),
         border: Border(
           bottom: BorderSide(
-            color: AppColors.primary.withValues(alpha: 0.3),
+            color: context.appColors.primary.withValues(alpha: 0.3),
           ),
         ),
       ),
@@ -158,7 +158,7 @@ class MediaRequestBanner extends StatelessWidget implements PreferredSizeWidget 
   Widget _buildSenderContent(BuildContext context) {
     return Row(
       children: [
-        Icon(Icons.hourglass_top, size: 18, color: AppColors.primary),
+        Icon(Icons.hourglass_top, size: 18, color: context.appColors.primary),
         const SizedBox(width: AppSpacing.sm),
         Expanded(
           child: Text(
@@ -176,7 +176,7 @@ class MediaRequestBanner extends StatelessWidget implements PreferredSizeWidget 
   Widget _buildReceiverContent(BuildContext context) {
     return Row(
       children: [
-        Icon(Icons.camera_alt_outlined, size: 18, color: AppColors.primary),
+        Icon(Icons.camera_alt_outlined, size: 18, color: context.appColors.primary),
         const SizedBox(width: AppSpacing.sm),
         Expanded(
           child: Text(
@@ -205,7 +205,7 @@ class MediaRequestBanner extends StatelessWidget implements PreferredSizeWidget 
           child: FilledButton(
             onPressed: onAccept,
             style: FilledButton.styleFrom(
-              backgroundColor: AppColors.primary,
+              backgroundColor: context.appColors.primary,
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppSpacing.radiusSm),

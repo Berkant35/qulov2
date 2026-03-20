@@ -166,7 +166,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
                                     borderRadius:
                                         BorderRadius.circular(AppSpacing.radiusMd),
                                   ),
-                                  backgroundColor: AppColors.primary,
+                                  backgroundColor: context.appColors.primary,
                                 ),
                                 child: (isLoading || isSubmitting)
                                     ? AppLoadingWidget.small()

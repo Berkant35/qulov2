@@ -212,14 +212,14 @@ class BadgeBar extends StatelessWidget {
                 Icon(
                   Icons.warning_amber_rounded,
                   size: 14,
-                  color: AppColors.warning,
+                  color: context.appColors.warning,
                 ),
                 const SizedBox(width: AppSpacing.xs),
                 Expanded(
                   child: Text(
                     context.tr('badge_discover_warning'),
-                    style: const TextStyle(
-                      color: AppColors.warning,
+                    style: TextStyle(
+                      color: context.appColors.warning,
                       fontSize: 11,
                       fontWeight: FontWeight.w500,
                     ),

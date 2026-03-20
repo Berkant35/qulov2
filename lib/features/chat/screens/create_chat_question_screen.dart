@@ -299,7 +299,7 @@ class _StepIndicator extends StatelessWidget {
             child: Container(
               height: 3,
               decoration: BoxDecoration(
-                color: AppColors.primary,
+                color: context.appColors.primary,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -310,7 +310,7 @@ class _StepIndicator extends StatelessWidget {
               height: 3,
               decoration: BoxDecoration(
                 color: currentStep >= 1
-                    ? AppColors.primary
+                    ? context.appColors.primary
                     : context.appColors.textHint.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(2),
               ),

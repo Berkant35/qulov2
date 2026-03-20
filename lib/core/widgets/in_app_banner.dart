@@ -91,7 +91,7 @@ class _InAppBannerState extends State<InAppBanner>
             ),
             child: Row(
               children: [
-                QIcon(QIcons.icBellFilled, size: 24, color: AppColors.primary),
+                QIcon(QIcons.icBellFilled, size: 24, color: context.appColors.primary),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Column(

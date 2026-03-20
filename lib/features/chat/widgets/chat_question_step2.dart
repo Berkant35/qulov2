@@ -130,7 +130,7 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
             title: 'Unmatch Riski',
             subtitle: 'Yanlis cevap eslemeyi bitirir',
             value: widget.hasUnmatchRisk,
-            activeColor: AppColors.error,
+            activeColor: context.appColors.error,
             icon: Icons.warning_amber_rounded,
             onChanged: (v) => widget.onChanged(hasUnmatchRisk: v),
           ),
@@ -141,7 +141,7 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
             title: 'Sohbet Kilidi',
             subtitle: 'Cevaplanana kadar sohbet kitlenir',
             value: widget.hasChatLock,
-            activeColor: AppColors.primary,
+            activeColor: context.appColors.primary,
             icon: Icons.lock_outline,
             onChanged: (v) => widget.onChanged(hasChatLock: v),
           ),
@@ -192,7 +192,7 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        borderSide: const BorderSide(color: AppColors.primary, width: 1),
+        borderSide: BorderSide(color: context.appColors.primary, width: 1),
       ),
       contentPadding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
@@ -261,10 +261,10 @@ class _TimerChips extends StatelessWidget {
           selectedColor: context.appColors.primarySurface,
           backgroundColor: context.appColors.surfaceElevated,
           side: BorderSide(
-            color: isSelected ? AppColors.primary : context.appColors.border,
+            color: isSelected ? context.appColors.primary : context.appColors.border,
           ),
           labelStyle: theme.textTheme.bodyMedium?.copyWith(
-            color: isSelected ? AppColors.primary : context.appColors.textSecondary,
+            color: isSelected ? context.appColors.primary : context.appColors.textSecondary,
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
           ),
           showCheckmark: false,
@@ -323,7 +323,7 @@ class _RewardMediaRow extends StatelessWidget {
               child: Text(
                 AppLocalizations.of(context).get('chat_media_added'),
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: AppColors.success,
+                  color: context.appColors.success,
                 ),
               ),
             ),
@@ -383,12 +383,12 @@ class _MediaButton extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (isLoading)
-              const SizedBox(
+              SizedBox(
                 width: 18,
                 height: 18,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  color: AppColors.primary,
+                  color: context.appColors.primary,
                 ),
               )
             else

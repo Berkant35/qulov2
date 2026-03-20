@@ -124,12 +124,12 @@ class _DetailChip extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+        border: Border.all(color: context.appColors.primary.withValues(alpha: 0.2)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          QIcon(iconAsset, size: 16, color: AppColors.primary),
+          QIcon(iconAsset, size: 16, color: context.appColors.primary),
           const SizedBox(width: 6),
           Flexible(
             child: Text(

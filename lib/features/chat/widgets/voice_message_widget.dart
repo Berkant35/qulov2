@@ -96,13 +96,13 @@ class _VoiceMessageWidgetState extends ConsumerState<VoiceMessageWidget> {
                             ),
                             activeTrackColor: widget.isMine
                                 ? Colors.white
-                                : AppColors.primary,
+                                : context.appColors.primary,
                             inactiveTrackColor: widget.isMine
                                 ? Colors.white38
                                 : context.appColors.textHint,
                             thumbColor: widget.isMine
                                 ? Colors.white
-                                : AppColors.primary,
+                                : context.appColors.primary,
                           ),
                           child: Slider(
                             value: progress.clamp(0.0, 1.0),
@@ -178,7 +178,7 @@ class _PlayPauseButton extends StatelessWidget {
         child: Icon(
           isPlaying ? Icons.pause : Icons.play_arrow,
           size: 20,
-          color: isMine ? Colors.white : AppColors.primary,
+          color: isMine ? Colors.white : context.appColors.primary,
         ),
       ),
     );

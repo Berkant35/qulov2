@@ -192,7 +192,7 @@ class _PassportScreenState extends ConsumerState<PassportScreen> with LoadingMix
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Icon(Icons.flight, size: 48, color: AppColors.primary),
+            Icon(Icons.flight, size: 48, color: context.appColors.primary),
             const SizedBox(height: AppSpacing.sm),
             Text(
               context.tr('passport_explore'),

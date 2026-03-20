@@ -94,7 +94,7 @@ class _CropScreenState extends State<CropScreen> {
                   : Text(
                       context.tr('ok'),
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: AppColors.primary,
+                        color: context.appColors.primary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

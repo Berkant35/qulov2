@@ -62,7 +62,7 @@ class _UpgradeBanner extends StatelessWidget {
               onPressed: onViewPlans,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
-                foregroundColor: AppColors.primary,
+                foregroundColor: context.appColors.primary,
                 padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
@@ -99,7 +99,7 @@ class _ActivePlanBadge extends StatelessWidget {
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
         border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.5),
+          color: context.appColors.primary.withValues(alpha: 0.5),
         ),
       ),
       padding: const EdgeInsets.symmetric(

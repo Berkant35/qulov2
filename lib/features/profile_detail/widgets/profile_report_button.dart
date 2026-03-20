@@ -58,9 +58,9 @@ class ProfileReportButton extends ConsumerWidget {
             const SizedBox(height: AppSpacing.lg),
             // Report option
             ListTile(
-              leading: const Icon(
+              leading: Icon(
                 Icons.flag_outlined,
-                color: AppColors.warning,
+                color: context.appColors.warning,
               ),
               title: Text(
                 context.tr('report'),
@@ -73,13 +73,13 @@ class ProfileReportButton extends ConsumerWidget {
             ),
             // Block option
             ListTile(
-              leading: const Icon(
+              leading: Icon(
                 Icons.block,
-                color: AppColors.error,
+                color: context.appColors.error,
               ),
               title: Text(
                 context.tr('block'),
-                style: const TextStyle(color: AppColors.error),
+                style: TextStyle(color: context.appColors.error),
               ),
               onTap: () {
                 Navigator.pop(context);

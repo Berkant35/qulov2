@@ -46,12 +46,12 @@ class ChatQuestionRescue extends StatelessWidget {
               height: 64,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.error.withValues(alpha: 0.15),
+                color: context.appColors.error.withValues(alpha: 0.15),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.timer_off_rounded,
                 size: 32,
-                color: AppColors.error,
+                color: context.appColors.error,
               ),
             ),
             const SizedBox(height: AppSpacing.lg),
@@ -76,21 +76,21 @@ class ChatQuestionRescue extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
-                  color: AppColors.warning.withValues(alpha: 0.1),
+                  color: context.appColors.warning.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                   border: Border.all(
-                    color: AppColors.warning.withValues(alpha: 0.3),
+                    color: context.appColors.warning.withValues(alpha: 0.3),
                   ),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.lock, color: AppColors.warning, size: 20),
+                    Icon(Icons.lock, color: context.appColors.warning, size: 20),
                     const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: Text(
                         'Güçler engellenmiş. Kilidi aç ve Geç gücünü kullan.',
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: AppColors.warning,
+                          color: context.appColors.warning,
                         ),
                       ),
                     ),
@@ -111,7 +111,7 @@ class ChatQuestionRescue extends StatelessWidget {
                         : const Icon(Icons.lock_open, size: 20),
                     label: Text(AppLocalizations.of(context).get('chat_unlock')),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.warning,
+                      backgroundColor: context.appColors.warning,
                       foregroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
                         borderRadius:
@@ -135,7 +135,7 @@ class ChatQuestionRescue extends StatelessWidget {
                         : const Icon(Icons.skip_next_rounded, size: 22),
                     label: Text(AppLocalizations.of(context).get('chat_skip')),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.info,
+                      backgroundColor: context.appColors.info,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius:

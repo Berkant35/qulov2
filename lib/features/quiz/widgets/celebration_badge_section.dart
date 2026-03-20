@@ -45,7 +45,7 @@ class CelebrationBadgeSection extends StatelessWidget {
                 ? context.tr('quiz_match_title')
                 : context.tr('quiz_failed_title'),
             style: theme.textTheme.headlineMedium?.copyWith(
-              color: matched ? AppColors.primary : AppColors.error,
+              color: matched ? context.appColors.primary : context.appColors.error,
               fontWeight: FontWeight.bold,
               fontSize: matched ? 32 : 28,
             ),

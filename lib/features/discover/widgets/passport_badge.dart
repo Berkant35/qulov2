@@ -101,13 +101,13 @@ class _PassportBadgeState extends ConsumerState<PassportBadge>
                       BorderRadius.circular(AppSpacing.radiusFull),
                   border: Border.all(
                     color: isActive
-                        ? AppColors.primary.withValues(alpha: 0.3)
+                        ? context.appColors.primary.withValues(alpha: 0.3)
                         : context.appColors.border,
                   ),
                   boxShadow: isActive
                       ? [
                           BoxShadow(
-                            color: AppColors.primary.withValues(
+                            color: context.appColors.primary.withValues(
                               alpha: 0.4 * _glowController.value,
                             ),
                             spreadRadius: 4 * _glowController.value,
@@ -126,7 +126,7 @@ class _PassportBadgeState extends ConsumerState<PassportBadge>
                   isActive ? Icons.flight : Icons.location_on,
                   size: 14,
                   color: isActive
-                      ? AppColors.primary
+                      ? context.appColors.primary
                       : context.appColors.textSecondary,
                 ),
                 const SizedBox(width: 4),
@@ -134,7 +134,7 @@ class _PassportBadgeState extends ConsumerState<PassportBadge>
                   city,
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
                         color: isActive
-                            ? AppColors.primary
+                            ? context.appColors.primary
                             : context.appColors.textSecondary,
                         fontWeight: FontWeight.w600,
                       ),

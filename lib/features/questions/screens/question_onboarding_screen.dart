@@ -77,7 +77,7 @@ class _QuestionOnboardingScreenState
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              AppColors.primary.withValues(alpha: 0.08),
+              context.appColors.primary.withValues(alpha: 0.08),
               theme.scaffoldBackgroundColor,
             ],
           ),
@@ -97,21 +97,21 @@ class _QuestionOnboardingScreenState
                       title: context.tr('onboarding_questions_slide1_title'),
                       description:
                           context.tr('onboarding_questions_slide1_desc'),
-                      iconColor: AppColors.primary,
+                      iconColor: context.appColors.primary,
                     ),
                     OnboardingSlide(
                       iconPath: QIcons.icWand,
                       title: context.tr('onboarding_questions_slide2_title'),
                       description:
                           context.tr('onboarding_questions_slide2_desc'),
-                      iconColor: AppColors.primary,
+                      iconColor: context.appColors.primary,
                     ),
                     OnboardingSlide(
                       iconPath: QIcons.icGem,
                       title: context.tr('onboarding_questions_slide3_title'),
                       description:
                           context.tr('onboarding_questions_slide3_desc'),
-                      iconColor: AppColors.secondary,
+                      iconColor: context.appColors.secondary,
                     ),
                     // Slide 4: Language selection
                     OnboardingLanguageSlide(
@@ -148,8 +148,8 @@ class _QuestionOnboardingScreenState
                       height: 8,
                       decoration: BoxDecoration(
                         color: isActive
-                            ? AppColors.primary
-                            : AppColors.primary.withValues(alpha: 0.3),
+                            ? context.appColors.primary
+                            : context.appColors.primary.withValues(alpha: 0.3),
                         borderRadius:
                             BorderRadius.circular(AppSpacing.radiusFull),
                       ),
@@ -171,7 +171,7 @@ class _QuestionOnboardingScreenState
                         child: FilledButton(
                           onPressed: _onStart,
                           style: FilledButton.styleFrom(
-                            backgroundColor: AppColors.primary,
+                            backgroundColor: context.appColors.primary,
                             padding: const EdgeInsets.symmetric(
                                 vertical: AppSpacing.md),
                             shape: RoundedRectangleBorder(

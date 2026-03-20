@@ -122,7 +122,7 @@ class _LocationButton extends StatelessWidget {
                 height: 20,
                 child: AppLoadingWidget.small(),
               )
-            : QIcon(QIcons.icMapPin, color: AppColors.primary, size: 20),
+            : QIcon(QIcons.icMapPin, color: context.appColors.primary, size: 20),
       ),
     );
   }

@@ -23,18 +23,18 @@ class PrefChip extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: context.appColors.secondarySurface,
-        border: Border.all(color: AppColors.secondary.withValues(alpha: 0.3)),
+        border: Border.all(color: context.appColors.secondary.withValues(alpha: 0.3)),
         borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          QIcon(iconPath, size: 14, color: AppColors.secondary),
+          QIcon(iconPath, size: 14, color: context.appColors.secondary),
           const SizedBox(width: 4),
           Text(
             label,
             style: theme.textTheme.bodySmall?.copyWith(
-              color: AppColors.secondary,
+              color: context.appColors.secondary,
             ),
           ),
         ],

@@ -36,10 +36,10 @@ class QuestionsListCard extends StatelessWidget {
           alignment: Alignment.centerRight,
           padding: const EdgeInsets.only(right: AppSpacing.xl),
           decoration: BoxDecoration(
-            color: AppColors.error.withValues(alpha: 0.15),
+            color: context.appColors.error.withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           ),
-          child: Icon(Icons.delete_outline, color: AppColors.error),
+          child: Icon(Icons.delete_outline, color: context.appColors.error),
         ),
         confirmDismiss: (_) async {
           onDelete();
@@ -70,7 +70,7 @@ class QuestionsListCard extends StatelessWidget {
                         child: Text(
                           '${question.orderNum}',
                           style: theme.textTheme.labelSmall?.copyWith(
-                            color: AppColors.primary,
+                            color: context.appColors.primary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -92,7 +92,7 @@ class QuestionsListCard extends StatelessWidget {
                           context
                               .tr('question_category_${question.category}'),
                           style: theme.textTheme.labelSmall?.copyWith(
-                            color: AppColors.primary,
+                            color: context.appColors.primary,
                             fontSize: 10,
                           ),
                         ),
@@ -148,7 +148,7 @@ class QuestionsListCard extends StatelessWidget {
                     const Spacer(),
                     IconButton(
                       icon: Icon(Icons.delete_outline,
-                          color: AppColors.error, size: 18),
+                          color: context.appColors.error, size: 18),
                       onPressed: onDelete,
                       constraints: const BoxConstraints(),
                       padding: EdgeInsets.zero,

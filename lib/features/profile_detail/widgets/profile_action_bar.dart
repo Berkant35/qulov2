@@ -33,7 +33,7 @@ class ProfileActionBar extends StatelessWidget {
         color: context.appColors.scaffold,
         border: Border(
           top: BorderSide(
-            color: AppColors.primary.withValues(alpha: 0.2),
+            color: context.appColors.primary.withValues(alpha: 0.2),
           ),
         ),
       ),
@@ -54,13 +54,13 @@ class ProfileActionBar extends StatelessWidget {
                 style: OutlinedButton.styleFrom(
                   padding: EdgeInsets.zero,
                   side: BorderSide(
-                    color: AppColors.error.withValues(alpha: 0.5),
+                    color: context.appColors.error.withValues(alpha: 0.5),
                   ),
                   shape: const CircleBorder(),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.close,
-                  color: AppColors.error,
+                  color: context.appColors.error,
                   size: 24,
                 ),
               ),
@@ -73,7 +73,7 @@ class ProfileActionBar extends StatelessWidget {
                 child: FilledButton(
                   onPressed: onSolveQuestions,
                   style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.primary,
+                    backgroundColor: context.appColors.primary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(
                         AppSpacing.radiusLg,
@@ -98,7 +98,7 @@ class ProfileActionBar extends StatelessWidget {
           child: FilledButton(
             onPressed: onSendMessage,
             style: FilledButton.styleFrom(
-              backgroundColor: AppColors.primary,
+              backgroundColor: context.appColors.primary,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
               ),
@@ -118,7 +118,7 @@ class ProfileActionBar extends StatelessWidget {
           child: FilledButton(
             onPressed: isMatched ? onSendMessage : onSolveQuestions,
             style: FilledButton.styleFrom(
-              backgroundColor: AppColors.primary,
+              backgroundColor: context.appColors.primary,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
               ),

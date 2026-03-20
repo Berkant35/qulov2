@@ -28,17 +28,17 @@ class MediaRequestCard extends StatelessWidget {
 
     switch (status) {
       case 'accepted':
-        borderColor = AppColors.success.withValues(alpha: 0.5);
+        borderColor = context.appColors.success.withValues(alpha: 0.5);
         icon = Icons.check_circle_outline;
-        iconColor = AppColors.success;
+        iconColor = context.appColors.success;
       case 'rejected':
         borderColor = context.appColors.textHint.withValues(alpha: 0.4);
         icon = Icons.close;
         iconColor = context.appColors.textHint;
       default: // pending
-        borderColor = AppColors.primary.withValues(alpha: 0.4);
+        borderColor = context.appColors.primary.withValues(alpha: 0.4);
         icon = Icons.camera_alt_outlined;
-        iconColor = AppColors.primary;
+        iconColor = context.appColors.primary;
     }
 
     final theme = Theme.of(context);
@@ -92,7 +92,7 @@ class _MediaRequestContent extends StatelessWidget {
         return Text(
           'Medya paylaşımı aktif',
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: AppColors.success,
+            color: context.appColors.success,
             fontWeight: FontWeight.w600,
           ),
         );
@@ -158,7 +158,7 @@ class _MediaRequestContent extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: onAccept,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
+                        backgroundColor: context.appColors.primary,
                         foregroundColor: context.appColors.textPrimary,
                         shape: RoundedRectangleBorder(
                           borderRadius:

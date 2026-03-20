@@ -98,7 +98,7 @@ class _DiscoverEmptyStateState extends ConsumerState<DiscoverEmptyState> {
                       Text(
                         '${_radius.round()} km',
                         style: theme.textTheme.titleSmall?.copyWith(
-                          color: AppColors.primary,
+                          color: context.appColors.primary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -109,7 +109,7 @@ class _DiscoverEmptyStateState extends ConsumerState<DiscoverEmptyState> {
                     min: 5,
                     max: 200,
                     divisions: 39,
-                    activeColor: AppColors.primary,
+                    activeColor: context.appColors.primary,
                     onChanged: (val) => setState(() => _radius = val),
                   ),
                   Row(
@@ -158,7 +158,7 @@ class _DiscoverEmptyStateState extends ConsumerState<DiscoverEmptyState> {
                 icon: const Icon(Icons.flight, size: 16),
                 label: Text(context.tr('passport_change_city')),
                 style: TextButton.styleFrom(
-                  foregroundColor: AppColors.primary,
+                  foregroundColor: context.appColors.primary,
                 ),
               ),
             ] else if (isPremium) ...[
@@ -169,7 +169,7 @@ class _DiscoverEmptyStateState extends ConsumerState<DiscoverEmptyState> {
                 icon: const Icon(Icons.flight, size: 16),
                 label: Text(context.tr('passport_explore_hint')),
                 style: TextButton.styleFrom(
-                  foregroundColor: AppColors.primary,
+                  foregroundColor: context.appColors.primary,
                 ),
               ),
             ] else ...[

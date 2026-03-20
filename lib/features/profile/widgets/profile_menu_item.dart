@@ -35,7 +35,7 @@ class ProfileMenuItem extends StatelessWidget {
         leading: Stack(
           clipBehavior: Clip.none,
           children: [
-            iconWidget ?? QIcon(iconPath!, color: AppColors.primary, size: 24),
+            iconWidget ?? QIcon(iconPath!, color: context.appColors.primary, size: 24),
             if (showBadge)
               Positioned(
                 right: -4,
@@ -43,8 +43,8 @@ class ProfileMenuItem extends StatelessWidget {
                 child: Container(
                   width: 10,
                   height: 10,
-                  decoration: const BoxDecoration(
-                    color: AppColors.error,
+                  decoration: BoxDecoration(
+                    color: context.appColors.error,
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -53,7 +53,7 @@ class ProfileMenuItem extends StatelessWidget {
         ),
         title: Text(title),
         subtitle: subtitle != null
-            ? Text(subtitle!, style: theme.textTheme.bodySmall?.copyWith(color: AppColors.error))
+            ? Text(subtitle!, style: theme.textTheme.bodySmall?.copyWith(color: context.appColors.error))
             : null,
         trailing: QIcon(QIcons.icChevronRight, color: theme.hintColor, size: 20),
         onTap: onTap,

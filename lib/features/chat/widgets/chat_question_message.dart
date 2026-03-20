@@ -91,7 +91,7 @@ class _LoadingPlaceholder extends StatelessWidget {
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.3),
+          color: context.appColors.primary.withValues(alpha: 0.3),
         ),
       ),
       child: const Center(child: AppLoadingWidget.small()),

@@ -758,6 +758,7 @@ class AppLocalizations {
     'feature_per_day': '/gün',
 
     // Photo picker
+    'photo_options': 'Fotoğraf Seçenekleri',
     'add_photo': 'Fotoğraf Ekle',
     'gallery': 'Galeri',
     'camera': 'Kamera',
@@ -1506,6 +1507,7 @@ class AppLocalizations {
     'feature_per_day': '/day',
 
     // Photo picker
+    'photo_options': 'Photo Options',
     'add_photo': 'Add Photo',
     'gallery': 'Gallery',
     'camera': 'Camera',

@@ -58,7 +58,7 @@ class RegisterStepGender extends StatelessWidget {
             Text(
               errorText!,
               style: theme.textTheme.bodySmall?.copyWith(
-                color: AppColors.error,
+                color: context.appColors.error,
               ),
             ),
           ],
@@ -101,13 +101,13 @@ class _GenderCard extends StatelessWidget {
           color: isSelected ? context.appColors.primarySurface : Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           border: Border.all(
-            color: isSelected ? AppColors.primary : Theme.of(context).colorScheme.outline,
+            color: isSelected ? context.appColors.primary : Theme.of(context).colorScheme.outline,
             width: 2,
           ),
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.2),
+                    color: context.appColors.primary.withValues(alpha: 0.2),
                     blurRadius: 12,
                   ),
                 ]
@@ -117,7 +117,7 @@ class _GenderCard extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: isSelected ? AppColors.primary : Theme.of(context).colorScheme.onSurfaceVariant,
+              color: isSelected ? context.appColors.primary : Theme.of(context).colorScheme.onSurfaceVariant,
               size: 28,
             ),
             const SizedBox(width: AppSpacing.md),
@@ -126,15 +126,15 @@ class _GenderCard extends StatelessWidget {
                 label,
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       color: isSelected
-                          ? AppColors.primary
+                          ? context.appColors.primary
                           : Theme.of(context).colorScheme.onSurface,
                     ),
               ),
             ),
             if (isSelected)
-              const Icon(
+              Icon(
                 Icons.check_circle,
-                color: AppColors.primary,
+                color: context.appColors.primary,
                 size: 24,
               ),
           ],

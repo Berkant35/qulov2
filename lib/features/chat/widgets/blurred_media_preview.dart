@@ -103,7 +103,7 @@ class _AudioPreview extends StatelessWidget {
                   Icons.graphic_eq_rounded,
                   size: 36,
                   color: isRevealed
-                      ? AppColors.primary
+                      ? context.appColors.primary
                       : context.appColors.textHint,
                 ),
                 if (!isRevealed)
@@ -119,7 +119,7 @@ class _AudioPreview extends StatelessWidget {
               isRevealed ? 'Ses Ödülü' : 'Kilitli Ses',
               style: TextStyle(
                 color: isRevealed
-                    ? AppColors.primary
+                    ? context.appColors.primary
                     : context.appColors.textHint,
                 fontSize: 11,
                 fontWeight: FontWeight.w500,

@@ -297,7 +297,7 @@ class _CurrentPlanBadge extends StatelessWidget {
         '$label — ${context.tr('sub_current_plan')}',
         textAlign: TextAlign.center,
         style: theme.textTheme.labelLarge?.copyWith(
-          color: AppColors.primary,
+          color: context.appColors.primary,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -447,7 +447,7 @@ class _PlanLabel extends StatelessWidget {
           Text(
             label,
             style: style?.copyWith(
-              color: isPremiumColumn ? AppColors.primary : null,
+              color: isPremiumColumn ? context.appColors.primary : null,
             ),
             textAlign: TextAlign.center,
           ),
@@ -462,7 +462,7 @@ class _PlanLabel extends StatelessWidget {
               child: Text(
                 context.tr('sub_current_plan'),
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: AppColors.primary,
+                  color: context.appColors.primary,
                   fontSize: 8,
                 ),
               ),
@@ -559,7 +559,7 @@ class _CellValue extends StatelessWidget {
                     child: Text(
                       value!,
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: isPremiumColumn ? AppColors.primary : null,
+                        color: isPremiumColumn ? context.appColors.primary : null,
                         fontWeight: value == '✓' ? FontWeight.bold : null,
                       ),
                       textAlign: TextAlign.center,

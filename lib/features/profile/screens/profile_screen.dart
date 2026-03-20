@@ -106,8 +106,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 top: 8,
                 child: Container(
                   padding: const EdgeInsets.all(4),
-                  decoration: const BoxDecoration(
-                    color: AppColors.error,
+                  decoration: BoxDecoration(
+                    color: context.appColors.error,
                     shape: BoxShape.circle,
                   ),
                   constraints: const BoxConstraints(minWidth: 18, minHeight: 18),

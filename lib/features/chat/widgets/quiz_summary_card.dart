@@ -34,7 +34,7 @@ class QuizSummaryCard extends StatelessWidget {
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.25),
+          color: context.appColors.primary.withValues(alpha: 0.25),
         ),
       ),
       child: Column(
@@ -44,13 +44,13 @@ class QuizSummaryCard extends StatelessWidget {
           // Header row
           Row(
             children: [
-              Icon(Icons.quiz_outlined, size: 18, color: AppColors.primary),
+              Icon(Icons.quiz_outlined, size: 18, color: context.appColors.primary),
               const SizedBox(width: AppSpacing.sm),
               Text(
                 context.tr('chat_quiz_summary'),
                 style: theme.textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: AppColors.primary,
+                  color: context.appColors.primary,
                 ),
               ),
               const Spacer(),
@@ -90,12 +90,12 @@ class QuizSummaryCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.xs),
             Row(
               children: [
-                Icon(Icons.flash_on, size: 14, color: AppColors.warning),
+                Icon(Icons.flash_on, size: 14, color: context.appColors.warning),
                 const SizedBox(width: 4),
                 Text(
                   '${summary.totalPowersUsed} ${context.tr('quiz_result_powers_used').toLowerCase()}',
                   style: theme.textTheme.labelSmall?.copyWith(
-                    color: AppColors.warning,
+                    color: context.appColors.warning,
                   ),
                 ),
               ],
@@ -144,13 +144,13 @@ class _PerformanceBadge extends StatelessWidget {
   _BadgeConfig _badgeConfig(BuildContext context, String badge) {
     switch (badge) {
       case 'flawless':
-        return _BadgeConfig(color: AppColors.success, icon: Icons.auto_awesome);
+        return _BadgeConfig(color: context.appColors.success, icon: Icons.auto_awesome);
       case 'speed_solver':
-        return _BadgeConfig(color: AppColors.info, icon: Icons.speed);
+        return _BadgeConfig(color: context.appColors.info, icon: Icons.speed);
       case 'power_master':
-        return _BadgeConfig(color: AppColors.warning, icon: Icons.flash_on);
+        return _BadgeConfig(color: context.appColors.warning, icon: Icons.flash_on);
       case 'determined':
-        return _BadgeConfig(color: AppColors.primary, icon: Icons.psychology);
+        return _BadgeConfig(color: context.appColors.primary, icon: Icons.psychology);
       default:
         return _BadgeConfig(color: context.appColors.textHint, icon: Icons.emoji_events_outlined);
     }

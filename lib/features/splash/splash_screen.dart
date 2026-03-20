@@ -175,7 +175,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.primary.withValues(alpha: 0.3),
+                        color: context.appColors.primary.withValues(alpha: 0.3),
                         blurRadius: 60,
                         spreadRadius: 20,
                       ),
@@ -185,8 +185,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                     AppAssets.logoSvg,
                     width: AppSizes.logoLg,
                     height: AppSizes.logoLg,
-                    colorFilter: const ColorFilter.mode(
-                      AppColors.primary,
+                    colorFilter: ColorFilter.mode(
+                      context.appColors.primary,
                       BlendMode.srcIn,
                     ),
                   ),

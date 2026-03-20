@@ -75,7 +75,7 @@ class _DiamondIconState extends State<DiamondIcon>
 
   Color get _glowColor => widget.type == DiamondType.purple
       ? AppColors.primary
-      : AppColors.secondary;
+      : context.appColors.secondary;
 
   Color get _glowColorDark => widget.type == DiamondType.purple
       ? context.appColors.primaryDark

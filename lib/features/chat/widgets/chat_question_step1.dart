@@ -214,7 +214,7 @@ class _ChatQuestionStep1State extends State<ChatQuestionStep1> {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        borderSide: const BorderSide(color: AppColors.primary, width: 1),
+        borderSide: BorderSide(color: context.appColors.primary, width: 1),
       ),
       contentPadding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
@@ -259,14 +259,14 @@ class _OptionCountToggle extends StatelessWidget {
               : context.appColors.surfaceElevated,
           borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
           border: Border.all(
-            color: isSelected ? AppColors.primary : context.appColors.border,
+            color: isSelected ? context.appColors.primary : context.appColors.border,
             width: 1,
           ),
         ),
         child: Text(
           label,
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: isSelected ? AppColors.primary : context.appColors.textSecondary,
+            color: isSelected ? context.appColors.primary : context.appColors.textSecondary,
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
           ),
         ),
@@ -313,16 +313,16 @@ class _OptionField extends StatelessWidget {
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: isCorrect
-                    ? AppColors.success.withValues(alpha: 0.2)
+                    ? context.appColors.success.withValues(alpha: 0.2)
                     : Colors.transparent,
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isCorrect ? AppColors.success : context.appColors.textHint,
+                  color: isCorrect ? context.appColors.success : context.appColors.textHint,
                   width: 1.5,
                 ),
               ),
               child: isCorrect
-                  ? const Icon(Icons.check, size: 16, color: AppColors.success)
+                  ? Icon(Icons.check, size: 16, color: context.appColors.success)
                   : null,
             ),
           ),
@@ -341,7 +341,7 @@ class _OptionField extends StatelessWidget {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          borderSide: const BorderSide(color: AppColors.primary, width: 1),
+          borderSide: BorderSide(color: context.appColors.primary, width: 1),
         ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,

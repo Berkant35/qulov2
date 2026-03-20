@@ -178,7 +178,7 @@ class _ProfileCardState extends State<ProfileCard> {
                       ),
                       if (widget.card.isBoosted) ...[
                         const SizedBox(width: AppSpacing.sm),
-                        QIcon(QIcons.icZap, color: AppColors.warning, size: 20),
+                        QIcon(QIcons.icZap, color: context.appColors.warning, size: 20),
                       ],
                     ],
                   ),
@@ -204,7 +204,7 @@ class _ProfileCardState extends State<ProfileCard> {
                       ),
                       child: Text(
                         _relationshipGoalLabel(context, widget.card.relationshipGoal),
-                        style: theme.textTheme.labelSmall?.copyWith(color: AppColors.primary),
+                        style: theme.textTheme.labelSmall?.copyWith(color: context.appColors.primary),
                       ),
                     ),
                   const SizedBox(height: AppSpacing.sm),

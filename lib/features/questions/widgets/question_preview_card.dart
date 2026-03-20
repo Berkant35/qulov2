@@ -38,7 +38,7 @@ class QuestionPreviewCard extends StatelessWidget {
         color: context.appColors.surfaceElevated,
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
         border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.3),
+          color: context.appColors.primary.withValues(alpha: 0.3),
           width: 1,
         ),
       ),
@@ -53,7 +53,7 @@ class QuestionPreviewCard extends StatelessWidget {
               Text(
                 context.tr('question_create_preview'),
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: AppColors.primary,
+                  color: context.appColors.primary,
                   fontWeight: FontWeight.w600,
                   letterSpacing: 1.2,
                 ),
@@ -66,7 +66,7 @@ class QuestionPreviewCard extends StatelessWidget {
               _TimeBadge(timeLimit: timeLimit),
               if (hintText != null && hintText!.isNotEmpty) ...[
                 const SizedBox(width: AppSpacing.xs),
-                QIcon(QIcons.icLightbulb, size: 14, color: AppColors.warning),
+                QIcon(QIcons.icLightbulb, size: 14, color: context.appColors.warning),
               ],
             ],
           ),
@@ -122,7 +122,7 @@ class _CategoryBadge extends StatelessWidget {
       child: Text(
         context.tr('question_category_$category'),
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-          color: AppColors.primary,
+          color: context.appColors.primary,
           fontSize: 10,
         ),
       ),
@@ -185,12 +185,12 @@ class _AnswerPill extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: isCorrect
-            ? AppColors.secondary.withValues(alpha: 0.15)
+            ? context.appColors.secondary.withValues(alpha: 0.15)
             : theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         border: Border.all(
           color: isCorrect
-              ? AppColors.secondary.withValues(alpha: 0.5)
+              ? context.appColors.secondary.withValues(alpha: 0.5)
               : context.appColors.border,
         ),
       ),
@@ -200,7 +200,7 @@ class _AnswerPill extends StatelessWidget {
           color: isEmpty
               ? context.appColors.textHint
               : isCorrect
-                  ? AppColors.secondary
+                  ? context.appColors.secondary
                   : context.appColors.textPrimary,
           fontWeight: isCorrect ? FontWeight.w600 : FontWeight.normal,
         ),

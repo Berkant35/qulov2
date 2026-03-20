@@ -22,10 +22,10 @@ class ChatQuestionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final borderColor = question.hasUnmatchRisk
-        ? AppColors.error.withValues(alpha: 0.6)
+        ? context.appColors.error.withValues(alpha: 0.6)
         : question.hasChatLock
-            ? AppColors.warning.withValues(alpha: 0.6)
-            : AppColors.primary.withValues(alpha: 0.3);
+            ? context.appColors.warning.withValues(alpha: 0.6)
+            : context.appColors.primary.withValues(alpha: 0.3);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,7 +97,7 @@ class _BadgesRow extends StatelessWidget {
       badges.add(_Badge(
         icon: '\u26a0\ufe0f',
         label: 'Bu soru riskli!',
-        color: AppColors.error,
+        color: context.appColors.error,
       ));
     }
 
@@ -105,7 +105,7 @@ class _BadgesRow extends StatelessWidget {
       badges.add(_Badge(
         icon: '\u26a1',
         label: 'Güç Engeli',
-        color: AppColors.warning,
+        color: context.appColors.warning,
       ));
     }
 
@@ -113,7 +113,7 @@ class _BadgesRow extends StatelessWidget {
       badges.add(_Badge(
         icon: '\ud83d\udd12',
         label: 'Sohbet Kilitli',
-        color: AppColors.warning,
+        color: context.appColors.warning,
       ));
     }
 
@@ -192,7 +192,7 @@ class _OpenButton extends StatelessWidget {
         icon: const Icon(Icons.lock_open_rounded, size: 16),
         label: Text(AppLocalizations.of(context).get('chat_open_question')),
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
+          backgroundColor: context.appColors.primary,
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
           shape: RoundedRectangleBorder(
@@ -274,7 +274,7 @@ class _AnsweredOptions extends StatelessWidget {
           Text(
             AppLocalizations.of(context).get('chat_unmatch_occurred'),
             style: theme.textTheme.bodySmall?.copyWith(
-              color: AppColors.error,
+              color: context.appColors.error,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -364,13 +364,13 @@ class _AnsweredOption extends StatelessWidget {
     Color labelColor = context.appColors.textHint;
 
     if (isCorrectChoice) {
-      bgColor = AppColors.success.withValues(alpha: 0.15);
-      textColor = AppColors.success;
-      labelColor = AppColors.success;
+      bgColor = context.appColors.success.withValues(alpha: 0.15);
+      textColor = context.appColors.success;
+      labelColor = context.appColors.success;
     } else if (isWrongChoice) {
-      bgColor = AppColors.error.withValues(alpha: 0.15);
-      textColor = AppColors.error;
-      labelColor = AppColors.error;
+      bgColor = context.appColors.error.withValues(alpha: 0.15);
+      textColor = context.appColors.error;
+      labelColor = context.appColors.error;
     }
 
     return Container(

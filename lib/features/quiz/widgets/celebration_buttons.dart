@@ -34,7 +34,7 @@ class CelebrationButtons extends StatelessWidget {
                 onStartChat?.call();
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
+                backgroundColor: context.appColors.primary,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
                 shape: RoundedRectangleBorder(
@@ -62,9 +62,9 @@ class CelebrationButtons extends StatelessWidget {
               onGoBack();
             },
             style: OutlinedButton.styleFrom(
-              foregroundColor: context.appColors.textPrimary,
+              foregroundColor: context.appColors.primary,
               padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
-              side: BorderSide(color: context.appColors.border),
+              side: BorderSide(color: context.appColors.primary),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
               ),

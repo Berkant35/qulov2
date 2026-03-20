@@ -50,7 +50,7 @@ class RegisterStepLocation extends StatelessWidget {
             child: Icon(
               locationGranted ? Icons.check_circle : Icons.location_on_outlined,
               size: 96,
-              color: locationGranted ? AppColors.success : AppColors.primary,
+              color: locationGranted ? context.appColors.success : context.appColors.primary,
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -59,7 +59,7 @@ class RegisterStepLocation extends StatelessWidget {
               child: Text(
                 l10n.get('location_granted'),
                 style: theme.textTheme.titleMedium?.copyWith(
-                  color: AppColors.success,
+                  color: context.appColors.success,
                 ),
               ),
             ),
@@ -68,7 +68,7 @@ class RegisterStepLocation extends StatelessWidget {
             Text(
               errorText!,
               style: theme.textTheme.bodySmall?.copyWith(
-                color: AppColors.error,
+                color: context.appColors.error,
               ),
             ),
             if (onOpenSettings != null &&

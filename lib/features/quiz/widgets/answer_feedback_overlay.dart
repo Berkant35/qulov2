@@ -98,7 +98,7 @@ class _AnswerFeedbackOverlayState extends State<AnswerFeedbackOverlay>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color = widget.isCorrect ? AppColors.success : AppColors.error;
+    final color = widget.isCorrect ? context.appColors.success : context.appColors.error;
     final icon = widget.isCorrect ? Icons.check_rounded : Icons.close_rounded;
     final label = widget.isCorrect
         ? context.tr('quiz_correct')
@@ -304,16 +304,16 @@ class _CostBadge extends StatelessWidget {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
         decoration: BoxDecoration(
-          color: AppColors.success.withValues(alpha: 0.15),
+          color: context.appColors.success.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
           border: Border.all(
-            color: AppColors.success.withValues(alpha: 0.3),
+            color: context.appColors.success.withValues(alpha: 0.3),
           ),
         ),
         child: Text(
           '${option.inventoryCount}',
           style: theme.textTheme.labelSmall?.copyWith(
-            color: AppColors.success,
+            color: context.appColors.success,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -323,10 +323,10 @@ class _CostBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.15),
+        color: context.appColors.primary.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
         border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.3),
+          color: context.appColors.primary.withValues(alpha: 0.3),
         ),
       ),
       child: Row(
@@ -337,7 +337,7 @@ class _CostBadge extends StatelessWidget {
           Text(
             '${option.diamondCost}',
             style: theme.textTheme.labelSmall?.copyWith(
-              color: AppColors.primary,
+              color: context.appColors.primary,
               fontWeight: FontWeight.bold,
             ),
           ),

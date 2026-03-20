@@ -251,10 +251,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               builder: (context, isLoading, onTap) => ListTile(
                 leading: isLoading
                     ? const SizedBox(width: 24, height: 24, child: AppLoadingWidget.small())
-                    : const Icon(Icons.delete_forever, color: AppColors.error),
+                    : Icon(Icons.delete_forever, color: context.appColors.error),
                 title: Text(
                   context.tr('delete_account'),
-                  style: const TextStyle(color: AppColors.error),
+                  style: TextStyle(color: context.appColors.error),
                 ),
                 onTap: onTap,
               ),

@@ -17,9 +17,9 @@ class ChatLockBanner extends StatelessWidget {
         vertical: AppSpacing.sm,
       ),
       decoration: BoxDecoration(
-        color: AppColors.warning.withValues(alpha: 0.12),
+        color: context.appColors.warning.withValues(alpha: 0.12),
         border: Border(
-          top: BorderSide(color: AppColors.warning.withValues(alpha: 0.4)),
+          top: BorderSide(color: context.appColors.warning.withValues(alpha: 0.4)),
         ),
       ),
       child: Row(
@@ -30,7 +30,7 @@ class ChatLockBanner extends StatelessWidget {
             child: Text(
               'Mesaj göndermek için soruyu cevaplamanız gerekiyor.',
               style: theme.textTheme.bodySmall?.copyWith(
-                color: AppColors.warning,
+                color: context.appColors.warning,
                 fontWeight: FontWeight.w500,
               ),
             ),

@@ -39,7 +39,7 @@ class PowerUsageRow extends StatelessWidget {
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                QIcon(entry.value, size: 18, color: AppColors.primary),
+                QIcon(entry.value, size: 18, color: context.appColors.primary),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   '$count',

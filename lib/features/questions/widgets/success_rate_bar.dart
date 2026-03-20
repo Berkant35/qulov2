@@ -8,15 +8,16 @@ class SuccessRateBar extends StatelessWidget {
 
   const SuccessRateBar({super.key, required this.successRate});
 
-  Color get _color {
-    if (successRate >= 70) return AppColors.success;
-    if (successRate >= 40) return AppColors.warning;
-    return AppColors.error;
+  Color _color(BuildContext context) {
+    if (successRate >= 70) return context.appColors.success;
+    if (successRate >= 40) return context.appColors.warning;
+    return context.appColors.error;
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final color = _color(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,7 +34,7 @@ class SuccessRateBar extends StatelessWidget {
             Text(
               '%$successRate',
               style: theme.textTheme.labelSmall?.copyWith(
-                color: _color,
+                color: color,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -45,7 +46,7 @@ class SuccessRateBar extends StatelessWidget {
           child: LinearProgressIndicator(
             value: successRate / 100.0,
             backgroundColor: context.appColors.border,
-            valueColor: AlwaysStoppedAnimation<Color>(_color),
+            valueColor: AlwaysStoppedAnimation<Color>(color),
             minHeight: 6,
           ),
         ),

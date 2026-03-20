@@ -30,7 +30,7 @@ class CelebrationStatsCard extends StatelessWidget {
         children: [
           CelebrationStatRow(
             icon: Icons.check_circle_outline,
-            iconColor: AppColors.secondary,
+            iconColor: context.appColors.secondary,
             label: context
                 .tr('quiz_stat_correct')
                 .replaceAll('{correct}', '$totalCorrect')
@@ -39,7 +39,7 @@ class CelebrationStatsCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           CelebrationStatRow(
             icon: Icons.timer_outlined,
-            iconColor: AppColors.info,
+            iconColor: context.appColors.info,
             label: context
                 .tr('quiz_stat_time')
                 .replaceAll('{time}', '$totalTimeSpent'),
@@ -48,7 +48,7 @@ class CelebrationStatsCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.md),
             CelebrationStatRow(
               icon: Icons.bolt,
-              iconColor: AppColors.primary,
+              iconColor: context.appColors.primary,
               label: context
                   .tr('quiz_stat_powers')
                   .replaceAll('{count}', '$powersUsed'),

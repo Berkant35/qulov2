@@ -29,7 +29,7 @@ class TimePresetCard extends StatelessWidget {
           color: isSelected ? context.appColors.primarySurface : theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           border: Border.all(
-            color: isSelected ? AppColors.primary : context.appColors.border,
+            color: isSelected ? context.appColors.primary : context.appColors.border,
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -40,7 +40,7 @@ class TimePresetCard extends StatelessWidget {
             Text(
               '${seconds}s',
               style: theme.textTheme.headlineSmall?.copyWith(
-                color: isSelected ? AppColors.primary : context.appColors.textPrimary,
+                color: isSelected ? context.appColors.primary : context.appColors.textPrimary,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -48,7 +48,7 @@ class TimePresetCard extends StatelessWidget {
             Text(
               label,
               style: theme.textTheme.bodySmall?.copyWith(
-                color: isSelected ? AppColors.primary : context.appColors.textPrimary,
+                color: isSelected ? context.appColors.primary : context.appColors.textPrimary,
                 fontWeight: FontWeight.w600,
               ),
             ),

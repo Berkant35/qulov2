@@ -96,7 +96,7 @@ class _ConvertSectionState extends ConsumerState<ConvertSection> {
                   Text(
                     '$_greenAmount',
                     style: theme.textTheme.headlineSmall?.copyWith(
-                      color: AppColors.secondary,
+                      color: context.appColors.secondary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -118,7 +118,7 @@ class _ConvertSectionState extends ConsumerState<ConvertSection> {
                   Text(
                     '$_purpleResult',
                     style: theme.textTheme.headlineSmall?.copyWith(
-                      color: AppColors.primary,
+                      color: context.appColors.primary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -132,10 +132,10 @@ class _ConvertSectionState extends ConsumerState<ConvertSection> {
           // Slider
           SliderTheme(
             data: SliderTheme.of(context).copyWith(
-              activeTrackColor: AppColors.secondary,
-              inactiveTrackColor: AppColors.secondary.withValues(alpha: 0.2),
-              thumbColor: AppColors.secondary,
-              overlayColor: AppColors.secondary.withValues(alpha: 0.1),
+              activeTrackColor: context.appColors.secondary,
+              inactiveTrackColor: context.appColors.secondary.withValues(alpha: 0.2),
+              thumbColor: context.appColors.secondary,
+              overlayColor: context.appColors.secondary.withValues(alpha: 0.1),
             ),
             child: Slider(
               value: _sliderValue.clamp(ratio.toDouble(), maxGreen.toDouble()),
@@ -172,7 +172,7 @@ class _ConvertSectionState extends ConsumerState<ConvertSection> {
                   ? _onConvert
                   : null,
               style: FilledButton.styleFrom(
-                backgroundColor: AppColors.secondary,
+                backgroundColor: context.appColors.secondary,
                 foregroundColor: Colors.black,
                 padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                 shape: RoundedRectangleBorder(

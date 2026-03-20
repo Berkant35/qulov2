@@ -143,7 +143,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const SizedBox(height: AppSpacing.md),
-              Icon(Icons.celebration, size: 64, color: AppColors.primary),
+              Icon(Icons.celebration, size: 64, color: context.appColors.primary),
               const SizedBox(height: AppSpacing.lg),
               Text(
                 context.tr('question_nudge_celebration_title'),
@@ -161,7 +161,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
                     ref.read(navigationServiceProvider).go(RouteNames.discover);
                   },
                   style:
-                      FilledButton.styleFrom(backgroundColor: AppColors.primary),
+                      FilledButton.styleFrom(backgroundColor: context.appColors.primary),
                   child:
                       Text(context.tr('question_nudge_celebration_button')),
                 ),
@@ -187,10 +187,10 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
     final total = q.statsCorrect + q.statsWrong;
     if (total < 10) return context.appColors.textHint;
     final rate = q.statsCorrect / total;
-    if (rate >= 0.8) return AppColors.secondary;
-    if (rate >= 0.5) return AppColors.info;
-    if (rate >= 0.2) return AppColors.warning;
-    return AppColors.error;
+    if (rate >= 0.8) return context.appColors.secondary;
+    if (rate >= 0.5) return context.appColors.info;
+    if (rate >= 0.2) return context.appColors.warning;
+    return context.appColors.error;
   }
 
   @override

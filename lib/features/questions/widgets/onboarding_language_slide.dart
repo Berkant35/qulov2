@@ -28,7 +28,7 @@ class OnboardingLanguageSlide extends StatelessWidget {
             height: 120,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.primary.withValues(alpha: 0.1),
+              color: context.appColors.primary.withValues(alpha: 0.1),
             ),
             child: const Center(
               child: Text(
@@ -67,9 +67,9 @@ class OnboardingLanguageSlide extends StatelessWidget {
                 selected: isSelected,
                 onSelected: (_) => onToggle(locale),
                 selectedColor: context.appColors.primarySurface,
-                checkmarkColor: AppColors.primary,
+                checkmarkColor: context.appColors.primary,
                 side: BorderSide(
-                  color: isSelected ? AppColors.primary : context.appColors.border,
+                  color: isSelected ? context.appColors.primary : context.appColors.border,
                 ),
               );
             }).toList(),

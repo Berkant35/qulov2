@@ -51,13 +51,13 @@ class QuestionAnalyticsCard extends StatelessWidget {
               StatChip(
                 label: context.tr('analytics_correct'),
                 value: '${stats.correct}',
-                color: AppColors.success,
+                color: context.appColors.success,
               ),
               const SizedBox(width: AppSpacing.md),
               StatChip(
                 label: context.tr('analytics_wrong'),
                 value: '${stats.wrong}',
-                color: AppColors.error,
+                color: context.appColors.error,
               ),
               const SizedBox(width: AppSpacing.md),
               StatChip(
@@ -65,7 +65,7 @@ class QuestionAnalyticsCard extends StatelessWidget {
                 value: context
                     .tr('analytics_seconds')
                     .replaceAll('{n}', '${stats.avgTime}'),
-                color: AppColors.info,
+                color: context.appColors.info,
               ),
             ],
           ),
@@ -126,7 +126,7 @@ class _QuestionCardHeader extends StatelessWidget {
             child: Text(
               context.tr('question_category_${item.category}'),
               style: theme.textTheme.labelSmall?.copyWith(
-                color: AppColors.primary,
+                color: context.appColors.primary,
                 fontSize: 10,
               ),
             ),

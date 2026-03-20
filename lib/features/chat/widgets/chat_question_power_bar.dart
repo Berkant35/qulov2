@@ -159,12 +159,12 @@ class _PowerBlockOverlay extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.lock, color: AppColors.warning, size: 24),
+              Icon(Icons.lock, color: context.appColors.warning, size: 24),
               const SizedBox(height: AppSpacing.xs),
               Text(
                 'Güçler Engellenmiş',
                 style: TextStyle(
-                  color: AppColors.warning,
+                  color: context.appColors.warning,
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                 ),
@@ -179,7 +179,7 @@ class _PowerBlockOverlay extends StatelessWidget {
                       : const Icon(Icons.lock_open, size: 16),
                   label: Text(AppLocalizations.of(context).get('chat_unlock')),
                   style: TextButton.styleFrom(
-                    foregroundColor: AppColors.warning,
+                    foregroundColor: context.appColors.warning,
                   ),
                 ),
               ),

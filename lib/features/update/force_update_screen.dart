@@ -30,8 +30,8 @@ class ForceUpdateScreen extends ConsumerWidget {
                 AppAssets.logoSvg,
                 width: AppSizes.logoMd,
                 height: AppSizes.logoMd,
-                colorFilter: const ColorFilter.mode(
-                  AppColors.primary,
+                colorFilter: ColorFilter.mode(
+                  context.appColors.primary,
                   BlendMode.srcIn,
                 ),
               ),
