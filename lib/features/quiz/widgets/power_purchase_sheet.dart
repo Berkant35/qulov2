@@ -178,6 +178,19 @@ class _PowerRow extends StatelessWidget {
     return context.tr(key);
   }
 
+  String _powerDesc(BuildContext context) {
+    final key = switch (power.name) {
+      'ORACLE' => 'power_oracle_desc',
+      'HALF' => 'power_half_desc',
+      'SKIP' => 'power_skip_desc',
+      'SKIP_ALL' => 'power_skip_all_desc',
+      'TIME_EXTEND' => 'power_time_extend_desc',
+      'HINT' => 'power_hint_desc',
+      _ => '',
+    };
+    return key.isEmpty ? '' : context.tr(key);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -208,11 +221,23 @@ class _PowerRow extends StatelessWidget {
             ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
-              child: Text(
-                _powerLabel(context),
-                style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _powerLabel(context),
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    _powerDesc(context),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
               ),
             ),
             // Purple buy button
