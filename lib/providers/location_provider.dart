@@ -23,6 +23,9 @@ class LocationState {
 }
 
 class LocationNotifier extends Notifier<LocationState> {
+  DateTime? _lastUpdateTime;
+  static const _kLocationUpdateInterval = Duration(minutes: 15);
+
   @override
   LocationState build() => const LocationState();
 
@@ -34,9 +37,19 @@ class LocationNotifier extends Notifier<LocationState> {
   }
 
   /// App resume olduğunda çağrılır.
-  /// Permission hatası varsa tekrar kontrol eder.
+  /// Error varsa veya 15dk geçmişse konum güncellenir.
   void onAppResumed() {
-    if (state.error != null && !state.isLoading) {
+    if (state.isLoading) return;
+
+    // Error varsa her zaman retry
+    if (state.error != null) {
+      getCurrentLocation();
+      return;
+    }
+
+    // Throttle: son güncellemeden 15dk geçmişse güncelle
+    if (_lastUpdateTime == null ||
+        DateTime.now().difference(_lastUpdateTime!) >= _kLocationUpdateInterval) {
       getCurrentLocation();
     }
   }
@@ -75,11 +88,15 @@ class LocationNotifier extends Notifier<LocationState> {
         isLoading: false,
       );
 
+      _lastUpdateTime = DateTime.now();
+
       await ref.read(userRepositoryProvider).updateLocation(
         lat: result.lat,
         lng: result.lng,
         city: result.city,
       );
+    } on MockLocationException {
+      state = state.copyWith(isLoading: false, error: 'LOCATION_MOCK_DETECTED');
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
     }
