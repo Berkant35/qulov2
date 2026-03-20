@@ -28,12 +28,13 @@ class _AppLoadingWidgetState extends State<AppLoadingWidget>
     with TickerProviderStateMixin {
   late final AnimationController _rotationController;
   AnimationController? _glowController;
-  late final _QLogoPainter _painter;
+  late _QLogoPainter _painter;
+  bool _painterInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    _painter = _QLogoPainter(color: context.appColors.primary);
+    _painter = _QLogoPainter(color: AppColors.primary);
     _rotationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1500),
@@ -44,6 +45,15 @@ class _AppLoadingWidgetState extends State<AppLoadingWidget>
         vsync: this,
         duration: const Duration(milliseconds: 2000),
       )..repeat(reverse: true);
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_painterInitialized) {
+      _painter = _QLogoPainter(color: context.appColors.primary);
+      _painterInitialized = true;
     }
   }
 
