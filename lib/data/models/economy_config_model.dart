@@ -32,12 +32,14 @@ class EconomyConfig extends Equatable {
   final Map<String, TierLimits> subscriptionLimits;
   final RewardsConfig rewards;
   final TimingConfig timing;
+  final PowerCostsConfig powerCosts;
 
   const EconomyConfig({
     required this.core,
     required this.subscriptionLimits,
     required this.rewards,
     required this.timing,
+    required this.powerCosts,
   });
 
   /// Returns limits for the given subscription plan.
@@ -112,6 +114,7 @@ class EconomyConfig extends Equatable {
       timeExtendSeconds: 15,
       timePresets: [15, 30, 60, 90],
     ),
+    powerCosts: PowerCostsConfig.fallback,
   );
 
   // -------------------------------------------------------------------------
@@ -140,6 +143,9 @@ class EconomyConfig extends Equatable {
       timing: json['timing'] != null
           ? TimingConfig.fromJson(json['timing'] as Map<String, dynamic>)
           : fallback.timing,
+      powerCosts: json['powerCosts'] != null
+          ? PowerCostsConfig.fromJson(json['powerCosts'] as Map<String, dynamic>)
+          : PowerCostsConfig.fallback,
     );
   }
 
@@ -151,11 +157,12 @@ class EconomyConfig extends Equatable {
       ),
       'rewards': rewards.toJson(),
       'timing': timing.toJson(),
+      'powerCosts': powerCosts.toJson(),
     };
   }
 
   @override
-  List<Object?> get props => [core, subscriptionLimits, rewards, timing];
+  List<Object?> get props => [core, subscriptionLimits, rewards, timing, powerCosts];
 }
 
 // ---------------------------------------------------------------------------
@@ -386,4 +393,110 @@ class TimingConfig extends Equatable {
 
   @override
   List<Object?> get props => [questionTimeSeconds, timeExtendSeconds, timePresets];
+}
+
+// ---------------------------------------------------------------------------
+// PowerCostConfig — per-power pricing
+// ---------------------------------------------------------------------------
+
+class PowerCostConfig extends Equatable {
+  final int greenCost;
+  final int purpleCost;
+
+  const PowerCostConfig({
+    required this.greenCost,
+    required this.purpleCost,
+  });
+
+  factory PowerCostConfig.fromJson(Map<String, dynamic> json) {
+    return PowerCostConfig(
+      greenCost: json['greenCost'] as int? ?? 0,
+      purpleCost: json['purpleCost'] as int? ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'greenCost': greenCost,
+    'purpleCost': purpleCost,
+  };
+
+  @override
+  List<Object?> get props => [greenCost, purpleCost];
+}
+
+// ---------------------------------------------------------------------------
+// PowerCostsConfig — all power prices
+// ---------------------------------------------------------------------------
+
+class PowerCostsConfig extends Equatable {
+  final PowerCostConfig oracle;
+  final PowerCostConfig half;
+  final PowerCostConfig skip;
+  final PowerCostConfig skipAll;
+  final PowerCostConfig timeExtend;
+  final PowerCostConfig hint;
+
+  const PowerCostsConfig({
+    required this.oracle,
+    required this.half,
+    required this.skip,
+    required this.skipAll,
+    required this.timeExtend,
+    required this.hint,
+  });
+
+  /// Get cost for a power by its API name (e.g. 'ORACLE', 'HALF')
+  PowerCostConfig? forPower(String apiName) => switch (apiName) {
+    'ORACLE' => oracle,
+    'HALF' => half,
+    'SKIP' => skip,
+    'SKIP_ALL' => skipAll,
+    'TIME_EXTEND' => timeExtend,
+    'HINT' => hint,
+    _ => null,
+  };
+
+  static const PowerCostsConfig fallback = PowerCostsConfig(
+    oracle: PowerCostConfig(greenCost: 15, purpleCost: 5),
+    half: PowerCostConfig(greenCost: 30, purpleCost: 10),
+    skip: PowerCostConfig(greenCost: 60, purpleCost: 20),
+    skipAll: PowerCostConfig(greenCost: 180, purpleCost: 60),
+    timeExtend: PowerCostConfig(greenCost: 15, purpleCost: 5),
+    hint: PowerCostConfig(greenCost: 24, purpleCost: 8),
+  );
+
+  factory PowerCostsConfig.fromJson(Map<String, dynamic> json) {
+    return PowerCostsConfig(
+      oracle: json['ORACLE'] != null
+          ? PowerCostConfig.fromJson(json['ORACLE'] as Map<String, dynamic>)
+          : fallback.oracle,
+      half: json['HALF'] != null
+          ? PowerCostConfig.fromJson(json['HALF'] as Map<String, dynamic>)
+          : fallback.half,
+      skip: json['SKIP'] != null
+          ? PowerCostConfig.fromJson(json['SKIP'] as Map<String, dynamic>)
+          : fallback.skip,
+      skipAll: json['SKIP_ALL'] != null
+          ? PowerCostConfig.fromJson(json['SKIP_ALL'] as Map<String, dynamic>)
+          : fallback.skipAll,
+      timeExtend: json['TIME_EXTEND'] != null
+          ? PowerCostConfig.fromJson(json['TIME_EXTEND'] as Map<String, dynamic>)
+          : fallback.timeExtend,
+      hint: json['HINT'] != null
+          ? PowerCostConfig.fromJson(json['HINT'] as Map<String, dynamic>)
+          : fallback.hint,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'ORACLE': oracle.toJson(),
+    'HALF': half.toJson(),
+    'SKIP': skip.toJson(),
+    'SKIP_ALL': skipAll.toJson(),
+    'TIME_EXTEND': timeExtend.toJson(),
+    'HINT': hint.toJson(),
+  };
+
+  @override
+  List<Object?> get props => [oracle, half, skip, skipAll, timeExtend, hint];
 }
