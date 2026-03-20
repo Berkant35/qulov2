@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:qulo_v2/core/error/error_manager.dart';
@@ -18,6 +19,7 @@ import 'package:qulo_v2/providers/question_provider.dart';
 import 'package:qulo_v2/providers/notification_provider.dart';
 import 'package:qulo_v2/providers/subscription_provider.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
+import 'package:qulo_v2/providers/passport_provider.dart';
 
 enum AuthStatus { initial, authenticated, unauthenticated }
 
@@ -117,6 +119,14 @@ class AuthNotifier extends Notifier<AuthState> {
           ref.read(discoverProvider.notifier).loadCards();
           // Background GPS update (non-blocking)
           ref.read(locationProvider.notifier).getCurrentLocation();
+        }
+        // Sync passport state from user profile
+        if (user != null) {
+          ref.read(passportProvider.notifier).syncFromUser(
+            user.passportCity,
+            user.passportLat,
+            user.passportLng,
+          );
         }
         // Initialize push notifications on auto-login
         ref.read(notificationProvider.notifier).init();
@@ -227,6 +237,12 @@ class AuthNotifier extends Notifier<AuthState> {
             // Background GPS update (non-blocking)
             ref.read(locationProvider.notifier).getCurrentLocation();
           }
+          // Sync passport state from user profile
+          ref.read(passportProvider.notifier).syncFromUser(
+            user.passportCity,
+            user.passportLat,
+            user.passportLng,
+          );
         }
         // Initialize push notifications after successful login
         ref.read(notificationProvider.notifier).init();
