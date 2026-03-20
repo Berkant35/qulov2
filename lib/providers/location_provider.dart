@@ -84,7 +84,7 @@ class LocationNotifier extends Notifier<LocationState> {
       state = state.copyWith(
         lat: result.lat,
         lng: result.lng,
-        city: result.city,
+        city: (result.city != null && result.city!.isNotEmpty) ? result.city : state.city,
         isLoading: false,
       );
 
