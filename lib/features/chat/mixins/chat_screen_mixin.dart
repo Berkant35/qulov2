@@ -237,21 +237,30 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
             if (questionId != null) {
               try {
                 final updated = ChatQuestionModel.fromJson(record);
-                // Update cache with fresh data from realtime
+                // Realtime'dan gelen veriyi direkt cache'e yaz
+                // chatQuestionProvider cache'i watch ettigi icin widget aninda rebuild olur
                 ref.read(chatQuestionCacheProvider.notifier).update((state) {
                   final copy = Map<String, ChatQuestionModel>.from(state);
                   copy[questionId] = updated;
                   return copy;
                 });
-              } catch (_) {
-                // Fallback: clear cache so it re-fetches from API
-                ref.read(chatQuestionCacheProvider.notifier).update((state) {
-                  final copy = Map<String, ChatQuestionModel>.from(state);
-                  copy.remove(questionId);
-                  return copy;
+              } catch (e) {
+                debugPrint('[Realtime] Question parse failed: $e');
+                // Parse basarisiz — API'den taze veri cek
+                ref.read(chatRepositoryProvider).getQuestion(questionId).then((result) {
+                  if (_disposed) return;
+                  result.when(
+                    success: (question) {
+                      ref.read(chatQuestionCacheProvider.notifier).update((state) {
+                        final copy = Map<String, ChatQuestionModel>.from(state);
+                        copy[questionId] = question;
+                        return copy;
+                      });
+                    },
+                    failure: (_) {},
+                  );
                 });
               }
-              ref.invalidate(chatQuestionProvider(questionId));
             }
           },
         )
