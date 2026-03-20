@@ -32,7 +32,7 @@ class EditProfileRelationshipGoalSection extends ConsumerWidget {
           onSelectionChanged: (v) =>
               ref.read(editProfileProvider.notifier).setRelationshipGoal(v.first),
           style: SegmentedButton.styleFrom(
-            selectedBackgroundColor: AppColors.primarySurface,
+            selectedBackgroundColor: context.appColors.primarySurface,
             selectedForegroundColor: AppColors.primary,
           ),
         ),

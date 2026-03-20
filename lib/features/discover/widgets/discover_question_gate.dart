@@ -103,7 +103,7 @@ class QuestionGateEasyModeNudge extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: AppColors.primarySurface,
+              color: context.appColors.primarySurface,
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
               border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
             ),

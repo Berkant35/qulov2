@@ -51,7 +51,7 @@ class _CompactCard extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.all(AppSpacing.cardPadding),
         decoration: BoxDecoration(
-          gradient: AppColors.purpleGradient,
+          gradient: context.appColors.purpleGradient,
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         ),
         child: Row(
@@ -109,7 +109,7 @@ class _FullCard extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppColors.primaryDark.withValues(alpha: 0.6),
+            context.appColors.primaryDark.withValues(alpha: 0.6),
             AppColors.primary.withValues(alpha: 0.3),
           ],
         ),

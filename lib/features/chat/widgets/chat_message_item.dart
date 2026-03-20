@@ -258,7 +258,7 @@ class _MessageContent extends StatelessWidget {
       constraints:
           BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
       decoration: BoxDecoration(
-        gradient: isMe ? AppColors.primaryButtonGradient : null,
+        gradient: isMe ? context.appColors.primaryButtonGradient : null,
         color: isMe ? null : context.appColors.surfaceElevated,
         borderRadius: BorderRadius.only(
           topLeft: const Radius.circular(16),

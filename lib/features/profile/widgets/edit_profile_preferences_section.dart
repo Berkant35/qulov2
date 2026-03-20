@@ -49,7 +49,7 @@ class EditProfilePreferencesSection extends ConsumerWidget {
               ref.read(editProfileProvider.notifier).setGenderPref(set.first);
             },
             style: SegmentedButton.styleFrom(
-              selectedBackgroundColor: AppColors.primarySurface,
+              selectedBackgroundColor: context.appColors.primarySurface,
               selectedForegroundColor: AppColors.primary,
             ),
           ),

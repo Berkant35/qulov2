@@ -50,14 +50,14 @@ abstract final class AppTheme {
         brightness: Brightness.light,
         fontFamily: 'Poppins',
         textTheme: AppTextStyles.lightTextTheme,
-        colorScheme: const ColorScheme.light(
-          primary: AppColors.primary,
+        colorScheme: ColorScheme.light(
+          primary: AppColorsResolved.light.primary,
           onPrimary: Colors.white,
-          secondary: AppColors.secondary,
+          secondary: AppColorsResolved.light.secondary,
           onSecondary: Colors.white,
           surface: AppColorsLight.surface,
           onSurface: AppColorsLight.textPrimary,
-          error: AppColors.error,
+          error: AppColorsResolved.light.error,
           onError: Colors.white,
           outline: AppColorsLight.border,
           outlineVariant: AppColorsLight.border,
@@ -76,8 +76,8 @@ abstract final class AppTheme {
         chipTheme: _chipThemeLight,
         dialogTheme: _dialogThemeLight,
         snackBarTheme: _snackBarThemeLight,
-        progressIndicatorTheme: const ProgressIndicatorThemeData(
-          color: AppColors.primary,
+        progressIndicatorTheme: ProgressIndicatorThemeData(
+          color: AppColorsResolved.light.primary,
           linearMinHeight: 4,
           linearTrackColor: AppColorsLight.surfaceInput,
         ),

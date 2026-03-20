@@ -116,7 +116,7 @@ class _AudioReveal extends StatelessWidget {
       child: Container(
         height: 120,
         decoration: BoxDecoration(
-          color: AppColors.primarySurface,
+          color: context.appColors.primarySurface,
           borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
           border: Border.all(
             color: AppColors.primary.withValues(alpha: 0.3),

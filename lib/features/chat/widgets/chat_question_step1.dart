@@ -255,7 +255,7 @@ class _OptionCountToggle extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.primarySurface
+              ? context.appColors.primarySurface
               : context.appColors.surfaceElevated,
           borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
           border: Border.all(

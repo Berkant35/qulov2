@@ -369,7 +369,7 @@ class _BottomButtons extends StatelessWidget {
       height: 48,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          gradient: enabled ? AppColors.primaryButtonGradient : null,
+          gradient: enabled ? context.appColors.primaryButtonGradient : null,
           color: enabled ? null : context.appColors.textHint.withValues(alpha: 0.3),
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         ),
@@ -401,7 +401,7 @@ class _BottomButtons extends StatelessWidget {
           child: DecoratedBox(
             decoration: BoxDecoration(
               gradient:
-                  !isLoading ? AppColors.primaryButtonGradient : null,
+                  !isLoading ? context.appColors.primaryButtonGradient : null,
               color: isLoading
                   ? context.appColors.textHint.withValues(alpha: 0.3)
                   : null,

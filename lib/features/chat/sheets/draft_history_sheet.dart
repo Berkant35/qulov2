@@ -295,7 +295,7 @@ class _DraftItem extends StatelessWidget {
                 vertical: 2,
               ),
               decoration: BoxDecoration(
-                color: AppColors.primarySurface,
+                color: context.appColors.primarySurface,
                 borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
               ),
               child: Text(

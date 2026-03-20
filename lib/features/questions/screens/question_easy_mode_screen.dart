@@ -135,7 +135,7 @@ class _QuestionEasyModeScreenState
                         label: Text(
                             context.tr('question_category_$cat')),
                         onSelected: (_) => _fetchByCategory(cat),
-                        selectedColor: AppColors.primarySurface,
+                        selectedColor: context.appColors.primarySurface,
                         checkmarkColor: AppColors.primary,
                         side: BorderSide(
                           color: isSelected

@@ -126,7 +126,7 @@ class _TopIcon extends StatelessWidget {
         height: 80,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: AppColors.secondarySurface,
+          color: context.appColors.secondarySurface,
         ),
         child: const Center(
           child: QIcon(QIcons.icHeart, size: 40, color: AppColors.secondary),

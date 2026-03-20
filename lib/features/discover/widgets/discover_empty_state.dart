@@ -136,7 +136,7 @@ class _DiscoverEmptyStateState extends ConsumerState<DiscoverEmptyState> {
                     child: FilledButton(
                       onPressed: _isSearching ? null : _updateRadiusAndSearch,
                       style: FilledButton.styleFrom(
-                        backgroundColor: AppColors.primaryDark,
+                        backgroundColor: context.appColors.primaryDark,
                       ),
                       child: _isSearching
                           ? const AppLoadingWidget.small()

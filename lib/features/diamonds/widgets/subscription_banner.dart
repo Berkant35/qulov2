@@ -34,7 +34,7 @@ class _UpgradeBanner extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        gradient: AppColors.purpleGradient,
+        gradient: context.appColors.purpleGradient,
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
       ),
       padding: const EdgeInsets.all(AppSpacing.xl),
@@ -114,7 +114,7 @@ class _ActivePlanBadge extends StatelessWidget {
               vertical: AppSpacing.xs,
             ),
             decoration: BoxDecoration(
-              gradient: AppColors.purpleGradient,
+              gradient: context.appColors.purpleGradient,
               borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
             ),
             child: Text(

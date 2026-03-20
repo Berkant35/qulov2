@@ -272,7 +272,7 @@ class _MapConfirmScreenState extends ConsumerState<MapConfirmScreen> with Loadin
                     height: 52,
                     child: FilledButton(
                       onPressed: isLoading ? null : _onConfirm,
-                      style: FilledButton.styleFrom(backgroundColor: AppColors.primaryDark),
+                      style: FilledButton.styleFrom(backgroundColor: context.appColors.primaryDark),
                       child: isLoading
                           ? const SizedBox(height: 20, width: 20, child: AppLoadingWidget.small())
                           : Text(context.tr('passport_start_exploring')),

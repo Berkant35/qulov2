@@ -134,7 +134,7 @@ class QuestionStepQuestion extends StatelessWidget {
                 onSelected: (selected) {
                   onCategoryChanged(selected ? cat : null);
                 },
-                selectedColor: AppColors.primarySurface,
+                selectedColor: context.appColors.primarySurface,
                 checkmarkColor: AppColors.primary,
                 side: BorderSide(
                   color: isSelected ? AppColors.primary : context.appColors.border,

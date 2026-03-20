@@ -95,7 +95,7 @@ class MilestoneCelebrationSheet extends StatelessWidget {
               decoration: BoxDecoration(
                 border: Border.all(color: AppColors.secondary),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                color: AppColors.secondarySurface,
+                color: context.appColors.secondarySurface,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,

@@ -115,8 +115,8 @@ class ChatInputBar extends StatelessWidget {
                 builder: (context, isLoading, onTap) => Opacity(
                   opacity: isLocked ? 0.4 : 1.0,
                   child: Container(
-                    decoration: const BoxDecoration(
-                      gradient: AppColors.primaryButtonGradient,
+                    decoration: BoxDecoration(
+                      gradient: context.appColors.primaryButtonGradient,
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
@@ -134,8 +134,8 @@ class ChatInputBar extends StatelessWidget {
               Opacity(
                 opacity: isLocked ? 0.4 : 1.0,
                 child: Container(
-                  decoration: const BoxDecoration(
-                    gradient: AppColors.primaryButtonGradient,
+                  decoration: BoxDecoration(
+                    gradient: context.appColors.primaryButtonGradient,
                     shape: BoxShape.circle,
                   ),
                   child: IconButton(

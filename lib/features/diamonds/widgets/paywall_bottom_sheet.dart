@@ -290,7 +290,7 @@ class _CurrentPlanBadge extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.primarySurface,
+        color: context.appColors.primarySurface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       ),
       child: Text(
@@ -456,7 +456,7 @@ class _PlanLabel extends StatelessWidget {
               margin: const EdgeInsets.only(top: 2),
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
               decoration: BoxDecoration(
-                color: AppColors.primarySurface,
+                color: context.appColors.primarySurface,
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(

@@ -34,7 +34,7 @@ class _VoiceMessageWidgetState extends ConsumerState<VoiceMessageWidget> {
         vertical: AppSpacing.sm,
       ),
       decoration: BoxDecoration(
-        gradient: widget.isMine ? AppColors.purpleGradient : null,
+        gradient: widget.isMine ? context.appColors.purpleGradient : null,
         color: widget.isMine ? null : context.appColors.surfaceElevated,
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
       ),
@@ -173,7 +173,7 @@ class _PlayPauseButton extends StatelessWidget {
         height: 36,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: isMine ? Colors.white24 : AppColors.primarySurface,
+          color: isMine ? Colors.white24 : context.appColors.primarySurface,
         ),
         child: Icon(
           isPlaying ? Icons.pause : Icons.play_arrow,

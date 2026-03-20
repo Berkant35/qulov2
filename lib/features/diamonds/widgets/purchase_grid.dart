@@ -138,7 +138,7 @@ class _PackageCard extends StatelessWidget {
                 right: 0,
                 child: Container(
                   decoration: BoxDecoration(
-                    gradient: AppColors.purpleGradient,
+                    gradient: context.appColors.purpleGradient,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(AppSpacing.radiusMd - 1),
                       topRight: Radius.circular(AppSpacing.radiusMd - 1),

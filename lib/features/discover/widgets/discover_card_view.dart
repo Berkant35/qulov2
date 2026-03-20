@@ -303,7 +303,7 @@ class DiscoverSolveButton extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: AppSpacing.md),
       decoration: BoxDecoration(
-        gradient: AppColors.primaryButtonGradient,
+        gradient: context.appColors.primaryButtonGradient,
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       ),
       child: Material(

@@ -130,7 +130,7 @@ class _PassportScreenState extends ConsumerState<PassportScreen> with LoadingMix
                   height: 52,
                   child: FilledButton(
                     onPressed: () => PaywallBottomSheetContent.show(ref, trigger: 'passport_locked'),
-                    style: FilledButton.styleFrom(backgroundColor: AppColors.primaryDark),
+                    style: FilledButton.styleFrom(backgroundColor: context.appColors.primaryDark),
                     child: Text(context.tr('upgrade_to_premium')),
                   ),
                 ),
@@ -165,7 +165,7 @@ class _PassportScreenState extends ConsumerState<PassportScreen> with LoadingMix
                         },
                   icon: const Icon(Icons.swap_horiz),
                   label: Text(context.tr('passport_change_city')),
-                  style: FilledButton.styleFrom(backgroundColor: AppColors.primaryDark),
+                  style: FilledButton.styleFrom(backgroundColor: context.appColors.primaryDark),
                 ),
               ),
               const SizedBox(height: AppSpacing.md),

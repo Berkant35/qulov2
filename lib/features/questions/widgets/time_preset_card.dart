@@ -26,7 +26,7 @@ class TimePresetCard extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primarySurface : theme.colorScheme.surface,
+          color: isSelected ? context.appColors.primarySurface : theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           border: Border.all(
             color: isSelected ? AppColors.primary : context.appColors.border,

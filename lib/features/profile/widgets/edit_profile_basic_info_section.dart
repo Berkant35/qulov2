@@ -111,7 +111,7 @@ class _LocationButton extends StatelessWidget {
       child: IconButton(
         onPressed: isLoading ? null : onPressed,
         style: IconButton.styleFrom(
-          backgroundColor: AppColors.primarySurface,
+          backgroundColor: context.appColors.primarySurface,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           ),

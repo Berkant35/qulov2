@@ -66,7 +66,7 @@ class AppButton extends StatelessWidget {
     final wrappedButton = (variant == AppButtonVariant.primary && !isLoading && onPressed != null)
         ? Container(
             decoration: BoxDecoration(
-              gradient: AppColors.primaryButtonGradient,
+              gradient: context.appColors.primaryButtonGradient,
               borderRadius: BorderRadius.circular(12),
             ),
             child: button,

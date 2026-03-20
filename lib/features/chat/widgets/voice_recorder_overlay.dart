@@ -179,8 +179,8 @@ class _VoiceRecorderOverlayState extends ConsumerState<VoiceRecorderOverlay>
 
               // Send button
               Container(
-                decoration: const BoxDecoration(
-                  gradient: AppColors.primaryButtonGradient,
+                decoration: BoxDecoration(
+                  gradient: context.appColors.primaryButtonGradient,
                   shape: BoxShape.circle,
                 ),
                 child: IconButton(

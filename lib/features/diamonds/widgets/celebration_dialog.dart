@@ -42,7 +42,7 @@ class CelebrationDialog extends StatelessWidget {
                 vertical: AppSpacing.md,
               ),
               decoration: BoxDecoration(
-                gradient: AppColors.purpleGradient,
+                gradient: context.appColors.purpleGradient,
                 borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
               ),
               child: Text(

@@ -39,7 +39,7 @@ class NotificationCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: notification.isRead
               ? null
-              : AppColors.primarySurface.withValues(alpha: 0.3),
+              : context.appColors.primarySurface.withValues(alpha: 0.3),
           border: Border(
             bottom: BorderSide(
               color: theme.colorScheme.outline.withValues(alpha: 0.2),

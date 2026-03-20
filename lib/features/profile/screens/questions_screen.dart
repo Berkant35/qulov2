@@ -222,7 +222,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
           final isAtLimit = questions.length >= questionsLimit;
 
           return FloatingActionButton(
-            backgroundColor: isAtLimit ? context.appColors.textHint : AppColors.primaryDark,
+            backgroundColor: isAtLimit ? context.appColors.textHint : context.appColors.primaryDark,
             onPressed: _showModeSheet,
             child: isAtLimit
                 ? QIcon(QIcons.icLock, size: 22, color: Colors.white)

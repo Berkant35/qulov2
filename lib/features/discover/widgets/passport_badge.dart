@@ -95,7 +95,7 @@ class _PassportBadgeState extends ConsumerState<PassportBadge>
                 ),
                 decoration: BoxDecoration(
                   color: isActive
-                      ? AppColors.primarySurface
+                      ? context.appColors.primarySurface
                       : context.appColors.surfaceElevated,
                   borderRadius:
                       BorderRadius.circular(AppSpacing.radiusFull),

@@ -154,10 +154,10 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
                 ? 'Aktif'
                 : 'Karsi tarafin guclerini engeller',
             value: widget.hasPowerBlock,
-            activeColor: AppColors.primaryDark,
+            activeColor: context.appColors.primaryDark,
             icon: Icons.shield_outlined,
             badge: '40',
-            badgeColor: AppColors.primaryDark,
+            badgeColor: context.appColors.primaryDark,
             onChanged: (v) => widget.onChanged(hasPowerBlock: v),
           ),
           const SizedBox(height: AppSpacing.xl),
@@ -258,7 +258,7 @@ class _TimerChips extends StatelessWidget {
           label: Text('${seconds}s'),
           selected: isSelected,
           onSelected: (_) => onChanged(seconds),
-          selectedColor: AppColors.primarySurface,
+          selectedColor: context.appColors.primarySurface,
           backgroundColor: context.appColors.surfaceElevated,
           side: BorderSide(
             color: isSelected ? AppColors.primary : context.appColors.border,

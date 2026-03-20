@@ -43,8 +43,8 @@ class SubscriptionPlanCard extends StatelessWidget {
           if (isRecommended)
             Container(
               padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
-              decoration: const BoxDecoration(
-                gradient: AppColors.purpleGradient,
+              decoration: BoxDecoration(
+                gradient: context.appColors.purpleGradient,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(AppSpacing.radiusLg - 2),
                   topRight: Radius.circular(AppSpacing.radiusLg - 2),
@@ -126,7 +126,7 @@ class SubscriptionPlanCard extends StatelessWidget {
                       vertical: AppSpacing.md,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.primarySurface,
+                      color: context.appColors.primarySurface,
                       borderRadius:
                           BorderRadius.circular(AppSpacing.radiusMd),
                     ),

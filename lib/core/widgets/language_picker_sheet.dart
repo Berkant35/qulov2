@@ -65,7 +65,7 @@ class _LanguagePickerSheetState extends State<LanguagePickerSheet> {
                     }
                   });
                 },
-                selectedColor: AppColors.primarySurface,
+                selectedColor: context.appColors.primarySurface,
                 checkmarkColor: AppColors.primary,
                 side: BorderSide(
                   color: isSelected ? AppColors.primary : context.appColors.border,

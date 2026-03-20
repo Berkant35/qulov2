@@ -98,7 +98,7 @@ class _GenderCard extends StatelessWidget {
           vertical: AppSpacing.lg,
         ),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primarySurface : Theme.of(context).colorScheme.surface,
+          color: isSelected ? context.appColors.primarySurface : Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           border: Border.all(
             color: isSelected ? AppColors.primary : Theme.of(context).colorScheme.outline,

@@ -61,7 +61,7 @@ class DiscoverLocationError extends ConsumerWidget {
                   }
                 },
                 style: FilledButton.styleFrom(
-                  backgroundColor: isMockError ? AppColors.error : AppColors.primaryDark,
+                  backgroundColor: isMockError ? AppColors.error : context.appColors.primaryDark,
                 ),
                 child: Text(
                   isMockError

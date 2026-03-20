@@ -64,7 +64,7 @@ class QuestionsListCard extends StatelessWidget {
                       height: 28,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: AppColors.primarySurface,
+                        color: context.appColors.primarySurface,
                       ),
                       child: Center(
                         child: Text(
@@ -84,7 +84,7 @@ class QuestionsListCard extends StatelessWidget {
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.primarySurface,
+                          color: context.appColors.primarySurface,
                           borderRadius:
                               BorderRadius.circular(AppSpacing.radiusFull),
                         ),

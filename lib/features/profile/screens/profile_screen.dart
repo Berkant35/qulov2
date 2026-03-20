@@ -189,7 +189,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                 vertical: AppSpacing.xs,
                               ),
                               decoration: BoxDecoration(
-                                gradient: AppColors.purpleGradient,
+                                gradient: context.appColors.purpleGradient,
                                 borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
                               ),
                               child: Text(

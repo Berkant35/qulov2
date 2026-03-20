@@ -66,7 +66,7 @@ class OnboardingLanguageSlide extends StatelessWidget {
                 label: Text('$flag ${context.tr('locale_$locale')}'),
                 selected: isSelected,
                 onSelected: (_) => onToggle(locale),
-                selectedColor: AppColors.primarySurface,
+                selectedColor: context.appColors.primarySurface,
                 checkmarkColor: AppColors.primary,
                 side: BorderSide(
                   color: isSelected ? AppColors.primary : context.appColors.border,

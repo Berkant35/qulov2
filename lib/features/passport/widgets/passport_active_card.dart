@@ -13,7 +13,7 @@ class PassportActiveCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.primarySurface,
+        color: context.appColors.primarySurface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
       ),
