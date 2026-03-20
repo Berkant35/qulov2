@@ -49,11 +49,21 @@ class _PassportScreenState extends ConsumerState<PassportScreen> with LoadingMix
     if (city == null || city.isEmpty) return;
 
     await withLoading(() async {
-      await ref.read(passportProvider.notifier).activate(city: city, lat: lat, lng: lng);
-    });
-
-    _analytics.logEvent(AnalyticsEvents.passportActivate, params: {
-      AnalyticsEvents.paramDestinationCity: city,
+      final result = await ref.read(passportProvider.notifier).activate(city: city, lat: lat, lng: lng);
+      result.when(
+        success: (_) {
+          _analytics.logEvent(AnalyticsEvents.passportActivate, params: {
+            AnalyticsEvents.paramDestinationCity: city,
+          });
+        },
+        failure: (_) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(context.tr('passport_activate_failed'))),
+            );
+          }
+        },
+      );
     });
   }
 
@@ -170,10 +180,22 @@ class _PassportScreenState extends ConsumerState<PassportScreen> with LoadingMix
                     ? null
                     : () {
                         final city = ref.read(passportProvider).city ?? '';
-                        withLoading(() => ref.read(passportProvider.notifier).deactivate()).then((_) {
-                          _analytics.logEvent(AnalyticsEvents.passportDeactivate, params: {
-                            AnalyticsEvents.paramDestinationCity: city,
-                          });
+                        withLoading(() async {
+                          final result = await ref.read(passportProvider.notifier).deactivate();
+                          result.when(
+                            success: (_) {
+                              _analytics.logEvent(AnalyticsEvents.passportDeactivate, params: {
+                                AnalyticsEvents.paramDestinationCity: city,
+                              });
+                            },
+                            failure: (_) {
+                              if (mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(context.tr('passport_deactivate_failed'))),
+                                );
+                              }
+                            },
+                          );
                         });
                       },
                 child: isLoading
@@ -183,14 +205,6 @@ class _PassportScreenState extends ConsumerState<PassportScreen> with LoadingMix
             ),
           ],
 
-          if (passport.failure != null) ...[
-            const SizedBox(height: AppSpacing.md),
-            Text(
-              context.tr('error_try_again'),
-              style: theme.textTheme.bodySmall?.copyWith(color: AppColors.error),
-              textAlign: TextAlign.center,
-            ),
-          ],
         ],
       ),
     );
