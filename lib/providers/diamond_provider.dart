@@ -62,7 +62,10 @@ class DiamondNotifier extends AsyncNotifier<DiamondBalance> {
     }
     try {
       final customerInfo = await RevenueCatService.purchaseByProductId(productId);
-      final txId = customerInfo.originalAppUserId;
+      final txId = customerInfo.nonSubscriptionTransactions
+          .where((t) => t.productIdentifier == productId)
+          .lastOrNull
+          ?.transactionIdentifier;
       await _notifyBackend(productId, txId);
       await fetchBalance();
       return true;
