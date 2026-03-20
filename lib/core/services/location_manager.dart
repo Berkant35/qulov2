@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
@@ -8,6 +9,12 @@ class LocationResult {
   final String? city;
 
   const LocationResult({required this.lat, required this.lng, this.city});
+}
+
+class MockLocationException implements Exception {
+  const MockLocationException();
+  @override
+  String toString() => 'LOCATION_MOCK_DETECTED';
 }
 
 class LocationManager {
@@ -30,6 +37,12 @@ class LocationManager {
     final position = await Geolocator.getCurrentPosition(
       locationSettings: const LocationSettings(accuracy: LocationAccuracy.medium),
     );
+
+    // Mock location check — only in release mode (kDebugMode bypasses for emulator testing)
+    if (!kDebugMode && position.isMocked) {
+      throw const MockLocationException();
+    }
+
     final city = await getCityFromCoordinates(position.latitude, position.longitude);
     return LocationResult(lat: position.latitude, lng: position.longitude, city: city);
   }
