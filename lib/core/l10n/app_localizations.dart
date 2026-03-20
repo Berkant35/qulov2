@@ -750,6 +750,10 @@ class AppLocalizations {
     'about_me': 'Hakkımda',
     'details': 'Detaylar',
     'preferences': 'Tercihler',
+
+    // Power info toggle
+    'what_are_powers': 'Güçler ne işe yarar?',
+    'hide_info': 'Bilgiyi gizle',
   };
 
   static const _en = <String, String>{
@@ -1478,6 +1482,10 @@ class AppLocalizations {
     'about_me': 'About Me',
     'details': 'Details',
     'preferences': 'Preferences',
+
+    // Power info toggle
+    'what_are_powers': 'What do powers do?',
+    'hide_info': 'Hide info',
   };
 }
 
