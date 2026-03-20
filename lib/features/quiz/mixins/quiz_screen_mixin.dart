@@ -337,7 +337,7 @@ mixin QuizScreenMixin on ConsumerState<QuizScreen> {
       final power = rates.powers.where((p) => p.name == powerName).firstOrNull;
       if (power != null) return power.purpleCost;
     }
-    return 20;
+    return 0;
   }
 
   void onStartChat() {

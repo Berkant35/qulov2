@@ -6,6 +6,7 @@ import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/diamond_icon.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
+import 'package:qulo_v2/providers/economy_config_provider.dart';
 import 'package:qulo_v2/providers/exchange_provider.dart';
 
 class ConvertSection extends ConsumerStatefulWidget {
@@ -21,7 +22,8 @@ class _ConvertSectionState extends ConsumerState<ConvertSection> {
 
   int get _greenAmount => _sliderValue.toInt();
   int get _convertRatio =>
-      ref.read(exchangeProvider).rates?.convertRatio ?? 3;
+      ref.read(exchangeProvider).rates?.convertRatio ??
+      ref.read(economyConfigProvider).core.greenToPurpleRatio;
   int get _purpleResult => _greenAmount ~/ _convertRatio;
 
   int get _maxGreen {

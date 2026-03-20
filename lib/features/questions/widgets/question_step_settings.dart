@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/features/questions/widgets/time_preset_card.dart';
 
 class QuestionStepSettings extends StatelessWidget {
   final int selectedTimeLimit;
+  final List<int> timePresets;
   final ValueChanged<int> onTimeLimitChanged;
 
   const QuestionStepSettings({
     super.key,
     required this.selectedTimeLimit,
+    required this.timePresets,
     required this.onTimeLimitChanged,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final timePresets = AppConstants.timePresets;
     final timeLabels = [
       'question_time_fast',
       'question_time_normal',

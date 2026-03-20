@@ -14,6 +14,7 @@ import 'package:qulo_v2/features/questions/widgets/question_step_question.dart';
 import 'package:qulo_v2/features/questions/widgets/question_step_answers.dart';
 import 'package:qulo_v2/features/questions/widgets/question_step_settings.dart';
 import 'package:qulo_v2/features/questions/widgets/question_create_bottom_bar.dart';
+import 'package:qulo_v2/providers/economy_config_provider.dart';
 import 'package:qulo_v2/providers/question_provider.dart';
 
 class QuestionCreateScreen extends ConsumerStatefulWidget {
@@ -255,6 +256,7 @@ class _QuestionCreateScreenState extends ConsumerState<QuestionCreateScreen> {
                 ),
                 QuestionStepSettings(
                   selectedTimeLimit: _selectedTimeLimit,
+                  timePresets: ref.read(economyConfigProvider).timing.timePresets,
                   onTimeLimitChanged: (v) => setState(() => _selectedTimeLimit = v),
                 ),
               ],

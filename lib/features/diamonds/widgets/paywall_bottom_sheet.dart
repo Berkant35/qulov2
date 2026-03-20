@@ -12,6 +12,7 @@ import 'package:qulo_v2/features/diamonds/widgets/celebration_dialog.dart';
 import 'package:qulo_v2/features/diamonds/widgets/purchase_grid.dart';
 import 'package:qulo_v2/providers/daily_stats_provider.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
+import 'package:qulo_v2/providers/economy_config_provider.dart';
 import 'package:qulo_v2/providers/subscription_provider.dart';
 
 class PaywallBottomSheetContent extends ConsumerStatefulWidget {
@@ -85,7 +86,10 @@ class _PaywallBottomSheetContentState
       final planName = isPremium
           ? context.tr('sub_plan_premium')
           : context.tr('sub_plan_plus');
-      final bonus = isPremium ? 1500 : 500;
+      final config = ref.read(economyConfigProvider);
+      final bonus = isPremium
+          ? config.limitsFor('premium').monthlyPurpleBonus
+          : config.limitsFor('plus').monthlyPurpleBonus;
 
       if (context.mounted) {
         showDialog(

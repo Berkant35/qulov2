@@ -23,6 +23,7 @@ import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/features/diamonds/widgets/transaction_tile.dart';
 import 'package:qulo_v2/core/widgets/referral_invite_card.dart';
+import 'package:qulo_v2/providers/economy_config_provider.dart';
 import 'package:qulo_v2/providers/referral_provider.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 
@@ -215,8 +216,9 @@ class _DiamondsScreenState extends ConsumerState<DiamondsScreen> {
                   onShare: () {
                     if (referralState.code != null) {
                       final code = referralState.code!;
+                      final reward = ref.read(economyConfigProvider).rewards.referralPurple;
                       final message =
-                          "Qulo'ya katıl! Davet kodumu kullan, ikimize de 25 mor elmas hediye: $code\nhttps://qulo.app/invite/$code";
+                          "Qulo'ya katıl! Davet kodumu kullan, ikimize de $reward mor elmas hediye: $code\nhttps://qulo.app/invite/$code";
                       ref.read(shareManagerProvider).share(message);
                     }
                   },

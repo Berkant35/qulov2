@@ -7,6 +7,7 @@ import 'package:qulo_v2/core/services/image_picker_manager.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/core/widgets/milestone_celebration_sheet.dart';
+import 'package:qulo_v2/providers/economy_config_provider.dart';
 import 'package:qulo_v2/providers/edit_profile_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
@@ -273,7 +274,7 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
             ref.read(userProvider.notifier).detectNewMilestones(oldClaimed);
 
         if (newMilestones.isNotEmpty) {
-          const milestoneRewards = {25: 5, 50: 15, 75: 30, 100: 50};
+          final milestoneRewards = ref.read(economyConfigProvider).rewards.milestones;
           final highestMilestone = newMilestones.last;
 
           await ref.read(navigationServiceProvider).showAppBottomSheet(
@@ -335,7 +336,9 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
   // ─── Progress Helpers ───
 
   int? nextMilestone(int completion) {
-    for (final m in [25, 50, 75, 100]) {
+    final milestones = ref.read(economyConfigProvider).rewards.milestones;
+    final sortedKeys = milestones.keys.toList()..sort();
+    for (final m in sortedKeys) {
       if (completion < m) return m;
     }
     return null;
@@ -343,7 +346,7 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
 
   String milestoneMessage(int completion) {
     final next = nextMilestone(completion);
-    const rewards = {25: 5, 50: 15, 75: 30, 100: 50};
+    final rewards = ref.read(economyConfigProvider).rewards.milestones;
     if (next == null) return '';
     return '%$next tamamla, ${rewards[next]} elmas kazan!';
   }

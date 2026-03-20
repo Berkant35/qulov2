@@ -44,29 +44,6 @@ class SubscriptionInfo extends Equatable {
   bool get isPlus => isActive && plan == 'plus';
   bool get isPremium => isActive && plan == 'premium';
   bool get isFree => !isActive;
-  bool get hasAds => isFree;
-  bool get hasPassport => isPremium;
-
-  int get dailyDiscoverLimit => isPremium || isPlus ? 999999 : 50;
-
-  int get maxQuestions => isPremium
-      ? 10
-      : isPlus
-          ? 6
-          : 4;
-
-  int get dailyUndoLimit => isPremium
-      ? 999999
-      : isPlus
-          ? 3
-          : 0;
-
-  int get monthlyPurpleBonus => isPremium
-      ? 1500
-      : isPlus
-          ? 500
-          : 0;
-
   factory SubscriptionInfo.fromJson(Map<String, dynamic> json) {
     return SubscriptionInfo(
       plan: json['plan'] as String?,
