@@ -88,7 +88,6 @@ class _PassportBadgeState extends ConsumerState<PassportBadge>
           child: AnimatedBuilder(
             animation: _glowController,
             builder: (context, child) {
-              final theme = Theme.of(context);
               return Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.sm,
@@ -97,7 +96,7 @@ class _PassportBadgeState extends ConsumerState<PassportBadge>
                 decoration: BoxDecoration(
                   color: isActive
                       ? AppColors.primarySurface
-                      : theme.colorScheme.surfaceContainerHighest,
+                      : context.appColors.surfaceElevated,
                   borderRadius:
                       BorderRadius.circular(AppSpacing.radiusFull),
                   border: Border.all(

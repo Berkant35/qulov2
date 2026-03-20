@@ -80,7 +80,7 @@ class _DiscoverEmptyStateState extends ConsumerState<DiscoverEmptyState> {
             Container(
               padding: const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
-                color: theme.colorScheme.surfaceContainerHighest,
+                color: context.appColors.surfaceElevated,
                 borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                 border: Border.all(color: context.appColors.border),
               ),

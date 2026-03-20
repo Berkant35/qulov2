@@ -122,7 +122,7 @@ class _QuestionMessageBubble extends StatelessWidget {
               ),
               child: Text(
                 timeStr,
-                style: theme.textTheme.bodySmall?.copyWith(
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   fontSize: 10,
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
@@ -153,7 +153,6 @@ class _RegularMessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: GestureDetector(
@@ -178,9 +177,9 @@ class _RegularMessageBubble extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: AppSpacing.xs),
                 child: Text(
                   timeStr,
-                  style: theme.textTheme.bodySmall?.copyWith(
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     fontSize: 10,
-                    color: theme.colorScheme.onSurfaceVariant,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ),
@@ -213,7 +212,7 @@ class _MessageContent extends StatelessWidget {
         constraints:
             BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
         decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceContainerHighest
+          color: context.appColors.surfaceElevated
               .withValues(alpha: 0.5),
           borderRadius: BorderRadius.only(
             topLeft: const Radius.circular(16),
@@ -260,7 +259,7 @@ class _MessageContent extends StatelessWidget {
           BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
       decoration: BoxDecoration(
         gradient: isMe ? AppColors.primaryButtonGradient : null,
-        color: isMe ? null : theme.colorScheme.surfaceContainerHighest,
+        color: isMe ? null : context.appColors.surfaceElevated,
         borderRadius: BorderRadius.only(
           topLeft: const Radius.circular(16),
           topRight: const Radius.circular(16),
@@ -290,7 +289,6 @@ class _ReactionsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Wrap(
@@ -300,7 +298,7 @@ class _ReactionsRow extends StatelessWidget {
           return Container(
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
             decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerHighest,
+              color: context.appColors.surfaceElevated,
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             ),
             child: Text(

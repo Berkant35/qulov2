@@ -82,12 +82,12 @@ class _RewardMediaRevealState extends State<RewardMediaReveal>
         fit: BoxFit.cover,
         placeholder: (ctx, __) => Container(
           height: 200,
-          color: Theme.of(ctx).colorScheme.surfaceContainerHighest,
+          color: context.appColors.surfaceElevated,
           child: const Center(child: AppLoadingWidget.small()),
         ),
         errorWidget: (ctx, __, ___) => Container(
           height: 200,
-          color: Theme.of(ctx).colorScheme.surfaceContainerHighest,
+          color: context.appColors.surfaceElevated,
           child: Icon(Icons.broken_image, color: context.appColors.textHint),
         ),
       ),

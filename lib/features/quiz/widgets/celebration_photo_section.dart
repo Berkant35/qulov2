@@ -73,7 +73,7 @@ class CelebrationPhotoCircle extends StatelessWidget {
                 imageUrl: photoUrl!,
                 fit: BoxFit.cover,
                 placeholder: (ctx, __) => Container(
-                  color: Theme.of(ctx).colorScheme.surfaceContainerHighest,
+                  color: context.appColors.surfaceElevated,
                   child: AppLoadingWidget.small(),
                 ),
                 errorWidget: (_, __, ___) => const _PersonPlaceholder(),
@@ -89,9 +89,8 @@ class _PersonPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Container(
-      color: theme.colorScheme.surfaceContainerHighest,
+      color: context.appColors.surfaceElevated,
       child: Icon(
         Icons.person,
         color: context.appColors.textSecondary,

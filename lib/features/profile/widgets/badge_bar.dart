@@ -187,7 +187,7 @@ class BadgeBar extends StatelessWidget {
             child: LinearProgressIndicator(
               value: info.progress,
               minHeight: 6,
-              backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+              backgroundColor: context.appColors.surfaceElevated,
               valueColor: AlwaysStoppedAnimation<Color>(info.color),
             ),
           ),

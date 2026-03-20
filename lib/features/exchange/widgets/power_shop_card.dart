@@ -211,7 +211,7 @@ class _BuyButton extends StatelessWidget {
           vertical: AppSpacing.xs,
         ),
         decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceContainerHighest,
+          color: context.appColors.surfaceElevated,
           borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
           border: Border.all(
             color: theme.colorScheme.outline.withValues(alpha: 0.2),

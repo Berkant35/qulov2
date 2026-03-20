@@ -232,7 +232,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
       builder: (_) => Container(
         padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+          color: context.appColors.surfaceElevated,
           borderRadius: const BorderRadius.vertical(
               top: Radius.circular(AppSpacing.radiusLg)),
         ),
@@ -387,7 +387,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
       builder: (_) => Container(
         padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+          color: context.appColors.surfaceElevated,
           borderRadius: const BorderRadius.vertical(
               top: Radius.circular(AppSpacing.radiusLg)),
         ),

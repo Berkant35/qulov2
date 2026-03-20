@@ -86,8 +86,6 @@ class _ChatQuestionStep1State extends State<ChatQuestionStep1> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.pagePadding),
       child: Column(
@@ -96,7 +94,7 @@ class _ChatQuestionStep1State extends State<ChatQuestionStep1> {
           // Section title
           Text(
             'Soru Icerigi',
-            style: theme.textTheme.titleMedium?.copyWith(
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w700,
               color: context.appColors.textPrimary,
             ),
@@ -119,7 +117,7 @@ class _ChatQuestionStep1State extends State<ChatQuestionStep1> {
           const SizedBox(height: AppSpacing.lg),
 
           // Question text
-          _buildLabel(theme, 'Soru'),
+          _buildLabel(Theme.of(context), 'Soru'),
           const SizedBox(height: AppSpacing.xs),
           TextFormField(
             controller: _questionCtrl,
@@ -133,7 +131,7 @@ class _ChatQuestionStep1State extends State<ChatQuestionStep1> {
           const SizedBox(height: AppSpacing.md),
 
           // Options
-          _buildLabel(theme, 'Secenekler'),
+          _buildLabel(Theme.of(context), 'Secenekler'),
           const SizedBox(height: AppSpacing.xs),
           _OptionField(
             label: 'A',
@@ -178,7 +176,7 @@ class _ChatQuestionStep1State extends State<ChatQuestionStep1> {
               const SizedBox(width: AppSpacing.xs),
               Text(
                 'Dogru cevabi secmek icin secenek yanindaki daireye dokunun',
-                style: theme.textTheme.bodySmall?.copyWith(
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: context.appColors.textHint,
                 ),
               ),
@@ -201,12 +199,11 @@ class _ChatQuestionStep1State extends State<ChatQuestionStep1> {
   }
 
   InputDecoration _inputDecoration(BuildContext context, String hint) {
-    final theme = Theme.of(context);
     return InputDecoration(
       hintText: hint,
       hintStyle: TextStyle(color: context.appColors.textHint),
       filled: true,
-      fillColor: theme.colorScheme.surfaceContainerHighest,
+      fillColor: context.appColors.surfaceElevated,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         borderSide: BorderSide.none,
@@ -238,13 +235,11 @@ class _OptionCountToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Row(
       children: [
-        _buildChip(context, theme, '2 Sik', 2),
+        _buildChip(context, Theme.of(context), '2 Sik', 2),
         const SizedBox(width: AppSpacing.sm),
-        _buildChip(context, theme, '4 Sik', 4),
+        _buildChip(context, Theme.of(context), '4 Sik', 4),
       ],
     );
   }
@@ -261,7 +256,7 @@ class _OptionCountToggle extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? AppColors.primarySurface
-              : theme.colorScheme.surfaceContainerHighest,
+              : context.appColors.surfaceElevated,
           borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
           border: Border.all(
             color: isSelected ? AppColors.primary : context.appColors.border,
@@ -297,7 +292,6 @@ class _OptionField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return TextFormField(
       controller: controller,
       maxLength: 100,
@@ -307,7 +301,7 @@ class _OptionField extends StatelessWidget {
         hintText: 'Secenek $label',
         hintStyle: TextStyle(color: context.appColors.textHint),
         filled: true,
-        fillColor: theme.colorScheme.surfaceContainerHighest,
+        fillColor: context.appColors.surfaceElevated,
         counterText: '',
         suffixIcon: Padding(
           padding: const EdgeInsets.only(right: AppSpacing.sm),

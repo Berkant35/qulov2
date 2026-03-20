@@ -49,7 +49,7 @@ class QuestionsListCard extends StatelessWidget {
           onTap: onTap,
           child: Container(
             decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerHighest,
+              color: context.appColors.surfaceElevated,
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
               border: Border.all(color: context.appColors.border),
             ),
@@ -106,7 +106,7 @@ class QuestionsListCard extends StatelessWidget {
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: theme.colorScheme.surfaceContainerHighest,
+                          color: context.appColors.surfaceElevated,
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
@@ -125,7 +125,7 @@ class QuestionsListCard extends StatelessWidget {
                         vertical: 2,
                       ),
                       decoration: BoxDecoration(
-                        color: theme.colorScheme.surfaceContainerHighest,
+                        color: context.appColors.surfaceElevated,
                         borderRadius:
                             BorderRadius.circular(AppSpacing.radiusFull),
                       ),

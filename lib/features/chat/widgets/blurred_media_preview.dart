@@ -39,7 +39,7 @@ class BlurredMediaPreview extends StatelessWidget {
               imageUrl: mediaUrl!,
               fit: BoxFit.cover,
               errorWidget: (context, __, ___) => Container(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                color: context.appColors.surfaceElevated,
                 child: Icon(Icons.image, color: context.appColors.textHint),
               ),
             ),
@@ -83,11 +83,10 @@ class _AudioPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Container(
       height: height,
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest,
+        color: context.appColors.surfaceElevated,
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         border: Border.all(
           color: context.appColors.border,

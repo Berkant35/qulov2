@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 
 class ChatDaySeparator extends StatelessWidget {
@@ -29,7 +30,7 @@ class ChatDaySeparator extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
           decoration: BoxDecoration(
-            color: theme.colorScheme.surfaceContainerHighest,
+            color: context.appColors.surfaceElevated,
             borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
           ),
           child: Text(

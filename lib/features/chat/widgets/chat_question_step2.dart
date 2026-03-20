@@ -70,7 +70,6 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.pagePadding),
       child: Column(
@@ -78,7 +77,7 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
         children: [
           Text(
             'Ayarlar',
-            style: theme.textTheme.titleMedium?.copyWith(
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w700,
               color: context.appColors.textPrimary,
             ),
@@ -86,7 +85,7 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
           const SizedBox(height: AppSpacing.lg),
 
           // Timer chips
-          _buildLabel(theme, 'Sure Limiti'),
+          _buildLabel(Theme.of(context), 'Sure Limiti'),
           const SizedBox(height: AppSpacing.sm),
           _TimerChips(
             selectedSeconds: widget.timeLimitSeconds,
@@ -96,7 +95,7 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
           const SizedBox(height: AppSpacing.xl),
 
           // Hint text
-          _buildLabel(theme, 'Ipucu (opsiyonel)'),
+          _buildLabel(Theme.of(context), 'Ipucu (opsiyonel)'),
           const SizedBox(height: AppSpacing.xs),
           TextFormField(
             controller: _hintCtrl,
@@ -110,7 +109,7 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
           const SizedBox(height: AppSpacing.xl),
 
           // Reward media
-          _buildLabel(theme, 'Odul Medyasi (opsiyonel)'),
+          _buildLabel(Theme.of(context), 'Odul Medyasi (opsiyonel)'),
           const SizedBox(height: AppSpacing.sm),
           _RewardMediaRow(
             rewardMediaUrl: widget.rewardMediaUrl,
@@ -178,12 +177,11 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
   }
 
   InputDecoration _inputDecoration(BuildContext context, String hint) {
-    final theme = Theme.of(context);
     return InputDecoration(
       hintText: hint,
       hintStyle: TextStyle(color: context.appColors.textHint),
       filled: true,
-      fillColor: theme.colorScheme.surfaceContainerHighest,
+      fillColor: context.appColors.surfaceElevated,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         borderSide: BorderSide.none,
@@ -261,7 +259,7 @@ class _TimerChips extends StatelessWidget {
           selected: isSelected,
           onSelected: (_) => onChanged(seconds),
           selectedColor: AppColors.primarySurface,
-          backgroundColor: theme.colorScheme.surfaceContainerHighest,
+          backgroundColor: context.appColors.surfaceElevated,
           side: BorderSide(
             color: isSelected ? AppColors.primary : context.appColors.border,
           ),
@@ -300,7 +298,7 @@ class _RewardMediaRow extends StatelessWidget {
       return Container(
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceContainerHighest,
+          color: context.appColors.surfaceElevated,
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         ),
         child: Row(
@@ -315,7 +313,7 @@ class _RewardMediaRow extends StatelessWidget {
                 errorBuilder: (_, __, ___) => Container(
                   width: 48,
                   height: 48,
-                  color: theme.colorScheme.surfaceContainerHighest,
+                  color: context.appColors.surfaceElevated,
                   child: Icon(Icons.image, color: context.appColors.textHint),
                 ),
               ),
@@ -377,7 +375,7 @@ class _MediaButton extends StatelessWidget {
           vertical: AppSpacing.sm,
         ),
         decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceContainerHighest,
+          color: context.appColors.surfaceElevated,
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           border: Border.all(color: context.appColors.border),
         ),
@@ -436,7 +434,7 @@ class _SettingSwitch extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest,
+        color: context.appColors.surfaceElevated,
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       ),
       child: SwitchListTile(

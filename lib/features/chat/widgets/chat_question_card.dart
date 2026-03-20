@@ -359,7 +359,7 @@ class _AnsweredOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color bgColor = theme.colorScheme.surfaceContainerHighest;
+    Color bgColor = context.appColors.surfaceElevated;
     Color textColor = context.appColors.textSecondary;
     Color labelColor = context.appColors.textHint;
 

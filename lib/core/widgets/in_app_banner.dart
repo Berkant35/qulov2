@@ -63,7 +63,6 @@ class _InAppBannerState extends State<InAppBanner>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return SlideTransition(
       position: _slideAnimation,
       child: GestureDetector(
@@ -80,7 +79,7 @@ class _InAppBannerState extends State<InAppBanner>
             margin: const EdgeInsets.all(AppSpacing.md),
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerHighest,
+              color: context.appColors.surfaceElevated,
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
               boxShadow: const [
                 BoxShadow(

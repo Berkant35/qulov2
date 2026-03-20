@@ -15,63 +15,83 @@ class TeleportCity {
   });
 }
 
+/// City search service using Nominatim (OpenStreetMap).
+/// Free, no API key, worldwide coverage including districts.
+/// Rate limit: 1 req/sec (our 300ms debounce is sufficient).
 class TeleportService {
   TeleportService._();
   static final TeleportService instance = TeleportService._();
 
   final _dio = Dio(BaseOptions(
-    baseUrl: 'https://api.teleport.org/api',
+    baseUrl: 'https://nominatim.openstreetmap.org',
     connectTimeout: const Duration(seconds: 5),
     receiveTimeout: const Duration(seconds: 5),
+    headers: {'User-Agent': 'QuloDatingApp/1.0'},
   ));
 
-  /// Search cities by query. Throws on network/API error. Returns empty list for no results.
+  /// Search cities/places by query. Throws on network error.
   Future<List<TeleportCity>> searchCities(String query) async {
     if (query.trim().length < 2) return [];
 
-    final searchResponse = await _dio.get(
-      '/cities/',
-      queryParameters: {'search': query, 'limit': 10},
-    );
+    final response = await _dio.get('/search', queryParameters: {
+      'q': query,
+      'format': 'json',
+      'limit': '10',
+      'addressdetails': '1',
+      'accept-language': 'en',
+    });
 
-    final embedded = searchResponse.data['_embedded'] as Map<String, dynamic>?;
-    final results = (embedded?['city:search-results'] as List?)?.cast<Map<String, dynamic>>() ?? [];
+    final results = (response.data as List?)?.cast<Map<String, dynamic>>() ?? [];
 
-    // Collect detail URLs, limit to first 5 for speed
-    final detailFutures = <Future<TeleportCity?>>[];
-    for (final result in results.take(5)) {
-      final fullName = result['matching_full_name'] as String? ?? '';
-      final links = result['_links'] as Map<String, dynamic>?;
-      final cityItemHref = (links?['city:item'] as Map<String, dynamic>?)?['href'] as String?;
+    return results.map((item) {
+      final lat = double.tryParse(item['lat']?.toString() ?? '');
+      final lng = double.tryParse(item['lon']?.toString() ?? '');
+      if (lat == null || lng == null) return null;
 
-      if (cityItemHref == null) continue;
+      final name = _extractName(item);
+      final fullName = item['display_name'] as String? ?? name;
 
-      detailFutures.add(_fetchCityDetail(cityItemHref, fullName));
-    }
-
-    // Fetch details in parallel
-    final detailResults = await Future.wait(detailFutures);
-    return detailResults.whereType<TeleportCity>().toList();
+      return TeleportCity(name: name, fullName: fullName, lat: lat, lng: lng);
+    }).whereType<TeleportCity>().toList();
   }
 
-  Future<TeleportCity?> _fetchCityDetail(String href, String fullName) async {
+  /// Reverse geocode: get city/place name from coordinates.
+  Future<String?> reverseGeocode(double lat, double lng) async {
     try {
-      final detailResponse = await _dio.get(href);
-      final location = detailResponse.data['location'] as Map<String, dynamic>?;
-      final latlon = location?['latlon'] as Map<String, dynamic>?;
+      final response = await _dio.get('/reverse', queryParameters: {
+        'lat': lat.toString(),
+        'lon': lng.toString(),
+        'format': 'json',
+        'addressdetails': '1',
+        'accept-language': 'en',
+      });
 
-      if (latlon == null) return null;
+      final address = response.data['address'] as Map<String, dynamic>?;
+      if (address == null) return null;
 
-      final lat = (latlon['latitude'] as num?)?.toDouble();
-      final lng = (latlon['longitude'] as num?)?.toDouble();
-      final name = detailResponse.data['name'] as String? ?? fullName.split(',').first;
-
-      if (lat != null && lng != null) {
-        return TeleportCity(name: name, fullName: fullName, lat: lat, lng: lng);
-      }
+      return address['city'] as String? ??
+          address['town'] as String? ??
+          address['village'] as String? ??
+          address['municipality'] as String? ??
+          address['county'] as String? ??
+          address['state'] as String?;
     } catch (e) {
-      dev.log('Teleport detail fetch failed for $href: $e', name: 'TeleportService');
+      dev.log('Reverse geocode failed: $e', name: 'TeleportService');
+      return null;
     }
-    return null;
+  }
+
+  String _extractName(Map<String, dynamic> item) {
+    final address = item['address'] as Map<String, dynamic>?;
+    if (address != null) {
+      return address['city'] as String? ??
+          address['town'] as String? ??
+          address['village'] as String? ??
+          address['municipality'] as String? ??
+          item['name'] as String? ??
+          (item['display_name'] as String? ?? '').split(',').first;
+    }
+    return item['name'] as String? ??
+        (item['display_name'] as String? ?? '').split(',').first;
   }
 }

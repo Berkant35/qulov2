@@ -70,9 +70,9 @@ class ChatInputBar extends StatelessWidget {
                   hintStyle: TextStyle(color: theme.hintColor),
                   filled: true,
                   fillColor: isLocked
-                      ? theme.colorScheme.surfaceContainerHighest
+                      ? context.appColors.surfaceElevated
                           .withValues(alpha: 0.5)
-                      : theme.colorScheme.surfaceContainerHighest,
+                      : context.appColors.surfaceElevated,
                   border: OutlineInputBorder(
                     borderRadius:
                         BorderRadius.circular(AppSpacing.radiusFull),

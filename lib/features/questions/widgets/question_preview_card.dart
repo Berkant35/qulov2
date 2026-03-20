@@ -31,12 +31,11 @@ class QuestionPreviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final answers = [answer1, answer2, answer3, answer4];
 
     return Container(
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest,
+        color: context.appColors.surfaceElevated,
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
         border: Border.all(
           color: AppColors.primary.withValues(alpha: 0.3),
@@ -53,7 +52,7 @@ class QuestionPreviewCard extends StatelessWidget {
             children: [
               Text(
                 context.tr('question_create_preview'),
-                style: theme.textTheme.labelSmall?.copyWith(
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
                   color: AppColors.primary,
                   fontWeight: FontWeight.w600,
                   letterSpacing: 1.2,
@@ -76,7 +75,7 @@ class QuestionPreviewCard extends StatelessWidget {
           // Question text
           Text(
             questionText.isEmpty ? '...' : questionText,
-            style: theme.textTheme.titleSmall?.copyWith(
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
               fontWeight: FontWeight.w600,
               color: questionText.isEmpty ? context.appColors.textHint : null,
             ),
@@ -137,14 +136,13 @@ class _TimeBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm,
         vertical: 2,
       ),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest,
+        color: context.appColors.surfaceElevated,
         borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
       ),
       child: Row(

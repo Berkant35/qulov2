@@ -136,7 +136,6 @@ class QuizTimerState extends State<QuizTimer> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final progress = _remaining / widget.seconds;
     final color = _barColor;
 
@@ -156,7 +155,7 @@ class QuizTimerState extends State<QuizTimer> with TickerProviderStateMixin {
             child: LinearProgressIndicator(
               value: progress,
               minHeight: 6,
-              backgroundColor: theme.colorScheme.surfaceContainerHighest,
+              backgroundColor: context.appColors.surfaceElevated,
               valueColor: AlwaysStoppedAnimation(color),
             ),
           ),

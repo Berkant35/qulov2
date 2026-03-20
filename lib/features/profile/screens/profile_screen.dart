@@ -166,7 +166,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(AppSpacing.cardPadding),
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.surfaceContainerHighest,
+                      color: context.appColors.surfaceElevated,
                       borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
                     ),
                     child: Column(
@@ -237,7 +237,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(AppSpacing.cardPadding),
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.surfaceContainerHighest,
+                      color: context.appColors.surfaceElevated,
                       borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
                     ),
                     child: Column(
