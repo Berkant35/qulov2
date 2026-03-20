@@ -86,7 +86,7 @@ class _SolveChatQuestionScreenState
         _timerKey.currentState?.resume();
         setState(() => _isSubmitting = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(f.message ?? 'Bir hata oluştu')),
+          SnackBar(content: Text(f.message ?? context.tr('error_general'))),
         );
       },
     );
@@ -146,7 +146,7 @@ class _SolveChatQuestionScreenState
         } else {
           _timerKey.currentState?.resume();
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(f.message ?? 'Bir hata oluştu')),
+            SnackBar(content: Text(f.message ?? context.tr('error_general'))),
           );
         }
       },
@@ -177,7 +177,7 @@ class _SolveChatQuestionScreenState
           return;
         }
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(f.message ?? 'Bir hata oluştu')),
+          SnackBar(content: Text(f.message ?? context.tr('error_general'))),
         );
       },
     );

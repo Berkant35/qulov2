@@ -186,7 +186,7 @@ class _PassportScreenState extends ConsumerState<PassportScreen> with LoadingMix
           if (passport.failure != null) ...[
             const SizedBox(height: AppSpacing.md),
             Text(
-              passport.failure!.toString(),
+              context.tr('error_try_again'),
               style: theme.textTheme.bodySmall?.copyWith(color: AppColors.error),
               textAlign: TextAlign.center,
             ),

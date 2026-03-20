@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/l10n/app_localizations.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
@@ -176,7 +177,7 @@ class _PowerBlockOverlay extends StatelessWidget {
                   icon: isLoading
                       ? const AppLoadingWidget.small()
                       : const Icon(Icons.lock_open, size: 16),
-                  label: const Text('Kilidi Aç'),
+                  label: Text(AppLocalizations.of(context).get('chat_unlock')),
                   style: TextButton.styleFrom(
                     foregroundColor: AppColors.warning,
                   ),

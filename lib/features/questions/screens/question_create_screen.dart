@@ -205,7 +205,7 @@ class _QuestionCreateScreenState extends ConsumerState<QuestionCreateScreen> {
   void _onSaveFailure(dynamic f) {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(f.toString())),
+        SnackBar(content: Text(context.tr('question_save_failed'))),
       );
     }
   }

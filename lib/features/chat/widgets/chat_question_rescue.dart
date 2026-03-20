@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/l10n/app_localizations.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
@@ -108,7 +109,7 @@ class ChatQuestionRescue extends StatelessWidget {
                     icon: isLoading
                         ? const AppLoadingWidget.small()
                         : const Icon(Icons.lock_open, size: 20),
-                    label: const Text('Kilidi Aç'),
+                    label: Text(AppLocalizations.of(context).get('chat_unlock')),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.warning,
                       foregroundColor: Colors.black,
@@ -132,7 +133,7 @@ class ChatQuestionRescue extends StatelessWidget {
                     icon: isLoading
                         ? const AppLoadingWidget.small()
                         : const Icon(Icons.skip_next_rounded, size: 22),
-                    label: const Text('Geç (Skip)'),
+                    label: Text(AppLocalizations.of(context).get('chat_skip')),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.info,
                       foregroundColor: Colors.white,
@@ -161,7 +162,7 @@ class ChatQuestionRescue extends StatelessWidget {
                     borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                   ),
                 ),
-                child: const Text('Vazgeç'),
+                child: Text(AppLocalizations.of(context).get('chat_give_up')),
               ),
             ),
             const SizedBox(height: AppSpacing.lg),

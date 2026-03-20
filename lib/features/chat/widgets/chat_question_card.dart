@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/l10n/app_localizations.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/data/models/chat_question_model.dart';
@@ -189,7 +190,7 @@ class _OpenButton extends StatelessWidget {
       child: ElevatedButton.icon(
         onPressed: onOpen,
         icon: const Icon(Icons.lock_open_rounded, size: 16),
-        label: const Text('Soruyu Aç'),
+        label: Text(AppLocalizations.of(context).get('chat_open_question')),
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
@@ -228,7 +229,7 @@ class _WaitingOptions extends StatelessWidget {
         ],
         const SizedBox(height: AppSpacing.sm),
         Text(
-          'Cevap bekleniyor...',
+          AppLocalizations.of(context).get('chat_waiting_answer'),
           style: theme.textTheme.bodySmall?.copyWith(
             color: AppColors.textHint,
             fontStyle: FontStyle.italic,
@@ -271,7 +272,7 @@ class _AnsweredOptions extends StatelessWidget {
         if (!isCorrect && question.hasUnmatchRisk) ...[
           const SizedBox(height: AppSpacing.sm),
           Text(
-            'Unmatch gerçekleşti',
+            AppLocalizations.of(context).get('chat_unmatch_occurred'),
             style: theme.textTheme.bodySmall?.copyWith(
               color: AppColors.error,
               fontWeight: FontWeight.w600,

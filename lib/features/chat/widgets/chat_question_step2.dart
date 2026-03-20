@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/l10n/app_localizations.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/diamond_icon.dart';
@@ -224,7 +225,7 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
         failure: (_) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Medya yuklenemedi')),
+              SnackBar(content: Text(AppLocalizations.of(context).get('chat_media_upload_failed'))),
             );
           }
         },
@@ -321,7 +322,7 @@ class _RewardMediaRow extends StatelessWidget {
             const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Text(
-                'Medya eklendi',
+                AppLocalizations.of(context).get('chat_media_added'),
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: AppColors.success,
                 ),
@@ -341,7 +342,7 @@ class _RewardMediaRow extends StatelessWidget {
       children: [
         _MediaButton(
           icon: Icons.photo_outlined,
-          label: 'Fotograf Ekle',
+          label: AppLocalizations.of(context).get('chat_add_photo'),
           isLoading: isUploading,
           onTap: isUploading ? null : onPickPhoto,
         ),

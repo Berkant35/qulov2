@@ -227,7 +227,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
       isLoading: questionsAsync is AsyncLoading,
       body: questionsAsync.when(
         loading: () => const SizedBox.shrink(),
-        error: (e, _) => Center(child: Text('Error: $e')),
+        error: (e, _) => Center(child: Text(context.tr('error_general'))),
         data: (questions) {
           if (questions.isEmpty) {
             return Center(

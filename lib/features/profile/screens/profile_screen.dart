@@ -237,7 +237,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           SnackBar(content: Text(context.tr('badge_reward_claimed'))),
                         );
                       },
-                      failure: (_) {},
+                      failure: (_) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(context.tr('badge_claim_failed'))));
+                      },
                     );
                   },
                 ),

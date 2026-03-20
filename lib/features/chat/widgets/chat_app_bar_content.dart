@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/l10n/app_localizations.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/data/models/media_request_model.dart';
@@ -94,7 +95,7 @@ class ChatAppBarActions extends StatelessWidget {
                   Icon(Icons.no_photography,
                       color: AppColors.textSecondary, size: 20),
                   const SizedBox(width: 8),
-                  const Text('Medya paylasimini kapat'),
+                  Text(AppLocalizations.of(ctx).get('chat_disable_media')),
                 ],
               ),
             ),
@@ -150,19 +151,19 @@ class MediaRequestBanner extends StatelessWidget implements PreferredSizeWidget 
           ),
         ),
       ),
-      child: _isMine ? _buildSenderContent() : _buildReceiverContent(),
+      child: _isMine ? _buildSenderContent(context) : _buildReceiverContent(context),
     );
   }
 
-  Widget _buildSenderContent() {
+  Widget _buildSenderContent(BuildContext context) {
     return Row(
       children: [
         Icon(Icons.hourglass_top, size: 18, color: AppColors.primary),
         const SizedBox(width: AppSpacing.sm),
-        const Expanded(
+        Expanded(
           child: Text(
-            'Medya istegi gonderildi, yanit bekleniyor...',
-            style: TextStyle(
+            AppLocalizations.of(context).get('chat_media_request_pending_short'),
+            style: const TextStyle(
               color: AppColors.textSecondary,
               fontSize: 13,
             ),
@@ -172,15 +173,15 @@ class MediaRequestBanner extends StatelessWidget implements PreferredSizeWidget 
     );
   }
 
-  Widget _buildReceiverContent() {
+  Widget _buildReceiverContent(BuildContext context) {
     return Row(
       children: [
         Icon(Icons.camera_alt_outlined, size: 18, color: AppColors.primary),
         const SizedBox(width: AppSpacing.sm),
-        const Expanded(
+        Expanded(
           child: Text(
-            'Medya paylasimi istegi',
-            style: TextStyle(
+            AppLocalizations.of(context).get('chat_media_sharing_request'),
+            style: const TextStyle(
               color: AppColors.textPrimary,
               fontSize: 13,
               fontWeight: FontWeight.w500,
@@ -195,7 +196,7 @@ class MediaRequestBanner extends StatelessWidget implements PreferredSizeWidget 
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
               foregroundColor: AppColors.textSecondary,
             ),
-            child: const Text('Reddet', style: TextStyle(fontSize: 13)),
+            child: Text(AppLocalizations.of(context).get('chat_reject'), style: const TextStyle(fontSize: 13)),
           ),
         ),
         const SizedBox(width: AppSpacing.xs),
