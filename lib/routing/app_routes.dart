@@ -87,6 +87,23 @@ final _routes = <RouteBase>[
     builder: (context, state) => const MapPickerScreen(),
   ),
 
+  // Map Confirm (root navigator — full screen over bottom nav)
+  GoRoute(
+    parentNavigatorKey: rootNavigatorKey,
+    path: '/map-confirm',
+    name: RouteNames.mapConfirm,
+    builder: (context, state) {
+      final extra = state.extra as Map<String, dynamic>;
+      return MapConfirmScreen(
+        cityName: extra['cityName'] as String,
+        country: extra['country'] as String,
+        flag: extra['flag'] as String,
+        lat: extra['lat'] as double,
+        lng: extra['lng'] as double,
+      );
+    },
+  ),
+
   // Quiz (root navigator — full screen over bottom nav)
   GoRoute(
     parentNavigatorKey: rootNavigatorKey,

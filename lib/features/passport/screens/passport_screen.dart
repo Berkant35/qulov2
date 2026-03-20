@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/mixins/loading_mixin.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
-import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/teleport_service.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
+import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
-import 'package:qulo_v2/providers/passport_provider.dart';
 import 'package:qulo_v2/features/diamonds/widgets/paywall_bottom_sheet.dart';
+import 'package:qulo_v2/features/passport/data/popular_cities.dart';
+import 'package:qulo_v2/features/passport/widgets/city_search_bar.dart';
+import 'package:qulo_v2/features/passport/widgets/passport_active_card.dart';
+import 'package:qulo_v2/features/passport/widgets/popular_city_grid.dart';
+import 'package:qulo_v2/providers/passport_provider.dart';
 import 'package:qulo_v2/providers/subscription_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 
@@ -25,6 +30,7 @@ class PassportScreen extends ConsumerStatefulWidget {
 
 class _PassportScreenState extends ConsumerState<PassportScreen> with LoadingMixin {
   final _analytics = AnalyticsManager.instance;
+  bool _isChangingCity = false;
 
   @override
   void initState() {
@@ -37,29 +43,50 @@ class _PassportScreenState extends ConsumerState<PassportScreen> with LoadingMix
     });
   }
 
-  Future<void> _openMapPicker() async {
-    final nav = ref.read(navigationServiceProvider);
-    final result = await nav.push<Map<String, dynamic>>(RouteNames.mapPicker);
-    if (result == null || !mounted) return;
+  void _navigateToConfirm({
+    required String city,
+    required String country,
+    required String flag,
+    required double lat,
+    required double lng,
+  }) {
+    ref.read(navigationServiceProvider).push(
+      RouteNames.mapConfirm,
+      extra: {'cityName': city, 'country': country, 'flag': flag, 'lat': lat, 'lng': lng},
+    );
+  }
 
-    final city = result['city'] as String?;
-    final lat = result['lat'] as double;
-    final lng = result['lng'] as double;
+  void _onSearchCitySelected(TeleportCity city) {
+    _analytics.logEvent(AnalyticsEvents.passportCitySearch, params: {
+      AnalyticsEvents.paramDestinationCity: city.name,
+    });
+    final country = city.fullName.contains(',')
+        ? city.fullName.split(',').last.trim()
+        : city.fullName;
+    _navigateToConfirm(city: city.name, country: country, flag: '🌍', lat: city.lat, lng: city.lng);
+  }
 
-    if (city == null || city.isEmpty) return;
+  void _onPopularCitySelected(PopularCity city) {
+    _analytics.logEvent(AnalyticsEvents.passportPopularCityTap, params: {
+      AnalyticsEvents.paramDestinationCity: city.name,
+    });
+    _navigateToConfirm(city: city.name, country: city.country, flag: city.flag, lat: city.lat, lng: city.lng);
+  }
 
+  Future<void> _onDeactivate() async {
+    final city = ref.read(passportProvider).city ?? '';
     await withLoading(() async {
-      final result = await ref.read(passportProvider.notifier).activate(city: city, lat: lat, lng: lng);
+      final result = await ref.read(passportProvider.notifier).deactivate();
       result.when(
         success: (_) {
-          _analytics.logEvent(AnalyticsEvents.passportActivate, params: {
+          _analytics.logEvent(AnalyticsEvents.passportDeactivate, params: {
             AnalyticsEvents.paramDestinationCity: city,
           });
         },
         failure: (_) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(context.tr('passport_activate_failed'))),
+              SnackBar(content: Text(context.tr('passport_deactivate_failed'))),
             );
           }
         },
@@ -114,98 +141,70 @@ class _PassportScreenState extends ConsumerState<PassportScreen> with LoadingMix
       );
     }
 
+    // Active state (but allow switching to search when _isChangingCity)
+    if (passport.isActive && !_isChangingCity) {
+      return AppScaffold(
+        title: context.tr('passport'),
+        body: Padding(
+          padding: const EdgeInsets.all(AppSpacing.pagePadding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              PassportActiveCard(city: passport.city ?? ''),
+              const SizedBox(height: AppSpacing.xl),
+              SizedBox(
+                height: 52,
+                child: FilledButton.icon(
+                  onPressed: isLoading
+                      ? null
+                      : () {
+                          _analytics.logEvent(AnalyticsEvents.passportChangeCity, params: {
+                            AnalyticsEvents.paramFromCity: passport.city ?? '',
+                          });
+                          setState(() => _isChangingCity = true);
+                        },
+                  icon: const Icon(Icons.swap_horiz),
+                  label: Text(context.tr('passport_change_city')),
+                  style: FilledButton.styleFrom(backgroundColor: AppColors.primaryDark),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              SizedBox(
+                height: 52,
+                child: OutlinedButton(
+                  onPressed: isLoading ? null : _onDeactivate,
+                  child: isLoading
+                      ? const SizedBox(height: 20, width: 20, child: AppLoadingWidget.small())
+                      : Text(context.tr('passport_return_home')),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // Search-first state (not active OR changing city)
     return AppScaffold(
       title: context.tr('passport'),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Icon(Icons.flight, size: 64, color: AppColors.primary),
-          const SizedBox(height: AppSpacing.lg),
-          Text(
-            passport.isActive
-                ? '${context.tr("passport_active")}: ${passport.city}'
-                : context.tr('passport_explore'),
-            style: theme.textTheme.titleMedium,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: AppSpacing.xl),
-
-          if (!passport.isActive) ...[
-            SizedBox(
-              height: 52,
-              child: FilledButton.icon(
-                onPressed: isLoading ? null : _openMapPicker,
-                icon: const Icon(Icons.map),
-                label: isLoading
-                    ? const SizedBox(height: 20, width: 20, child: AppLoadingWidget.small())
-                    : Text(context.tr('passport_pick_on_map')),
-                style: FilledButton.styleFrom(backgroundColor: AppColors.primaryDark),
-              ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(AppSpacing.pagePadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Icon(Icons.flight, size: 48, color: AppColors.primary),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              context.tr('passport_explore'),
+              style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+              textAlign: TextAlign.center,
             ),
-          ] else ...[
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              decoration: BoxDecoration(
-                color: AppColors.primarySurface,
-                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.flight_takeoff, color: AppColors.primary),
-                  const SizedBox(width: AppSpacing.md),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          passport.city ?? '',
-                          style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
-                        ),
-                        Text(
-                          context.tr('passport_active_desc'),
-                          style: theme.textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            SizedBox(
-              height: 52,
-              child: OutlinedButton(
-                onPressed: isLoading
-                    ? null
-                    : () {
-                        final city = ref.read(passportProvider).city ?? '';
-                        withLoading(() async {
-                          final result = await ref.read(passportProvider.notifier).deactivate();
-                          result.when(
-                            success: (_) {
-                              _analytics.logEvent(AnalyticsEvents.passportDeactivate, params: {
-                                AnalyticsEvents.paramDestinationCity: city,
-                              });
-                            },
-                            failure: (_) {
-                              if (mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(context.tr('passport_deactivate_failed'))),
-                                );
-                              }
-                            },
-                          );
-                        });
-                      },
-                child: isLoading
-                    ? const SizedBox(height: 20, width: 20, child: AppLoadingWidget.small())
-                    : Text(context.tr('passport_deactivate')),
-              ),
-            ),
+            const SizedBox(height: AppSpacing.xl),
+            CitySearchBar(onCitySelected: _onSearchCitySelected),
+            const SizedBox(height: AppSpacing.xl),
+            PopularCityGrid(onCitySelected: _onPopularCitySelected),
           ],
-
-        ],
+        ),
       ),
     );
   }
