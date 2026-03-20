@@ -260,37 +260,30 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
     }
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            success ? context.tr('save_success') : context.tr('save_error'),
-          ),
-        ),
-      );
+      if (!success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.tr('save_error'))),
+        );
+        return;
+      }
 
-      if (success) {
-        // Detect newly claimed milestones
-        final newMilestones =
-            ref.read(userProvider.notifier).detectNewMilestones(oldClaimed);
+      // Detect newly claimed milestones
+      final newMilestones =
+          ref.read(userProvider.notifier).detectNewMilestones(oldClaimed);
 
-        if (newMilestones.isNotEmpty) {
-          final milestoneRewards = ref.read(economyConfigProvider).rewards.milestones;
-          final highestMilestone = newMilestones.last;
+      if (newMilestones.isNotEmpty) {
+        final milestoneRewards = ref.read(economyConfigProvider).rewards.milestones;
+        final highestMilestone = newMilestones.last;
 
-          await ref.read(navigationServiceProvider).showAppBottomSheet(
-                CustomBottomSheet(
-                  name: 'milestone_celebration',
-                  builder: (_) => MilestoneCelebrationSheet(
-                    milestone: highestMilestone,
-                    reward: milestoneRewards[highestMilestone] ?? 0,
-                  ),
+        await ref.read(navigationServiceProvider).showAppBottomSheet(
+              CustomBottomSheet(
+                name: 'milestone_celebration',
+                builder: (_) => MilestoneCelebrationSheet(
+                  milestone: highestMilestone,
+                  reward: milestoneRewards[highestMilestone] ?? 0,
                 ),
-              );
-        }
-
-        if (mounted) {
-          ref.read(navigationServiceProvider).pop();
-        }
+              ),
+            );
       }
     }
   }
