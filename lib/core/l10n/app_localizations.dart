@@ -745,6 +745,11 @@ class AppLocalizations {
     'feature_no_ads': 'Reklamsız',
     'feature_unlimited': 'Sınırsız',
     'feature_per_day': '/gün',
+
+    // Profile section headers
+    'about_me': 'Hakkımda',
+    'details': 'Detaylar',
+    'preferences': 'Tercihler',
   };
 
   static const _en = <String, String>{
@@ -1468,6 +1473,11 @@ class AppLocalizations {
     'feature_no_ads': 'No Ads',
     'feature_unlimited': 'Unlimited',
     'feature_per_day': '/day',
+
+    // Profile section headers
+    'about_me': 'About Me',
+    'details': 'Details',
+    'preferences': 'Preferences',
   };
 }
 

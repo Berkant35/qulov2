@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
@@ -27,6 +28,7 @@ class QuestionsScreen extends ConsumerStatefulWidget {
 class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
   int _previousCount = 0;
   bool _initialized = false;
+  static const _keyCelebrationShown = 'celebration_shown';
 
   @override
   void initState() {
@@ -43,12 +45,16 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
     });
   }
 
-  void _checkCelebration(List<QuestionModel> questions) {
+  void _checkCelebration(List<QuestionModel> questions) async {
     final count = questions.length;
     if (_initialized &&
         _previousCount < AppConstants.minQuestions &&
         count >= AppConstants.minQuestions) {
-      _showCelebrationDialog();
+      final prefs = await SharedPreferences.getInstance();
+      if (!(prefs.getBool(_keyCelebrationShown) ?? false)) {
+        await prefs.setBool(_keyCelebrationShown, true);
+        if (mounted) _showCelebrationDialog();
+      }
     }
     _previousCount = count;
     _initialized = true;
