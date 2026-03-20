@@ -48,6 +48,72 @@ class PassportNotifier extends Notifier<PassportState> {
     return result;
   }
 
+  Future<Result<Map<String, dynamic>>> changeCity({
+    required String city,
+    required double lat,
+    required double lng,
+  }) async {
+    final previousCity = state.city;
+    final previousLat = state.lat;
+    final previousLng = state.lng;
+
+    state = state.copyWith(isLoading: true, failure: null);
+
+    final deactivateResult = await ref.read(passportRepositoryProvider).deactivate();
+    bool deactivateFailed = false;
+    AppFailure? deactivateFailure;
+    deactivateResult.when(
+      success: (_) {},
+      failure: (f) {
+        deactivateFailed = true;
+        deactivateFailure = f;
+      },
+    );
+    if (deactivateFailed) {
+      state = state.copyWith(isLoading: false, failure: deactivateFailure);
+      return Failure(deactivateFailure!);
+    }
+
+    final activateResult = await ref.read(passportRepositoryProvider).activate(
+      city: city,
+      lat: lat,
+      lng: lng,
+    );
+
+    activateResult.when(
+      success: (_) {
+        state = PassportState(city: city, lat: lat, lng: lng, isActive: true);
+      },
+      failure: (f) {
+        if (previousCity != null && previousLat != null && previousLng != null) {
+          ref.read(passportRepositoryProvider).activate(
+            city: previousCity,
+            lat: previousLat,
+            lng: previousLng,
+          ).then((rollback) {
+            rollback.when(
+              success: (_) {
+                state = PassportState(
+                  city: previousCity,
+                  lat: previousLat,
+                  lng: previousLng,
+                  isActive: true,
+                );
+              },
+              failure: (_) {
+                state = const PassportState();
+              },
+            );
+          });
+        } else {
+          state = state.copyWith(isLoading: false, failure: f);
+        }
+      },
+    );
+
+    return activateResult;
+  }
+
   void syncFromUser(String? city, double? lat, double? lng) {
     if (city != null) {
       state = PassportState(city: city, lat: lat, lng: lng, isActive: true);
