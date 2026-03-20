@@ -37,4 +37,3 @@ MediaStatusResponse _$MediaStatusResponseFromJson(Map<String, dynamic> json) =>
               json['pending_request'] as Map<String, dynamic>,
             ),
     );
-

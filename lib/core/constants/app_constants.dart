@@ -33,3 +33,13 @@ abstract final class AppConstants {
     'sv': '\u{1F1F8}\u{1F1EA}',
   };
 }
+
+abstract final class NotificationTypes {
+  static const newMessage = 'new_message';
+  static const newMessageImage = 'new_message_image';
+  static const newMatch = 'new_match';
+  static const newMatchSolver = 'new_match_solver';
+  static const passportExpired = 'passport_expired';
+  static const campaign = 'campaign';
+  static const chatQuestionAnswered = 'chat_question_answered';
+}

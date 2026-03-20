@@ -43,6 +43,8 @@ MessageReaction _$MessageReactionFromJson(Map<String, dynamic> json) =>
       userId: json['user_id'] as String,
     );
 
+Map<String, dynamic> _$MessageReactionToJson(MessageReaction instance) =>
+    <String, dynamic>{'emoji': instance.emoji, 'user_id': instance.userId};
 
 MessagesResponse _$MessagesResponseFromJson(Map<String, dynamic> json) =>
     MessagesResponse(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/l10n/app_localizations.dart';
 import 'package:qulo_v2/core/navigation/navigation_provider.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
@@ -184,7 +185,7 @@ class _CreateChatQuestionScreenState
         failure: (failure) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Soru gonderilemedi: $failure')),
+              SnackBar(content: Text('${AppLocalizations.of(context).get('chat_question_send_failed')}: $failure')),
             );
           }
         },
@@ -207,12 +208,12 @@ class _CreateChatQuestionScreenState
         result.when(
           success: (_) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Taslak kaydedildi')),
+              SnackBar(content: Text(AppLocalizations.of(context).get('chat_draft_saved'))),
             );
           },
           failure: (failure) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Taslak kaydedilemedi: $failure')),
+              SnackBar(content: Text('${AppLocalizations.of(context).get('chat_draft_save_failed')}: $failure')),
             );
           },
         );

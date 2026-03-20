@@ -16,7 +16,6 @@ import 'package:qulo_v2/features/profile/screens/profile_screen.dart';
 import 'package:qulo_v2/features/profile/screens/questions_screen.dart';
 import 'package:qulo_v2/features/diamonds/screens/diamonds_screen.dart';
 import 'package:qulo_v2/features/passport/screens/passport_screen.dart';
-import 'package:qulo_v2/features/passport/screens/map_picker_screen.dart';
 import 'package:qulo_v2/features/passport/screens/map_confirm_screen.dart';
 import 'package:qulo_v2/features/settings/screens/settings_screen.dart';
 import 'package:qulo_v2/features/profile/screens/edit_profile_screen.dart';

@@ -14,7 +14,6 @@ import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/data/models/message_model.dart';
-import 'package:qulo_v2/data/models/chat_question_model.dart';
 import 'package:qulo_v2/providers/chat_provider.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
@@ -24,15 +23,12 @@ import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/features/chat/widgets/reaction_picker.dart';
 
 mixin ChatScreenMixin on ConsumerState<ChatScreen> {
-  static const _pendingMediaMsg =
-      'Medya istegi zaten gonderildi. Karsi tarafin yaniti bekleniyor.';
 
   final msgCtrl = TextEditingController();
   final scrollCtrl = ScrollController();
   RealtimeChannel? _channel;
   RealtimeChannel? _typingChannel;
   RealtimeChannel? _mediaChannel;
-  RealtimeChannel? _questionChannel;
   Timer? _mediaDebounce;
   bool _disposed = false;
   final Stopwatch _chatStopwatch = Stopwatch()..start();
@@ -64,7 +60,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
       _subscribeRealtime();
       _subscribeTyping();
       _subscribeMediaRequests();
-      _subscribeQuestionUpdates();
+      // Question updates handled via FCM (NotificationNotifier)
     });
   }
 
@@ -82,7 +78,6 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
     _channel?.unsubscribe();
     _typingChannel?.unsubscribe();
     _mediaChannel?.unsubscribe();
-    _questionChannel?.unsubscribe();
     _mediaDebounce?.cancel();
     _typingDebounce?.cancel();
     msgCtrl.removeListener(_onTextChanged);
@@ -218,54 +213,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
         .subscribe();
   }
 
-  void _subscribeQuestionUpdates() {
-    _questionChannel = Supabase.instance.client
-        .channel('questions:${widget.matchId}')
-        .onPostgresChanges(
-          event: PostgresChangeEvent.update,
-          schema: 'public',
-          table: 'chat_questions',
-          filter: PostgresChangeFilter(
-            type: PostgresChangeFilterType.eq,
-            column: 'match_id',
-            value: widget.matchId,
-          ),
-          callback: (payload) {
-            if (_disposed) return;
-            final record = payload.newRecord;
-            final questionId = record['id'] as String?;
-            if (questionId != null) {
-              try {
-                final updated = ChatQuestionModel.fromJson(record);
-                // Realtime'dan gelen veriyi direkt cache'e yaz
-                // chatQuestionProvider cache'i watch ettigi icin widget aninda rebuild olur
-                ref.read(chatQuestionCacheProvider.notifier).update((state) {
-                  final copy = Map<String, ChatQuestionModel>.from(state);
-                  copy[questionId] = updated;
-                  return copy;
-                });
-              } catch (e) {
-                debugPrint('[Realtime] Question parse failed: $e');
-                // Parse basarisiz — API'den taze veri cek
-                ref.read(chatRepositoryProvider).getQuestion(questionId).then((result) {
-                  if (_disposed) return;
-                  result.when(
-                    success: (question) {
-                      ref.read(chatQuestionCacheProvider.notifier).update((state) {
-                        final copy = Map<String, ChatQuestionModel>.from(state);
-                        copy[questionId] = question;
-                        return copy;
-                      });
-                    },
-                    failure: (_) {},
-                  );
-                });
-              }
-            }
-          },
-        )
-        .subscribe();
-  }
+  // Question updates come via FCM (NotificationNotifier._refreshQuestionCache).
 
   void sendTypingEvent() {
     final myId = ref.read(authProvider).userId;
@@ -306,7 +254,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
                   leading: const Icon(Icons.delete_outline,
                       color: AppColors.error),
                   title: Text(
-                    'Mesaji Sil',
+                    AppLocalizations.of(context).get('chat_delete_message'),
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge
@@ -398,10 +346,11 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
 
   Future<void> _autoRequestMedia() async {
     final pending = ref.read(chatProvider(widget.matchId)).valueOrNull?.pendingMediaRequest;
+    final l10n = AppLocalizations.of(context);
     if (pending != null) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text(_pendingMediaMsg)),
+          SnackBar(content: Text(l10n.get('chat_media_pending'))),
         );
       }
       return;
@@ -412,7 +361,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
       success: (_) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Medya paylasim istegi gonderildi!')),
+            SnackBar(content: Text(l10n.get('chat_media_request_sent'))),
           );
         }
       },
@@ -423,8 +372,8 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
           return;
         }
         final msg = switch (failure) {
-          ServerFailure(code: 'MEDIA_REQUEST_PENDING') => _pendingMediaMsg,
-          _ => 'Medya istegi gonderilemedi. Lutfen tekrar deneyin.',
+          ServerFailure(code: 'MEDIA_REQUEST_PENDING') => l10n.get('chat_media_pending'),
+          _ => l10n.get('chat_media_request_failed'),
         };
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
       },
@@ -448,7 +397,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
             children: [
               ListTile(
                 leading: const Icon(Icons.photo_library_outlined),
-                title: const Text('Galeriden Sec'),
+                title: Text(AppLocalizations.of(context).get('from_gallery')),
                 onTap: () {
                   Navigator.pop(context);
                   _pickAndSendPhoto(ImageSource.gallery);
@@ -456,7 +405,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
               ),
               ListTile(
                 leading: const Icon(Icons.camera_alt_outlined),
-                title: const Text('Kamera'),
+                title: Text(AppLocalizations.of(context).get('from_camera')),
                 onTap: () {
                   Navigator.pop(context);
                   _pickAndSendPhoto(ImageSource.camera);
@@ -499,8 +448,8 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Fotograf gonderilemedi. Lutfen tekrar deneyin.')),
+          SnackBar(
+              content: Text(AppLocalizations.of(context).get('chat_photo_send_failed'))),
         );
       }
     }
@@ -553,9 +502,9 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
               content:
-                  Text('Sesli mesaj gonderilemedi. Lutfen tekrar deneyin.')),
+                  Text(AppLocalizations.of(context).get('chat_voice_send_failed'))),
         );
       }
     }
@@ -566,14 +515,14 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
   }
 
   Future<void> handleDisableMedia() async {
+    final l10n = AppLocalizations.of(context);
     final confirmed =
         await ref.read(navigationServiceProvider).showAppDialog<bool>(
-              const ConfirmDialog(
+              ConfirmDialog(
                 name: 'media_disable',
-                title: 'Medya Paylasimini Kapat',
-                message:
-                    'Medya paylasimini kapatmak istediginize emin misiniz?',
-                confirmText: 'Kapat',
+                title: l10n.get('chat_media_disable_title'),
+                message: l10n.get('chat_media_disable_message'),
+                confirmText: l10n.get('chat_media_disable_confirm'),
                 isDestructive: true,
               ),
             );

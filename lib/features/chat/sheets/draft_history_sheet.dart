@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/l10n/app_localizations.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
@@ -93,7 +94,7 @@ class _DraftHistorySheetState extends ConsumerState<DraftHistorySheet>
       failure: (_) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Taslak silinemedi')),
+            SnackBar(content: Text(AppLocalizations.of(context).get('chat_draft_delete_failed'))),
           );
         }
       },

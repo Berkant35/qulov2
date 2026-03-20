@@ -4,6 +4,7 @@ import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/data/models/match_model.dart';
+import 'package:qulo_v2/features/chat/widgets/chat_message_item.dart' show questionPrefix;
 
 class MatchCard extends StatelessWidget {
   final MatchModel match;
@@ -56,7 +57,7 @@ class MatchCard extends StatelessWidget {
           ),
         ),
         subtitle: Text(
-          match.lastMessage ?? u?.city ?? '',
+          _displayLastMessage(context),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: theme.textTheme.bodySmall?.copyWith(
@@ -107,6 +108,13 @@ class MatchCard extends StatelessWidget {
         onLongPress: onLongPress,
       ),
     );
+  }
+
+  String _displayLastMessage(BuildContext context) {
+    final msg = match.lastMessage;
+    if (msg == null || msg.isEmpty) return match.user?.city ?? '';
+    if (msg.startsWith(questionPrefix)) return '🎯 ${context.tr('chat_question_sent')}';
+    return msg;
   }
 
   String _formatRelativeTime(BuildContext context, String isoTime) {

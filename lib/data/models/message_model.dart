@@ -50,7 +50,7 @@ class MessageModel extends Equatable {
   List<Object?> get props => [id];
 }
 
-@JsonSerializable(createToJson: false)
+@JsonSerializable()
 class MessageReaction extends Equatable {
   final String emoji;
   @JsonKey(name: 'user_id')
@@ -60,6 +60,7 @@ class MessageReaction extends Equatable {
 
   factory MessageReaction.fromJson(Map<String, dynamic> json) =>
       _$MessageReactionFromJson(json);
+  Map<String, dynamic> toJson() => _$MessageReactionToJson(this);
 
   @override
   List<Object?> get props => [emoji, userId];

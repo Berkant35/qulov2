@@ -71,3 +71,59 @@ ChatQuestionAnswerResponse _$ChatQuestionAnswerResponseFromJson(
       : ChatQuestionModel.fromJson(json['question'] as Map<String, dynamic>),
 );
 
+UsePowerResponse _$UsePowerResponseFromJson(Map<String, dynamic> json) =>
+    UsePowerResponse(
+      powerName: json['power_name'] as String?,
+      suggestedOption: json['suggested_option'] as String?,
+      eliminatedOptions: (json['eliminated_options'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      hintText: json['hint_text'] as String?,
+      extraSeconds: (json['extra_seconds'] as num?)?.toInt(),
+      cost: (json['cost'] as num?)?.toInt(),
+      greenReward: (json['green_reward'] as num?)?.toInt(),
+      isCorrect: json['is_correct'] as bool?,
+      question: json['question'] == null
+          ? null
+          : ChatQuestionModel.fromJson(
+              json['question'] as Map<String, dynamic>,
+            ),
+      skipped: json['skipped'] as bool?,
+      unblocked: json['unblocked'] as bool?,
+    );
+
+HandleTimeoutResponse _$HandleTimeoutResponseFromJson(
+  Map<String, dynamic> json,
+) => HandleTimeoutResponse(
+  canRescue: json['can_rescue'] as bool,
+  hasPowerBlock: json['has_power_block'] as bool,
+);
+
+ChatQuestionHistoryItem _$ChatQuestionHistoryItemFromJson(
+  Map<String, dynamic> json,
+) => ChatQuestionHistoryItem(
+  id: json['id'] as String,
+  questionText: json['question_text'] as String,
+  optionCount: (json['option_count'] as num).toInt(),
+  optionA: json['option_a'] as String,
+  optionB: json['option_b'] as String,
+  optionC: json['option_c'] as String?,
+  optionD: json['option_d'] as String?,
+  correctOption: json['correct_option'] as String,
+  timeLimitSeconds: (json['time_limit_seconds'] as num).toInt(),
+  hintText: json['hint_text'] as String?,
+  hasUnmatchRisk: json['has_unmatch_risk'] as bool,
+  hasChatLock: json['has_chat_lock'] as bool,
+  createdAt: json['created_at'] as String,
+);
+
+ChatQuestionHistoryResponse _$ChatQuestionHistoryResponseFromJson(
+  Map<String, dynamic> json,
+) => ChatQuestionHistoryResponse(
+  items: (json['items'] as List<dynamic>)
+      .map((e) => ChatQuestionHistoryItem.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  total: (json['total'] as num).toInt(),
+  page: (json['page'] as num).toInt(),
+  limit: (json['limit'] as num).toInt(),
+);

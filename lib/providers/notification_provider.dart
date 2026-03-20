@@ -1,8 +1,11 @@
 import 'dart:developer' as dev;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/constants/app_constants.dart';
+import 'package:qulo_v2/data/models/chat_question_model.dart';
 import 'package:qulo_v2/data/models/notification_model.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
+import 'package:qulo_v2/providers/chat_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
 
 class NotificationState {
@@ -81,7 +84,33 @@ class NotificationNotifier extends Notifier<NotificationState> {
   void _handleForegroundMessage(RemoteMessage message) {
     dev.log('[NotificationNotifier] Foreground notification received: ${message.notification?.title}', name: 'Notification');
     state = state.copyWith(unreadCount: state.unreadCount + 1);
+
+    final type = message.data['type'] as String?;
+    if (type == NotificationTypes.chatQuestionAnswered) {
+      final questionId = message.data['question_id'] as String?;
+      if (questionId != null) {
+        dev.log('[NotificationNotifier] Question answered via FCM, refreshing: $questionId', name: 'Notification');
+        _refreshQuestionCache(questionId);
+      }
+    }
+
     _onForegroundNotification?.call(message);
+  }
+
+  Future<void> _refreshQuestionCache(String questionId) async {
+    final repo = ref.read(chatRepositoryProvider);
+    final result = await repo.getQuestion(questionId);
+    result.when(
+      success: (question) {
+        ref.read(chatQuestionCacheProvider.notifier).update((state) {
+          final copy = Map<String, ChatQuestionModel>.from(state);
+          copy[questionId] = question;
+          return copy;
+        });
+        dev.log('[NotificationNotifier] Question cache updated: $questionId', name: 'Notification');
+      },
+      failure: (_) {},
+    );
   }
 
   void _handleMessageTap(RemoteMessage message) {
