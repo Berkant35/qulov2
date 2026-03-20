@@ -10,6 +10,7 @@ import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
 import 'package:qulo_v2/providers/app_config_provider.dart';
+import 'package:qulo_v2/providers/economy_config_provider.dart';
 import 'package:qulo_v2/core/navigation/models/app_dialog.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/routing/route_names.dart';
@@ -88,6 +89,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     });
 
     final status = await ref.read(appConfigProvider.notifier).checkVersion();
+    if (!mounted) return;
+
+    await ref.read(economyConfigProvider.notifier).fetch();
     if (!mounted) return;
 
     switch (status) {

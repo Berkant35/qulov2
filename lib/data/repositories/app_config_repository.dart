@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/network/services/app_config_service.dart';
 import 'package:qulo_v2/data/models/app_config_model.dart';
+import 'package:qulo_v2/data/models/economy_config_model.dart';
 
 class AppConfigRepository {
   final AppConfigRetrofitService _service;
@@ -16,6 +17,17 @@ class AppConfigRepository {
       return Failure(e.toAppFailure());
     } catch (e) {
       return Failure(UnknownFailure(error: e, message: 'Failed to parse app config'));
+    }
+  }
+
+  Future<Result<EconomyConfigResponse>> getEconomyConfig() async {
+    try {
+      final response = await _service.getEconomyConfig();
+      return Success(EconomyConfigResponse.fromJson(response));
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    } catch (e) {
+      return Failure(UnknownFailure(error: e, message: 'Failed to parse economy config'));
     }
   }
 }
