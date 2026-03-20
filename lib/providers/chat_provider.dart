@@ -263,34 +263,49 @@ class ChatState {
 
 final chatProvider = AsyncNotifierProvider.family<ChatNotifier, ChatState, String>(ChatNotifier.new);
 
-/// Cache for chat questions fetched by ID — avoids re-fetching on every rebuild.
+/// Cache for chat questions fetched by ID — realtime updates write here,
+/// widgets read from here via [chatQuestionProvider].
 final chatQuestionCacheProvider =
     StateProvider<Map<String, ChatQuestionModel>>((ref) => {});
 
-/// Provider that fetches a single chat question by ID.
-/// autoDispose ensures fresh data when widget rebuilds.
+/// Fetch provider — cache'de yoksa API'den ceker, cache'e yazar.
+final chatQuestionFetchProvider =
+    FutureProvider.autoDispose.family<void, String>((ref, questionId) async {
+  final cache = ref.read(chatQuestionCacheProvider);
+  if (cache.containsKey(questionId)) return;
+
+  final repo = ref.read(chatRepositoryProvider);
+  final result = await repo.getQuestion(questionId);
+  result.when(
+    success: (question) {
+      ref.read(chatQuestionCacheProvider.notifier).update((state) {
+        final copy = Map<String, ChatQuestionModel>.from(state);
+        copy[questionId] = question;
+        return copy;
+      });
+    },
+    failure: (_) {},
+  );
+});
+
+/// Cache-reactive provider — widget'lar bunu watch eder.
+/// Cache guncellenince (realtime veya API) widget otomatik rebuild olur.
 final chatQuestionProvider =
-    FutureProvider.autoDispose.family<ChatQuestionModel?, String>((ref, questionId) async {
-  // Always fetch from API — cache only used as fallback
-  try {
-    final repo = ref.read(chatRepositoryProvider);
-    final result = await repo.getQuestion(questionId);
-    return result.when(
-      success: (question) {
-        ref.read(chatQuestionCacheProvider.notifier).update((state) {
-          final copy = Map<String, ChatQuestionModel>.from(state);
-          copy[questionId] = question;
-          return copy;
-        });
-        return question;
-      },
-      failure: (_) {
-        final cache = ref.read(chatQuestionCacheProvider);
-        return cache[questionId];
-      },
-    );
-  } catch (_) {
-    final cache = ref.read(chatQuestionCacheProvider);
-    return cache[questionId];
+    Provider.autoDispose.family<AsyncValue<ChatQuestionModel?>, String>((ref, questionId) {
+  final cache = ref.watch(chatQuestionCacheProvider);
+  if (cache.containsKey(questionId)) {
+    return AsyncValue.data(cache[questionId]);
   }
+  // Cache'de yok — fetch tetikle
+  final fetch = ref.watch(chatQuestionFetchProvider(questionId));
+  return fetch.when(
+    loading: () => const AsyncValue.loading(),
+    error: (e, st) => AsyncValue.error(e, st),
+    data: (_) {
+      final updated = ref.read(chatQuestionCacheProvider);
+      final question = updated[questionId];
+      if (question == null) return const AsyncValue.loading();
+      return AsyncValue.data(question);
+    },
+  );
 });
