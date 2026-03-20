@@ -31,7 +31,9 @@
   - **Mevcut:** Sadece error state varsa `getCurrentLocation()` çağrılır
   - **Yeni:** Error state VEYA `_lastUpdateTime`'dan 15+ dakika geçmişse `getCurrentLocation()` çağrılır
 - `getCurrentLocation()` başarılı olduğunda `_lastUpdateTime = DateTime.now()` set edilir
+- Başarısız olursa `_lastUpdateTime` güncellenmez — sonraki resume'da tekrar dener
 - Cold start (login akışı) her zaman GPS alır, throttle uygulanmaz
+- `_lastUpdateTime` in-memory tutulur (kasıtlı) — app kill+restart'ta sıfırlanır, cold start her zaman taze GPS alır
 
 **Sunucu:** Değişiklik yok — mevcut `PUT /users/me/location` endpoint'i aynen kullanılır.
 
@@ -52,10 +54,14 @@
 - `LOCATION_MOCK_DETECTED` hatası alınırsa state'e error olarak yazılır
 - Konum sunucuya **gönderilmez** — eski DB konumu korunur
 
-**Dosya:** `lib/features/discover/widgets/discover_location_error.dart` (veya mevcut hata widget'ı)
+**Dosya:** `lib/features/discover/widgets/discover_location_error.dart`
 
 - `LOCATION_MOCK_DETECTED` hatası için özel mesaj: "Sahte konum algılandı. Gerçek konumunuzu kullanmanız gerekiyor."
-- Buton gösterilmez — kullanıcı mock'u kapatıp geri döndüğünde `onAppResumed()` otomatik tekrar dener
+- Bu hata tipinde ayarlar butonu gösterilmez (mevcut widget'ta error tipine göre conditional)
+- Bunun yerine "Tekrar Dene" butonu gösterilir — kullanıcı mock'u kapatıp hemen deneyebilir
+- `onAppResumed()` da otomatik tekrar dener (throttle'dan muaf — error state varsa her zaman dener)
+
+**Platform notu:** `Position.isMocked` Android'de güvenilir çalışır. iOS'ta geolocator her zaman `false` döner — bu MVP'de bilinen bir kısıtlamadır. iOS anti-spoofing (DeviceCheck/jailbreak detection) future scope'ta ele alınacaktır.
 
 **L10n key:** `location_mock_detected`
 
@@ -63,7 +69,7 @@
 
 #### 3a. Discover Ekranı — Konum Badge'i
 
-**Dosya:** Discover screen veya ilgili widget
+**Dosya:** `lib/features/discover/widgets/passport_badge.dart` (mevcut) + discover screen'de entegrasyon
 
 - Discover üstünde konum chip'i eklenir/güncellenir:
   - Pasaport pasif: "📍 Istanbul"
@@ -73,7 +79,7 @@
 
 #### 3b. Profil Ekranı — Konum Satırı
 
-**Dosya:** Profil ekranı ilgili widget
+**Dosya:** `lib/features/profile/widgets/detail_chips.dart` (mevcut konum bilgisi burada)
 
 - Mevcut profil bilgileri arasına konum bilgisi eklenir:
   - Pasaport pasif: "📍 Istanbul"
@@ -104,6 +110,9 @@
 | `passport_deactivate_failed` | Pasaport deaktifleştirilemedi | Failed to deactivate passport |
 | `passport_active_label` | Pasaport aktif | Passport active |
 | `location_current` | Mevcut Konum | Current Location |
+| `location_retry` | Tekrar Dene | Try Again |
+
+`location_current` profil ekranında ve pasaport ekranında gerçek konum label'ı olarak kullanılır.
 
 ## Data Flow
 
@@ -112,7 +121,7 @@ APP START / LOGIN:
   ├─ /users/me → seed locationProvider + passportProvider
   ├─ getCurrentLocation() (no throttle on login)
   │   ├─ isMocked? → REJECT, keep old location
-  │   └─ real? → update state + POST /users/me/location
+  │   └─ real? → update state + PUT /users/me/location
   └─ _lastUpdateTime = now
 
 APP RESUME:
@@ -135,9 +144,10 @@ PASSPORT ACTIVATE:
 
 | State | UI Behavior |
 |-------|-------------|
-| `LOCATION_MOCK_DETECTED` | DiscoverLocationError — uyarı mesajı, buton yok |
+| `LOCATION_MOCK_DETECTED` | DiscoverLocationError — uyarı mesajı + "Tekrar Dene" butonu |
 | `LOCATION_SERVICE_DISABLED` | Mevcut davranış — "Konum servisini aç" butonu |
 | `LOCATION_PERMISSION_DENIED` | Mevcut davranış — "İzin ver" butonu |
+| `LOCATION_PERMISSION_DENIED_FOREVER` | Mevcut davranış — "Ayarları aç" butonu |
 | Passport activate failure | Snackbar: `passport_activate_failed` |
 | Passport deactivate failure | Snackbar: `passport_deactivate_failed` |
 
@@ -147,12 +157,12 @@ PASSPORT ACTIVATE:
 |------|--------|
 | `lib/providers/location_provider.dart` | Throttle logic + mock error handling |
 | `lib/core/services/location_manager.dart` | `isMocked` check in getCurrentPosition |
-| `lib/features/discover/` (widget) | Konum badge ekleme |
+| `lib/features/discover/widgets/passport_badge.dart` | Konum badge güncelleme |
 | `lib/features/passport/screens/passport_screen.dart` | UI netleştirme + hata lokalizasyonu |
-| `lib/features/profile/` (widget) | Konum satırı ekleme |
+| `lib/features/profile/widgets/detail_chips.dart` | Konum satırı + pasaport bilgisi |
 | `lib/providers/passport_provider.dart` | syncFromUser doğrulaması |
 | `lib/core/l10n/app_localizations.dart` | Yeni l10n keys |
-| Discover location error widget | Mock detected mesajı |
+| `lib/features/discover/widgets/discover_location_error.dart` | Mock detected mesajı + "Tekrar Dene" butonu |
 
 ## Testing
 
