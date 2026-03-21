@@ -4,6 +4,14 @@ set -e
 # ─── Qulo V2 — TestFlight Deploy Script ───
 
 PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# ─── Load .env if exists ───
+if [ -f "$PROJECT_DIR/.env" ]; then
+  set -a
+  source "$PROJECT_DIR/.env"
+  set +a
+fi
+
 PUBSPEC="$PROJECT_DIR/pubspec.yaml"
 EXPORT_PLIST="$PROJECT_DIR/ios/ExportOptions.plist"
 ARCHIVE_DIR="$PROJECT_DIR/build/ios/archive"
