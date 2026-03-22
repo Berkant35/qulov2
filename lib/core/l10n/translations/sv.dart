@@ -760,4 +760,32 @@ const svTranslations = <String, String>{
   // Power info toggle
   'what_are_powers': 'Vad gör krafterna?',
   'hide_info': 'Dölj info',
+
+  // Chat question creation
+  'chat_q_content_title': 'Frågeinnehåll',
+  'chat_q_option_count_2': '2 Alternativ',
+  'chat_q_option_count_4': '4 Alternativ',
+  'chat_q_question_label': 'Fråga',
+  'chat_q_question_hint': 'Skriv din fråga...',
+  'chat_q_options_label': 'Alternativ',
+  'chat_q_option_hint': 'Alternativ {label}',
+  'chat_q_correct_hint': 'Tryck på cirkeln bredvid ett alternativ för att välja rätt svar',
+  'chat_q_settings_title': 'Inställningar',
+  'chat_q_timer_label': 'Tidsgräns',
+  'chat_q_hint_label': 'Ledtråd (valfritt)',
+  'chat_q_hint_placeholder': 'Lägg till en ledtråd...',
+  'chat_q_reward_label': 'Belöningsmedia (valfritt)',
+  'chat_q_unmatch_title': 'Unmatch-risk',
+  'chat_q_unmatch_desc': 'Fel svar avslutar matchen',
+  'chat_q_chatlock_title': 'Chattlås',
+  'chat_q_chatlock_desc': 'Chatten är låst tills den besvaras',
+  'chat_q_powerblock_title': 'Kraftblockering',
+  'chat_q_powerblock_desc_on': 'Aktiv',
+  'chat_q_powerblock_desc_off': 'Blockerar motståndarens krafter',
+
+  // Profile Preview
+  'profile_preview': 'Profile Preview',
+  'profile_preview_tooltip': 'Preview your profile',
+  'preview_profile': 'Preview',
+  'profile_updated_success': 'Profile updated successfully',
 };

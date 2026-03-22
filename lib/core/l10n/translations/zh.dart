@@ -758,4 +758,32 @@ const zhTranslations = <String, String>{
   // Power info toggle
   'what_are_powers': '道具有什么用？',
   'hide_info': '隐藏信息',
+
+  // Chat question creation
+  'chat_q_content_title': '题目内容',
+  'chat_q_option_count_2': '2个选项',
+  'chat_q_option_count_4': '4个选项',
+  'chat_q_question_label': '问题',
+  'chat_q_question_hint': '输入你的问题...',
+  'chat_q_options_label': '选项',
+  'chat_q_option_hint': '选项 {label}',
+  'chat_q_correct_hint': '点击选项旁边的圆圈以选择正确答案',
+  'chat_q_settings_title': '设置',
+  'chat_q_timer_label': '时间限制',
+  'chat_q_hint_label': '提示（可选）',
+  'chat_q_hint_placeholder': '添加提示...',
+  'chat_q_reward_label': '奖励媒体（可选）',
+  'chat_q_unmatch_title': '取消匹配风险',
+  'chat_q_unmatch_desc': '答错将结束匹配',
+  'chat_q_chatlock_title': '聊天锁定',
+  'chat_q_chatlock_desc': '回答前聊天被锁定',
+  'chat_q_powerblock_title': '能力封锁',
+  'chat_q_powerblock_desc_on': '已激活',
+  'chat_q_powerblock_desc_off': '封锁对方的能力',
+
+  // Profile Preview
+  'profile_preview': 'Profile Preview',
+  'profile_preview_tooltip': 'Preview your profile',
+  'preview_profile': 'Preview',
+  'profile_updated_success': 'Profile updated successfully',
 };

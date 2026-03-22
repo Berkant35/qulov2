@@ -758,4 +758,32 @@ const koTranslations = <String, String>{
   // Power info toggle
   'what_are_powers': '파워는 무엇인가요?',
   'hide_info': '정보 숨기기',
+
+  // Chat question creation
+  'chat_q_content_title': '질문 내용',
+  'chat_q_option_count_2': '2지선다',
+  'chat_q_option_count_4': '4지선다',
+  'chat_q_question_label': '질문',
+  'chat_q_question_hint': '질문을 입력하세요...',
+  'chat_q_options_label': '선택지',
+  'chat_q_option_hint': '선택지 {label}',
+  'chat_q_correct_hint': '선택지 옆의 원을 탭하여 정답을 선택하세요',
+  'chat_q_settings_title': '설정',
+  'chat_q_timer_label': '시간 제한',
+  'chat_q_hint_label': '힌트 (선택사항)',
+  'chat_q_hint_placeholder': '힌트를 추가하세요...',
+  'chat_q_reward_label': '보상 미디어 (선택사항)',
+  'chat_q_unmatch_title': '언매치 위험',
+  'chat_q_unmatch_desc': '오답 시 매치가 종료됩니다',
+  'chat_q_chatlock_title': '채팅 잠금',
+  'chat_q_chatlock_desc': '답변할 때까지 채팅이 잠깁니다',
+  'chat_q_powerblock_title': '파워 차단',
+  'chat_q_powerblock_desc_on': '활성',
+  'chat_q_powerblock_desc_off': '상대방의 파워를 차단합니다',
+
+  // Profile Preview
+  'profile_preview': 'Profile Preview',
+  'profile_preview_tooltip': 'Preview your profile',
+  'preview_profile': 'Preview',
+  'profile_updated_success': 'Profile updated successfully',
 };

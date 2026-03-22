@@ -118,6 +118,9 @@ abstract class AnalyticsEvents {
   static const String profilePhotoReorder = 'profile_photo_reorder';
   static const String profileCompletionChange = 'profile_completion_change';
   static const String profilePreview = 'profile_preview';
+  static const String profilePreviewOpened = 'profile_preview_opened';
+  static const String profilePreviewEditTapped = 'profile_preview_edit_tapped';
+  static const String saveSuccessPreviewTapped = 'save_success_preview_tapped';
   static const String profileSettingsOpen = 'profile_settings_open';
   static const String profileShare = 'profile_share';
   static const String profileBioEdit = 'profile_bio_edit';

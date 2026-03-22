@@ -760,4 +760,32 @@ const deTranslations = <String, String>{
   // Power info toggle
   'what_are_powers': 'Was bewirken Kräfte?',
   'hide_info': 'Info ausblenden',
+
+  // Chat question creation
+  'chat_q_content_title': 'Frageinhalt',
+  'chat_q_option_count_2': '2 Optionen',
+  'chat_q_option_count_4': '4 Optionen',
+  'chat_q_question_label': 'Frage',
+  'chat_q_question_hint': 'Schreibe deine Frage...',
+  'chat_q_options_label': 'Optionen',
+  'chat_q_option_hint': 'Option {label}',
+  'chat_q_correct_hint': 'Tippe auf den Kreis neben einer Option, um die richtige Antwort auszuwählen',
+  'chat_q_settings_title': 'Einstellungen',
+  'chat_q_timer_label': 'Zeitlimit',
+  'chat_q_hint_label': 'Hinweis (optional)',
+  'chat_q_hint_placeholder': 'Einen Hinweis hinzufügen...',
+  'chat_q_reward_label': 'Belohnungsmedien (optional)',
+  'chat_q_unmatch_title': 'Unmatch-Risiko',
+  'chat_q_unmatch_desc': 'Falsche Antwort beendet das Match',
+  'chat_q_chatlock_title': 'Chat-Sperre',
+  'chat_q_chatlock_desc': 'Chat ist bis zur Antwort gesperrt',
+  'chat_q_powerblock_title': 'Kraftblock',
+  'chat_q_powerblock_desc_on': 'Aktiv',
+  'chat_q_powerblock_desc_off': 'Blockiert die Kräfte des Gegners',
+
+  // Profile Preview
+  'profile_preview': 'Profile Preview',
+  'profile_preview_tooltip': 'Preview your profile',
+  'preview_profile': 'Preview',
+  'profile_updated_success': 'Profile updated successfully',
 };

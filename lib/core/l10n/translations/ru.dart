@@ -758,4 +758,32 @@ const ruTranslations = <String, String>{
   // Power info toggle
   'what_are_powers': 'Что делают силы?',
   'hide_info': 'Скрыть инфо',
+
+  // Chat question creation
+  'chat_q_content_title': 'Содержание вопроса',
+  'chat_q_option_count_2': '2 Варианта',
+  'chat_q_option_count_4': '4 Варианта',
+  'chat_q_question_label': 'Вопрос',
+  'chat_q_question_hint': 'Напишите ваш вопрос...',
+  'chat_q_options_label': 'Варианты',
+  'chat_q_option_hint': 'Вариант {label}',
+  'chat_q_correct_hint': 'Нажмите на кружок рядом с вариантом, чтобы выбрать правильный ответ',
+  'chat_q_settings_title': 'Настройки',
+  'chat_q_timer_label': 'Ограничение времени',
+  'chat_q_hint_label': 'Подсказка (необязательно)',
+  'chat_q_hint_placeholder': 'Добавить подсказку...',
+  'chat_q_reward_label': 'Медиа награды (необязательно)',
+  'chat_q_unmatch_title': 'Риск анматча',
+  'chat_q_unmatch_desc': 'Неправильный ответ завершает матч',
+  'chat_q_chatlock_title': 'Блокировка чата',
+  'chat_q_chatlock_desc': 'Чат заблокирован до ответа',
+  'chat_q_powerblock_title': 'Блокировка сил',
+  'chat_q_powerblock_desc_on': 'Активно',
+  'chat_q_powerblock_desc_off': 'Блокирует силы противника',
+
+  // Profile Preview
+  'profile_preview': 'Profile Preview',
+  'profile_preview_tooltip': 'Preview your profile',
+  'preview_profile': 'Preview',
+  'profile_updated_success': 'Profile updated successfully',
 };

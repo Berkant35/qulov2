@@ -758,4 +758,32 @@ const nlTranslations = <String, String>{
   // Power info toggle
   'what_are_powers': 'Wat doen krachten?',
   'hide_info': 'Info verbergen',
+
+  // Chat question creation
+  'chat_q_content_title': 'Vraaginhoud',
+  'chat_q_option_count_2': '2 Opties',
+  'chat_q_option_count_4': '4 Opties',
+  'chat_q_question_label': 'Vraag',
+  'chat_q_question_hint': 'Schrijf je vraag...',
+  'chat_q_options_label': 'Opties',
+  'chat_q_option_hint': 'Optie {label}',
+  'chat_q_correct_hint': 'Tik op de cirkel naast een optie om het juiste antwoord te selecteren',
+  'chat_q_settings_title': 'Instellingen',
+  'chat_q_timer_label': 'Tijdslimiet',
+  'chat_q_hint_label': 'Hint (optioneel)',
+  'chat_q_hint_placeholder': 'Een hint toevoegen...',
+  'chat_q_reward_label': 'Beloningsimedia (optioneel)',
+  'chat_q_unmatch_title': 'Unmatch-risico',
+  'chat_q_unmatch_desc': 'Fout antwoord beëindigt de match',
+  'chat_q_chatlock_title': 'Chatvergrendeling',
+  'chat_q_chatlock_desc': 'Chat is vergrendeld tot beantwoord',
+  'chat_q_powerblock_title': 'Krachtblokkering',
+  'chat_q_powerblock_desc_on': 'Actief',
+  'chat_q_powerblock_desc_off': 'Blokkeert de krachten van de tegenstander',
+
+  // Profile Preview
+  'profile_preview': 'Profile Preview',
+  'profile_preview_tooltip': 'Preview your profile',
+  'preview_profile': 'Preview',
+  'profile_updated_success': 'Profile updated successfully',
 };

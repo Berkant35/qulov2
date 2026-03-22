@@ -758,4 +758,32 @@ const arTranslations = <String, String>{
   // Power info toggle
   'what_are_powers': 'ماذا تفعل القوى؟',
   'hide_info': 'إخفاء المعلومات',
+
+  // Chat question creation
+  'chat_q_content_title': 'محتوى السؤال',
+  'chat_q_option_count_2': 'خياران',
+  'chat_q_option_count_4': '4 خيارات',
+  'chat_q_question_label': 'السؤال',
+  'chat_q_question_hint': 'اكتب سؤالك...',
+  'chat_q_options_label': 'الخيارات',
+  'chat_q_option_hint': 'الخيار {label}',
+  'chat_q_correct_hint': 'اضغط على الدائرة بجانب الخيار لتحديد الإجابة الصحيحة',
+  'chat_q_settings_title': 'الإعدادات',
+  'chat_q_timer_label': 'حد الوقت',
+  'chat_q_hint_label': 'تلميح (اختياري)',
+  'chat_q_hint_placeholder': 'أضف تلميحًا...',
+  'chat_q_reward_label': 'وسائط المكافأة (اختياري)',
+  'chat_q_unmatch_title': 'خطر إلغاء التطابق',
+  'chat_q_unmatch_desc': 'الإجابة الخاطئة تنهي التطابق',
+  'chat_q_chatlock_title': 'قفل المحادثة',
+  'chat_q_chatlock_desc': 'المحادثة مقفلة حتى الإجابة',
+  'chat_q_powerblock_title': 'حجب القوة',
+  'chat_q_powerblock_desc_on': 'نشط',
+  'chat_q_powerblock_desc_off': 'يحجب قوى الخصم',
+
+  // Profile Preview
+  'profile_preview': 'Profile Preview',
+  'profile_preview_tooltip': 'Preview your profile',
+  'preview_profile': 'Preview',
+  'profile_updated_success': 'Profile updated successfully',
 };

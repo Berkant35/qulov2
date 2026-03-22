@@ -760,4 +760,32 @@ const hiTranslations = <String, String>{
   // Power info toggle
   'what_are_powers': 'पावर्स क्या करती हैं?',
   'hide_info': 'जानकारी छुपाएं',
+
+  // Chat question creation
+  'chat_q_content_title': 'प्रश्न सामग्री',
+  'chat_q_option_count_2': '2 विकल्प',
+  'chat_q_option_count_4': '4 विकल्प',
+  'chat_q_question_label': 'प्रश्न',
+  'chat_q_question_hint': 'अपना प्रश्न लिखें...',
+  'chat_q_options_label': 'विकल्प',
+  'chat_q_option_hint': 'विकल्प {label}',
+  'chat_q_correct_hint': 'सही उत्तर चुनने के लिए विकल्प के बगल में वृत्त पर टैप करें',
+  'chat_q_settings_title': 'सेटिंग्स',
+  'chat_q_timer_label': 'समय सीमा',
+  'chat_q_hint_label': 'संकेत (वैकल्पिक)',
+  'chat_q_hint_placeholder': 'एक संकेत जोड़ें...',
+  'chat_q_reward_label': 'पुरस्कार मीडिया (वैकल्पिक)',
+  'chat_q_unmatch_title': 'अनमैच जोखिम',
+  'chat_q_unmatch_desc': 'गलत उत्तर मैच समाप्त कर देगा',
+  'chat_q_chatlock_title': 'चैट लॉक',
+  'chat_q_chatlock_desc': 'उत्तर देने तक चैट लॉक रहेगी',
+  'chat_q_powerblock_title': 'पावर ब्लॉक',
+  'chat_q_powerblock_desc_on': 'सक्रिय',
+  'chat_q_powerblock_desc_off': 'प्रतिद्वंद्वी की शक्तियों को अवरुद्ध करता है',
+
+  // Profile Preview
+  'profile_preview': 'Profile Preview',
+  'profile_preview_tooltip': 'Preview your profile',
+  'preview_profile': 'Preview',
+  'profile_updated_success': 'Profile updated successfully',
 };

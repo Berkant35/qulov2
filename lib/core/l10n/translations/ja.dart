@@ -760,4 +760,32 @@ const jaTranslations = <String, String>{
   // Power info toggle
   'what_are_powers': 'パワーとは？',
   'hide_info': '情報を隠す',
+
+  // Chat question creation
+  'chat_q_content_title': '質問内容',
+  'chat_q_option_count_2': '2択',
+  'chat_q_option_count_4': '4択',
+  'chat_q_question_label': '質問',
+  'chat_q_question_hint': '質問を入力...',
+  'chat_q_options_label': '選択肢',
+  'chat_q_option_hint': '選択肢 {label}',
+  'chat_q_correct_hint': '選択肢の横の丸をタップして正解を選んでください',
+  'chat_q_settings_title': '設定',
+  'chat_q_timer_label': '制限時間',
+  'chat_q_hint_label': 'ヒント（任意）',
+  'chat_q_hint_placeholder': 'ヒントを追加...',
+  'chat_q_reward_label': 'ご褒美メディア（任意）',
+  'chat_q_unmatch_title': 'アンマッチリスク',
+  'chat_q_unmatch_desc': '不正解でマッチが終了します',
+  'chat_q_chatlock_title': 'チャットロック',
+  'chat_q_chatlock_desc': '回答するまでチャットがロックされます',
+  'chat_q_powerblock_title': 'パワーブロック',
+  'chat_q_powerblock_desc_on': '有効',
+  'chat_q_powerblock_desc_off': '相手のパワーをブロックします',
+
+  // Profile Preview
+  'profile_preview': 'Profile Preview',
+  'profile_preview_tooltip': 'Preview your profile',
+  'preview_profile': 'Preview',
+  'profile_updated_success': 'Profile updated successfully',
 };

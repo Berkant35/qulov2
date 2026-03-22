@@ -760,4 +760,32 @@ const trTranslations = <String, String>{
   // Power info toggle
   'what_are_powers': 'Güçler ne işe yarar?',
   'hide_info': 'Bilgiyi gizle',
+
+  // Chat question creation
+  'chat_q_content_title': 'Soru İçeriği',
+  'chat_q_option_count_2': '2 Şık',
+  'chat_q_option_count_4': '4 Şık',
+  'chat_q_question_label': 'Soru',
+  'chat_q_question_hint': 'Sorunuzu yazın...',
+  'chat_q_options_label': 'Seçenekler',
+  'chat_q_option_hint': 'Seçenek {label}',
+  'chat_q_correct_hint': 'Doğru cevabı seçmek için seçenek yanındaki daireye dokunun',
+  'chat_q_settings_title': 'Ayarlar',
+  'chat_q_timer_label': 'Süre Limiti',
+  'chat_q_hint_label': 'İpucu (opsiyonel)',
+  'chat_q_hint_placeholder': 'Bir ipucu ekleyin...',
+  'chat_q_reward_label': 'Ödül Medyası (opsiyonel)',
+  'chat_q_unmatch_title': 'Unmatch Riski',
+  'chat_q_unmatch_desc': 'Yanlış cevap eşlemeyi bitirir',
+  'chat_q_chatlock_title': 'Sohbet Kilidi',
+  'chat_q_chatlock_desc': 'Cevaplanana kadar sohbet kitlenir',
+  'chat_q_powerblock_title': 'Güç Bloğu',
+  'chat_q_powerblock_desc_on': 'Aktif',
+  'chat_q_powerblock_desc_off': 'Karşı tarafın güçlerini engeller',
+
+  // Profile Preview
+  'profile_preview': 'Profil Ön İzleme',
+  'profile_preview_tooltip': 'Profilini ön izle',
+  'preview_profile': 'Ön İzle',
+  'profile_updated_success': 'Profilin başarıyla güncellendi',
 };

@@ -758,4 +758,32 @@ const plTranslations = <String, String>{
   // Power info toggle
   'what_are_powers': 'Co robi\u0105 moce?',
   'hide_info': 'Ukryj info',
+
+  // Chat question creation
+  'chat_q_content_title': 'Treść pytania',
+  'chat_q_option_count_2': '2 Opcje',
+  'chat_q_option_count_4': '4 Opcje',
+  'chat_q_question_label': 'Pytanie',
+  'chat_q_question_hint': 'Napisz swoje pytanie...',
+  'chat_q_options_label': 'Opcje',
+  'chat_q_option_hint': 'Opcja {label}',
+  'chat_q_correct_hint': 'Dotknij kółka obok opcji, aby wybrać poprawną odpowiedź',
+  'chat_q_settings_title': 'Ustawienia',
+  'chat_q_timer_label': 'Limit czasu',
+  'chat_q_hint_label': 'Wskazówka (opcjonalnie)',
+  'chat_q_hint_placeholder': 'Dodaj wskazówkę...',
+  'chat_q_reward_label': 'Media nagrody (opcjonalnie)',
+  'chat_q_unmatch_title': 'Ryzyko unmatchu',
+  'chat_q_unmatch_desc': 'Zła odpowiedź kończy match',
+  'chat_q_chatlock_title': 'Blokada czatu',
+  'chat_q_chatlock_desc': 'Czat jest zablokowany do odpowiedzi',
+  'chat_q_powerblock_title': 'Blokada mocy',
+  'chat_q_powerblock_desc_on': 'Aktywne',
+  'chat_q_powerblock_desc_off': 'Blokuje moce przeciwnika',
+
+  // Profile Preview
+  'profile_preview': 'Profile Preview',
+  'profile_preview_tooltip': 'Preview your profile',
+  'preview_profile': 'Preview',
+  'profile_updated_success': 'Profile updated successfully',
 };
