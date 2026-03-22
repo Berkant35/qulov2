@@ -270,7 +270,6 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
       'match_radius_km': epState.distanceKm.round(),
       'relationship_goal': epState.selectedRelationshipGoal,
       'preferred_languages': epState.selectedLanguages,
-      'strict_language_mode': epState.strictLanguageMode,
     };
 
     final detailsData = <String, dynamic>{

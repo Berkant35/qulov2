@@ -125,24 +125,6 @@ class EditProfilePreferencesSection extends ConsumerWidget {
               );
             }).toList(),
           ),
-          const SizedBox(height: AppSpacing.md),
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(
-              context.tr('strict_language_mode'),
-              style: theme.textTheme.bodyMedium,
-            ),
-            subtitle: Text(
-              context.tr('strict_language_mode_desc'),
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: context.appColors.textHint,
-              ),
-            ),
-            value: epState.strictLanguageMode,
-            onChanged: (val) => ref
-                .read(editProfileProvider.notifier)
-                .setStrictLanguageMode(val),
-          ),
         ],
       ),
     );
