@@ -7,6 +7,7 @@ import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/features/settings/mixins/settings_screen_mixin.dart';
 import 'package:qulo_v2/features/settings/widgets/settings_action_tile.dart';
+import 'package:qulo_v2/features/settings/widgets/settings_legal_section.dart';
 import 'package:qulo_v2/features/settings/widgets/settings_language_tile.dart';
 import 'package:qulo_v2/features/settings/widgets/settings_theme_tile.dart';
 import 'package:qulo_v2/providers/haptic_provider.dart';
@@ -49,6 +50,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
           SettingsLanguageTile(onTap: onLanguageTap),
           SettingsThemeTile(onChanged: onThemeChanged),
           _HapticTile(),
+          const SizedBox(height: AppSpacing.sm),
+          SettingsLegalSection(onOpenUrl: onOpenUrl),
           const SizedBox(height: AppSpacing.sm),
           SettingsActionTile(
             icon: Icons.logout,
