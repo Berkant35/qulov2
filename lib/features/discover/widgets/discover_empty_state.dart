@@ -107,8 +107,8 @@ class _DiscoverEmptyStateState extends ConsumerState<DiscoverEmptyState> {
                   Slider(
                     value: _radius,
                     min: 5,
-                    max: 200,
-                    divisions: 39,
+                    max: 500,
+                    divisions: 99,
                     activeColor: context.appColors.primary,
                     onChanged: (val) => setState(() => _radius = val),
                   ),
@@ -122,7 +122,7 @@ class _DiscoverEmptyStateState extends ConsumerState<DiscoverEmptyState> {
                         ),
                       ),
                       Text(
-                        '200 km',
+                        '500 km',
                         style: theme.textTheme.labelSmall?.copyWith(
                           color: context.appColors.textHint,
                         ),

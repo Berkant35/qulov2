@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/profile_section_card.dart';
@@ -8,12 +9,10 @@ import 'package:qulo_v2/providers/edit_profile_provider.dart';
 
 class EditProfilePreferencesSection extends ConsumerWidget {
   final String completionText;
-  final String Function(String code) languageLabelFn;
 
   const EditProfilePreferencesSection({
     super.key,
     required this.completionText,
-    required this.languageLabelFn,
   });
 
   @override
@@ -88,8 +87,8 @@ class EditProfilePreferencesSection extends ConsumerWidget {
           Slider(
             value: epState.distanceKm,
             min: 5,
-            max: 200,
-            divisions: 39,
+            max: 500,
+            divisions: 99,
             label: '${epState.distanceKm.round()} km',
             activeColor: context.appColors.primary,
             inactiveColor: theme.colorScheme.surfaceContainerHigh,
@@ -100,7 +99,7 @@ class EditProfilePreferencesSection extends ConsumerWidget {
 
           // Language preference
           Text(
-            'Dil Tercihi',
+            context.tr('language_preference'),
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),
@@ -110,17 +109,43 @@ class EditProfilePreferencesSection extends ConsumerWidget {
             spacing: AppSpacing.sm,
             runSpacing: AppSpacing.sm,
             children:
-                ['tr', 'en', 'de', 'fr', 'ar', 'ru', 'es'].map((lang) {
+                AppConstants.supportedQuestionLocales.map((lang) {
               final isSelected = epState.selectedLanguages.contains(lang);
+              final flag = AppConstants.localeFlagEmojis[lang] ?? '';
               return FilterChip(
-                label: Text(languageLabelFn(lang)),
+                label: Text('$flag ${context.tr('locale_$lang')}'),
                 selected: isSelected,
                 onSelected: (_) =>
                     ref.read(editProfileProvider.notifier).toggleLanguage(lang),
-                selectedColor: context.appColors.primary.withValues(alpha: 0.2),
+                selectedColor: context.appColors.primarySurface,
                 checkmarkColor: context.appColors.primary,
+                side: BorderSide(
+                  color: isSelected ? context.appColors.primary : context.appColors.border,
+                ),
               );
             }).toList(),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(
+              context.tr('strict_language_mode'),
+              style: theme.textTheme.bodyMedium,
+            ),
+            subtitle: Text(
+              context.tr('strict_language_mode_desc'),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: context.appColors.textHint,
+              ),
+            ),
+            value: epState.strictLanguageMode,
+            activeColor: context.appColors.primary,
+            activeTrackColor: context.appColors.primary.withValues(alpha: 0.4),
+            inactiveThumbColor: context.appColors.textSecondary,
+            inactiveTrackColor: context.appColors.surfaceInput,
+            onChanged: (val) => ref
+                .read(editProfileProvider.notifier)
+                .setStrictLanguageMode(val),
           ),
         ],
       ),

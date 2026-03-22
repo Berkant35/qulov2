@@ -330,7 +330,12 @@ class _MainShellState extends ConsumerState<_MainShell> {
           ),
           NavigationBar(
             selectedIndex: widget.shell.currentIndex,
-            onDestinationSelected: (i) => widget.shell.goBranch(i, initialLocation: i == widget.shell.currentIndex),
+            onDestinationSelected: (i) {
+              if (i == 0 && widget.shell.currentIndex != 0) {
+                ref.read(discoverProvider.notifier).loadCards();
+              }
+              widget.shell.goBranch(i, initialLocation: i == widget.shell.currentIndex);
+            },
             destinations: [
               NavigationDestination(
                 icon: QIcon(QIcons.icCompass, size: 24),

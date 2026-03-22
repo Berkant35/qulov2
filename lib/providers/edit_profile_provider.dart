@@ -13,6 +13,7 @@ class EditProfileState {
   final List<String?> photos;
   final String? selectedRelationshipGoal;
   final List<String> selectedLanguages;
+  final bool strictLanguageMode;
 
   const EditProfileState({
     this.isSaving = false,
@@ -25,6 +26,7 @@ class EditProfileState {
     this.photos = const [null, null, null, null, null, null],
     this.selectedRelationshipGoal,
     this.selectedLanguages = const [],
+    this.strictLanguageMode = false,
   });
 
   EditProfileState copyWith({
@@ -38,6 +40,7 @@ class EditProfileState {
     List<String?>? photos,
     String? Function()? selectedRelationshipGoal,
     List<String>? selectedLanguages,
+    bool? strictLanguageMode,
   }) {
     return EditProfileState(
       isSaving: isSaving ?? this.isSaving,
@@ -57,6 +60,7 @@ class EditProfileState {
           ? selectedRelationshipGoal()
           : this.selectedRelationshipGoal,
       selectedLanguages: selectedLanguages ?? this.selectedLanguages,
+      strictLanguageMode: strictLanguageMode ?? this.strictLanguageMode,
     );
   }
 }
@@ -85,6 +89,7 @@ class EditProfileNotifier extends Notifier<EditProfileState> {
       selectedLanguages: user.preferredLanguages.isNotEmpty
           ? user.preferredLanguages
           : [user.locale ?? 'tr'],
+      strictLanguageMode: user.strictLanguageMode,
     );
   }
 
@@ -102,6 +107,8 @@ class EditProfileNotifier extends Notifier<EditProfileState> {
       state = state.copyWith(selectedRelationshipGoal: () => v);
   void setLanguages(List<String> v) =>
       state = state.copyWith(selectedLanguages: v);
+  void setStrictLanguageMode(bool v) =>
+      state = state.copyWith(strictLanguageMode: v);
   void toggleLanguage(String lang) {
     final current = List<String>.from(state.selectedLanguages);
     if (current.contains(lang)) {

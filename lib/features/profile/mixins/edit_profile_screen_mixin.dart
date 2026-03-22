@@ -9,6 +9,7 @@ import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/core/widgets/milestone_celebration_sheet.dart';
 import 'package:qulo_v2/providers/economy_config_provider.dart';
 import 'package:qulo_v2/providers/edit_profile_provider.dart';
+import 'package:qulo_v2/providers/user_languages_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
 import 'package:qulo_v2/features/profile/screens/edit_profile_screen.dart';
@@ -28,9 +29,14 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
 
   void initMixin() {
     _loadControllers();
+    _addCompletionListeners();
   }
 
   void disposeMixin() {
+    // Remove listeners before dispose
+    for (final c in _completionControllers) {
+      c.removeListener(_onCompletionFieldChanged);
+    }
     bioController.dispose();
     nameController.dispose();
     cityController.dispose();
@@ -41,6 +47,30 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
     petsController.dispose();
     musicController.dispose();
     personalityController.dispose();
+  }
+
+  List<TextEditingController> get _completionControllers => [
+        bioController,
+        nameController,
+        cityController,
+        heightController,
+        weightController,
+        jobController,
+        schoolController,
+        petsController,
+        musicController,
+        personalityController,
+      ];
+
+  void _addCompletionListeners() {
+    for (final c in _completionControllers) {
+      c.addListener(_onCompletionFieldChanged);
+    }
+  }
+
+  void _onCompletionFieldChanged() {
+    // Trigger rebuild so section completion texts update reactively
+    if (mounted) setState(() {});
   }
 
   void _loadControllers() {
@@ -238,6 +268,7 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
       'match_radius_km': epState.distanceKm.round(),
       'relationship_goal': epState.selectedRelationshipGoal,
       'preferred_languages': epState.selectedLanguages,
+      'strict_language_mode': epState.strictLanguageMode,
     };
 
     final detailsData = <String, dynamic>{
@@ -257,6 +288,8 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
 
     if (success) {
       AnalyticsManager.instance.logEvent(AnalyticsEvents.profileEditSave);
+      // Sync: userLanguagesProvider'ı userProvider'dan güncelle
+      ref.read(userLanguagesProvider.notifier).syncFromUser();
     }
 
     if (mounted) {

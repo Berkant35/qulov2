@@ -100,7 +100,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
             const SizedBox(height: AppSpacing.sectionGap),
             EditProfilePreferencesSection(
               completionText: preferencesCompletionText(epState),
-              languageLabelFn: languageLabel,
             ),
             const SizedBox(height: AppSpacing.sectionGap),
             const EditProfileRelationshipGoalSection(),
