@@ -15,7 +15,7 @@ abstract class QuestionService {
   @POST('/questions/me')
   Future<QuestionModel> createQuestion(@Body() Map<String, dynamic> data);
 
-  @PATCH('/questions/me/{orderNum}')
+  @PUT('/questions/me/{orderNum}')
   Future<QuestionModel> updateQuestion(
     @Path('orderNum') int orderNum,
     @Body() Map<String, dynamic> data,

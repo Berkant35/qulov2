@@ -311,6 +311,7 @@ class _SolveChatQuestionScreenState
               QuizTimer(
                 key: _timerKey,
                 seconds: q.timeLimitSeconds,
+                questionId: q.id,
                 onTimeout: _onTimeout,
               ),
               const SizedBox(height: AppSpacing.xl),
