@@ -48,6 +48,10 @@ mixin QuestionsScreenMixin on ConsumerState<QuestionsScreen> {
     initialized = true;
   }
 
+  void openAnalytics() {
+    ref.read(navigationServiceProvider).push(RouteNames.questionAnalytics);
+  }
+
   void showModeSheet() {
     final questions = ref.read(questionProvider).valueOrNull ?? [];
     final dailyStats = ref.read(dailyStatsProvider).valueOrNull;

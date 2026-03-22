@@ -41,7 +41,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen>
       padding: EdgeInsets.zero,
       actions: [
         IconButton(
-          onPressed: () {},
+          onPressed: openAnalytics,
           icon: QIcon(QIcons.icChart, size: 22, color: context.appColors.textSecondary),
         ),
       ],
