@@ -124,7 +124,7 @@ class QuizTimerState extends State<QuizTimer> with TickerProviderStateMixin {
 
   Color get _barColor {
     if (_remaining <= 5) return context.appColors.error;
-    if (_remaining <= 10) return Colors.orange;
+    if (_remaining <= 10) return context.appColors.warning;
     return context.appColors.secondary;
   }
 
