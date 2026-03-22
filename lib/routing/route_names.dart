@@ -28,6 +28,7 @@ abstract final class RouteNames {
   static const questionOnboarding = 'question-onboarding';
   static const exchange = 'exchange';
   static const profileDetail = 'profile-detail';
+  static const profilePreview = 'profile-preview';
 
   // Chat
   static const createChatQuestion = 'create-chat-question';

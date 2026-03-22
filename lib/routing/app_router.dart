@@ -31,6 +31,7 @@ import 'package:qulo_v2/features/exchange/screens/exchange_screen.dart';
 import 'package:qulo_v2/features/update/force_update_screen.dart';
 import 'package:qulo_v2/features/update/maintenance_screen.dart';
 import 'package:qulo_v2/features/profile_detail/screens/profile_detail_screen.dart';
+import 'package:qulo_v2/features/profile/screens/profile_preview_screen.dart';
 import 'package:qulo_v2/features/profile_detail/models/profile_detail_args.dart';
 import 'package:qulo_v2/features/chat/screens/create_chat_question_screen.dart';
 import 'package:qulo_v2/features/chat/screens/solve_chat_question_screen.dart';

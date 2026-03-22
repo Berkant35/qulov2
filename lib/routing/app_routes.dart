@@ -178,6 +178,17 @@ final _routes = <RouteBase>[
     ),
   ),
 
+  // Profile Preview (root navigator — full screen, no bottom nav)
+  GoRoute(
+    parentNavigatorKey: rootNavigatorKey,
+    path: '/profile/preview',
+    name: RouteNames.profilePreview,
+    builder: (context, state) {
+      final source = state.extra is String ? state.extra as String : 'profile_screen';
+      return ProfilePreviewScreen(source: source);
+    },
+  ),
+
   // Main shell (bottom nav)
   StatefulShellRoute.indexedStack(
     builder: (context, state, shell) => _MainShell(shell: shell),
