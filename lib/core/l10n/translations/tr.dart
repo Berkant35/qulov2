@@ -692,6 +692,7 @@ const trTranslations = <String, String>{
   'language_preference': 'Dil Tercihi',
   'strict_language_mode': 'Sadece tercih ettiğim dillerde göster',
   'strict_language_mode_desc': 'Kapatıldığında, diğer dillerde sorusu olan profiller de görünür',
+  'preferences_subtitle': 'Sana uygun kişileri görelim',
 
   // Milestone celebration
   'congratulations': 'Tebrikler!',

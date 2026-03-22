@@ -170,7 +170,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
                           PowerBanner(
                             icon: Icons.lightbulb_outline,
                             text: hintText!,
-                            color: Colors.amber,
+                            color: context.appColors.warning,
                           ),
                         ...question.answers.map((a) {
                           final isRemoved = removedIndices.contains(a.index);

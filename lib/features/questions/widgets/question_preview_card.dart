@@ -205,6 +205,12 @@ class _AnswerPill extends StatelessWidget {
     this.isEmpty = false,
   });
 
+  Color _textColor(BuildContext context) {
+    if (isEmpty) return context.appColors.textHint;
+    if (isCorrect) return context.appColors.secondary;
+    return context.appColors.textPrimary;
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -228,11 +234,7 @@ class _AnswerPill extends StatelessWidget {
       child: Text(
         label,
         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: isEmpty
-              ? context.appColors.textHint
-              : isCorrect
-                  ? context.appColors.secondary
-                  : context.appColors.textPrimary,
+          color: _textColor(context),
           fontWeight: isCorrect ? FontWeight.w600 : FontWeight.normal,
         ),
         maxLines: 1,

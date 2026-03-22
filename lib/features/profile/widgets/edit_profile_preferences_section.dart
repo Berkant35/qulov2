@@ -23,7 +23,7 @@ class EditProfilePreferencesSection extends ConsumerWidget {
     return ProfileSectionCard(
       icon: Icons.tune,
       title: context.tr('preferences'),
-      subtitle: 'Sana uygun kisileri gorelim',
+      subtitle: context.tr('preferences_subtitle'),
       completionText: completionText,
       isComplete: completionText == '4/4',
       child: Column(

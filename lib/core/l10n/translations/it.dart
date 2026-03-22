@@ -692,6 +692,7 @@ const itTranslations = <String, String>{
   'language_preference': 'Preferenza lingua',
   'strict_language_mode': 'Mostra solo le lingue preferite',
   'strict_language_mode_desc': 'Quando disattivato, appariranno anche profili con domande in altre lingue',
+  'preferences_subtitle': 'Troviamo le persone giuste per te',
 
   // Milestone celebration
   'congratulations': 'Complimenti!',

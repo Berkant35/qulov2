@@ -690,6 +690,7 @@ const plTranslations = <String, String>{
   'language_preference': 'Preferencja językowa',
   'strict_language_mode': 'Pokaż tylko preferowane języki',
   'strict_language_mode_desc': 'Po wyłączeniu pojawią się też profile z pytaniami w innych językach',
+  'preferences_subtitle': 'Znajdźmy odpowiednich ludzi dla Ciebie',
 
   // Milestone celebration
   'congratulations': 'Gratulacje!',

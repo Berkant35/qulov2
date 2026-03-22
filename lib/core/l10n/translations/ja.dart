@@ -692,6 +692,7 @@ const jaTranslations = <String, String>{
   'language_preference': '言語設定',
   'strict_language_mode': '好みの言語のみ表示',
   'strict_language_mode_desc': 'オフにすると、他の言語の質問があるプロフィールも表示されます',
+  'preferences_subtitle': 'あなたに合った人を見つけましょう',
 
   // Milestone celebration
   'congratulations': 'おめでとうございます！',

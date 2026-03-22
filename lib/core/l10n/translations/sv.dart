@@ -692,6 +692,7 @@ const svTranslations = <String, String>{
   'language_preference': 'Språkpreferens',
   'strict_language_mode': 'Visa bara mina föredragna språk',
   'strict_language_mode_desc': 'När av, visas även profiler med frågor på andra språk',
+  'preferences_subtitle': 'Låt oss hitta rätt personer för dig',
 
   // Milestone celebration
   'congratulations': 'Grattis!',

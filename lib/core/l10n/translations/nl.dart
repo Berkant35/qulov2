@@ -690,6 +690,7 @@ const nlTranslations = <String, String>{
   'language_preference': 'Taalvoorkeur',
   'strict_language_mode': 'Toon alleen mijn voorkeurstalen',
   'strict_language_mode_desc': 'Wanneer uitgeschakeld, verschijnen ook profielen met vragen in andere talen',
+  'preferences_subtitle': 'Laten we de juiste mensen voor je vinden',
 
   // Milestone celebration
   'congratulations': 'Gefeliciteerd!',

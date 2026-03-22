@@ -690,6 +690,7 @@ const koTranslations = <String, String>{
   'language_preference': '언어 선호',
   'strict_language_mode': '선호하는 언어만 표시',
   'strict_language_mode_desc': '끄면 다른 언어의 질문이 있는 프로필도 표시됩니다',
+  'preferences_subtitle': '당신에게 맞는 사람을 찾아봐요',
 
   // Milestone celebration
   'congratulations': '축하해요!',

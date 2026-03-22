@@ -690,6 +690,7 @@ const arTranslations = <String, String>{
   'language_preference': 'تفضيل اللغة',
   'strict_language_mode': 'عرض اللغات المفضلة فقط',
   'strict_language_mode_desc': 'عند الإيقاف، ستظهر أيضاً الملفات الشخصية التي تحتوي على أسئلة بلغات أخرى',
+  'preferences_subtitle': 'دعنا نجد الأشخاص المناسبين لك',
 
   // Milestone celebration
   'congratulations': 'تهانينا!',

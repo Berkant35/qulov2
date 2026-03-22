@@ -690,6 +690,7 @@ const ruTranslations = <String, String>{
   'language_preference': 'Языковые предпочтения',
   'strict_language_mode': 'Показывать только предпочитаемые языки',
   'strict_language_mode_desc': 'Когда выключено, будут отображаться профили с вопросами на других языках',
+  'preferences_subtitle': 'Найдём подходящих людей для вас',
 
   // Milestone celebration
   'congratulations': 'Поздравляем!',

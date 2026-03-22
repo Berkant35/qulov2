@@ -690,6 +690,7 @@ const zhTranslations = <String, String>{
   'language_preference': '语言偏好',
   'strict_language_mode': '仅显示我偏好的语言',
   'strict_language_mode_desc': '关闭后，其他语言的问题也会显示',
+  'preferences_subtitle': '让我们为你找到合适的人',
 
   // Milestone celebration
   'congratulations': '恭喜！',

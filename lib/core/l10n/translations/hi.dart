@@ -692,6 +692,7 @@ const hiTranslations = <String, String>{
   'language_preference': 'भाषा प्राथमिकता',
   'strict_language_mode': 'केवल पसंदीदा भाषाओं में दिखाएं',
   'strict_language_mode_desc': 'बंद होने पर, अन्य भाषाओं में प्रश्न वाले प्रोफ़ाइल भी दिखाई देंगे',
+  'preferences_subtitle': 'आपके लिए सही लोगों को खोजते हैं',
 
   // Milestone celebration
   'congratulations': 'बधाई!',

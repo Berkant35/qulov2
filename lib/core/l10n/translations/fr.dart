@@ -692,6 +692,7 @@ const frTranslations = <String, String>{
   'language_preference': 'Préférence de langue',
   'strict_language_mode': 'Afficher uniquement mes langues préférées',
   'strict_language_mode_desc': 'Désactivé, les profils avec des questions dans d\'autres langues apparaîtront aussi',
+  'preferences_subtitle': 'Trouvons les bonnes personnes pour vous',
 
   // Milestone celebration
   'congratulations': 'Félicitations !',

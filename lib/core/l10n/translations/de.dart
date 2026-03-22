@@ -692,6 +692,7 @@ const deTranslations = <String, String>{
   'language_preference': 'Spracheinstellung',
   'strict_language_mode': 'Nur bevorzugte Sprachen anzeigen',
   'strict_language_mode_desc': 'Wenn deaktiviert, werden auch Profile mit Fragen in anderen Sprachen angezeigt',
+  'preferences_subtitle': 'Finden wir die richtigen Leute für dich',
 
   // Milestone celebration
   'congratulations': 'Glückwunsch!',

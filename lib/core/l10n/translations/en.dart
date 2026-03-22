@@ -692,6 +692,7 @@ const enTranslations = <String, String>{
   'language_preference': 'Language Preference',
   'strict_language_mode': 'Only show my preferred languages',
   'strict_language_mode_desc': 'When off, profiles with questions in other languages will also appear',
+  'preferences_subtitle': 'Let\'s find the right people for you',
 
   // Milestone celebration
   'congratulations': 'Congratulations!',
