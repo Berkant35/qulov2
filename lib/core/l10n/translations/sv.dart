@@ -805,7 +805,6 @@ const svTranslations = <String, String>{
   'avg_solve_time': 'Avg. Solve Time',
   'difficulty_distribution': 'Difficulty Distribution',
   'no_data_yet': 'No data yet',
-  'no_transactions': 'No transactions yet',
   'no_solves_yet': 'No solves yet',
   'difficulty_easy': 'Easy',
   'difficulty_medium': 'Medium',

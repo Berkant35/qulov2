@@ -805,7 +805,6 @@ const trTranslations = <String, String>{
   'avg_solve_time': 'Ort. Cozum Suresi',
   'difficulty_distribution': 'Zorluk Dagilimi',
   'no_data_yet': 'Henuz veri yok',
-  'no_transactions': 'Henuz islem yok',
   'no_solves_yet': 'Henuz cozum yok',
   'difficulty_easy': 'Kolay',
   'difficulty_medium': 'Orta',
