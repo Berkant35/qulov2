@@ -282,6 +282,11 @@ final _routes = <RouteBase>[
               builder: (context, state) => const SubscriptionComparisonScreen(),
             ),
             GoRoute(
+              path: 'performance',
+              name: RouteNames.performance,
+              builder: (context, state) => const PerformanceDashboardScreen(),
+            ),
+            GoRoute(
               path: 'settings',
               name: RouteNames.settings,
               builder: (context, state) => const SettingsScreen(),

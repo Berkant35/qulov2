@@ -212,6 +212,11 @@ abstract class AnalyticsEvents {
   static const String profileDetailBlock = 'profile_detail_block';
   static const String profileDetailClose = 'profile_detail_close';
 
+  // ─── Performance Dashboard ─────────────────────────────────────────
+  static const String performanceDashboardOpened = 'performance_dashboard_opened';
+  static const String performanceViewAllDiamonds = 'performance_view_all_diamonds';
+  static const String performanceBestQuestionTapped = 'performance_best_question_tapped';
+
   // ─── Settings (8) ──────────────────────────────────────────────────
   static const String settingsScreenView = 'settings_screen_view';
   static const String settingsChange = 'settings_change';
