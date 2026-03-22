@@ -72,6 +72,13 @@ mixin ProfileScreenMixin on ConsumerState<ProfileScreen> {
     navigateTo(RouteNames.settings);
   }
 
+  void onPreviewProfile() {
+    ref.read(navigationServiceProvider).push(
+      RouteNames.profilePreview,
+      extra: 'profile_screen',
+    );
+  }
+
   Future<void> handleClaimReward(String level) async {
     final result = await ref.read(userProvider.notifier).claimBadgeReward(level);
     if (!mounted) return;

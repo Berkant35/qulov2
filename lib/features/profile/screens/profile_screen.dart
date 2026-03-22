@@ -100,7 +100,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                 ],
 
                 // ─── Identity ───
-                ProfileIdentityCard(user: user),
+                ProfileIdentityCard(
+                  user: user,
+                  onTap: onPreviewProfile,
+                ),
                 const SizedBox(height: AppSpacing.lg),
 
                 // ─── Referral ───

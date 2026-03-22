@@ -8,47 +8,69 @@ import 'package:qulo_v2/data/models/user_model.dart';
 import 'package:qulo_v2/providers/subscription_provider.dart';
 
 class ProfileIdentityCard extends ConsumerWidget {
-  const ProfileIdentityCard({super.key, required this.user});
+  const ProfileIdentityCard({
+    super.key,
+    required this.user,
+    this.onTap,
+  });
 
   final UserModel user;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.cardPadding),
-      decoration: BoxDecoration(
-        color: context.appColors.surfaceElevated,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-      ),
-      child: Column(
-        children: [
-          Text(
-            '${user.name ?? ''}, ${user.age ?? ''}',
-            style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
-          ),
-          _SubscriptionBadge(ref: ref),
-          if (user.city != null)
-            Padding(
-              padding: const EdgeInsets.only(top: AppSpacing.sm),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  QIcon(QIcons.icMapPin, color: theme.colorScheme.onSurfaceVariant, size: 16),
-                  const SizedBox(width: AppSpacing.xs),
-                  Text(
-                    user.city!,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(AppSpacing.cardPadding),
+        decoration: BoxDecoration(
+          color: context.appColors.surfaceElevated,
+          borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        ),
+        child: Stack(
+          children: [
+            Column(
+              children: [
+                Text(
+                  '${user.name ?? ''}, ${user.age ?? ''}',
+                  style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                _SubscriptionBadge(ref: ref),
+                if (user.city != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: AppSpacing.sm),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        QIcon(QIcons.icMapPin, color: theme.colorScheme.onSurfaceVariant, size: 16),
+                        const SizedBox(width: AppSpacing.xs),
+                        Text(
+                          user.city!,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+              ],
             ),
-        ],
+            if (onTap != null)
+              Positioned(
+                right: 0,
+                bottom: 0,
+                child: Icon(
+                  Icons.visibility,
+                  size: 18,
+                  color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
