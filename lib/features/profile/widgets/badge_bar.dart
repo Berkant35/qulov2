@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
@@ -12,6 +13,20 @@ import 'package:qulo_v2/data/models/user_model.dart';
 
 enum BadgeLevel { none, bronze, silver, gold }
 
+// ─── Checklist Item ───
+
+class ProfileChecklistItem {
+  final String label;
+  final bool completed;
+  final String? route;
+
+  const ProfileChecklistItem({
+    required this.label,
+    required this.completed,
+    this.route,
+  });
+}
+
 // ─── Badge Info ───
 
 class BadgeInfo {
@@ -20,7 +35,7 @@ class BadgeInfo {
   final String iconPath;
   final Color color;
   final double progress;
-  final String? hint;
+  final List<ProfileChecklistItem> checklist;
   final BadgeLevel? nextLevel;
   final int? percentToNext;
 
@@ -30,7 +45,7 @@ class BadgeInfo {
     required this.iconPath,
     required this.color,
     required this.progress,
-    this.hint,
+    this.checklist = const [],
     this.nextLevel,
     this.percentToNext,
   });
@@ -42,7 +57,6 @@ BadgeInfo calculateBadgeInfo(BuildContext context, UserModel user) {
   final pct = user.profileCompletion.clamp(0, 100);
   final progress = pct / 100;
 
-  // Determine current level
   final BadgeLevel level;
   final String name;
   final String iconPath;
@@ -80,20 +94,35 @@ BadgeInfo calculateBadgeInfo(BuildContext context, UserModel user) {
     percentToNext = 30 - pct;
   }
 
-  // Determine hint
-  String? hint;
-  if (level != BadgeLevel.gold) {
-    final photos = user.photos ?? [];
-    if (photos.length < 3) {
-      hint = context.tr('hint_add_photos');
-    } else if (user.bio == null || user.bio!.isEmpty) {
-      hint = context.tr('hint_add_bio');
-    } else if (user.details?.job == null) {
-      hint = context.tr('hint_add_job');
-    } else {
-      hint = context.tr('hint_add_details');
-    }
-  }
+  // Build checklist — ALL profile requirements
+  final photos = user.photos ?? [];
+  final checklist = <ProfileChecklistItem>[
+    ProfileChecklistItem(
+      label: context.tr('checklist_photos'),
+      completed: photos.length >= 3,
+      route: 'editProfile',
+    ),
+    ProfileChecklistItem(
+      label: context.tr('checklist_bio'),
+      completed: user.bio != null && user.bio!.isNotEmpty,
+      route: 'editProfile',
+    ),
+    ProfileChecklistItem(
+      label: context.tr('checklist_details'),
+      completed: user.details?.job != null && user.details?.zodiac != null,
+      route: 'editProfile',
+    ),
+    ProfileChecklistItem(
+      label: context.tr('checklist_questions'),
+      completed: user.questionCount >= AppConstants.minQuestions,
+      route: 'questions',
+    ),
+    ProfileChecklistItem(
+      label: context.tr('checklist_relationship'),
+      completed: user.relationshipGoal != null && user.relationshipGoal != 'NOT_SURE',
+      route: 'editProfile',
+    ),
+  ];
 
   return BadgeInfo(
     level: level,
@@ -101,7 +130,7 @@ BadgeInfo calculateBadgeInfo(BuildContext context, UserModel user) {
     iconPath: iconPath,
     color: color,
     progress: progress,
-    hint: hint,
+    checklist: checklist,
     nextLevel: nextLevel,
     percentToNext: percentToNext,
   );
@@ -112,11 +141,13 @@ BadgeInfo calculateBadgeInfo(BuildContext context, UserModel user) {
 class BadgeBar extends StatelessWidget {
   final UserModel user;
   final Future<void> Function(String level)? onClaimReward;
+  final void Function(String route)? onNavigate;
 
   const BadgeBar({
     super.key,
     required this.user,
     this.onClaimReward,
+    this.onNavigate,
   });
 
   bool _canClaimReward(UserModel user, String levelStr, int threshold) {
@@ -129,11 +160,12 @@ class BadgeBar extends StatelessWidget {
     final info = calculateBadgeInfo(context, user);
     final pct = user.profileCompletion.clamp(0, 100);
 
-    // Check claimable rewards
     final canClaimSilver = _canClaimReward(user, 'SILVER', 60);
     final canClaimGold = _canClaimReward(user, 'GOLD', 85);
     final showClaim = canClaimGold || canClaimSilver;
     final claimLevel = canClaimGold ? 'GOLD' : 'SILVER';
+
+    final incompleteItems = info.checklist.where((c) => !c.completed).toList();
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.cardPadding),
@@ -149,14 +181,10 @@ class BadgeBar extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          // ─── Header Row: badge icon + name (left) | percentage (right) ───
+          // ─── Header Row ───
           Row(
             children: [
-              QIcon(
-                info.iconPath,
-                size: 20,
-                color: info.color,
-              ),
+              QIcon(info.iconPath, size: 20, color: info.color),
               const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(
@@ -192,15 +220,34 @@ class BadgeBar extends StatelessWidget {
             ),
           ),
 
-          // ─── Hint Text ───
-          if (info.hint != null) ...[
+          // ─── Checklist ───
+          if (incompleteItems.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.md),
+            ...incompleteItems.map((item) => _ChecklistRow(
+              item: item,
+              color: info.color,
+              onTap: item.route != null && onNavigate != null
+                  ? () => onNavigate!(item.route!)
+                  : null,
+            )),
+          ],
+
+          // ─── All Complete ───
+          if (incompleteItems.isEmpty && pct >= 85) ...[
             const SizedBox(height: AppSpacing.sm),
-            Text(
-              info.hint!,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-                fontSize: 12,
-              ),
+            Row(
+              children: [
+                Icon(Icons.check_circle, size: 16, color: info.color),
+                const SizedBox(width: AppSpacing.xs),
+                Text(
+                  context.tr('checklist_all_done'),
+                  style: TextStyle(
+                    color: info.color,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
           ],
 
@@ -209,11 +256,7 @@ class BadgeBar extends StatelessWidget {
             const SizedBox(height: AppSpacing.xs),
             Row(
               children: [
-                Icon(
-                  Icons.warning_amber_rounded,
-                  size: 14,
-                  color: context.appColors.warning,
-                ),
+                Icon(Icons.warning_amber_rounded, size: 14, color: context.appColors.warning),
                 const SizedBox(width: AppSpacing.xs),
                 Expanded(
                   child: Text(
@@ -240,25 +283,69 @@ class BadgeBar extends StatelessWidget {
                   side: BorderSide(color: info.color),
                   foregroundColor: info.color,
                   shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(AppSpacing.radiusSm),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                   ),
-                  padding: const EdgeInsets.symmetric(
-                    vertical: AppSpacing.sm,
-                  ),
+                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
                 ),
                 icon: const DiamondIcon.purple(size: 18, showGlow: false),
                 label: Text(
                   context.tr('badge_claim_reward'),
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
                 ),
               ),
             ),
           ],
         ],
+      ),
+    );
+  }
+}
+
+// ─── Checklist Row Widget ───
+
+class _ChecklistRow extends StatelessWidget {
+  final ProfileChecklistItem item;
+  final Color color;
+  final VoidCallback? onTap;
+
+  const _ChecklistRow({
+    required this.item,
+    required this.color,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Row(
+          children: [
+            Icon(
+              item.completed ? Icons.check_circle : Icons.radio_button_unchecked,
+              size: 16,
+              color: item.completed ? context.appColors.secondary : theme.colorScheme.outline,
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: Text(
+                item.label,
+                style: TextStyle(
+                  color: item.completed
+                      ? theme.colorScheme.onSurfaceVariant
+                      : theme.colorScheme.onSurface,
+                  fontSize: 13,
+                  decoration: item.completed ? TextDecoration.lineThrough : null,
+                ),
+              ),
+            ),
+            if (!item.completed && onTap != null)
+              Icon(Icons.chevron_right, size: 16, color: color),
+          ],
+        ),
       ),
     );
   }

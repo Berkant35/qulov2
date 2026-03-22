@@ -125,15 +125,16 @@ class NotificationManager {
       dev.log('[FCM] Android notification channel created', name: 'NotificationManager');
     }
 
-    // Set foreground notification presentation for iOS
+    // Disable iOS native foreground alerts — we handle via local notifications
+    // so we can apply suppress logic (e.g., don't show when in active chat)
     await _messaging.setForegroundNotificationPresentationOptions(
-      alert: true,
+      alert: false,
       badge: true,
-      sound: true,
+      sound: false,
     );
   }
 
-  /// Show a local notification (used for foreground FCM messages on Android)
+  /// Show a local notification (used for foreground FCM messages)
   Future<void> showLocalNotification(RemoteMessage message) async {
     final notification = message.notification;
     if (notification == null) return;
@@ -149,8 +150,15 @@ class NotificationManager {
       icon: '@mipmap/ic_launcher',
     );
 
+    const iosDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+
     const notificationDetails = NotificationDetails(
       android: androidDetails,
+      iOS: iosDetails,
     );
 
     await _localNotifications.show(
@@ -166,15 +174,20 @@ class NotificationManager {
   void Function(String token)? _onTokenRefresh;
   void Function(RemoteMessage message)? _onForegroundMessage;
   void Function(RemoteMessage message)? _onMessageOpenedApp;
+  /// Gelen mesajın banner/local notification olarak gösterilmesini engellemek için.
+  /// true dönerse hem banner hem Android local notification suppress edilir.
+  bool Function(RemoteMessage message)? shouldSuppressNotification;
 
   void setCallbacks({
     void Function(String token)? onTokenRefresh,
     void Function(RemoteMessage message)? onForegroundMessage,
     void Function(RemoteMessage message)? onMessageOpenedApp,
+    bool Function(RemoteMessage message)? shouldSuppress,
   }) {
     _onTokenRefresh = onTokenRefresh;
     _onForegroundMessage = onForegroundMessage;
     _onMessageOpenedApp = onMessageOpenedApp;
+    shouldSuppressNotification = shouldSuppress;
 
     // Cancel previous listeners to prevent duplicates
     _onMessageSub?.cancel();
@@ -186,9 +199,12 @@ class NotificationManager {
         AnalyticsEvents.paramType: message.data['type'] ?? 'unknown',
       });
 
-      // Android: show local notification for foreground messages
-      // (iOS handles this via setForegroundNotificationPresentationOptions)
-      if (Platform.isAndroid) {
+      // Suppress check — aktif chat'teki mesaj bildirimi ise gösterme
+      final suppress = shouldSuppressNotification?.call(message) ?? false;
+
+      // Show local notification for foreground messages (both platforms)
+      // Suppress logic handles active chat scenario
+      if (!suppress) {
         showLocalNotification(message);
       }
 

@@ -5,7 +5,7 @@ import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/data/models/chat_question_model.dart';
 import 'package:qulo_v2/data/models/notification_model.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
-import 'package:qulo_v2/providers/chat_provider.dart';
+import 'package:qulo_v2/providers/chat_provider.dart' show chatQuestionCacheProvider, activeChatMatchIdProvider;
 import 'package:qulo_v2/providers/user_provider.dart';
 
 class NotificationState {
@@ -49,6 +49,7 @@ class NotificationNotifier extends Notifier<NotificationState> {
         },
         onForegroundMessage: _handleForegroundMessage,
         onMessageOpenedApp: _handleMessageTap,
+        shouldSuppress: _shouldSuppressBanner,
       );
 
       await manager.init();
@@ -94,7 +95,30 @@ class NotificationNotifier extends Notifier<NotificationState> {
       }
     }
 
-    _onForegroundNotification?.call(message);
+    // Banner suppress is already handled by shouldSuppressNotification callback
+    // in NotificationManager (which also suppresses local notifications).
+    // Only show in-app banner for non-suppressed messages.
+    if (!_shouldSuppressBanner(message)) {
+      _onForegroundNotification?.call(message);
+    }
+  }
+
+  /// Mesaj bildirimi + kullanıcı o chat'e bakıyorsa banner'ı bastır.
+  bool _shouldSuppressBanner(RemoteMessage message) {
+    final type = message.data['type'] as String?;
+    if (type != NotificationTypes.newMessage &&
+        type != NotificationTypes.newMessageImage) {
+      return false;
+    }
+
+    final actionUrl = message.data['action_url'] as String?;
+    if (actionUrl == null) return false;
+
+    // action_url format: /chat/{matchId}
+    final activeChatMatchId = ref.read(activeChatMatchIdProvider);
+    if (activeChatMatchId == null) return false;
+
+    return actionUrl.contains('/chat/$activeChatMatchId');
   }
 
   Future<void> _refreshQuestionCache(String questionId) async {

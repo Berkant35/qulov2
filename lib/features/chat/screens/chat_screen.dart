@@ -84,6 +84,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with ChatScreenMixin {
           userName: userName,
           isOnline: isOnline,
           statusText: statusText,
+          photoUrl: matchUser?.photos?.isNotEmpty == true ? matchUser!.photos!.first : null,
           onTap: matchUser != null
               ? () => ref.read(navigationServiceProvider).push(
                     RouteNames.profileDetail,

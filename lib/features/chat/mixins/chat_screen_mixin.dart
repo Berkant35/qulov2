@@ -50,11 +50,12 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
     scrollCtrl.addListener(_onScroll);
     _loadQuizSummaryDismissState();
     Future.microtask(() {
+      // Aktif chat'i işaretle — in-app banner suppress için
+      ref.read(activeChatMatchIdProvider.notifier).state = widget.matchId;
       // Clear question cache so cards re-fetch fresh data
       ref.read(chatQuestionCacheProvider.notifier).state = {};
 
       final notifier = ref.read(chatProvider(widget.matchId).notifier);
-      notifier.loadMessages();
       notifier.markAsRead();
       notifier.loadMediaStatus();
       _subscribeRealtime();
@@ -67,6 +68,10 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
   void disposeMixin() {
     _disposed = true;
     _chatStopwatch.stop();
+    // Aktif chat'i temizle — guard against disposed ref
+    try {
+      ref.read(activeChatMatchIdProvider.notifier).state = null;
+    } catch (_) {}
     AnalyticsManager.instance.logEvent(
       AnalyticsEvents.chatClose,
       params: {

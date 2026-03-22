@@ -40,6 +40,20 @@ abstract final class AppColors {
   static const Color silver = Color(0xFFC0C0C0);
   static const Color bronze = Color(0xFFCD7F32);
 
+  // ─── Difficulty ───
+  static const Color hardOrange = Color(0xFFFF7043);
+
+  // ─── Quiz Badge Gradients ───
+  static const Color amber = Color(0xFFFFC107);
+  static const Color orange = Color(0xFFFF9800);
+  static const Color blue = Color(0xFF2196F3);
+  static const Color cyan = Color(0xFF00BCD4);
+  static const Color deepPurple = Color(0xFF673AB7);
+  static const Color green = Color(0xFF4CAF50);
+  static const Color teal = Color(0xFF009688);
+  static const Color pink = Color(0xFFE91E63);
+  static const Color red = Color(0xFFF44336);
+
   // ─── Gradients ───
   static const purpleGradient = LinearGradient(
     colors: [Color(0xFFBB86FC), Color(0xFF9C27B0)],

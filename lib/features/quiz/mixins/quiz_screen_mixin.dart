@@ -43,13 +43,26 @@ mixin QuizScreenMixin on ConsumerState<QuizScreen> {
       if (!mounted) return;
       ref.read(quizProvider.notifier).reset();
       ref.read(exchangeProvider.notifier).fetchAll();
-      await ref.read(quizProvider.notifier).startSession(widget.targetId);
+      final result = await ref.read(quizProvider.notifier).startSession(widget.targetId);
       if (!mounted) return;
-      startQuestionTimer();
-      sessionStopwatch.start();
-      AnalyticsManager.instance.logEvent(
-        AnalyticsEvents.quizStart,
-        params: {AnalyticsEvents.paramPartnerId: widget.targetId},
+      result.when(
+        success: (_) {
+          startQuestionTimer();
+          sessionStopwatch.start();
+          AnalyticsManager.instance.logEvent(
+            AnalyticsEvents.quizStart,
+            params: {AnalyticsEvents.paramPartnerId: widget.targetId},
+          );
+        },
+        failure: (f) {
+          AnalyticsManager.instance.logEvent(
+            AnalyticsEvents.quizStartFailed,
+            params: {
+              AnalyticsEvents.paramPartnerId: widget.targetId,
+              AnalyticsEvents.paramErrorCode: f is ServerFailure ? f.code : 'unknown',
+            },
+          );
+        },
       );
     });
   }

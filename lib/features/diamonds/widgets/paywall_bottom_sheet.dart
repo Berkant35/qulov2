@@ -164,7 +164,53 @@ class _PaywallBottomSheetContentState
 
     return PopScope(
       canPop: !_isPurchasing,
-      child: SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Drag handle + close button (non-scrollable)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.pagePadding,
+              AppSpacing.sm,
+              AppSpacing.pagePadding,
+              0,
+            ),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: theme.hintColor,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: GestureDetector(
+                    onTap: _isPurchasing ? null : () => Navigator.of(context).pop(),
+                    child: Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surfaceContainerHighest,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.close,
+                        size: 18,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Scrollable content
+          Flexible(
+            child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(
           AppSpacing.pagePadding,
           AppSpacing.sm,
@@ -174,17 +220,6 @@ class _PaywallBottomSheetContentState
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Drag handle
-            Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: theme.hintColor,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            const SizedBox(height: AppSpacing.lg),
-
             // Title
             Text(
               _titleForTrigger(context),
@@ -272,6 +307,9 @@ class _PaywallBottomSheetContentState
             ),
           ],
         ),
+      ),
+          ),
+        ],
       ),
     );
   }

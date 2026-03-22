@@ -174,7 +174,7 @@ class _OnlineStatusChip extends StatelessWidget {
     if (lastSeen != null) {
       final dt = DateTime.tryParse(lastSeen!);
       if (dt != null) {
-        final diff = DateTime.now().difference(dt);
+        final diff = DateTime.now().toUtc().difference(dt);
         final label = diff.inMinutes < 60
             ? '${diff.inMinutes}m'
             : diff.inHours < 24

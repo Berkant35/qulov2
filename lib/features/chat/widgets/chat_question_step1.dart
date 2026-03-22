@@ -117,7 +117,7 @@ class _ChatQuestionStep1State extends State<ChatQuestionStep1> {
           const SizedBox(height: AppSpacing.lg),
 
           // Question text
-          _buildLabel(Theme.of(context), 'Soru'),
+          _SectionLabel(text: 'Soru'),
           const SizedBox(height: AppSpacing.xs),
           TextFormField(
             controller: _questionCtrl,
@@ -131,7 +131,7 @@ class _ChatQuestionStep1State extends State<ChatQuestionStep1> {
           const SizedBox(height: AppSpacing.md),
 
           // Options
-          _buildLabel(Theme.of(context), 'Secenekler'),
+          _SectionLabel(text: 'Secenekler'),
           const SizedBox(height: AppSpacing.xs),
           _OptionField(
             label: 'A',
@@ -188,16 +188,6 @@ class _ChatQuestionStep1State extends State<ChatQuestionStep1> {
     );
   }
 
-  Widget _buildLabel(ThemeData theme, String text) {
-    return Text(
-      text,
-      style: theme.textTheme.bodyMedium?.copyWith(
-        color: context.appColors.textSecondary,
-        fontWeight: FontWeight.w500,
-      ),
-    );
-  }
-
   InputDecoration _inputDecoration(BuildContext context, String hint) {
     return InputDecoration(
       hintText: hint,
@@ -237,17 +227,60 @@ class _OptionCountToggle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        _buildChip(context, Theme.of(context), '2 Sik', 2),
+        _OptionChip(
+          label: '2 Sik',
+          value: 2,
+          isSelected: optionCount == 2,
+          onTap: () => onChanged(2),
+        ),
         const SizedBox(width: AppSpacing.sm),
-        _buildChip(context, Theme.of(context), '4 Sik', 4),
+        _OptionChip(
+          label: '4 Sik',
+          value: 4,
+          isSelected: optionCount == 4,
+          onTap: () => onChanged(4),
+        ),
       ],
     );
   }
+}
 
-  Widget _buildChip(BuildContext context, ThemeData theme, String label, int value) {
-    final isSelected = optionCount == value;
+class _SectionLabel extends StatelessWidget {
+  final String text;
+
+  const _SectionLabel({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Text(
+      text,
+      style: theme.textTheme.bodyMedium?.copyWith(
+        color: context.appColors.textSecondary,
+        fontWeight: FontWeight.w500,
+      ),
+    );
+  }
+}
+
+class _OptionChip extends StatelessWidget {
+  final String label;
+  final int value;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _OptionChip({
+    required this.label,
+    required this.value,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GestureDetector(
-      onTap: () => onChanged(value),
+      onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.lg,

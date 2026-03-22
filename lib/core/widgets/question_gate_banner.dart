@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
@@ -45,7 +46,7 @@ class QuestionGateBanner extends StatelessWidget {
             const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: Text(
-                '${context.tr('question_nudge_banner_compact')} — $questionCount/2 ${context.tr('question_word')}',
+                '${context.tr('question_nudge_banner_compact')} — $questionCount/${AppConstants.minQuestions} ${context.tr('question_word')}',
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: context.appColors.primary,
                   fontWeight: FontWeight.w600,

@@ -120,21 +120,23 @@ class MatchCard extends StatelessWidget {
   String _formatRelativeTime(BuildContext context, String isoTime) {
     try {
       final dt = DateTime.parse(isoTime);
-      final now = DateTime.now();
+      final now = DateTime.now().toUtc();
       final diff = now.difference(dt);
 
       if (diff.inMinutes < 1) return context.tr('now');
       if (diff.inMinutes < 60) return '${diff.inMinutes}dk';
       if (diff.inHours < 24) return '${diff.inHours}s';
 
-      final today = DateTime(now.year, now.month, now.day);
-      final messageDay = DateTime(dt.year, dt.month, dt.day);
+      final localNow = DateTime.now();
+      final localDt = dt.toLocal();
+      final today = DateTime(localNow.year, localNow.month, localNow.day);
+      final messageDay = DateTime(localDt.year, localDt.month, localDt.day);
       final dayDiff = today.difference(messageDay).inDays;
 
       if (dayDiff == 1) return context.tr('yesterday');
       if (dayDiff < 7) return '${dayDiff}g';
 
-      return '${dt.day}.${dt.month}';
+      return '${localDt.day}.${localDt.month}';
     } catch (_) {
       return '';
     }

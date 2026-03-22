@@ -48,7 +48,7 @@ class CelebrationDialog extends StatelessWidget {
               child: Text(
                 planName,
                 style: theme.textTheme.headlineSmall?.copyWith(
-                  color: Colors.white,
+                  color: AppColors.textPrimary,
                   fontWeight: FontWeight.bold,
                 ),
               ),

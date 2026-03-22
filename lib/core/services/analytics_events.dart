@@ -96,6 +96,7 @@ abstract class AnalyticsEvents {
   static const String quizExitConfirm = 'quiz_exit_confirm';
   static const String quizTimerWarning = 'quiz_timer_warning';
   static const String quizTimerCritical = 'quiz_timer_critical';
+  static const String quizStartFailed = 'quiz_start_failed';
 
   // ─── Questions (8) ─────────────────────────────────────────────────
   static const String questionCreateStart = 'question_create_start';
@@ -171,8 +172,8 @@ abstract class AnalyticsEvents {
 
   // ─── App Lifecycle (15) ────────────────────────────────────────────
   static const String appOpen = 'app_open';
-  static const String appForeground = 'app_foreground';
-  static const String appBackground = 'app_background';
+  static const String appForeground = 'qulo_app_foreground';
+  static const String appBackground = 'qulo_app_background';
   static const String appForceUpdateShown = 'app_force_update_shown';
   static const String appOptionalUpdateShown = 'app_optional_update_shown';
   static const String appMaintenanceShown = 'app_maintenance_shown';

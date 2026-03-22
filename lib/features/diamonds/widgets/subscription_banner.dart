@@ -44,7 +44,7 @@ class _UpgradeBanner extends StatelessWidget {
           Text(
             context.tr('premium_cta'),
             style: theme.textTheme.titleMedium?.copyWith(
-              color: Colors.white,
+              color: AppColors.textPrimary,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -52,7 +52,7 @@ class _UpgradeBanner extends StatelessWidget {
           Text(
             context.tr('premium_benefits'),
             style: theme.textTheme.bodySmall?.copyWith(
-              color: Colors.white.withValues(alpha: 0.85),
+              color: AppColors.textPrimary.withValues(alpha: 0.85),
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -61,7 +61,7 @@ class _UpgradeBanner extends StatelessWidget {
             child: ElevatedButton(
               onPressed: onViewPlans,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
+                backgroundColor: AppColors.textPrimary,
                 foregroundColor: context.appColors.primary,
                 padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                 shape: RoundedRectangleBorder(
@@ -120,7 +120,7 @@ class _ActivePlanBadge extends StatelessWidget {
             child: Text(
               planName,
               style: theme.textTheme.labelMedium?.copyWith(
-                color: Colors.white,
+                color: AppColors.textPrimary,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -156,7 +156,7 @@ class _ActivePlanBadge extends StatelessWidget {
 
   String _formatDate(String dateStr) {
     try {
-      final date = DateTime.parse(dateStr);
+      final date = DateTime.parse(dateStr).toLocal();
       return '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year}';
     } catch (_) {
       return dateStr;

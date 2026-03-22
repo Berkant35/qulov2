@@ -54,7 +54,26 @@ flutter build ipa \
   --export-options-plist="$EXPORT_PLIST" \
   --dart-define=API_BASE_URL="$API_BASE_URL"
 
-# ─── 4. Find the IPA ───
+# ─── 4. Upload dSYMs to Firebase Crashlytics ───
+log "Uploading dSYMs to Firebase Crashlytics..."
+
+DSYM_DIR="$PROJECT_DIR/build/ios/archive/Runner.xcarchive/dSYMs"
+UPLOAD_SYMBOLS="$PROJECT_DIR/ios/Pods/FirebaseCrashlytics/upload-symbols"
+GSERVICE_PLIST="$PROJECT_DIR/ios/Runner/GoogleService-Info.plist"
+
+if [ -d "$DSYM_DIR" ] && [ -x "$UPLOAD_SYMBOLS" ]; then
+  "$UPLOAD_SYMBOLS" -gsp "$GSERVICE_PLIST" -p ios "$DSYM_DIR" || {
+    warn "dSYM upload failed — you can retry manually:"
+    echo "  $UPLOAD_SYMBOLS -gsp $GSERVICE_PLIST -p ios $DSYM_DIR"
+  }
+  log "dSYMs uploaded to Firebase ✓"
+else
+  warn "dSYM dir or upload-symbols not found — skipping Crashlytics upload"
+  [ ! -d "$DSYM_DIR" ] && warn "  Missing: $DSYM_DIR"
+  [ ! -x "$UPLOAD_SYMBOLS" ] && warn "  Missing: $UPLOAD_SYMBOLS"
+fi
+
+# ─── 5. Find the IPA ───
 IPA_FILE=$(find "$PROJECT_DIR/build/ios/ipa" -name "*.ipa" -type f | head -1)
 
 if [ -z "$IPA_FILE" ]; then
@@ -63,7 +82,7 @@ fi
 
 log "IPA ready: $IPA_FILE"
 
-# ─── 5. Upload to TestFlight ───
+# ─── 6. Upload to TestFlight ───
 log "Uploading to TestFlight..."
 
 xcrun altool --upload-app \

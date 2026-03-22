@@ -144,8 +144,21 @@ class _DraftHistorySheetState extends ConsumerState<DraftHistorySheet>
             child: TabBarView(
               controller: _tabCtrl,
               children: [
-                _buildDraftsTab(theme),
-                _buildHistoryTab(theme),
+                _DraftsTab(
+                  isLoading: _isDraftsLoading,
+                  error: _draftsError,
+                  drafts: _drafts,
+                  onDraftSelected: (draft) {
+                    Navigator.pop(context);
+                    widget.onDraftSelected(draft);
+                  },
+                  onDeleteDraft: _deleteDraft,
+                ),
+                _HistoryTab(
+                  isLoading: _isHistoryLoading,
+                  error: _historyError,
+                  history: _history,
+                ),
               ],
             ),
           ),
@@ -154,11 +167,31 @@ class _DraftHistorySheetState extends ConsumerState<DraftHistorySheet>
     );
   }
 
-  Widget _buildDraftsTab(ThemeData theme) {
-    if (_isDraftsLoading) {
+}
+
+class _DraftsTab extends StatelessWidget {
+  final bool isLoading;
+  final String? error;
+  final List<ChatQuestionDraftModel>? drafts;
+  final void Function(ChatQuestionDraftModel draft) onDraftSelected;
+  final void Function(String draftId) onDeleteDraft;
+
+  const _DraftsTab({
+    required this.isLoading,
+    required this.error,
+    required this.drafts,
+    required this.onDraftSelected,
+    required this.onDeleteDraft,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    if (isLoading) {
       return const Center(child: AppLoadingWidget.large());
     }
-    if (_draftsError != null) {
+    if (error != null) {
       return Center(
         child: Text(
           'Taslaklar yuklenemedi',
@@ -168,7 +201,7 @@ class _DraftHistorySheetState extends ConsumerState<DraftHistorySheet>
         ),
       );
     }
-    if (_drafts == null || _drafts!.isEmpty) {
+    if (drafts == null || drafts!.isEmpty) {
       return Center(
         child: Text(
           'Henuz taslak yok',
@@ -181,10 +214,10 @@ class _DraftHistorySheetState extends ConsumerState<DraftHistorySheet>
 
     return ListView.separated(
       padding: const EdgeInsets.all(AppSpacing.pagePadding),
-      itemCount: _drafts!.length,
+      itemCount: drafts!.length,
       separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
       itemBuilder: (_, i) {
-        final draft = _drafts![i];
+        final draft = drafts![i];
         return Dismissible(
           key: Key(draft.id),
           direction: DismissDirection.endToStart,
@@ -197,24 +230,36 @@ class _DraftHistorySheetState extends ConsumerState<DraftHistorySheet>
             ),
             child: Icon(Icons.delete_outline, color: context.appColors.error),
           ),
-          onDismissed: (_) => _deleteDraft(draft.id),
+          onDismissed: (_) => onDeleteDraft(draft.id),
           child: _DraftItem(
             draft: draft,
-            onTap: () {
-              Navigator.pop(context);
-              widget.onDraftSelected(draft);
-            },
+            onTap: () => onDraftSelected(draft),
           ),
         );
       },
     );
   }
+}
 
-  Widget _buildHistoryTab(ThemeData theme) {
-    if (_isHistoryLoading) {
+class _HistoryTab extends StatelessWidget {
+  final bool isLoading;
+  final String? error;
+  final List<Map<String, dynamic>>? history;
+
+  const _HistoryTab({
+    required this.isLoading,
+    required this.error,
+    required this.history,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    if (isLoading) {
       return const Center(child: AppLoadingWidget.large());
     }
-    if (_historyError != null) {
+    if (error != null) {
       return Center(
         child: Text(
           'Gecmis yuklenemedi',
@@ -224,7 +269,7 @@ class _DraftHistorySheetState extends ConsumerState<DraftHistorySheet>
         ),
       );
     }
-    if (_history == null || _history!.isEmpty) {
+    if (history == null || history!.isEmpty) {
       return Center(
         child: Text(
           'Henuz soru gecmisi yok',
@@ -237,10 +282,10 @@ class _DraftHistorySheetState extends ConsumerState<DraftHistorySheet>
 
     return ListView.separated(
       padding: const EdgeInsets.all(AppSpacing.pagePadding),
-      itemCount: _history!.length,
+      itemCount: history!.length,
       separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
       itemBuilder: (_, i) {
-        final item = _history![i];
+        final item = history![i];
         return _HistoryItem(data: item);
       },
     );

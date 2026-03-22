@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/app_localizations.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/diamond_icon.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 
@@ -85,7 +86,7 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
           const SizedBox(height: AppSpacing.lg),
 
           // Timer chips
-          _buildLabel(Theme.of(context), 'Sure Limiti'),
+          _Step2SectionLabel(text: 'Sure Limiti'),
           const SizedBox(height: AppSpacing.sm),
           _TimerChips(
             selectedSeconds: widget.timeLimitSeconds,
@@ -95,7 +96,7 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
           const SizedBox(height: AppSpacing.xl),
 
           // Hint text
-          _buildLabel(Theme.of(context), 'Ipucu (opsiyonel)'),
+          _Step2SectionLabel(text: 'Ipucu (opsiyonel)'),
           const SizedBox(height: AppSpacing.xs),
           TextFormField(
             controller: _hintCtrl,
@@ -109,7 +110,7 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
           const SizedBox(height: AppSpacing.xl),
 
           // Reward media
-          _buildLabel(Theme.of(context), 'Odul Medyasi (opsiyonel)'),
+          _Step2SectionLabel(text: 'Odul Medyasi (opsiyonel)'),
           const SizedBox(height: AppSpacing.sm),
           _RewardMediaRow(
             rewardMediaUrl: widget.rewardMediaUrl,
@@ -162,16 +163,6 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
           ),
           const SizedBox(height: AppSpacing.xl),
         ],
-      ),
-    );
-  }
-
-  Widget _buildLabel(ThemeData theme, String text) {
-    return Text(
-      text,
-      style: theme.textTheme.bodyMedium?.copyWith(
-        color: context.appColors.textSecondary,
-        fontWeight: FontWeight.w500,
       ),
     );
   }
@@ -232,6 +223,24 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
     } finally {
       if (mounted) setState(() => _isUploading = false);
     }
+  }
+}
+
+class _Step2SectionLabel extends StatelessWidget {
+  final String text;
+
+  const _Step2SectionLabel({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Text(
+      text,
+      style: theme.textTheme.bodyMedium?.copyWith(
+        color: context.appColors.textSecondary,
+        fontWeight: FontWeight.w500,
+      ),
+    );
   }
 }
 
@@ -383,14 +392,7 @@ class _MediaButton extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (isLoading)
-              SizedBox(
-                width: 18,
-                height: 18,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: context.appColors.primary,
-                ),
-              )
+              const AppLoadingWidget.small()
             else
               Icon(icon, size: 18, color: context.appColors.textSecondary),
             const SizedBox(width: AppSpacing.sm),

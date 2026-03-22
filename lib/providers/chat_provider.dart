@@ -9,7 +9,15 @@ import 'package:qulo_v2/providers/auth_provider.dart';
 class ChatNotifier extends FamilyAsyncNotifier<ChatState, String> {
   @override
   Future<ChatState> build(String matchId) async {
-    return const ChatState();
+    final result = await ref.read(chatRepositoryProvider).getMessages(matchId, page: 1);
+    return result.when(
+      success: (response) => ChatState(
+        messages: response.messages,
+        total: response.total,
+        page: response.page,
+      ),
+      failure: (f) => throw f,
+    );
   }
 
   Future<void> loadMessages({int page = 1}) async {
@@ -262,6 +270,11 @@ class ChatState {
 }
 
 final chatProvider = AsyncNotifierProvider.family<ChatNotifier, ChatState, String>(ChatNotifier.new);
+
+/// Kullanıcının o an açık olan chat ekranının matchId'si.
+/// Chat ekranı açıkken set edilir, kapanınca null'a döner.
+/// In-app banner suppress logic'inde kullanılır.
+final activeChatMatchIdProvider = StateProvider<String?>((ref) => null);
 
 /// Cache for chat questions fetched by ID — realtime updates write here,
 /// widgets read from here via [chatQuestionProvider].

@@ -21,34 +21,34 @@ class BadgeConfig {
         'flawless' => const BadgeConfig(
             labelKey: 'quiz_badge_flawless',
             icon: Icons.stars,
-            gradientColors: [Colors.amber, Colors.orange],
+            gradientColors: [AppColors.amber, AppColors.orange],
           ),
         'speed_solver' => const BadgeConfig(
             labelKey: 'quiz_badge_speed_solver',
             icon: Icons.bolt,
-            gradientColors: [Colors.blue, Colors.cyan],
+            gradientColors: [AppColors.blue, AppColors.cyan],
           ),
-        'power_master' => BadgeConfig(
+        'power_master' => const BadgeConfig(
             labelKey: 'quiz_badge_power_master',
             icon: Icons.auto_awesome,
-            gradientColors: [AppColors.primary, Colors.deepPurple],
+            gradientColors: [AppColors.primary, AppColors.deepPurple],
           ),
         'determined' => const BadgeConfig(
             labelKey: 'quiz_badge_determined',
             icon: Icons.psychology,
-            gradientColors: [Colors.green, Colors.teal],
+            gradientColors: [AppColors.green, AppColors.teal],
           ),
-        _ => BadgeConfig(
+        _ => const BadgeConfig(
             labelKey: 'quiz_badge_matched',
             icon: Icons.favorite,
-            gradientColors: [AppColors.primary, Colors.pink],
+            gradientColors: [AppColors.primary, AppColors.pink],
           ),
       };
     }
     return BadgeConfig(
       labelKey: 'quiz_badge_failed',
       icon: Icons.close,
-      gradientColors: [AppColors.error, Colors.red],
+      gradientColors: [AppColors.error, AppColors.red],
     );
   }
 }

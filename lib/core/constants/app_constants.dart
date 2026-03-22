@@ -5,14 +5,13 @@ abstract final class AppConstants {
 
   static const List<String> questionCategories = [
     'personality', 'music', 'film', 'sports', 'travel',
-    'food', 'technology', 'general', 'fun', 'entertainment',
-    'lifestyle', 'humor', 'hobby', 'science', 'history',
-    'art', 'nature', 'other',
+    'food', 'technology', 'fun', 'lifestyle', 'humor',
+    'hobby',
   ];
 
   static const supportedQuestionLocales = [
     'tr', 'en', 'de', 'fr', 'es', 'ar', 'ru',
-    'pt', 'it', 'ja', 'ko', 'zh', 'nl', 'pl', 'sv',
+    'pt', 'it', 'ja', 'ko', 'zh', 'nl', 'pl', 'sv', 'hi',
   ];
 
   static const localeFlagEmojis = <String, String>{
@@ -31,6 +30,7 @@ abstract final class AppConstants {
     'nl': '\u{1F1F3}\u{1F1F1}',
     'pl': '\u{1F1F5}\u{1F1F1}',
     'sv': '\u{1F1F8}\u{1F1EA}',
+    'hi': '\u{1F1EE}\u{1F1F3}',
   };
 }
 

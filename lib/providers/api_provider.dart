@@ -28,6 +28,8 @@ import 'package:qulo_v2/core/network/services/referral_service.dart';
 import 'package:qulo_v2/core/network/services/exchange_service.dart';
 import 'package:qulo_v2/core/network/services/chat_question_service.dart';
 import 'package:qulo_v2/core/network/services/block_service.dart';
+import 'package:qulo_v2/core/network/services/presence_service.dart';
+import 'package:qulo_v2/core/services/presence_manager.dart';
 import 'package:qulo_v2/data/repositories/repositories.dart';
 
 // ─── Core Services ───
@@ -183,6 +185,16 @@ final exchangeRepositoryProvider = Provider<ExchangeRepository>(
 final blockServiceProvider = Provider<BlockService>(
   (ref) => BlockService(ref.read(networkManagerProvider).dio),
 );
+final presenceServiceProvider = Provider<PresenceService>(
+  (ref) => PresenceService(ref.read(networkManagerProvider).dio),
+);
+
+// ─── Presence Manager ───
+final presenceManagerProvider = Provider<PresenceManager>((ref) {
+  final manager = PresenceManager.instance;
+  manager.init(ref.read(presenceServiceProvider));
+  return manager;
+});
 
 final blockRepositoryProvider = Provider<BlockRepository>(
   (ref) => BlockRepository(ref.read(blockServiceProvider)),

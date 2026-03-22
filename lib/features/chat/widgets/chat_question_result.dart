@@ -117,7 +117,7 @@ class ChatQuestionResultScreen extends ConsumerWidget {
                 child: Text(
                   'Geri Dön',
                   style: theme.textTheme.titleMedium?.copyWith(
-                    color: Colors.white,
+                    color: AppColors.textPrimary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

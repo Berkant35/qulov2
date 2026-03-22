@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/l10n/app_localizations.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
@@ -8,6 +9,7 @@ class ChatAppBarTitle extends StatelessWidget {
   final String userName;
   final bool isOnline;
   final String statusText;
+  final String? photoUrl;
   final VoidCallback? onTap;
 
   const ChatAppBarTitle({
@@ -15,6 +17,7 @@ class ChatAppBarTitle extends StatelessWidget {
     required this.userName,
     required this.isOnline,
     required this.statusText,
+    this.photoUrl,
     this.onTap,
   });
 
@@ -26,13 +29,33 @@ class ChatAppBarTitle extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       child: Row(
       children: [
-        Container(
-          width: 10,
-          height: 10,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: isOnline ? context.appColors.secondary : theme.colorScheme.outline,
-          ),
+        Stack(
+          children: [
+            CircleAvatar(
+              radius: 18,
+              backgroundColor: theme.colorScheme.surfaceContainerHigh,
+              backgroundImage: photoUrl != null
+                  ? CachedNetworkImageProvider(photoUrl!)
+                  : null,
+              child: photoUrl == null
+                  ? Icon(Icons.person, size: 20, color: theme.colorScheme.onSurfaceVariant)
+                  : null,
+            ),
+            if (isOnline)
+              Positioned(
+                right: 0,
+                bottom: 0,
+                child: Container(
+                  width: 10,
+                  height: 10,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: context.appColors.secondary,
+                    border: Border.all(color: theme.appBarTheme.backgroundColor ?? theme.scaffoldBackgroundColor, width: 2),
+                  ),
+                ),
+              ),
+          ],
         ),
         const SizedBox(width: AppSpacing.sm),
         Expanded(
@@ -151,11 +174,18 @@ class MediaRequestBanner extends StatelessWidget implements PreferredSizeWidget 
           ),
         ),
       ),
-      child: _isMine ? _buildSenderContent(context) : _buildReceiverContent(context),
+      child: _isMine
+          ? const _SenderContent()
+          : _ReceiverContent(onAccept: onAccept, onReject: onReject),
     );
   }
+}
 
-  Widget _buildSenderContent(BuildContext context) {
+class _SenderContent extends StatelessWidget {
+  const _SenderContent();
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
       children: [
         Icon(Icons.hourglass_top, size: 18, color: context.appColors.primary),
@@ -172,8 +202,19 @@ class MediaRequestBanner extends StatelessWidget implements PreferredSizeWidget 
       ],
     );
   }
+}
 
-  Widget _buildReceiverContent(BuildContext context) {
+class _ReceiverContent extends StatelessWidget {
+  final VoidCallback onAccept;
+  final VoidCallback onReject;
+
+  const _ReceiverContent({
+    required this.onAccept,
+    required this.onReject,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
       children: [
         Icon(Icons.camera_alt_outlined, size: 18, color: context.appColors.primary),

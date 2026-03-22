@@ -37,11 +37,34 @@ class ProfileActionBar extends StatelessWidget {
           ),
         ),
       ),
-      child: _buildButtons(context),
+      child: _ActionBarButtons(
+        detailContext: detailContext,
+        onSolveQuestions: onSolveQuestions,
+        onReject: onReject,
+        onSendMessage: onSendMessage,
+        isMatched: isMatched,
+      ),
     );
   }
+}
 
-  Widget _buildButtons(BuildContext context) {
+class _ActionBarButtons extends StatelessWidget {
+  final ProfileDetailContext detailContext;
+  final VoidCallback? onSolveQuestions;
+  final VoidCallback? onReject;
+  final VoidCallback? onSendMessage;
+  final bool isMatched;
+
+  const _ActionBarButtons({
+    required this.detailContext,
+    this.onSolveQuestions,
+    this.onReject,
+    this.onSendMessage,
+    this.isMatched = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return switch (detailContext) {
       ProfileDetailContext.discover => Row(
           children: [

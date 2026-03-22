@@ -52,8 +52,15 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
         analytics.logAppForeground();
         // Permission-dependent provider'ları tekrar kontrol et
         ref.read(locationProvider.notifier).onAppResumed();
+        // Restart presence heartbeat
+        ref.read(presenceManagerProvider).start();
       case AppLifecycleState.paused:
         analytics.logAppBackground();
+        // Send offline + stop heartbeat
+        ref.read(presenceManagerProvider).stop();
+      case AppLifecycleState.detached:
+        // App being killed — try to send offline
+        ref.read(presenceManagerProvider).stop();
       default:
         break;
     }
@@ -205,7 +212,12 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
       darkTheme: AppTheme.dark,
       themeMode: themeMode,
       locale: locale,
-      supportedLocales: const [Locale('tr'), Locale('en')],
+      supportedLocales: const [
+            Locale('tr'), Locale('en'), Locale('de'), Locale('fr'),
+            Locale('es'), Locale('ar'), Locale('ru'), Locale('pt'),
+            Locale('it'), Locale('ja'), Locale('ko'), Locale('zh'),
+            Locale('nl'), Locale('pl'), Locale('sv'), Locale('hi'),
+          ],
       localizationsDelegates: const [
         AppLocalizationsDelegate(),
         GlobalMaterialLocalizations.delegate,

@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/utils/text_utils.dart';
 import 'package:qulo_v2/data/models/notification_model.dart';
 
 class NotificationCard extends StatelessWidget {
@@ -18,7 +19,7 @@ class NotificationCard extends StatelessWidget {
 
   String _timeAgo(String isoDate) {
     final date = DateTime.parse(isoDate);
-    final diff = DateTime.now().difference(date);
+    final diff = DateTime.now().toUtc().difference(date);
     if (diff.inMinutes < 1) return 'Az önce';
     if (diff.inHours < 1) return '${diff.inMinutes} dk önce';
     if (diff.inDays < 1) return '${diff.inHours} saat önce';
@@ -101,7 +102,7 @@ class NotificationCard extends StatelessWidget {
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
-                    notification.body,
+                    sanitizeNotificationBody(notification.body),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.bodySmall?.copyWith(

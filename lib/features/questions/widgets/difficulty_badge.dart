@@ -78,7 +78,7 @@ class DifficultyBadge extends StatelessWidget {
         );
       case 'hard':
         return _DifficultyConfig(
-          color: const Color(0xFFFF7043),
+          color: AppColors.hardOrange,
           icon: Icons.local_fire_department,
         );
       case 'legendary':

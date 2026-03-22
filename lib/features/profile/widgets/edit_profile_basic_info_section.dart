@@ -35,7 +35,7 @@ class EditProfileBasicInfoSection extends ConsumerWidget {
 
     return ProfileSectionCard(
       icon: Icons.person,
-      title: context.tr('basic_info'),
+      title: context.tr('edit_basic_info'),
       subtitle: 'Seni tanimamiza yardimci ol',
       completionText: completionText,
       isComplete: completionText == '4/4',
