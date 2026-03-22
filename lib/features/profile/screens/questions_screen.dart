@@ -230,7 +230,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
           );
         },
       ),
-      isLoading: questionsAsync is AsyncLoading,
+      isLoading: questionsAsync is AsyncLoading || !_initialized,
       body: questionsAsync.when(
         loading: () => const SizedBox.shrink(),
         error: (e, _) => Center(child: Text(context.tr('error_general'))),
@@ -245,7 +245,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
                     QIcon(QIcons.icWand, size: 56, color: context.appColors.textHint),
                     const SizedBox(height: AppSpacing.lg),
                     Text(
-                      context.tr('min_questions'),
+                      context.tr('min_questions').replaceAll('{count}', '${AppConstants.minQuestions}'),
                       style: theme.textTheme.bodyLarge?.copyWith(
                         color: context.appColors.textSecondary,
                       ),
