@@ -8,6 +8,7 @@ import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/power_icon.dart';
 import 'package:qulo_v2/core/widgets/safe_tap_button.dart';
@@ -70,6 +71,38 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
       );
     }
 
+    if (quiz.failure != null) {
+      return AppScaffold(
+        title: '',
+        leading: IconButton(
+          icon: QIcon(QIcons.icX, size: 24),
+          onPressed: onGoBack,
+        ),
+        padding: const EdgeInsets.all(AppSpacing.pagePadding),
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.error_outline, size: 48, color: context.appColors.error),
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                quiz.failure is ServerFailure && (quiz.failure as ServerFailure).code == 'NO_QUESTIONS'
+                    ? context.tr('quiz_no_questions')
+                    : context.tr('quiz_start_error'),
+                style: theme.textTheme.titleMedium,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSpacing.xl),
+              ElevatedButton(
+                onPressed: onGoBack,
+                child: Text(context.tr('quiz_go_back')),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
@@ -98,6 +131,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
                         QuizTimer(
                           key: timerKey,
                           seconds: question.timeLimitSeconds,
+                          questionId: question.questionId,
                           onTimeout: onTimeout,
                           onWarning: () {
                             AnalyticsManager.instance.logEvent(

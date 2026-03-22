@@ -6,6 +6,7 @@ import 'package:qulo_v2/core/theme/app_spacing.dart';
 
 class QuizTimer extends StatefulWidget {
   final int seconds;
+  final String questionId;
   final VoidCallback onTimeout;
   final VoidCallback? onWarning;
   final VoidCallback? onCritical;
@@ -13,6 +14,7 @@ class QuizTimer extends StatefulWidget {
   const QuizTimer({
     super.key,
     required this.seconds,
+    required this.questionId,
     required this.onTimeout,
     this.onWarning,
     this.onCritical,
@@ -63,7 +65,7 @@ class QuizTimerState extends State<QuizTimer> with TickerProviderStateMixin {
   @override
   void didUpdateWidget(QuizTimer oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.seconds != widget.seconds) {
+    if (oldWidget.questionId != widget.questionId) {
       _timer?.cancel();
       _pulseController.reset();
       _shakeController.reset();
