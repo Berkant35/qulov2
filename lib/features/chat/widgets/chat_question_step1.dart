@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 
@@ -93,7 +94,7 @@ class _ChatQuestionStep1State extends State<ChatQuestionStep1> {
         children: [
           // Section title
           Text(
-            'Soru Icerigi',
+            context.tr('chat_q_content_title'),
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w700,
               color: context.appColors.textPrimary,
@@ -117,7 +118,7 @@ class _ChatQuestionStep1State extends State<ChatQuestionStep1> {
           const SizedBox(height: AppSpacing.lg),
 
           // Question text
-          _SectionLabel(text: 'Soru'),
+          _SectionLabel(text: context.tr('chat_q_question_label')),
           const SizedBox(height: AppSpacing.xs),
           TextFormField(
             controller: _questionCtrl,
@@ -126,12 +127,12 @@ class _ChatQuestionStep1State extends State<ChatQuestionStep1> {
             minLines: 1,
             style: TextStyle(color: context.appColors.textPrimary),
             onChanged: (v) => widget.onChanged(questionText: v),
-            decoration: _inputDecoration(context, 'Sorunuzu yazin...'),
+            decoration: _inputDecoration(context, context.tr('chat_q_question_hint')),
           ),
           const SizedBox(height: AppSpacing.md),
 
           // Options
-          _SectionLabel(text: 'Secenekler'),
+          _SectionLabel(text: context.tr('chat_q_options_label')),
           const SizedBox(height: AppSpacing.xs),
           _OptionField(
             label: 'A',
@@ -175,7 +176,7 @@ class _ChatQuestionStep1State extends State<ChatQuestionStep1> {
                   size: 14, color: context.appColors.textHint),
               const SizedBox(width: AppSpacing.xs),
               Text(
-                'Dogru cevabi secmek icin secenek yanindaki daireye dokunun',
+                context.tr('chat_q_correct_hint'),
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: context.appColors.textHint,
                 ),
@@ -228,14 +229,14 @@ class _OptionCountToggle extends StatelessWidget {
     return Row(
       children: [
         _OptionChip(
-          label: '2 Sik',
+          label: context.tr('chat_q_option_count_2'),
           value: 2,
           isSelected: optionCount == 2,
           onTap: () => onChanged(2),
         ),
         const SizedBox(width: AppSpacing.sm),
         _OptionChip(
-          label: '4 Sik',
+          label: context.tr('chat_q_option_count_4'),
           value: 4,
           isSelected: optionCount == 4,
           onTap: () => onChanged(4),
@@ -331,7 +332,7 @@ class _OptionField extends StatelessWidget {
       style: TextStyle(color: context.appColors.textPrimary),
       onChanged: onChanged,
       decoration: InputDecoration(
-        hintText: 'Secenek $label',
+        hintText: context.tr('chat_q_option_hint').replaceAll('{label}', label),
         hintStyle: TextStyle(color: context.appColors.textHint),
         filled: true,
         fillColor: context.appColors.surfaceElevated,

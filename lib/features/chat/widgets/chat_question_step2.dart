@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qulo_v2/core/l10n/app_localizations.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
@@ -77,7 +77,7 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Ayarlar',
+            context.tr('chat_q_settings_title'),
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w700,
               color: context.appColors.textPrimary,
@@ -86,7 +86,7 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
           const SizedBox(height: AppSpacing.lg),
 
           // Timer chips
-          _Step2SectionLabel(text: 'Sure Limiti'),
+          _Step2SectionLabel(text: context.tr('chat_q_timer_label')),
           const SizedBox(height: AppSpacing.sm),
           _TimerChips(
             selectedSeconds: widget.timeLimitSeconds,
@@ -96,7 +96,7 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
           const SizedBox(height: AppSpacing.xl),
 
           // Hint text
-          _Step2SectionLabel(text: 'Ipucu (opsiyonel)'),
+          _Step2SectionLabel(text: context.tr('chat_q_hint_label')),
           const SizedBox(height: AppSpacing.xs),
           TextFormField(
             controller: _hintCtrl,
@@ -105,12 +105,12 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
             minLines: 1,
             style: TextStyle(color: context.appColors.textPrimary),
             onChanged: (v) => widget.onChanged(hintText: v),
-            decoration: _inputDecoration(context, 'Bir ipucu ekleyin...'),
+            decoration: _inputDecoration(context, context.tr('chat_q_hint_placeholder')),
           ),
           const SizedBox(height: AppSpacing.xl),
 
           // Reward media
-          _Step2SectionLabel(text: 'Odul Medyasi (opsiyonel)'),
+          _Step2SectionLabel(text: context.tr('chat_q_reward_label')),
           const SizedBox(height: AppSpacing.sm),
           _RewardMediaRow(
             rewardMediaUrl: widget.rewardMediaUrl,
@@ -128,8 +128,8 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
 
           // Unmatch risk
           _SettingSwitch(
-            title: 'Unmatch Riski',
-            subtitle: 'Yanlis cevap eslemeyi bitirir',
+            title: context.tr('chat_q_unmatch_title'),
+            subtitle: context.tr('chat_q_unmatch_desc'),
             value: widget.hasUnmatchRisk,
             activeColor: context.appColors.error,
             icon: Icons.warning_amber_rounded,
@@ -139,8 +139,8 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
 
           // Chat lock
           _SettingSwitch(
-            title: 'Sohbet Kilidi',
-            subtitle: 'Cevaplanana kadar sohbet kitlenir',
+            title: context.tr('chat_q_chatlock_title'),
+            subtitle: context.tr('chat_q_chatlock_desc'),
             value: widget.hasChatLock,
             activeColor: context.appColors.primary,
             icon: Icons.lock_outline,
@@ -150,10 +150,10 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
 
           // Power block
           _SettingSwitch(
-            title: 'Guc Blogu',
+            title: context.tr('chat_q_powerblock_title'),
             subtitle: widget.hasPowerBlock
-                ? 'Aktif'
-                : 'Karsi tarafin guclerini engeller',
+                ? context.tr('chat_q_powerblock_desc_on')
+                : context.tr('chat_q_powerblock_desc_off'),
             value: widget.hasPowerBlock,
             activeColor: context.appColors.primaryDark,
             icon: Icons.shield_outlined,
@@ -443,6 +443,7 @@ class _SettingSwitch extends StatelessWidget {
         value: value,
         onChanged: onChanged,
         activeThumbColor: activeColor,
+        activeTrackColor: activeColor.withValues(alpha: 0.4),
         secondary: Icon(icon, color: value ? activeColor : context.appColors.textHint),
         title: Row(
           children: [

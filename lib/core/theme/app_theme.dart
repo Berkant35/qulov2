@@ -38,6 +38,7 @@ abstract final class AppTheme {
         chipTheme: _chipTheme,
         dialogTheme: _dialogTheme,
         snackBarTheme: _snackBarTheme,
+        switchTheme: _switchTheme,
         progressIndicatorTheme: const ProgressIndicatorThemeData(
           color: AppColors.primary,
           linearTrackColor: AppColors.surfaceInput,
@@ -76,6 +77,7 @@ abstract final class AppTheme {
         chipTheme: _chipThemeLight,
         dialogTheme: _dialogThemeLight,
         snackBarTheme: _snackBarThemeLight,
+        switchTheme: _switchThemeLight,
         progressIndicatorTheme: ProgressIndicatorThemeData(
           color: AppColorsResolved.light.primary,
           linearMinHeight: 4,

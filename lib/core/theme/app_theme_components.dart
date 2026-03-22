@@ -140,6 +140,25 @@ final _dialogTheme = DialogThemeData(
   ),
 );
 
+// Switch
+final _switchTheme = SwitchThemeData(
+  thumbColor: WidgetStateProperty.resolveWith((states) {
+    if (states.contains(WidgetState.selected)) return AppColors.primary;
+    return AppColors.textSecondary;
+  }),
+  trackColor: WidgetStateProperty.resolveWith((states) {
+    if (states.contains(WidgetState.selected)) {
+      return AppColors.primary.withValues(alpha: 0.4);
+    }
+    return AppColors.surfaceInput;
+  }),
+  trackOutlineColor: WidgetStateProperty.resolveWith((states) {
+    if (states.contains(WidgetState.selected)) return Colors.transparent;
+    return AppColors.border;
+  }),
+  trackOutlineWidth: WidgetStateProperty.all(1),
+);
+
 // SnackBar
 final _snackBarTheme = SnackBarThemeData(
   behavior: SnackBarBehavior.floating,
@@ -284,6 +303,27 @@ final _dialogThemeLight = DialogThemeData(
     fontSize: 14,
     color: AppColorsLight.textSecondary,
   ),
+);
+
+// Switch Light
+final _switchThemeLight = SwitchThemeData(
+  thumbColor: WidgetStateProperty.resolveWith((states) {
+    if (states.contains(WidgetState.selected)) {
+      return AppColorsResolved.light.primary;
+    }
+    return AppColorsLight.textHint;
+  }),
+  trackColor: WidgetStateProperty.resolveWith((states) {
+    if (states.contains(WidgetState.selected)) {
+      return AppColorsResolved.light.primary.withValues(alpha: 0.4);
+    }
+    return AppColorsLight.surfaceInput;
+  }),
+  trackOutlineColor: WidgetStateProperty.resolveWith((states) {
+    if (states.contains(WidgetState.selected)) return Colors.transparent;
+    return AppColorsLight.border;
+  }),
+  trackOutlineWidth: WidgetStateProperty.all(1),
 );
 
 // SnackBar Light

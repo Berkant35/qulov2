@@ -139,10 +139,6 @@ class EditProfilePreferencesSection extends ConsumerWidget {
               ),
             ),
             value: epState.strictLanguageMode,
-            activeColor: context.appColors.primary,
-            activeTrackColor: context.appColors.primary.withValues(alpha: 0.4),
-            inactiveThumbColor: context.appColors.textSecondary,
-            inactiveTrackColor: context.appColors.surfaceInput,
             onChanged: (val) => ref
                 .read(editProfileProvider.notifier)
                 .setStrictLanguageMode(val),
