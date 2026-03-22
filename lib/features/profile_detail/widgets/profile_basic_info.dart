@@ -9,11 +9,13 @@ import 'package:qulo_v2/data/models/public_profile_model.dart';
 class ProfileBasicInfo extends StatelessWidget {
   final PublicProfileModel profile;
   final bool showOnlineStatus;
+  final bool showDistance;
 
   const ProfileBasicInfo({
     super.key,
     required this.profile,
     this.showOnlineStatus = false,
+    this.showDistance = true,
   });
 
   @override
@@ -66,7 +68,7 @@ class ProfileBasicInfo extends StatelessWidget {
                 ),
                 const SizedBox(width: AppSpacing.xs),
                 Text(
-                  '${profile.city} ${_formatDistance(context)}',
+                  '${profile.city}${showDistance ? ' ${_formatDistance(context)}' : ''}',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: context.appColors.textSecondary,
                   ),
