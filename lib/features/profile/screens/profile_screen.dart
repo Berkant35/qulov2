@@ -182,6 +182,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                   questionCount: user.questionCount,
                   onEditProfile: () => navigateTo(RouteNames.editProfile),
                   onQuestions: () => navigateTo(RouteNames.questions),
+                  onPerformance: openPerformance,
                   onDiamonds: () => navigateTo(RouteNames.diamonds),
                   onSubscription: () => navigateTo(RouteNames.subscription),
                   onPassport: () => navigateTo(RouteNames.passport),

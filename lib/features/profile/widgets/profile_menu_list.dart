@@ -15,12 +15,14 @@ class ProfileMenuList extends ConsumerWidget {
     required this.onQuestions,
     required this.onDiamonds,
     required this.onSubscription,
+    required this.onPerformance,
     required this.onPassport,
   });
 
   final int questionCount;
   final VoidCallback onEditProfile;
   final VoidCallback onQuestions;
+  final VoidCallback onPerformance;
   final VoidCallback onDiamonds;
   final VoidCallback onSubscription;
   final VoidCallback onPassport;
@@ -42,6 +44,11 @@ class ProfileMenuList extends ConsumerWidget {
               : null,
           showBadge: questionCount < AppConstants.minQuestions,
           onTap: onQuestions,
+        ),
+        ProfileMenuItem(
+          iconPath: QIcons.icChart,
+          title: context.tr('performance_analysis'),
+          onTap: onPerformance,
         ),
         ProfileMenuItem(
           iconWidget: const DiamondIcon.purple(size: 24),

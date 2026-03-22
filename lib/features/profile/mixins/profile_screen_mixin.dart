@@ -67,6 +67,10 @@ mixin ProfileScreenMixin on ConsumerState<ProfileScreen> {
     ref.read(navigationServiceProvider).push(route);
   }
 
+  void openPerformance() {
+    navigateTo(RouteNames.performance);
+  }
+
   void openSettings() {
     AnalyticsManager.instance.logEvent(AnalyticsEvents.profileSettingsOpen);
     navigateTo(RouteNames.settings);
