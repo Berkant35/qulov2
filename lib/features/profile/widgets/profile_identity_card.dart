@@ -39,7 +39,7 @@ class ProfileIdentityCard extends ConsumerWidget {
                   style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
-                _SubscriptionBadge(ref: ref),
+                const _SubscriptionBadge(),
                 if (user.city != null)
                   Padding(
                     padding: const EdgeInsets.only(top: AppSpacing.sm),
@@ -76,13 +76,11 @@ class ProfileIdentityCard extends ConsumerWidget {
   }
 }
 
-class _SubscriptionBadge extends StatelessWidget {
-  const _SubscriptionBadge({required this.ref});
-
-  final WidgetRef ref;
+class _SubscriptionBadge extends ConsumerWidget {
+  const _SubscriptionBadge();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final subAsync = ref.watch(subscriptionProvider);
     final sub = subAsync.valueOrNull;
@@ -102,7 +100,7 @@ class _SubscriptionBadge extends StatelessWidget {
         child: Text(
           sub.isPremium ? 'Premium' : 'Plus',
           style: theme.textTheme.labelSmall?.copyWith(
-            color: Colors.white,
+            color: context.appColors.textPrimary,
             fontWeight: FontWeight.bold,
           ),
         ),

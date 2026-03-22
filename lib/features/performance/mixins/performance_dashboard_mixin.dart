@@ -10,7 +10,6 @@ import 'package:qulo_v2/features/performance/screens/performance_dashboard_scree
 
 mixin PerformanceDashboardMixin on ConsumerState<PerformanceDashboardScreen> {
   List<DiamondTransaction> recentTransactions = [];
-  bool transactionsLoading = true;
 
   void initMixin() {
     AnalyticsManager.instance.logEvent(AnalyticsEvents.performanceDashboardOpened);
@@ -26,7 +25,6 @@ mixin PerformanceDashboardMixin on ConsumerState<PerformanceDashboardScreen> {
     final result = await ref.read(diamondProvider.notifier).fetchHistory();
     if (mounted) {
       setState(() {
-        transactionsLoading = false;
         result.when(
           success: (data) => recentTransactions = data.items,
           failure: (_) => recentTransactions = [],

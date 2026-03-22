@@ -152,7 +152,7 @@ class _QuestionHighlight extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
             Text(
-              '%${question.stats.successRate} • ${question.stats.greenEarned} elmas',
+              '%${question.stats.successRate} • ${question.stats.greenEarned} ${context.tr('green_earned')}',
               style: theme.textTheme.bodySmall?.copyWith(color: context.appColors.textSecondary),
             ),
           ],
