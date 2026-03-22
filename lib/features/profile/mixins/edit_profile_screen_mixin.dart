@@ -13,6 +13,8 @@ import 'package:qulo_v2/providers/user_languages_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
 import 'package:qulo_v2/features/profile/screens/edit_profile_screen.dart';
+import 'package:qulo_v2/features/profile/widgets/profile_save_success_sheet.dart';
+import 'package:qulo_v2/routing/route_names.dart';
 
 mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
   // ─── Controllers ───
@@ -317,6 +319,27 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
                 ),
               ),
             );
+      }
+
+      // Show success sheet (after milestone if any)
+      if (mounted) {
+        await ref.read(navigationServiceProvider).showAppBottomSheet(
+          CustomBottomSheet(
+            name: 'profile_save_success',
+            builder: (_) => ProfileSaveSuccessSheet(
+              onPreview: () {
+                ref.read(navigationServiceProvider).closeOverlay();
+                AnalyticsManager.instance.logEvent(
+                  AnalyticsEvents.saveSuccessPreviewTapped,
+                );
+                ref.read(navigationServiceProvider).push(
+                  RouteNames.profilePreview,
+                  extra: 'edit_screen',
+                );
+              },
+            ),
+          ),
+        );
       }
     }
   }

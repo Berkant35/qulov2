@@ -16,6 +16,8 @@ import 'package:qulo_v2/features/profile/widgets/edit_profile_preferences_sectio
 import 'package:qulo_v2/features/profile/widgets/edit_profile_relationship_goal_section.dart';
 import 'package:qulo_v2/features/profile/widgets/edit_profile_save_button.dart';
 import 'package:qulo_v2/features/profile/widgets/photo_grid.dart';
+import 'package:qulo_v2/core/navigation/navigation.dart';
+import 'package:qulo_v2/routing/route_names.dart';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
   const EditProfileScreen({super.key});
@@ -48,6 +50,18 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
       title: context.tr('edit_profile'),
       showBackButton: true,
       padding: EdgeInsets.zero,
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.visibility),
+          tooltip: context.tr('profile_preview_tooltip'),
+          onPressed: () {
+            ref.read(navigationServiceProvider).push(
+              RouteNames.profilePreview,
+              extra: 'edit_screen',
+            );
+          },
+        ),
+      ],
       bottomNavigationBar: EditProfileSaveButton(
         isSaving: epState.isSaving,
         onSave: save,
