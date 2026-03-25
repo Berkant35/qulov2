@@ -12,6 +12,9 @@ import 'package:qulo_v2/providers/locale_provider.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
 import 'package:qulo_v2/providers/notification_provider.dart';
 import 'package:qulo_v2/providers/theme_provider.dart';
+import 'package:qulo_v2/core/services/deep_link_parser.dart';
+import 'package:qulo_v2/providers/deep_link_provider.dart';
+import 'package:qulo_v2/providers/auth_provider.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/routing/app_router.dart';
@@ -34,6 +37,7 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
     ref.read(analyticsManagerProvider).logAppOpen();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _setupNotificationCallbacks();
+      _setupDeepLinks();
       _setupVersionManager();
     });
   }
@@ -191,6 +195,53 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
       onNavigate: (actionUrl) {
         ref.read(routerProvider).go(actionUrl);
       },
+    );
+  }
+
+  void _setupDeepLinks() {
+    final deepLinkManager = ref.read(deepLinkManagerProvider);
+    final analytics = ref.read(analyticsManagerProvider);
+    deepLinkManager.init();
+
+    // Cold start — ilk link
+    deepLinkManager.getInitialLink().then((uri) {
+      if (uri != null) {
+        analytics.logDeepLinkReceived(uri.toString(), source: 'initial');
+        _handleDeepLink(uri);
+      }
+    });
+
+    // Foreground/background — stream
+    deepLinkManager.listen((uri) {
+      analytics.logDeepLinkReceived(uri.toString(), source: 'stream');
+      _handleDeepLink(uri);
+    });
+  }
+
+  void _handleDeepLink(Uri uri) {
+    final result = DeepLinkParser.parse(uri);
+    final analytics = ref.read(analyticsManagerProvider);
+
+    if (result == null) {
+      analytics.logDeepLinkInvalid(uri.toString(), 'unsupported_path');
+      return;
+    }
+
+    final authState = ref.read(authProvider);
+    final isAuth = authState.status == AuthStatus.authenticated;
+
+    if (result.requiresAuth && !isAuth) {
+      // Deferred deep link — login sonrasi replay edilecek
+      ref.read(pendingDeepLinkProvider.notifier).state = result.goRouterPath;
+      analytics.logDeepLinkDeferred(result.goRouterPath);
+      return;
+    }
+
+    // Hemen navigate et
+    ref.read(navigationServiceProvider).navigateDeepLink(result);
+    analytics.logDeepLinkNavigated(
+      result.goRouterPath,
+      result.navType.name,
     );
   }
 

@@ -46,6 +46,8 @@ import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/navigation/navigation_provider.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
+import 'package:qulo_v2/providers/deep_link_provider.dart';
+import 'package:qulo_v2/providers/api_provider.dart';
 
 part 'app_routes.dart';
 
@@ -70,12 +72,32 @@ final routerProvider = Provider<GoRouter>((ref) {
       final isAuthRoute = state.matchedLocation.startsWith('/auth');
       final isSplash = state.matchedLocation == '/';
 
+      // 1. Auth yukleniyor — bekle
       if (authState.status == AuthStatus.initial) return null;
 
+      // 2. Update/maintenance route'lari — her zaman izin ver
+      final isUpdateRoute = state.matchedLocation == '/force-update' ||
+          state.matchedLocation == '/maintenance';
+      if (isUpdateRoute) return null;
+
+      // 3. Invite route — mevcut logic
       final isInviteRoute = state.matchedLocation.startsWith('/invite/');
-      final isUpdateRoute = state.matchedLocation == '/force-update' || state.matchedLocation == '/maintenance';
-      if (!isAuth && !isAuthRoute && !isInviteRoute && !isUpdateRoute) return '/auth/login';
       if (isAuth && isInviteRoute) return '/discover';
+
+      // 4. Auth degil → login'e yonlendir (auth, invite, update haric)
+      if (!isAuth && !isAuthRoute && !isInviteRoute && !isUpdateRoute) {
+        return '/auth/login';
+      }
+
+      // 5. Pending deep link replay — login sonrasi deferred link
+      final pendingLink = ref.read(pendingDeepLinkProvider);
+      if (isAuth && pendingLink != null) {
+        ref.read(pendingDeepLinkProvider.notifier).state = null;
+        ref.read(analyticsManagerProvider).logDeepLinkReplayed(pendingLink);
+        return pendingLink;
+      }
+
+      // 6. Auth + auth route veya splash → discover'a yonlendir
       if (isAuth && (isAuthRoute || isSplash)) return '/discover';
 
       return null;

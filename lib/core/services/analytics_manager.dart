@@ -2,6 +2,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:qulo_v2/core/services/analytics_breadcrumb.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
 
 class AnalyticsManager {
   AnalyticsManager._();
@@ -130,7 +131,7 @@ class AnalyticsManager {
         ? DateTime.now().difference(_backgroundStart!).inMilliseconds
         : 0;
     _backgroundStart = null;
-    logEvent('app_foreground', params: {
+    logEvent('qulo_app_foreground', params: {
       'background_duration_ms': backgroundDuration,
     });
     _crashlytics.setCustomKey('app_state', 'foreground');
@@ -141,7 +142,7 @@ class AnalyticsManager {
     final sessionDuration = _sessionStart != null
         ? DateTime.now().difference(_sessionStart!).inMilliseconds
         : 0;
-    logEvent('app_background', params: {
+    logEvent('qulo_app_background', params: {
       'session_duration_ms': sessionDuration,
     });
     _crashlytics.setCustomKey('app_state', 'background');
@@ -216,5 +217,40 @@ class AnalyticsManager {
     if (days <= 7) return '2-7';
     if (days <= 30) return '8-30';
     return '30+';
+  }
+
+  // ── Deep Link Analytics ──────────────────────────────────────────
+
+  void logDeepLinkReceived(String uri, {required String source}) {
+    logEvent(AnalyticsEvents.deepLinkReceived, params: {
+      AnalyticsEvents.paramUri: uri,
+      AnalyticsEvents.paramSource: source,
+    });
+  }
+
+  void logDeepLinkNavigated(String targetPath, String navType) {
+    logEvent(AnalyticsEvents.deepLinkNavigated, params: {
+      AnalyticsEvents.paramTargetPath: targetPath,
+      AnalyticsEvents.paramNavType: navType,
+    });
+  }
+
+  void logDeepLinkDeferred(String targetPath) {
+    logEvent(AnalyticsEvents.deepLinkDeferred, params: {
+      AnalyticsEvents.paramTargetPath: targetPath,
+    });
+  }
+
+  void logDeepLinkReplayed(String targetPath) {
+    logEvent(AnalyticsEvents.deepLinkReplayed, params: {
+      AnalyticsEvents.paramTargetPath: targetPath,
+    });
+  }
+
+  void logDeepLinkInvalid(String uri, String reason) {
+    logEvent(AnalyticsEvents.deepLinkInvalid, params: {
+      AnalyticsEvents.paramUri: uri,
+      AnalyticsEvents.paramReason: reason,
+    });
   }
 }

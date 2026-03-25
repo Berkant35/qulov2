@@ -146,7 +146,10 @@ class NotificationNotifier extends Notifier<NotificationState> {
     }
     if (actionUrl != null && actionUrl.isNotEmpty) {
       if (_onNavigate == null) {
-        dev.log('[NotificationNotifier] WARNING: _onNavigate is null, cannot navigate to $actionUrl', name: 'Notification');
+        // Callback henuz set edilmedi (terminated state race condition)
+        // URL'yi sakla, setUICallbacks'te replay edilecek
+        dev.log('[NotificationNotifier] _onNavigate not ready, queuing: $actionUrl', name: 'Notification');
+        _pendingNavigationUrl = actionUrl;
         return;
       }
       _onNavigate!(actionUrl);
@@ -156,6 +159,7 @@ class NotificationNotifier extends Notifier<NotificationState> {
   // UI callbacks — set by app shell
   void Function(RemoteMessage)? _onForegroundNotification;
   void Function(String actionUrl)? _onNavigate;
+  String? _pendingNavigationUrl;
 
   void setUICallbacks({
     void Function(RemoteMessage)? onForegroundNotification,
@@ -163,6 +167,14 @@ class NotificationNotifier extends Notifier<NotificationState> {
   }) {
     _onForegroundNotification = onForegroundNotification;
     _onNavigate = onNavigate;
+
+    // Replay queued navigation from terminated state
+    if (_pendingNavigationUrl != null && onNavigate != null) {
+      dev.log('[NotificationNotifier] Replaying pending navigation: $_pendingNavigationUrl', name: 'Notification');
+      final url = _pendingNavigationUrl!;
+      _pendingNavigationUrl = null;
+      onNavigate(url);
+    }
   }
 
   Future<void> fetchNotifications({int page = 1}) async {

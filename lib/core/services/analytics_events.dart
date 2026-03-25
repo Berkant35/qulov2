@@ -349,4 +349,15 @@ abstract class AnalyticsEvents {
   static const String paramFromCity = 'from_city';
   static const String paramToCity = 'to_city';
   static const String paramSearchQuery = 'search_query';
+
+  // ─── Deep Link (5) ──────────────────────────────────────────────────
+  static const String deepLinkReceived = 'deep_link_received';
+  static const String deepLinkNavigated = 'deep_link_navigated';
+  static const String deepLinkDeferred = 'deep_link_deferred';
+  static const String deepLinkReplayed = 'deep_link_replayed';
+  static const String deepLinkInvalid = 'deep_link_invalid';
+
+  static const String paramUri = 'uri';
+  static const String paramTargetPath = 'target_path';
+  static const String paramNavType = 'nav_type';
 }

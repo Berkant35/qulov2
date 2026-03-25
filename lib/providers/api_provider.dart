@@ -11,6 +11,7 @@ import 'package:qulo_v2/core/services/share_manager.dart';
 import 'package:qulo_v2/core/services/audio_recorder_manager.dart';
 import 'package:qulo_v2/core/services/haptic_manager.dart';
 import 'package:qulo_v2/core/services/teleport_service.dart';
+import 'package:qulo_v2/core/services/deep_link_manager.dart';
 import 'package:qulo_v2/core/network/services/auth_service.dart';
 import 'package:qulo_v2/core/network/services/user_service.dart';
 import 'package:qulo_v2/core/network/services/question_service.dart';
@@ -199,3 +200,9 @@ final presenceManagerProvider = Provider<PresenceManager>((ref) {
 final blockRepositoryProvider = Provider<BlockRepository>(
   (ref) => BlockRepository(ref.read(blockServiceProvider)),
 );
+
+final deepLinkManagerProvider = Provider<DeepLinkManager>((ref) {
+  final manager = DeepLinkManager.instance;
+  ref.onDispose(() => manager.dispose());
+  return manager;
+});
