@@ -41,13 +41,40 @@ class MatchModel extends Equatable {
 
   bool get isMediaEnabled => mediaEnabledByUser1 && mediaEnabledByUser2;
 
+  MatchModel copyWith({
+    String? matchId,
+    String? matchedAt,
+    MatchUserModel? user,
+    bool? mediaEnabledByUser1,
+    bool? mediaEnabledByUser2,
+    String? lastMessage,
+    String? lastMessageSentAt,
+    String? lastMessageSenderId,
+    int? unreadCount,
+  }) {
+    return MatchModel(
+      matchId: matchId ?? this.matchId,
+      matchedAt: matchedAt ?? this.matchedAt,
+      user: user ?? this.user,
+      mediaEnabledByUser1: mediaEnabledByUser1 ?? this.mediaEnabledByUser1,
+      mediaEnabledByUser2: mediaEnabledByUser2 ?? this.mediaEnabledByUser2,
+      lastMessage: lastMessage ?? this.lastMessage,
+      lastMessageSentAt: lastMessageSentAt ?? this.lastMessageSentAt,
+      lastMessageSenderId: lastMessageSenderId ?? this.lastMessageSenderId,
+      unreadCount: unreadCount ?? this.unreadCount,
+    );
+  }
+
   @override
   List<Object?> get props => [
         matchId,
+        user,
         lastMessage,
         lastMessageSentAt,
         lastMessageSenderId,
         unreadCount,
+        mediaEnabledByUser1,
+        mediaEnabledByUser2,
       ];
 }
 
@@ -80,6 +107,28 @@ class MatchUserModel extends Equatable {
       _$MatchUserModelFromJson(json);
   Map<String, dynamic> toJson() => _$MatchUserModelToJson(this);
 
+  MatchUserModel copyWith({
+    String? userId,
+    String? name,
+    int? age,
+    String? city,
+    List<String>? photos,
+    String? bio,
+    bool? isOnline,
+    String? lastSeen,
+  }) {
+    return MatchUserModel(
+      userId: userId ?? this.userId,
+      name: name ?? this.name,
+      age: age ?? this.age,
+      city: city ?? this.city,
+      photos: photos ?? this.photos,
+      bio: bio ?? this.bio,
+      isOnline: isOnline ?? this.isOnline,
+      lastSeen: lastSeen ?? this.lastSeen,
+    );
+  }
+
   @override
-  List<Object?> get props => [userId];
+  List<Object?> get props => [userId, isOnline, lastSeen];
 }
