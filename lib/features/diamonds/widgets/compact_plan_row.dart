@@ -47,13 +47,13 @@ class CompactPlanRow extends StatelessWidget {
                 vertical: AppSpacing.xs,
               ),
               decoration: BoxDecoration(
-                color: AppColors.primarySurface,
+                color: context.appColors.primarySurface,
                 borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
               ),
               child: Text(
                 context.tr('sub_current_plan'),
                 style: theme.textTheme.labelSmall?.copyWith(
-                  color: AppColors.primary,
+                  color: context.appColors.primary,
                   fontWeight: FontWeight.bold,
                 ),
               ),

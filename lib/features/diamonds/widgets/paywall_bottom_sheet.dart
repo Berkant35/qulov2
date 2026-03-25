@@ -9,8 +9,10 @@ import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_button.dart';
 import 'package:qulo_v2/core/widgets/diamond_icon.dart';
 import 'package:qulo_v2/features/diamonds/widgets/celebration_dialog.dart';
+import 'package:qulo_v2/features/diamonds/widgets/purchase_grid.dart';
 import 'package:qulo_v2/providers/daily_stats_provider.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
+import 'package:qulo_v2/providers/economy_config_provider.dart';
 import 'package:qulo_v2/providers/subscription_provider.dart';
 
 class PaywallBottomSheetContent extends ConsumerStatefulWidget {
@@ -18,12 +20,12 @@ class PaywallBottomSheetContent extends ConsumerStatefulWidget {
 
   const PaywallBottomSheetContent({super.key, required this.trigger});
 
-  static void show(WidgetRef ref, {required String trigger}) {
+  static Future<void> show(WidgetRef ref, {required String trigger}) async {
     AnalyticsManager.instance.logEvent(
       AnalyticsEvents.paywallView,
       params: {AnalyticsEvents.paramTrigger: trigger},
     );
-    ref.read(navigationServiceProvider).showAppBottomSheet(
+    await ref.read(navigationServiceProvider).showAppBottomSheet(
       CustomBottomSheet(
         name: 'paywall',
         maxHeightFactor: 0.92,
@@ -84,7 +86,10 @@ class _PaywallBottomSheetContentState
       final planName = isPremium
           ? context.tr('sub_plan_premium')
           : context.tr('sub_plan_plus');
-      final bonus = isPremium ? 1500 : 500;
+      final config = ref.read(economyConfigProvider);
+      final bonus = isPremium
+          ? config.limitsFor('premium').monthlyPurpleBonus
+          : config.limitsFor('plus').monthlyPurpleBonus;
 
       if (context.mounted) {
         showDialog(
@@ -97,6 +102,38 @@ class _PaywallBottomSheetContentState
           ),
         );
       }
+    } else {
+      setState(() => _isPurchasing = false);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.tr('purchase_failed'))),
+        );
+      }
+    }
+  }
+
+  Future<void> _handleConsumablePurchase(PurchasePackage package) async {
+    if (_isPurchasing) return;
+    setState(() => _isPurchasing = true);
+
+    AnalyticsManager.instance.logEvent(
+      'diamond_purchase_start',
+      params: {
+        'product_id': package.tier.productId,
+        'amount': package.amount,
+        AnalyticsEvents.paramTrigger: widget.trigger,
+      },
+    );
+
+    final success = await ref
+        .read(diamondProvider.notifier)
+        .purchaseByProductId(package.tier.productId);
+
+    if (!mounted) return;
+
+    if (success) {
+      Navigator.of(context).pop();
+      ref.invalidate(diamondProvider);
     } else {
       setState(() => _isPurchasing = false);
       if (context.mounted) {
@@ -127,7 +164,53 @@ class _PaywallBottomSheetContentState
 
     return PopScope(
       canPop: !_isPurchasing,
-      child: SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Drag handle + close button (non-scrollable)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.pagePadding,
+              AppSpacing.sm,
+              AppSpacing.pagePadding,
+              0,
+            ),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: theme.hintColor,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: GestureDetector(
+                    onTap: _isPurchasing ? null : () => Navigator.of(context).pop(),
+                    child: Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surfaceContainerHighest,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.close,
+                        size: 18,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Scrollable content
+          Flexible(
+            child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(
           AppSpacing.pagePadding,
           AppSpacing.sm,
@@ -137,17 +220,6 @@ class _PaywallBottomSheetContentState
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Drag handle
-            Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: theme.hintColor,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            const SizedBox(height: AppSpacing.lg),
-
             // Title
             Text(
               _titleForTrigger(context),
@@ -196,6 +268,30 @@ class _PaywallBottomSheetContentState
             if (isPremium)
               _CurrentPlanBadge(label: context.tr('sub_plan_premium')),
 
+            const SizedBox(height: AppSpacing.xl),
+
+            // Diamond purchase section
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Row(
+                children: [
+                  const DiamondIcon.purple(size: 18, showGlow: false),
+                  const SizedBox(width: AppSpacing.sm),
+                  Text(
+                    'Mor Elmas Satin Al',
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            PurchaseGrid(
+              onPurchase: _isPurchasing ? null : _handleConsumablePurchase,
+              isLoading: _isPurchasing,
+            ),
+
             const SizedBox(height: AppSpacing.lg),
 
             // Restore purchases
@@ -211,6 +307,9 @@ class _PaywallBottomSheetContentState
             ),
           ],
         ),
+      ),
+          ),
+        ],
       ),
     );
   }
@@ -229,14 +328,14 @@ class _CurrentPlanBadge extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.primarySurface,
+        color: context.appColors.primarySurface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       ),
       child: Text(
         '$label — ${context.tr('sub_current_plan')}',
         textAlign: TextAlign.center,
         style: theme.textTheme.labelLarge?.copyWith(
-          color: AppColors.primary,
+          color: context.appColors.primary,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -386,7 +485,7 @@ class _PlanLabel extends StatelessWidget {
           Text(
             label,
             style: style?.copyWith(
-              color: isPremiumColumn ? AppColors.primary : null,
+              color: isPremiumColumn ? context.appColors.primary : null,
             ),
             textAlign: TextAlign.center,
           ),
@@ -395,13 +494,13 @@ class _PlanLabel extends StatelessWidget {
               margin: const EdgeInsets.only(top: 2),
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
               decoration: BoxDecoration(
-                color: AppColors.primarySurface,
+                color: context.appColors.primarySurface,
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
                 context.tr('sub_current_plan'),
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: AppColors.primary,
+                  color: context.appColors.primary,
                   fontSize: 8,
                 ),
               ),
@@ -486,7 +585,7 @@ class _CellValue extends StatelessWidget {
       flex: 2,
       child: Center(
         child: value == null
-            ? Icon(Icons.close, size: 14, color: AppColors.textHint)
+            ? Icon(Icons.close, size: 14, color: context.appColors.textHint)
             : Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -498,7 +597,7 @@ class _CellValue extends StatelessWidget {
                     child: Text(
                       value!,
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: isPremiumColumn ? AppColors.primary : null,
+                        color: isPremiumColumn ? context.appColors.primary : null,
                         fontWeight: value == '✓' ? FontWeight.bold : null,
                       ),
                       textAlign: TextAlign.center,

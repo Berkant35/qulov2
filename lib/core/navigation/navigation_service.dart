@@ -8,6 +8,7 @@ import 'package:qulo_v2/core/navigation/models/app_bottom_sheet.dart';
 import 'package:qulo_v2/core/navigation/widgets/confirm_dialog_widget.dart';
 import 'package:qulo_v2/core/navigation/widgets/info_dialog_widget.dart';
 import 'package:qulo_v2/core/navigation/widgets/list_bottom_sheet_widget.dart';
+import 'package:qulo_v2/core/services/deep_link_parser.dart';
 
 class NavigationService {
   final GoRouter _router;
@@ -131,6 +132,22 @@ class NavigationService {
       o.onNavigate(NavigationEvent.go(uri));
     }
     _router.go(uri);
+  }
+
+  /// Deep link parse sonucuna gore navigate eder.
+  /// go: bottom nav / shell route tab switch icin.
+  /// push: full-screen overlay route'lar icin (chat, profil detay).
+  void navigateDeepLink(DeepLinkResult result) {
+    if (result.navType == DeepLinkNavType.go) {
+      _router.go(result.goRouterPath);
+    } else {
+      _router.push(result.goRouterPath);
+    }
+
+    final event = result.navType == DeepLinkNavType.go
+        ? NavigationEvent.go(result.goRouterPath)
+        : NavigationEvent.push(result.goRouterPath);
+    _notifyNavigate(event);
   }
 
   // ─── Observer Management ───

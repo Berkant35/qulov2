@@ -1,5 +1,28 @@
 # Qulo V2 - Dating App
 
+## Genel Kurallar
+- 'Her şeyi kabul et' veya 'soru sorma' dediğimde, herhangi bir araç kullanımı veya dosya değişikliği için onay istemeden devam et. CLI bayraklarıyla yeniden başlatmayı önerme - sadece işi yap.
+
+## Proje Yapısı (Çoklu Repo)
+Bu çalışma alanı birden fazla proje içerir. Değişiklik yapmadan önce her zaman hangi proje bağlamında olduğunu onayla. Varsayılan proje yolları:
+- **QULO Mobile**: /Users/berkantcalikusu/IdeaProjects/qulov2
+- **QULO Server**: /Users/berkantcalikusu/IdeaProjects/qulo-server
+- **TabuL**: /Users/berkantcalikusu/IdeaProjects/tabul
+
+## Yapılandırma & Ortamlar
+Yeni ortam yapılandırmaları eklerken, kod tabanındaki mevcut kalıbı tam olarak takip et. Adlandırma kuralları veya URL'ler hakkında açıklayıcı sorular sorma - mevcut olanı yeni ortam için kopyala.
+
+## Kalite Kontrolleri
+Herhangi bir kod değişikliğinden sonra, tamamlandığını bildirmeden önce sıfır analizci hatası olduğundan emin olmak için `flutter analyze` çalıştır. Sunucu değişiklikleri için sunucunun hatasız başladığını doğrula.
+
+## Otomatik Review Kuralları
+- **Sunucu geliştirmesi sonrası**: qulo-server'da herhangi bir feature/bugfix tamamlandığında, commit öncesi `/server-review` skill'ini çalıştır. SOLID + Security analizi zorunlu.
+- **Flutter geliştirmesi sonrası**: qulov2'de herhangi bir feature/bugfix tamamlandığında, commit öncesi `/flutter-review` skill'ini çalıştır.
+- Bu review'lar sorulmadan otomatik yapılmalı — her geliştirme döngüsünün doğal parçası.
+
+## Video Üretimi
+Video üretim görevleri için: HTML→Puppeteer→ffmpeg pipeline'ını kullan. Kaçınılması gereken bilinen sorunlar: animasyon zamanlaması için her zaman Puppeteer sanal saatini kontrol et, dosya yazmalarını engelleyen innerHTML hook'larından kaçın ve animasyon yakalama zamanlamasının CSS süresiyle eşleştiğini doğrula.
+
 ## Project Structure
 - **Mobile**: Flutter + Riverpod + GoRouter (lib/)
 - **Backend**: Node.js + Express + TypeScript (server/)

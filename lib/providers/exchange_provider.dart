@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/data/models/exchange_model.dart';
@@ -52,7 +51,6 @@ class ExchangeNotifier extends Notifier<ExchangeState> {
     final newInventory = invResult is Success<InventoryResponse>
         ? invResult.data.inventory
         : state.inventory;
-    debugPrint('[Exchange] inventory updated: ${newInventory.map((i) => "${i.powerName}:${i.count}").toList()}');
     state = state.copyWith(
       inventory: newInventory,
       rates: ratesResult is Success<RatesResponse>
@@ -78,7 +76,6 @@ class ExchangeNotifier extends Notifier<ExchangeState> {
       quantity,
     );
     if (result is Success<BuyPowerResponse>) {
-      debugPrint('[Exchange] buyPower success, fetching inventory...');
       await fetchAll();
       await ref.read(diamondProvider.notifier).fetchBalance();
     }

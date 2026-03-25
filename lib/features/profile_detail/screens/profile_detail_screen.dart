@@ -52,13 +52,31 @@ class _ProfileDetailScreenState extends ConsumerState<ProfileDetailScreen>
         detailContext == ProfileDetailContext.match || detailContext == ProfileDetailContext.chat;
 
     return Scaffold(
-      backgroundColor: AppColors.scaffold,
+      backgroundColor: context.appColors.scaffold,
       body: asyncProfile.when(
-        loading: () => _buildWithPreloaded(detailContext, isMatchContext),
+        loading: () => _ProfileDetailWithPreloaded(
+          args: widget.args,
+          detailContext: detailContext,
+          isMatch: isMatchContext,
+          userId: widget.userId,
+          onClose: onClose,
+          onPhotoChanged: onPhotoChanged,
+          onReport: onReport,
+          onBlock: onBlock,
+        ),
         error: (err, _) => ErrorRetryWidget(
           onRetry: () => ref.read(profileDetailProvider(widget.userId).notifier).refresh(),
         ),
-        data: (profile) => _buildBody(profile, detailContext, isMatchContext),
+        data: (profile) => _ProfileDetailBody(
+          profile: profile,
+          detailContext: detailContext,
+          isMatch: isMatchContext,
+          userId: widget.userId,
+          onClose: onClose,
+          onPhotoChanged: onPhotoChanged,
+          onReport: onReport,
+          onBlock: onBlock,
+        ),
       ),
       bottomNavigationBar: ProfileActionBar(
         detailContext: detailContext,
@@ -69,10 +87,34 @@ class _ProfileDetailScreenState extends ConsumerState<ProfileDetailScreen>
       ),
     );
   }
+}
 
-  Widget _buildBody(PublicProfileModel profile, ProfileDetailContext ctx, bool isMatch) {
+class _ProfileDetailBody extends StatelessWidget {
+  final PublicProfileModel profile;
+  final ProfileDetailContext detailContext;
+  final bool isMatch;
+  final String userId;
+  final VoidCallback onClose;
+  final void Function(int index, int total) onPhotoChanged;
+  final VoidCallback onReport;
+  final VoidCallback onBlock;
+
+  const _ProfileDetailBody({
+    required this.profile,
+    required this.detailContext,
+    required this.isMatch,
+    required this.userId,
+    required this.onClose,
+    required this.onPhotoChanged,
+    required this.onReport,
+    required this.onBlock,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     final showQuestions =
-        ctx == ProfileDetailContext.discover || ctx == ProfileDetailContext.quizResult;
+        detailContext == ProfileDetailContext.discover ||
+        detailContext == ProfileDetailContext.quizResult;
 
     return SingleChildScrollView(
       child: Column(
@@ -99,7 +141,7 @@ class _ProfileDetailScreenState extends ConsumerState<ProfileDetailScreen>
           ],
           const SizedBox(height: AppSpacing.sectionGap),
           ProfileReportButton(
-            userId: widget.userId,
+            userId: userId,
             onReport: onReport,
             onBlock: onBlock,
           ),
@@ -108,9 +150,32 @@ class _ProfileDetailScreenState extends ConsumerState<ProfileDetailScreen>
       ),
     );
   }
+}
 
-  Widget _buildWithPreloaded(ProfileDetailContext ctx, bool isMatch) {
-    final card = widget.args?.preloadedCard;
+class _ProfileDetailWithPreloaded extends StatelessWidget {
+  final ProfileDetailArgs? args;
+  final ProfileDetailContext detailContext;
+  final bool isMatch;
+  final String userId;
+  final VoidCallback onClose;
+  final void Function(int index, int total) onPhotoChanged;
+  final VoidCallback onReport;
+  final VoidCallback onBlock;
+
+  const _ProfileDetailWithPreloaded({
+    required this.args,
+    required this.detailContext,
+    required this.isMatch,
+    required this.userId,
+    required this.onClose,
+    required this.onPhotoChanged,
+    required this.onReport,
+    required this.onBlock,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final card = args?.preloadedCard;
     if (card == null) {
       return const Center(child: AppLoadingWidget.large());
     }
@@ -128,6 +193,16 @@ class _ProfileDetailScreenState extends ConsumerState<ProfileDetailScreen>
       isBoosted: card.isBoosted,
       questionInfo: card.questionInfo,
     );
-    return _buildBody(tempProfile, ctx, isMatch);
+
+    return _ProfileDetailBody(
+      profile: tempProfile,
+      detailContext: detailContext,
+      isMatch: isMatch,
+      userId: userId,
+      onClose: onClose,
+      onPhotoChanged: onPhotoChanged,
+      onReport: onReport,
+      onBlock: onBlock,
+    );
   }
 }

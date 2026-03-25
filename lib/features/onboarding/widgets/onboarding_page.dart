@@ -27,7 +27,7 @@ class OnboardingPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(data.icon, size: 80, color: AppColors.primary),
+          Icon(data.icon, size: 80, color: context.appColors.primary),
           const SizedBox(height: AppSpacing.xl),
           Text(data.title,
               style: theme.textTheme.headlineSmall,

@@ -23,7 +23,7 @@ class NewMatchAvatar extends StatelessWidget {
             padding: const EdgeInsets.all(2),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: AppColors.primary, width: 2),
+              border: Border.all(color: context.appColors.primary, width: 2),
             ),
             child: CircleAvatar(
               radius: 28,

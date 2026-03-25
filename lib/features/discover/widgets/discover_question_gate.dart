@@ -58,7 +58,7 @@ class DiscoverQuestionGate extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  QIcon(QIcons.icLock, size: 64, color: AppColors.primary),
+                  QIcon(QIcons.icLock, size: 64, color: context.appColors.primary),
                   const SizedBox(height: AppSpacing.lg),
                   Text(
                     context.tr('question_nudge_discover_locked'),
@@ -103,19 +103,19 @@ class QuestionGateEasyModeNudge extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: AppColors.primarySurface,
+              color: context.appColors.primarySurface,
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-              border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+              border: Border.all(color: context.appColors.primary.withValues(alpha: 0.3)),
             ),
             child: Row(
               children: [
-                QIcon(QIcons.icWand, size: 20, color: AppColors.primary),
+                QIcon(QIcons.icWand, size: 20, color: context.appColors.primary),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(
                     context.tr('nudge_easy_mode_hint'),
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: AppColors.primary,
+                      color: context.appColors.primary,
                     ),
                   ),
                 ),
@@ -131,7 +131,7 @@ class QuestionGateEasyModeNudge extends StatelessWidget {
           icon: QIcon(QIcons.icWand, color: theme.colorScheme.onPrimary, size: 18),
           label: Text(context.tr('nudge_easy_mode_button')),
           style: FilledButton.styleFrom(
-            backgroundColor: AppColors.primary,
+            backgroundColor: context.appColors.primary,
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: AppSpacing.md),
           ),
         ),
@@ -165,7 +165,7 @@ class QuestionGateAddButton extends StatelessWidget {
       icon: QIcon(QIcons.icPlus, color: theme.colorScheme.onPrimary, size: 18),
       label: Text(context.tr('question_nudge_add_button')),
       style: FilledButton.styleFrom(
-        backgroundColor: AppColors.primary,
+        backgroundColor: context.appColors.primary,
         padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: AppSpacing.md),
       ),
     );

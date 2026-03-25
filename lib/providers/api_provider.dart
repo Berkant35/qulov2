@@ -10,6 +10,8 @@ import 'package:qulo_v2/core/services/audio_player_manager.dart';
 import 'package:qulo_v2/core/services/share_manager.dart';
 import 'package:qulo_v2/core/services/audio_recorder_manager.dart';
 import 'package:qulo_v2/core/services/haptic_manager.dart';
+import 'package:qulo_v2/core/services/teleport_service.dart';
+import 'package:qulo_v2/core/services/deep_link_manager.dart';
 import 'package:qulo_v2/core/network/services/auth_service.dart';
 import 'package:qulo_v2/core/network/services/user_service.dart';
 import 'package:qulo_v2/core/network/services/question_service.dart';
@@ -27,6 +29,8 @@ import 'package:qulo_v2/core/network/services/referral_service.dart';
 import 'package:qulo_v2/core/network/services/exchange_service.dart';
 import 'package:qulo_v2/core/network/services/chat_question_service.dart';
 import 'package:qulo_v2/core/network/services/block_service.dart';
+import 'package:qulo_v2/core/network/services/presence_service.dart';
+import 'package:qulo_v2/core/services/presence_manager.dart';
 import 'package:qulo_v2/data/repositories/repositories.dart';
 
 // ─── Core Services ───
@@ -59,6 +63,9 @@ final audioRecorderManagerProvider = Provider<AudioRecorderManager>(
 );
 final hapticManagerProvider = Provider<HapticManager>(
   (_) => HapticManager.instance,
+);
+final teleportServiceProvider = Provider<TeleportService>(
+  (_) => TeleportService.instance,
 );
 
 // ─── NetworkManager ───
@@ -137,7 +144,7 @@ final quizRepositoryProvider = Provider<QuizRepository>(
   (ref) => QuizRepository(ref.read(quizServiceProvider)),
 );
 final chatRepositoryProvider = Provider<ChatRepository>(
-  (ref) => ChatRepository(ref.read(chatServiceProvider)),
+  (ref) => ChatRepository(ref.read(chatServiceProvider), ref.read(networkManagerProvider)),
 );
 final diamondRepositoryProvider = Provider<DiamondRepository>(
   (ref) => DiamondRepository(ref.read(diamondServiceProvider)),
@@ -179,7 +186,23 @@ final exchangeRepositoryProvider = Provider<ExchangeRepository>(
 final blockServiceProvider = Provider<BlockService>(
   (ref) => BlockService(ref.read(networkManagerProvider).dio),
 );
+final presenceServiceProvider = Provider<PresenceService>(
+  (ref) => PresenceService(ref.read(networkManagerProvider).dio),
+);
+
+// ─── Presence Manager ───
+final presenceManagerProvider = Provider<PresenceManager>((ref) {
+  final manager = PresenceManager.instance;
+  manager.init(ref.read(presenceServiceProvider));
+  return manager;
+});
 
 final blockRepositoryProvider = Provider<BlockRepository>(
   (ref) => BlockRepository(ref.read(blockServiceProvider)),
 );
+
+final deepLinkManagerProvider = Provider<DeepLinkManager>((ref) {
+  final manager = DeepLinkManager.instance;
+  ref.onDispose(() => manager.dispose());
+  return manager;
+});

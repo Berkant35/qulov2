@@ -12,6 +12,8 @@ class AiSuggestionModel extends Equatable {
   final int correctAnswer;
   final String? hint;
   final String? category;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final String? locale;
 
   const AiSuggestionModel({
     required this.questionText,
@@ -19,7 +21,17 @@ class AiSuggestionModel extends Equatable {
     required this.correctAnswer,
     this.hint,
     this.category,
+    this.locale,
   });
+
+  AiSuggestionModel withLocale(String locale) => AiSuggestionModel(
+    questionText: questionText,
+    answers: answers,
+    correctAnswer: correctAnswer,
+    hint: hint,
+    category: category,
+    locale: locale,
+  );
 
   factory AiSuggestionModel.fromJson(Map<String, dynamic> json) =>
       _$AiSuggestionModelFromJson(json);

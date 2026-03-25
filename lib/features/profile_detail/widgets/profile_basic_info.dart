@@ -9,11 +9,13 @@ import 'package:qulo_v2/data/models/public_profile_model.dart';
 class ProfileBasicInfo extends StatelessWidget {
   final PublicProfileModel profile;
   final bool showOnlineStatus;
+  final bool showDistance;
 
   const ProfileBasicInfo({
     super.key,
     required this.profile,
     this.showOnlineStatus = false,
+    this.showDistance = true,
   });
 
   @override
@@ -31,7 +33,7 @@ class ProfileBasicInfo extends StatelessWidget {
                   '${profile.name ?? ''}, ${profile.age ?? ''}',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
+                    color: context.appColors.textPrimary,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -41,12 +43,12 @@ class ProfileBasicInfo extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(AppSpacing.xs),
                   decoration: BoxDecoration(
-                    color: AppColors.warning.withValues(alpha: 0.2),
+                    color: context.appColors.warning.withValues(alpha: 0.2),
                     shape: BoxShape.circle,
                   ),
                   child: QIcon(
                     QIcons.icZap,
-                    color: AppColors.warning,
+                    color: context.appColors.warning,
                     size: 16,
                   ),
                 ),
@@ -62,13 +64,13 @@ class ProfileBasicInfo extends StatelessWidget {
                 QIcon(
                   QIcons.icMapPin,
                   size: 16,
-                  color: AppColors.textSecondary,
+                  color: context.appColors.textSecondary,
                 ),
                 const SizedBox(width: AppSpacing.xs),
                 Text(
-                  '${profile.city} ${_formatDistance(context)}',
+                  '${profile.city}${showDistance ? ' ${_formatDistance(context)}' : ''}',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.textSecondary,
+                    color: context.appColors.textSecondary,
                   ),
                 ),
               ],
@@ -109,9 +111,9 @@ class _RelationshipGoalChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (icon, color, label) = switch (goal) {
-      'SERIOUS' => (Icons.favorite, AppColors.error, context.tr('serious_relationship')),
-      'FRIENDSHIP' => (Icons.people, AppColors.secondary, context.tr('friendship')),
-      _ => (Icons.help_outline, AppColors.warning, context.tr('not_sure')),
+      'SERIOUS' => (Icons.favorite, context.appColors.error, context.tr('serious_relationship')),
+      'FRIENDSHIP' => (Icons.people, context.appColors.secondary, context.tr('friendship')),
+      _ => (Icons.help_outline, context.appColors.warning, context.tr('not_sure')),
     };
 
     return Container(
@@ -153,8 +155,8 @@ class _OnlineStatusChip extends StatelessWidget {
           Container(
             width: 8,
             height: 8,
-            decoration: const BoxDecoration(
-              color: AppColors.secondary,
+            decoration: BoxDecoration(
+              color: context.appColors.secondary,
               shape: BoxShape.circle,
             ),
           ),
@@ -162,7 +164,7 @@ class _OnlineStatusChip extends StatelessWidget {
           Text(
             'Online',
             style: TextStyle(
-              color: AppColors.secondary,
+              color: context.appColors.secondary,
               fontSize: 12,
               fontWeight: FontWeight.w500,
             ),
@@ -174,7 +176,7 @@ class _OnlineStatusChip extends StatelessWidget {
     if (lastSeen != null) {
       final dt = DateTime.tryParse(lastSeen!);
       if (dt != null) {
-        final diff = DateTime.now().difference(dt);
+        final diff = DateTime.now().toUtc().difference(dt);
         final label = diff.inMinutes < 60
             ? '${diff.inMinutes}m'
             : diff.inHours < 24
@@ -182,8 +184,8 @@ class _OnlineStatusChip extends StatelessWidget {
                 : '${diff.inDays}d';
         return Text(
           '${context.tr('last_seen')} $label',
-          style: const TextStyle(
-            color: AppColors.textSecondary,
+          style: TextStyle(
+            color: context.appColors.textSecondary,
             fontSize: 12,
           ),
         );

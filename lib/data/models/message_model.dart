@@ -60,6 +60,7 @@ class MessageReaction extends Equatable {
 
   factory MessageReaction.fromJson(Map<String, dynamic> json) =>
       _$MessageReactionFromJson(json);
+  Map<String, dynamic> toJson() => _$MessageReactionToJson(this);
 
   @override
   List<Object?> get props => [emoji, userId];

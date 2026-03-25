@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/profile_section_card.dart';
@@ -8,12 +9,10 @@ import 'package:qulo_v2/providers/edit_profile_provider.dart';
 
 class EditProfilePreferencesSection extends ConsumerWidget {
   final String completionText;
-  final String Function(String code) languageLabelFn;
 
   const EditProfilePreferencesSection({
     super.key,
     required this.completionText,
-    required this.languageLabelFn,
   });
 
   @override
@@ -24,7 +23,7 @@ class EditProfilePreferencesSection extends ConsumerWidget {
     return ProfileSectionCard(
       icon: Icons.tune,
       title: context.tr('preferences'),
-      subtitle: 'Sana uygun kisileri gorelim',
+      subtitle: context.tr('preferences_subtitle'),
       completionText: completionText,
       isComplete: completionText == '4/4',
       child: Column(
@@ -49,8 +48,8 @@ class EditProfilePreferencesSection extends ConsumerWidget {
               ref.read(editProfileProvider.notifier).setGenderPref(set.first);
             },
             style: SegmentedButton.styleFrom(
-              selectedBackgroundColor: AppColors.primarySurface,
-              selectedForegroundColor: AppColors.primary,
+              selectedBackgroundColor: context.appColors.primarySurface,
+              selectedForegroundColor: context.appColors.primary,
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -71,7 +70,7 @@ class EditProfilePreferencesSection extends ConsumerWidget {
               epState.ageRange.start.round().toString(),
               epState.ageRange.end.round().toString(),
             ),
-            activeColor: AppColors.primary,
+            activeColor: context.appColors.primary,
             inactiveColor: theme.colorScheme.surfaceContainerHigh,
             onChanged: (values) =>
                 ref.read(editProfileProvider.notifier).setAgeRange(values),
@@ -88,10 +87,10 @@ class EditProfilePreferencesSection extends ConsumerWidget {
           Slider(
             value: epState.distanceKm,
             min: 5,
-            max: 200,
-            divisions: 39,
+            max: 500,
+            divisions: 99,
             label: '${epState.distanceKm.round()} km',
-            activeColor: AppColors.primary,
+            activeColor: context.appColors.primary,
             inactiveColor: theme.colorScheme.surfaceContainerHigh,
             onChanged: (value) =>
                 ref.read(editProfileProvider.notifier).setDistanceKm(value),
@@ -100,7 +99,7 @@ class EditProfilePreferencesSection extends ConsumerWidget {
 
           // Language preference
           Text(
-            'Dil Tercihi',
+            context.tr('language_preference'),
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),
@@ -110,15 +109,19 @@ class EditProfilePreferencesSection extends ConsumerWidget {
             spacing: AppSpacing.sm,
             runSpacing: AppSpacing.sm,
             children:
-                ['tr', 'en', 'de', 'fr', 'ar', 'ru', 'es'].map((lang) {
+                AppConstants.supportedQuestionLocales.map((lang) {
               final isSelected = epState.selectedLanguages.contains(lang);
+              final flag = AppConstants.localeFlagEmojis[lang] ?? '';
               return FilterChip(
-                label: Text(languageLabelFn(lang)),
+                label: Text('$flag ${context.tr('locale_$lang')}'),
                 selected: isSelected,
                 onSelected: (_) =>
                     ref.read(editProfileProvider.notifier).toggleLanguage(lang),
-                selectedColor: AppColors.primary.withValues(alpha: 0.2),
-                checkmarkColor: AppColors.primary,
+                selectedColor: context.appColors.primarySurface,
+                checkmarkColor: context.appColors.primary,
+                side: BorderSide(
+                  color: isSelected ? context.appColors.primary : context.appColors.border,
+                ),
               );
             }).toList(),
           ),

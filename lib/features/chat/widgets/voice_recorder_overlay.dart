@@ -133,8 +133,8 @@ class _VoiceRecorderOverlayState extends ConsumerState<VoiceRecorderOverlay>
         ),
         decoration: BoxDecoration(
           color: _isCancelling
-              ? AppColors.error.withValues(alpha: 0.25)
-              : AppColors.error.withValues(alpha: 0.12),
+              ? context.appColors.error.withValues(alpha: 0.25)
+              : context.appColors.error.withValues(alpha: 0.12),
           borderRadius: const BorderRadius.vertical(
             top: Radius.circular(AppSpacing.radiusMd),
           ),
@@ -149,8 +149,8 @@ class _VoiceRecorderOverlayState extends ConsumerState<VoiceRecorderOverlay>
                 child: Container(
                   width: 10,
                   height: 10,
-                  decoration: const BoxDecoration(
-                    color: AppColors.error,
+                  decoration: BoxDecoration(
+                    color: context.appColors.error,
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -160,8 +160,8 @@ class _VoiceRecorderOverlayState extends ConsumerState<VoiceRecorderOverlay>
               // Timer
               Text(
                 _hasStarted ? _formatTime(_seconds) : '0:00',
-                style: const TextStyle(
-                  color: AppColors.textPrimary,
+                style: TextStyle(
+                  color: context.appColors.textPrimary,
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   fontFeatures: [FontFeature.tabularFigures()],
@@ -173,14 +173,14 @@ class _VoiceRecorderOverlayState extends ConsumerState<VoiceRecorderOverlay>
               // Cancel button
               IconButton(
                 onPressed: _cancelRecording,
-                icon: const Icon(Icons.delete_outline, color: AppColors.error, size: 22),
+                icon: Icon(Icons.delete_outline, color: context.appColors.error, size: 22),
               ),
               const SizedBox(width: AppSpacing.sm),
 
               // Send button
               Container(
-                decoration: const BoxDecoration(
-                  gradient: AppColors.primaryButtonGradient,
+                decoration: BoxDecoration(
+                  gradient: context.appColors.primaryButtonGradient,
                   shape: BoxShape.circle,
                 ),
                 child: IconButton(

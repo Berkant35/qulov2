@@ -68,10 +68,10 @@ class _CropScreenState extends State<CropScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.appColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
-        foregroundColor: AppColors.textPrimary,
+        backgroundColor: context.appColors.background,
+        foregroundColor: context.appColors.textPrimary,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.close),
@@ -94,7 +94,7 @@ class _CropScreenState extends State<CropScreen> {
                   : Text(
                       context.tr('ok'),
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: AppColors.primary,
+                        color: context.appColors.primary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -107,8 +107,8 @@ class _CropScreenState extends State<CropScreen> {
         image: _currentImageBytes,
         aspectRatio: 1,
         withCircleUi: true,
-        baseColor: AppColors.background,
-        maskColor: AppColors.background.withValues(alpha: 0.78),
+        baseColor: context.appColors.background,
+        maskColor: context.appColors.background.withValues(alpha: 0.78),
         cornerDotBuilder: (size, edgeAlignment) => const SizedBox.shrink(),
         onCropped: _onCropped,
         initialSize: 0.8,

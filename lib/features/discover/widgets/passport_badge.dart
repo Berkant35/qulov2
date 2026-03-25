@@ -1,39 +1,147 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/providers/location_provider.dart';
 import 'package:qulo_v2/providers/passport_provider.dart';
+import 'package:qulo_v2/routing/route_names.dart';
 
-class PassportBadge extends ConsumerWidget {
+class PassportBadge extends ConsumerStatefulWidget {
   const PassportBadge({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final passport = ref.watch(passportProvider);
-    if (!passport.isActive) return const SizedBox.shrink();
+  ConsumerState<PassportBadge> createState() => _PassportBadgeState();
+}
 
-    return Padding(
-      padding: const EdgeInsets.only(right: AppSpacing.md),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 4),
-        decoration: BoxDecoration(
-          color: AppColors.primarySurface,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
-          border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.flight, size: 14, color: AppColors.primary),
-            const SizedBox(width: 4),
-            Text(
-              passport.city ?? '',
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: AppColors.primary,
-                fontWeight: FontWeight.w600,
-              ),
+class _PassportBadgeState extends ConsumerState<PassportBadge>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _glowController;
+  int _pulseCount = 0;
+  static const _maxPulses = 5;
+
+  @override
+  void initState() {
+    super.initState();
+    _glowController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    )..addStatusListener(_onAnimationStatus);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Restart glow on screen re-enter
+    final isActive = ref.read(passportProvider).isActive;
+    if (isActive && !_glowController.isAnimating) {
+      _pulseCount = 0;
+      _glowController.forward();
+    }
+  }
+
+  void _onAnimationStatus(AnimationStatus status) {
+    if (status == AnimationStatus.completed) {
+      _glowController.reverse();
+    } else if (status == AnimationStatus.dismissed) {
+      _pulseCount++;
+      if (_pulseCount < _maxPulses) {
+        _glowController.forward();
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _glowController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final passport = ref.watch(passportProvider);
+    final location = ref.watch(locationProvider);
+    final isActive = passport.isActive;
+    final city = isActive ? passport.city : location.city;
+
+    if (city == null || city.isEmpty) return const SizedBox.shrink();
+
+    // Manage animation based on state
+    if (isActive && !_glowController.isAnimating && _pulseCount < _maxPulses) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _pulseCount = 0;
+          _glowController.forward();
+        }
+      });
+    } else if (!isActive && _glowController.isAnimating) {
+      _glowController.stop();
+      _glowController.reset();
+    }
+
+    return RepaintBoundary(
+      child: GestureDetector(
+        onTap: () =>
+            ref.read(navigationServiceProvider).push(RouteNames.passport),
+        child: Padding(
+          padding: const EdgeInsets.only(right: AppSpacing.md),
+          child: AnimatedBuilder(
+            animation: _glowController,
+            builder: (context, child) {
+              return Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.sm,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: isActive
+                      ? context.appColors.primarySurface
+                      : context.appColors.surfaceElevated,
+                  borderRadius:
+                      BorderRadius.circular(AppSpacing.radiusFull),
+                  border: Border.all(
+                    color: isActive
+                        ? context.appColors.primary.withValues(alpha: 0.3)
+                        : context.appColors.border,
+                  ),
+                  boxShadow: isActive
+                      ? [
+                          BoxShadow(
+                            color: context.appColors.primary.withValues(
+                              alpha: 0.4 * _glowController.value,
+                            ),
+                            spreadRadius: 4 * _glowController.value,
+                            blurRadius: 8 * _glowController.value,
+                          ),
+                        ]
+                      : null,
+                ),
+                child: child,
+              );
+            },
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  isActive ? Icons.flight : Icons.location_on,
+                  size: 14,
+                  color: isActive
+                      ? context.appColors.primary
+                      : context.appColors.textSecondary,
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  city,
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: isActive
+                            ? context.appColors.primary
+                            : context.appColors.textSecondary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

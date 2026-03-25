@@ -112,7 +112,7 @@ class _PowerButton extends StatelessWidget {
                       shape: BoxShape.circle,
                       color: hasInventory
                           ? color.withValues(alpha: 0.15)
-                          : AppColors.surfaceElevated,
+                          : context.appColors.surfaceElevated,
                       border: Border.all(
                         color: hasInventory
                             ? color.withValues(alpha: 0.5)

@@ -96,6 +96,7 @@ abstract class AnalyticsEvents {
   static const String quizExitConfirm = 'quiz_exit_confirm';
   static const String quizTimerWarning = 'quiz_timer_warning';
   static const String quizTimerCritical = 'quiz_timer_critical';
+  static const String quizStartFailed = 'quiz_start_failed';
 
   // ─── Questions (8) ─────────────────────────────────────────────────
   static const String questionCreateStart = 'question_create_start';
@@ -117,6 +118,9 @@ abstract class AnalyticsEvents {
   static const String profilePhotoReorder = 'profile_photo_reorder';
   static const String profileCompletionChange = 'profile_completion_change';
   static const String profilePreview = 'profile_preview';
+  static const String profilePreviewOpened = 'profile_preview_opened';
+  static const String profilePreviewEditTapped = 'profile_preview_edit_tapped';
+  static const String saveSuccessPreviewTapped = 'save_success_preview_tapped';
   static const String profileSettingsOpen = 'profile_settings_open';
   static const String profileShare = 'profile_share';
   static const String profileBioEdit = 'profile_bio_edit';
@@ -151,6 +155,11 @@ abstract class AnalyticsEvents {
   static const String passportCitySelect = 'passport_city_select';
   static const String passportScreenView = 'passport_screen_view';
   static const String passportMapInteract = 'passport_map_interact';
+  static const String passportCitySearch = 'passport_city_search';
+  static const String passportPopularCityTap = 'passport_popular_city_tap';
+  static const String passportMapConfirmView = 'passport_map_confirm_view';
+  static const String passportExploreStart = 'passport_explore_start';
+  static const String passportChangeCity = 'passport_change_city';
 
   // ─── Notifications (10) ────────────────────────────────────────────
   static const String notificationPermissionAsk = 'notification_permission_ask';
@@ -166,8 +175,8 @@ abstract class AnalyticsEvents {
 
   // ─── App Lifecycle (15) ────────────────────────────────────────────
   static const String appOpen = 'app_open';
-  static const String appForeground = 'app_foreground';
-  static const String appBackground = 'app_background';
+  static const String appForeground = 'qulo_app_foreground';
+  static const String appBackground = 'qulo_app_background';
   static const String appForceUpdateShown = 'app_force_update_shown';
   static const String appOptionalUpdateShown = 'app_optional_update_shown';
   static const String appMaintenanceShown = 'app_maintenance_shown';
@@ -202,6 +211,11 @@ abstract class AnalyticsEvents {
   static const String profileDetailReport = 'profile_detail_report';
   static const String profileDetailBlock = 'profile_detail_block';
   static const String profileDetailClose = 'profile_detail_close';
+
+  // ─── Performance Dashboard ─────────────────────────────────────────
+  static const String performanceDashboardOpened = 'performance_dashboard_opened';
+  static const String performanceViewAllDiamonds = 'performance_view_all_diamonds';
+  static const String performanceBestQuestionTapped = 'performance_best_question_tapped';
 
   // ─── Settings (8) ──────────────────────────────────────────────────
   static const String settingsScreenView = 'settings_screen_view';
@@ -332,4 +346,18 @@ abstract class AnalyticsEvents {
   static const String paramSecondsRemaining = 'seconds_remaining';
   static const String paramContext = 'context';
   static const String paramTotalPhotos = 'total_photos';
+  static const String paramFromCity = 'from_city';
+  static const String paramToCity = 'to_city';
+  static const String paramSearchQuery = 'search_query';
+
+  // ─── Deep Link (5) ──────────────────────────────────────────────────
+  static const String deepLinkReceived = 'deep_link_received';
+  static const String deepLinkNavigated = 'deep_link_navigated';
+  static const String deepLinkDeferred = 'deep_link_deferred';
+  static const String deepLinkReplayed = 'deep_link_replayed';
+  static const String deepLinkInvalid = 'deep_link_invalid';
+
+  static const String paramUri = 'uri';
+  static const String paramTargetPath = 'target_path';
+  static const String paramNavType = 'nav_type';
 }

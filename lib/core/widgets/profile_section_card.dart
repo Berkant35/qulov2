@@ -28,7 +28,7 @@ class ProfileSectionCard extends StatelessWidget {
         color: theme.colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
         border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.15),
+          color: context.appColors.primary.withValues(alpha: 0.15),
           width: 1,
         ),
       ),
@@ -39,14 +39,14 @@ class ProfileSectionCard extends StatelessWidget {
           Row(
             children: [
               if (icon != null) ...[
-                Icon(icon, color: AppColors.primary, size: 20),
+                Icon(icon, color: context.appColors.primary, size: 20),
                 const SizedBox(width: AppSpacing.sm),
               ],
               Expanded(
                 child: Text(
                   title,
                   style: theme.textTheme.titleMedium?.copyWith(
-                    color: AppColors.primary,
+                    color: context.appColors.primary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -59,7 +59,7 @@ class ProfileSectionCard extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: isComplete
-                        ? AppColors.secondary.withValues(alpha: 0.15)
+                        ? context.appColors.secondary.withValues(alpha: 0.15)
                         : theme.colorScheme.surfaceContainerHigh,
                     borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                   ),
@@ -67,13 +67,13 @@ class ProfileSectionCard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       if (isComplete)
-                        const Icon(Icons.check, color: AppColors.secondary, size: 14),
+                        Icon(Icons.check, color: context.appColors.secondary, size: 14),
                       if (isComplete) const SizedBox(width: 2),
                       Text(
                         completionText!,
                         style: theme.textTheme.labelSmall?.copyWith(
                           color: isComplete
-                              ? AppColors.secondary
+                              ? context.appColors.secondary
                               : theme.colorScheme.onSurfaceVariant,
                           fontWeight: FontWeight.w600,
                         ),

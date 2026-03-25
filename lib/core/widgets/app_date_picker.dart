@@ -103,7 +103,7 @@ class AppDatePicker extends StatelessWidget {
                         child: Text(
                           l10n.get('ok'),
                           style: TextStyle(
-                            color: AppColors.primary,
+                            color: context.appColors.primary,
                             fontWeight: FontWeight.w600,
                             fontSize: 16,
                           ),
@@ -158,7 +158,7 @@ class AppDatePicker extends StatelessWidget {
           data: Theme.of(context).copyWith(
             datePickerTheme: DatePickerThemeData(
               backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
-              headerBackgroundColor: AppColors.primaryDark,
+              headerBackgroundColor: context.appColors.primaryDark,
               headerForegroundColor: Colors.white,
             ),
           ),

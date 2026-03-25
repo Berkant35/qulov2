@@ -20,6 +20,15 @@ class ChatMessageItem extends StatelessWidget {
   final void Function(MessageModel msg, bool isMe) onLongPress;
   final Map<String, int> Function(List<MessageReaction>) groupReactions;
 
+  /// Whether to show the timestamp below this message.
+  final bool showTimestamp;
+
+  /// True when this message is the first (top) in its visual group.
+  final bool isGroupStart;
+
+  /// True when this message is the last (bottom) in its visual group.
+  final bool isGroupEnd;
+
   const ChatMessageItem({
     super.key,
     required this.message,
@@ -30,6 +39,9 @@ class ChatMessageItem extends StatelessWidget {
     required this.isLast,
     required this.onLongPress,
     required this.groupReactions,
+    this.showTimestamp = true,
+    this.isGroupStart = true,
+    this.isGroupEnd = true,
   });
 
   @override
@@ -71,16 +83,18 @@ class ChatMessageItem extends StatelessWidget {
             message: message,
             isMe: isMe,
             matchId: matchId,
-            timeStr: timeStr,
+            timeStr: showTimestamp ? timeStr : '',
           )
         else
           _RegularMessageBubble(
             message: message,
             isMe: isMe,
             hasReactions: hasReactions,
-            timeStr: timeStr,
+            timeStr: showTimestamp ? timeStr : '',
             onLongPress: onLongPress,
             groupReactions: groupReactions,
+            isGroupStart: isGroupStart,
+            isGroupEnd: isGroupEnd,
           ),
       ],
     );
@@ -122,7 +136,7 @@ class _QuestionMessageBubble extends StatelessWidget {
               ),
               child: Text(
                 timeStr,
-                style: theme.textTheme.bodySmall?.copyWith(
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   fontSize: 10,
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
@@ -141,6 +155,8 @@ class _RegularMessageBubble extends StatelessWidget {
   final String timeStr;
   final void Function(MessageModel msg, bool isMe) onLongPress;
   final Map<String, int> Function(List<MessageReaction>) groupReactions;
+  final bool isGroupStart;
+  final bool isGroupEnd;
 
   const _RegularMessageBubble({
     required this.message,
@@ -149,11 +165,12 @@ class _RegularMessageBubble extends StatelessWidget {
     required this.timeStr,
     required this.onLongPress,
     required this.groupReactions,
+    this.isGroupStart = true,
+    this.isGroupEnd = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: GestureDetector(
@@ -167,6 +184,8 @@ class _RegularMessageBubble extends StatelessWidget {
               message: message,
               isMe: isMe,
               hasReactions: hasReactions,
+              isGroupStart: isGroupStart,
+              isGroupEnd: isGroupEnd,
             ),
             if (hasReactions)
               _ReactionsRow(
@@ -178,9 +197,9 @@ class _RegularMessageBubble extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: AppSpacing.xs),
                 child: Text(
                   timeStr,
-                  style: theme.textTheme.bodySmall?.copyWith(
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     fontSize: 10,
-                    color: theme.colorScheme.onSurfaceVariant,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ),
@@ -195,32 +214,61 @@ class _MessageContent extends StatelessWidget {
   final MessageModel message;
   final bool isMe;
   final bool hasReactions;
+  final bool isGroupStart;
+  final bool isGroupEnd;
 
   const _MessageContent({
     required this.message,
     required this.isMe,
     required this.hasReactions,
+    this.isGroupStart = true,
+    this.isGroupEnd = true,
   });
+
+  /// Computes grouped border radius.
+  ///
+  /// For a standalone message the original radius applies.
+  /// For grouped messages the "inner" corners (between consecutive bubbles)
+  /// become small (4px) so the bubbles visually merge.
+  BorderRadius _groupedBorderRadius() {
+    const full = Radius.circular(16);
+    const tight = Radius.circular(4);
+
+    if (isMe) {
+      // Right-aligned bubbles: the right side gets tight corners in the middle
+      return BorderRadius.only(
+        topLeft: full,
+        topRight: isGroupStart ? full : tight,
+        bottomLeft: full,
+        bottomRight: isGroupEnd ? full : tight,
+      );
+    } else {
+      // Left-aligned bubbles: the left side gets tight corners in the middle
+      return BorderRadius.only(
+        topLeft: isGroupStart ? full : tight,
+        topRight: full,
+        bottomLeft: isGroupEnd ? full : tight,
+        bottomRight: full,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final radius = _groupedBorderRadius();
+    final bottomMargin = hasReactions ? 2.0 : (isGroupEnd ? AppSpacing.sm : 2.0);
 
     if (message.isDeleted) {
       return Container(
-        margin: EdgeInsets.only(bottom: hasReactions ? 2 : AppSpacing.sm),
+        margin: EdgeInsets.only(bottom: bottomMargin),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         constraints:
             BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
         decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceContainerHighest
+          color: context.appColors.surfaceElevated
               .withValues(alpha: 0.5),
-          borderRadius: BorderRadius.only(
-            topLeft: const Radius.circular(16),
-            topRight: const Radius.circular(16),
-            bottomLeft: Radius.circular(isMe ? 16 : 4),
-            bottomRight: Radius.circular(isMe ? 4 : 16),
-          ),
+          borderRadius: radius,
         ),
         child: Text(
           'Bu mesaj silindi',
@@ -234,7 +282,7 @@ class _MessageContent extends StatelessWidget {
 
     if (message.isAudio) {
       return Padding(
-        padding: EdgeInsets.only(bottom: hasReactions ? 2 : AppSpacing.sm),
+        padding: EdgeInsets.only(bottom: bottomMargin),
         child: VoiceMessageWidget(
           audioUrl: message.audioUrl!,
           durationSeconds: message.audioDurationSeconds ?? 0,
@@ -245,7 +293,7 @@ class _MessageContent extends StatelessWidget {
 
     if (message.isImage) {
       return Padding(
-        padding: EdgeInsets.only(bottom: hasReactions ? 2 : AppSpacing.sm),
+        padding: EdgeInsets.only(bottom: bottomMargin),
         child: PhotoMessageWidget(
           imageUrl: message.content,
           isMine: isMe,
@@ -254,19 +302,14 @@ class _MessageContent extends StatelessWidget {
     }
 
     return Container(
-      margin: EdgeInsets.only(bottom: hasReactions ? 2 : AppSpacing.sm),
+      margin: EdgeInsets.only(bottom: bottomMargin),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       constraints:
           BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
       decoration: BoxDecoration(
-        gradient: isMe ? AppColors.primaryButtonGradient : null,
-        color: isMe ? null : theme.colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.only(
-          topLeft: const Radius.circular(16),
-          topRight: const Radius.circular(16),
-          bottomLeft: Radius.circular(isMe ? 16 : 4),
-          bottomRight: Radius.circular(isMe ? 4 : 16),
-        ),
+        gradient: isMe ? context.appColors.primaryButtonGradient : null,
+        color: isMe ? null : context.appColors.surfaceElevated,
+        borderRadius: radius,
       ),
       child: Text(
         message.content,
@@ -299,7 +342,7 @@ class _ReactionsRow extends StatelessWidget {
           return Container(
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
             decoration: BoxDecoration(
-              color: AppColors.surfaceInput,
+              color: context.appColors.surfaceElevated,
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             ),
             child: Text(

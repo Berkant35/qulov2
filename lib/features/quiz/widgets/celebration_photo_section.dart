@@ -37,7 +37,7 @@ class CelebrationPhotoSection extends StatelessWidget {
               opacity: 1.0 - (photoSlide.value / 50.0).clamp(0.0, 1.0),
               child: Icon(
                 Icons.favorite,
-                color: matched ? AppColors.primary : AppColors.error,
+                color: matched ? context.appColors.primary : context.appColors.error,
                 size: 32,
               ),
             ),
@@ -65,15 +65,15 @@ class CelebrationPhotoCircle extends StatelessWidget {
       height: 80,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(color: AppColors.primary, width: 2),
+        border: Border.all(color: context.appColors.primary, width: 2),
       ),
       child: ClipOval(
         child: photoUrl != null && photoUrl!.isNotEmpty
             ? CachedNetworkImage(
                 imageUrl: photoUrl!,
                 fit: BoxFit.cover,
-                placeholder: (_, __) => Container(
-                  color: AppColors.surfaceElevated,
+                placeholder: (ctx, __) => Container(
+                  color: context.appColors.surfaceElevated,
                   child: AppLoadingWidget.small(),
                 ),
                 errorWidget: (_, __, ___) => const _PersonPlaceholder(),
@@ -90,10 +90,10 @@ class _PersonPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.surfaceElevated,
-      child: const Icon(
+      color: context.appColors.surfaceElevated,
+      child: Icon(
         Icons.person,
-        color: AppColors.textSecondary,
+        color: context.appColors.textSecondary,
         size: 40,
       ),
     );

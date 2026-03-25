@@ -56,7 +56,7 @@ class _DiscoverEmptyStateState extends ConsumerState<DiscoverEmptyState> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            QIcon(QIcons.icCompassOff, size: 64, color: AppColors.textHint),
+            QIcon(QIcons.icCompassOff, size: 64, color: context.appColors.textHint),
             const SizedBox(height: AppSpacing.lg),
             Text(
               context.tr('no_more_profiles'),
@@ -70,7 +70,7 @@ class _DiscoverEmptyStateState extends ConsumerState<DiscoverEmptyState> {
             Text(
               context.tr('no_more_profiles_hint'),
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: AppColors.textSecondary,
+                color: context.appColors.textSecondary,
               ),
               textAlign: TextAlign.center,
             ),
@@ -80,9 +80,9 @@ class _DiscoverEmptyStateState extends ConsumerState<DiscoverEmptyState> {
             Container(
               padding: const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
-                color: AppColors.surfaceElevated,
+                color: context.appColors.surfaceElevated,
                 borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                border: Border.all(color: AppColors.border),
+                border: Border.all(color: context.appColors.border),
               ),
               child: Column(
                 children: [
@@ -98,7 +98,7 @@ class _DiscoverEmptyStateState extends ConsumerState<DiscoverEmptyState> {
                       Text(
                         '${_radius.round()} km',
                         style: theme.textTheme.titleSmall?.copyWith(
-                          color: AppColors.primary,
+                          color: context.appColors.primary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -107,9 +107,9 @@ class _DiscoverEmptyStateState extends ConsumerState<DiscoverEmptyState> {
                   Slider(
                     value: _radius,
                     min: 5,
-                    max: 200,
-                    divisions: 39,
-                    activeColor: AppColors.primary,
+                    max: 500,
+                    divisions: 99,
+                    activeColor: context.appColors.primary,
                     onChanged: (val) => setState(() => _radius = val),
                   ),
                   Row(
@@ -118,13 +118,13 @@ class _DiscoverEmptyStateState extends ConsumerState<DiscoverEmptyState> {
                       Text(
                         '5 km',
                         style: theme.textTheme.labelSmall?.copyWith(
-                          color: AppColors.textHint,
+                          color: context.appColors.textHint,
                         ),
                       ),
                       Text(
-                        '200 km',
+                        '500 km',
                         style: theme.textTheme.labelSmall?.copyWith(
-                          color: AppColors.textHint,
+                          color: context.appColors.textHint,
                         ),
                       ),
                     ],
@@ -136,7 +136,7 @@ class _DiscoverEmptyStateState extends ConsumerState<DiscoverEmptyState> {
                     child: FilledButton(
                       onPressed: _isSearching ? null : _updateRadiusAndSearch,
                       style: FilledButton.styleFrom(
-                        backgroundColor: AppColors.primaryDark,
+                        backgroundColor: context.appColors.primaryDark,
                       ),
                       child: _isSearching
                           ? const AppLoadingWidget.small()
@@ -158,7 +158,7 @@ class _DiscoverEmptyStateState extends ConsumerState<DiscoverEmptyState> {
                 icon: const Icon(Icons.flight, size: 16),
                 label: Text(context.tr('passport_change_city')),
                 style: TextButton.styleFrom(
-                  foregroundColor: AppColors.primary,
+                  foregroundColor: context.appColors.primary,
                 ),
               ),
             ] else if (isPremium) ...[
@@ -169,7 +169,7 @@ class _DiscoverEmptyStateState extends ConsumerState<DiscoverEmptyState> {
                 icon: const Icon(Icons.flight, size: 16),
                 label: Text(context.tr('passport_explore_hint')),
                 style: TextButton.styleFrom(
-                  foregroundColor: AppColors.primary,
+                  foregroundColor: context.appColors.primary,
                 ),
               ),
             ] else ...[
@@ -180,7 +180,7 @@ class _DiscoverEmptyStateState extends ConsumerState<DiscoverEmptyState> {
                 icon: const Icon(Icons.flight, size: 16),
                 label: Text(context.tr('passport_premium_explore_hint')),
                 style: TextButton.styleFrom(
-                  foregroundColor: AppColors.textSecondary,
+                  foregroundColor: context.appColors.textSecondary,
                 ),
               ),
             ],

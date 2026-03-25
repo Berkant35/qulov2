@@ -35,7 +35,7 @@ class EditProfileBasicInfoSection extends ConsumerWidget {
 
     return ProfileSectionCard(
       icon: Icons.person,
-      title: context.tr('basic_info'),
+      title: context.tr('edit_basic_info'),
       subtitle: 'Seni tanimamiza yardimci ol',
       completionText: completionText,
       isComplete: completionText == '4/4',
@@ -111,7 +111,7 @@ class _LocationButton extends StatelessWidget {
       child: IconButton(
         onPressed: isLoading ? null : onPressed,
         style: IconButton.styleFrom(
-          backgroundColor: AppColors.primarySurface,
+          backgroundColor: context.appColors.primarySurface,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           ),
@@ -122,7 +122,7 @@ class _LocationButton extends StatelessWidget {
                 height: 20,
                 child: AppLoadingWidget.small(),
               )
-            : QIcon(QIcons.icMapPin, color: AppColors.primary, size: 20),
+            : QIcon(QIcons.icMapPin, color: context.appColors.primary, size: 20),
       ),
     );
   }

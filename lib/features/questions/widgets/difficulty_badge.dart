@@ -14,7 +14,7 @@ class DifficultyBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final config = _getConfig();
+    final config = _getConfig(context);
 
     Widget chip = Container(
       padding: const EdgeInsets.symmetric(
@@ -51,7 +51,7 @@ class DifficultyBadge extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
           boxShadow: [
             BoxShadow(
-              color: AppColors.primary.withValues(alpha: 0.3),
+              color: context.appColors.primary.withValues(alpha: 0.3),
               blurRadius: 8,
               spreadRadius: 1,
             ),
@@ -64,31 +64,31 @@ class DifficultyBadge extends StatelessWidget {
     return chip;
   }
 
-  _DifficultyConfig _getConfig() {
+  _DifficultyConfig _getConfig(BuildContext context) {
     switch (difficulty) {
       case 'easy':
         return _DifficultyConfig(
-          color: AppColors.success,
+          color: context.appColors.success,
           icon: Icons.sentiment_satisfied_alt,
         );
       case 'medium':
         return _DifficultyConfig(
-          color: AppColors.warning,
+          color: context.appColors.warning,
           icon: Icons.trending_up,
         );
       case 'hard':
         return _DifficultyConfig(
-          color: const Color(0xFFFF7043),
+          color: AppColors.hardOrange,
           icon: Icons.local_fire_department,
         );
       case 'legendary':
         return _DifficultyConfig(
-          color: AppColors.primary,
+          color: context.appColors.primary,
           icon: Icons.auto_awesome,
         );
       default:
         return _DifficultyConfig(
-          color: AppColors.textHint,
+          color: context.appColors.textHint,
           icon: Icons.help_outline,
         );
     }

@@ -30,18 +30,41 @@ class ProfileActionBar extends StatelessWidget {
         bottom: MediaQuery.of(context).padding.bottom + AppSpacing.md,
       ),
       decoration: BoxDecoration(
-        color: AppColors.scaffold,
+        color: context.appColors.scaffold,
         border: Border(
           top: BorderSide(
-            color: AppColors.primary.withValues(alpha: 0.2),
+            color: context.appColors.primary.withValues(alpha: 0.2),
           ),
         ),
       ),
-      child: _buildButtons(context),
+      child: _ActionBarButtons(
+        detailContext: detailContext,
+        onSolveQuestions: onSolveQuestions,
+        onReject: onReject,
+        onSendMessage: onSendMessage,
+        isMatched: isMatched,
+      ),
     );
   }
+}
 
-  Widget _buildButtons(BuildContext context) {
+class _ActionBarButtons extends StatelessWidget {
+  final ProfileDetailContext detailContext;
+  final VoidCallback? onSolveQuestions;
+  final VoidCallback? onReject;
+  final VoidCallback? onSendMessage;
+  final bool isMatched;
+
+  const _ActionBarButtons({
+    required this.detailContext,
+    this.onSolveQuestions,
+    this.onReject,
+    this.onSendMessage,
+    this.isMatched = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return switch (detailContext) {
       ProfileDetailContext.discover => Row(
           children: [
@@ -54,13 +77,13 @@ class ProfileActionBar extends StatelessWidget {
                 style: OutlinedButton.styleFrom(
                   padding: EdgeInsets.zero,
                   side: BorderSide(
-                    color: AppColors.error.withValues(alpha: 0.5),
+                    color: context.appColors.error.withValues(alpha: 0.5),
                   ),
                   shape: const CircleBorder(),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.close,
-                  color: AppColors.error,
+                  color: context.appColors.error,
                   size: 24,
                 ),
               ),
@@ -73,7 +96,7 @@ class ProfileActionBar extends StatelessWidget {
                 child: FilledButton(
                   onPressed: onSolveQuestions,
                   style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.primary,
+                    backgroundColor: context.appColors.primary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(
                         AppSpacing.radiusLg,
@@ -98,7 +121,7 @@ class ProfileActionBar extends StatelessWidget {
           child: FilledButton(
             onPressed: onSendMessage,
             style: FilledButton.styleFrom(
-              backgroundColor: AppColors.primary,
+              backgroundColor: context.appColors.primary,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
               ),
@@ -118,7 +141,7 @@ class ProfileActionBar extends StatelessWidget {
           child: FilledButton(
             onPressed: isMatched ? onSendMessage : onSolveQuestions,
             style: FilledButton.styleFrom(
-              backgroundColor: AppColors.primary,
+              backgroundColor: context.appColors.primary,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
               ),

@@ -31,6 +31,7 @@ class AuthRepository implements IAuthRepository {
         'age': age,
         'gender': gender,
         'locale': locale,
+        'tos_accepted': true,
         if (lat != null) 'lat': lat,
         if (lng != null) 'lng': lng,
         if (referralCode != null) 'referral_code': referralCode,

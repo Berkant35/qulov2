@@ -33,7 +33,7 @@ class SubscriptionPlanCard extends StatelessWidget {
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
         border: Border.all(
-          color: isRecommended ? AppColors.primary : theme.colorScheme.outline,
+          color: isRecommended ? context.appColors.primary : theme.colorScheme.outline,
           width: isRecommended ? 2 : 1,
         ),
       ),
@@ -43,8 +43,8 @@ class SubscriptionPlanCard extends StatelessWidget {
           if (isRecommended)
             Container(
               padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
-              decoration: const BoxDecoration(
-                gradient: AppColors.purpleGradient,
+              decoration: BoxDecoration(
+                gradient: context.appColors.purpleGradient,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(AppSpacing.radiusLg - 2),
                   topRight: Radius.circular(AppSpacing.radiusLg - 2),
@@ -78,7 +78,7 @@ class SubscriptionPlanCard extends StatelessWidget {
                       price,
                       style: theme.textTheme.titleMedium?.copyWith(
                         color: isRecommended
-                            ? AppColors.primary
+                            ? context.appColors.primary
                             : theme.colorScheme.onSurfaceVariant,
                         fontWeight: FontWeight.w600,
                       ),
@@ -100,8 +100,8 @@ class SubscriptionPlanCard extends StatelessWidget {
                             f.icon!,
                             size: 16,
                             color: isRecommended
-                                ? AppColors.primary
-                                : AppColors.secondary,
+                                ? context.appColors.primary
+                                : context.appColors.secondary,
                           ),
                         const SizedBox(width: AppSpacing.md),
                         Expanded(
@@ -126,7 +126,7 @@ class SubscriptionPlanCard extends StatelessWidget {
                       vertical: AppSpacing.md,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.primarySurface,
+                      color: context.appColors.primarySurface,
                       borderRadius:
                           BorderRadius.circular(AppSpacing.radiusMd),
                     ),
@@ -134,7 +134,7 @@ class SubscriptionPlanCard extends StatelessWidget {
                       context.tr('sub_current_plan'),
                       textAlign: TextAlign.center,
                       style: theme.textTheme.labelLarge?.copyWith(
-                        color: AppColors.primary,
+                        color: context.appColors.primary,
                         fontWeight: FontWeight.w600,
                       ),
                     ),

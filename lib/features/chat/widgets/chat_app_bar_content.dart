@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/l10n/app_localizations.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/data/models/media_request_model.dart';
@@ -7,6 +9,7 @@ class ChatAppBarTitle extends StatelessWidget {
   final String userName;
   final bool isOnline;
   final String statusText;
+  final String? photoUrl;
   final VoidCallback? onTap;
 
   const ChatAppBarTitle({
@@ -14,6 +17,7 @@ class ChatAppBarTitle extends StatelessWidget {
     required this.userName,
     required this.isOnline,
     required this.statusText,
+    this.photoUrl,
     this.onTap,
   });
 
@@ -25,13 +29,33 @@ class ChatAppBarTitle extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       child: Row(
       children: [
-        Container(
-          width: 10,
-          height: 10,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: isOnline ? AppColors.secondary : theme.colorScheme.outline,
-          ),
+        Stack(
+          children: [
+            CircleAvatar(
+              radius: 18,
+              backgroundColor: theme.colorScheme.surfaceContainerHigh,
+              backgroundImage: photoUrl != null
+                  ? CachedNetworkImageProvider(photoUrl!)
+                  : null,
+              child: photoUrl == null
+                  ? Icon(Icons.person, size: 20, color: theme.colorScheme.onSurfaceVariant)
+                  : null,
+            ),
+            if (isOnline)
+              Positioned(
+                right: 0,
+                bottom: 0,
+                child: Container(
+                  width: 10,
+                  height: 10,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: context.appColors.secondary,
+                    border: Border.all(color: theme.appBarTheme.backgroundColor ?? theme.scaffoldBackgroundColor, width: 2),
+                  ),
+                ),
+              ),
+          ],
         ),
         const SizedBox(width: AppSpacing.sm),
         Expanded(
@@ -50,7 +74,7 @@ class ChatAppBarTitle extends StatelessWidget {
                   statusText,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: isOnline
-                        ? AppColors.secondary
+                        ? context.appColors.secondary
                         : theme.colorScheme.onSurfaceVariant,
                     fontSize: 12,
                   ),
@@ -92,9 +116,9 @@ class ChatAppBarActions extends StatelessWidget {
               child: Row(
                 children: [
                   Icon(Icons.no_photography,
-                      color: AppColors.textSecondary, size: 20),
+                      color: context.appColors.textSecondary, size: 20),
                   const SizedBox(width: 8),
-                  const Text('Medya paylasimini kapat'),
+                  Text(AppLocalizations.of(ctx).get('chat_disable_media')),
                 ],
               ),
             ),
@@ -102,7 +126,7 @@ class ChatAppBarActions extends StatelessWidget {
             value: 'unmatch',
             child: Row(
               children: [
-                Icon(Icons.heart_broken, color: AppColors.error, size: 20),
+                Icon(Icons.heart_broken, color: context.appColors.error, size: 20),
                 const SizedBox(width: 8),
                 const Text('Unmatch'),
               ],
@@ -143,27 +167,34 @@ class MediaRequestBanner extends StatelessWidget implements PreferredSizeWidget 
         vertical: AppSpacing.sm,
       ),
       decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.12),
+        color: context.appColors.primary.withValues(alpha: 0.12),
         border: Border(
           bottom: BorderSide(
-            color: AppColors.primary.withValues(alpha: 0.3),
+            color: context.appColors.primary.withValues(alpha: 0.3),
           ),
         ),
       ),
-      child: _isMine ? _buildSenderContent() : _buildReceiverContent(),
+      child: _isMine
+          ? const _SenderContent()
+          : _ReceiverContent(onAccept: onAccept, onReject: onReject),
     );
   }
+}
 
-  Widget _buildSenderContent() {
+class _SenderContent extends StatelessWidget {
+  const _SenderContent();
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(Icons.hourglass_top, size: 18, color: AppColors.primary),
+        Icon(Icons.hourglass_top, size: 18, color: context.appColors.primary),
         const SizedBox(width: AppSpacing.sm),
-        const Expanded(
+        Expanded(
           child: Text(
-            'Medya istegi gonderildi, yanit bekleniyor...',
+            AppLocalizations.of(context).get('chat_media_request_pending_short'),
             style: TextStyle(
-              color: AppColors.textSecondary,
+              color: context.appColors.textSecondary,
               fontSize: 13,
             ),
           ),
@@ -171,17 +202,28 @@ class MediaRequestBanner extends StatelessWidget implements PreferredSizeWidget 
       ],
     );
   }
+}
 
-  Widget _buildReceiverContent() {
+class _ReceiverContent extends StatelessWidget {
+  final VoidCallback onAccept;
+  final VoidCallback onReject;
+
+  const _ReceiverContent({
+    required this.onAccept,
+    required this.onReject,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(Icons.camera_alt_outlined, size: 18, color: AppColors.primary),
+        Icon(Icons.camera_alt_outlined, size: 18, color: context.appColors.primary),
         const SizedBox(width: AppSpacing.sm),
-        const Expanded(
+        Expanded(
           child: Text(
-            'Medya paylasimi istegi',
+            AppLocalizations.of(context).get('chat_media_sharing_request'),
             style: TextStyle(
-              color: AppColors.textPrimary,
+              color: context.appColors.textPrimary,
               fontSize: 13,
               fontWeight: FontWeight.w500,
             ),
@@ -193,9 +235,9 @@ class MediaRequestBanner extends StatelessWidget implements PreferredSizeWidget 
             onPressed: onReject,
             style: TextButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
-              foregroundColor: AppColors.textSecondary,
+              foregroundColor: context.appColors.textSecondary,
             ),
-            child: const Text('Reddet', style: TextStyle(fontSize: 13)),
+            child: Text(AppLocalizations.of(context).get('chat_reject'), style: const TextStyle(fontSize: 13)),
           ),
         ),
         const SizedBox(width: AppSpacing.xs),
@@ -204,7 +246,7 @@ class MediaRequestBanner extends StatelessWidget implements PreferredSizeWidget 
           child: FilledButton(
             onPressed: onAccept,
             style: FilledButton.styleFrom(
-              backgroundColor: AppColors.primary,
+              backgroundColor: context.appColors.primary,
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppSpacing.radiusSm),

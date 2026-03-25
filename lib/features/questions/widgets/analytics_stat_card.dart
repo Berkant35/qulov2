@@ -27,9 +27,9 @@ class AnalyticsStatCard extends StatelessWidget {
           horizontal: AppSpacing.sm,
         ),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: context.appColors.border),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -40,14 +40,14 @@ class AnalyticsStatCard extends StatelessWidget {
               value,
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: valueColor ?? AppColors.textPrimary,
+                color: valueColor ?? context.appColors.textPrimary,
               ),
             ),
             const SizedBox(height: AppSpacing.xs),
             Text(
               label,
               style: theme.textTheme.labelSmall?.copyWith(
-                color: AppColors.textSecondary,
+                color: context.appColors.textSecondary,
               ),
               textAlign: TextAlign.center,
               maxLines: 2,

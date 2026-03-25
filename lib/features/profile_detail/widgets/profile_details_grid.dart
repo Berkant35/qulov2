@@ -24,7 +24,7 @@ class ProfileDetailsGrid extends StatelessWidget {
             context.tr('details'),
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
+              color: context.appColors.textPrimary,
             ),
           ),
           const SizedBox(height: AppSpacing.sm),
@@ -122,20 +122,20 @@ class _DetailChip extends StatelessWidget {
         vertical: AppSpacing.sm,
       ),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+        border: Border.all(color: context.appColors.primary.withValues(alpha: 0.2)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          QIcon(iconAsset, size: 16, color: AppColors.primary),
+          QIcon(iconAsset, size: 16, color: context.appColors.primary),
           const SizedBox(width: 6),
           Flexible(
             child: Text(
               label,
-              style: const TextStyle(
-                color: AppColors.textPrimary,
+              style: TextStyle(
+                color: context.appColors.textPrimary,
                 fontSize: 13,
               ),
               overflow: TextOverflow.ellipsis,

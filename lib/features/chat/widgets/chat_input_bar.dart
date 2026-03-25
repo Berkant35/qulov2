@@ -13,6 +13,7 @@ class ChatInputBar extends StatelessWidget {
   final VoidCallback onQuestionTap;
   final VoidCallback onVoiceStart;
   final ValueChanged<String> onChanged;
+  final bool isLocked;
 
   const ChatInputBar({
     super.key,
@@ -23,6 +24,7 @@ class ChatInputBar extends StatelessWidget {
     required this.onQuestionTap,
     required this.onVoiceStart,
     required this.onChanged,
+    this.isLocked = false,
   });
 
   @override
@@ -40,25 +42,39 @@ class ChatInputBar extends StatelessWidget {
         child: Row(
           children: [
             IconButton(
-              onPressed: onPhotoTap,
+              onPressed: isLocked ? null : onPhotoTap,
               icon: Icon(
                 Icons.photo_camera_outlined,
-                color: theme.colorScheme.onSurfaceVariant,
+                color: isLocked
+                    ? theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.4)
+                    : theme.colorScheme.onSurfaceVariant,
                 size: 22,
               ),
             ),
             Expanded(
               child: TextField(
                 controller: controller,
+                enabled: !isLocked,
+                minLines: 1,
+                maxLines: 5,
                 textInputAction: TextInputAction.send,
                 onSubmitted: (_) => onSend(),
                 onChanged: onChanged,
-                style: TextStyle(color: theme.colorScheme.onSurface),
+                style: TextStyle(
+                  color: isLocked
+                      ? theme.colorScheme.onSurface.withValues(alpha: 0.4)
+                      : theme.colorScheme.onSurface,
+                ),
                 decoration: InputDecoration(
-                  hintText: context.tr('message_hint'),
+                  hintText: isLocked
+                      ? 'Soruyu cevaplayın...'
+                      : context.tr('message_hint'),
                   hintStyle: TextStyle(color: theme.hintColor),
                   filled: true,
-                  fillColor: theme.colorScheme.surfaceContainerHighest,
+                  fillColor: isLocked
+                      ? context.appColors.surfaceElevated
+                          .withValues(alpha: 0.5)
+                      : context.appColors.surfaceElevated,
                   border: OutlineInputBorder(
                     borderRadius:
                         BorderRadius.circular(AppSpacing.radiusFull),
@@ -74,6 +90,11 @@ class ChatInputBar extends StatelessWidget {
                         BorderRadius.circular(AppSpacing.radiusFull),
                     borderSide: BorderSide.none,
                   ),
+                  disabledBorder: OutlineInputBorder(
+                    borderRadius:
+                        BorderRadius.circular(AppSpacing.radiusFull),
+                    borderSide: BorderSide.none,
+                  ),
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.lg,
                     vertical: AppSpacing.sm,
@@ -83,42 +104,48 @@ class ChatInputBar extends StatelessWidget {
             ),
             const SizedBox(width: AppSpacing.sm),
             IconButton(
-              onPressed: onQuestionTap,
+              onPressed: isLocked ? null : onQuestionTap,
               icon: Icon(
                 Icons.help_outline,
-                color: AppColors.primary,
+                color: isLocked ? context.appColors.primary.withValues(alpha: 0.4) : context.appColors.primary,
                 size: 22,
               ),
             ),
             if (hasText)
               SafeTapButton(
-                onTap: () async => onSend(),
-                builder: (context, isLoading, onTap) => Container(
-                  decoration: const BoxDecoration(
-                    gradient: AppColors.primaryButtonGradient,
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    onPressed: onTap,
-                    icon: isLoading
-                        ? const AppLoadingWidget.small()
-                        : Icon(Icons.send,
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            size: 20),
+                onTap: isLocked ? null : () async => onSend(),
+                builder: (context, isLoading, onTap) => Opacity(
+                  opacity: isLocked ? 0.4 : 1.0,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: context.appColors.primaryButtonGradient,
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      onPressed: onTap,
+                      icon: isLoading
+                          ? const AppLoadingWidget.small()
+                          : Icon(Icons.send,
+                              color: Theme.of(context).colorScheme.onPrimary,
+                              size: 20),
+                    ),
                   ),
                 ),
               )
             else
-              Container(
-                decoration: const BoxDecoration(
-                  gradient: AppColors.primaryButtonGradient,
-                  shape: BoxShape.circle,
-                ),
-                child: IconButton(
-                  onPressed: onVoiceStart,
-                  icon: Icon(Icons.mic,
-                      color: Theme.of(context).colorScheme.onPrimary,
-                      size: 20),
+              Opacity(
+                opacity: isLocked ? 0.4 : 1.0,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: context.appColors.primaryButtonGradient,
+                    shape: BoxShape.circle,
+                  ),
+                  child: IconButton(
+                    onPressed: isLocked ? null : onVoiceStart,
+                    icon: Icon(Icons.mic,
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        size: 20),
+                  ),
                 ),
               ),
           ],

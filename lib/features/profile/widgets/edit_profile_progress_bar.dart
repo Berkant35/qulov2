@@ -32,7 +32,7 @@ class EditProfileProgressBar extends StatelessWidget {
             Text(
               '%$percentage',
               style: theme.textTheme.titleSmall?.copyWith(
-                color: AppColors.primary,
+                color: context.appColors.primary,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -45,7 +45,7 @@ class EditProfileProgressBar extends StatelessWidget {
             value: percentage / 100.0,
             minHeight: 8,
             backgroundColor: theme.colorScheme.surfaceContainerHigh,
-            valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+            valueColor: AlwaysStoppedAnimation<Color>(context.appColors.primary),
           ),
         ),
         if (milestoneMessage.isNotEmpty) ...[
@@ -53,7 +53,7 @@ class EditProfileProgressBar extends StatelessWidget {
           Text(
             milestoneMessage,
             style: theme.textTheme.bodySmall?.copyWith(
-              color: AppColors.secondary,
+              color: context.appColors.secondary,
               fontWeight: FontWeight.w500,
             ),
           ),

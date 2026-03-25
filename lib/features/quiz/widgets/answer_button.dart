@@ -36,15 +36,15 @@ class AnswerButton extends StatelessWidget {
               color: isDisabled
                   ? Theme.of(context).colorScheme.outline
                   : isSelected
-                      ? AppColors.primary
-                      : AppColors.primary,
+                      ? context.appColors.primary
+                      : context.appColors.primary,
               width: isSelected ? 2.5 : (isOracleSuggested ? 2.0 : 1.5),
             ),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             color: isDisabled
                 ? Theme.of(context).colorScheme.surfaceContainerHigh
                 : isSelected
-                    ? AppColors.primary.withValues(alpha: 0.12)
+                    ? context.appColors.primary.withValues(alpha: 0.12)
                     : Theme.of(context).colorScheme.surface,
           ),
           child: Row(
@@ -54,7 +54,7 @@ class AnswerButton extends StatelessWidget {
                 Icon(
                   Icons.check_circle,
                   size: 20,
-                  color: AppColors.primary,
+                  color: context.appColors.primary,
                 ),
                 const SizedBox(width: AppSpacing.sm),
               ],
@@ -65,7 +65,7 @@ class AnswerButton extends StatelessWidget {
                         color: isDisabled
                             ? Theme.of(context).hintColor
                             : isSelected
-                                ? AppColors.primary
+                                ? context.appColors.primary
                                 : Theme.of(context).colorScheme.onSurface,
                         fontWeight: isSelected ? FontWeight.w600 : null,
                       ),
@@ -125,7 +125,7 @@ class _OraclePulseWrapperState extends State<_OraclePulseWrapper>
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             boxShadow: [
               BoxShadow(
-                color: AppColors.primary.withValues(alpha: 0.3 + 0.4 * _animation.value),
+                color: context.appColors.primary.withValues(alpha: 0.3 + 0.4 * _animation.value),
                 blurRadius: 8 + 8 * _animation.value,
                 spreadRadius: 1 + 2 * _animation.value,
               ),

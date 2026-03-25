@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
@@ -11,7 +12,7 @@ class QuestionProgressBar extends StatelessWidget {
   const QuestionProgressBar({
     super.key,
     required this.questionCount,
-    this.requiredCount = 2,
+    this.requiredCount = AppConstants.minQuestions,
     this.minHeight = 8,
   });
 
@@ -28,7 +29,7 @@ class QuestionProgressBar extends StatelessWidget {
             value: progress,
             minHeight: minHeight,
             backgroundColor: theme.colorScheme.surfaceContainerHigh,
-            valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+            valueColor: AlwaysStoppedAnimation<Color>(context.appColors.primary),
           ),
         ),
         const SizedBox(height: AppSpacing.xs),

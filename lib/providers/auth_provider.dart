@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:qulo_v2/core/error/error_manager.dart';
@@ -18,6 +19,8 @@ import 'package:qulo_v2/providers/question_provider.dart';
 import 'package:qulo_v2/providers/notification_provider.dart';
 import 'package:qulo_v2/providers/subscription_provider.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
+import 'package:qulo_v2/providers/passport_provider.dart';
+import 'package:qulo_v2/providers/user_languages_provider.dart';
 
 enum AuthStatus { initial, authenticated, unauthenticated }
 
@@ -118,8 +121,20 @@ class AuthNotifier extends Notifier<AuthState> {
           // Background GPS update (non-blocking)
           ref.read(locationProvider.notifier).getCurrentLocation();
         }
+        // Sync passport state from user profile
+        if (user != null) {
+          ref.read(passportProvider.notifier).syncFromUser(
+            user.passportCity,
+            user.passportLat,
+            user.passportLng,
+          );
+        }
         // Initialize push notifications on auto-login
         ref.read(notificationProvider.notifier).init();
+        // Sync user language preferences from user profile
+        ref.read(userLanguagesProvider.notifier).syncFromUser();
+        // Start presence heartbeat
+        ref.read(presenceManagerProvider).start();
       } catch (_) {
         if (state.status == AuthStatus.initial) {
           await _clearTokens();
@@ -227,9 +242,19 @@ class AuthNotifier extends Notifier<AuthState> {
             // Background GPS update (non-blocking)
             ref.read(locationProvider.notifier).getCurrentLocation();
           }
+          // Sync passport state from user profile
+          ref.read(passportProvider.notifier).syncFromUser(
+            user.passportCity,
+            user.passportLat,
+            user.passportLng,
+          );
         }
         // Initialize push notifications after successful login
         ref.read(notificationProvider.notifier).init();
+        // Sync user language preferences from user profile
+        ref.read(userLanguagesProvider.notifier).syncFromUser();
+        // Start presence heartbeat
+        ref.read(presenceManagerProvider).start();
       case Failure(:final failure):
         AnalyticsManager.instance.logEvent(AnalyticsEvents.authLoginFail, params: {
           AnalyticsEvents.paramMethod: 'email',
@@ -254,6 +279,8 @@ class AuthNotifier extends Notifier<AuthState> {
     } catch (_) {
       // RevenueCat logout failure shouldn't block logout
     }
+    // Stop presence heartbeat + send offline
+    await ref.read(presenceManagerProvider).stop();
     await _clearTokens();
 
     // Clean up notification listeners before invalidation
@@ -268,6 +295,7 @@ class AuthNotifier extends Notifier<AuthState> {
     ref.invalidate(questionProvider);
     ref.invalidate(subscriptionProvider);
     ref.invalidate(notificationProvider);
+    ref.invalidate(userLanguagesProvider);
 
     state = const AuthState(status: AuthStatus.unauthenticated);
   }
@@ -300,8 +328,8 @@ class AuthNotifier extends Notifier<AuthState> {
       final exp = map['exp'] as int?;
       if (exp == null) return true;
 
-      final expiry = DateTime.fromMillisecondsSinceEpoch(exp * 1000);
-      return DateTime.now().isAfter(expiry.subtract(const Duration(seconds: 30)));
+      final expiry = DateTime.fromMillisecondsSinceEpoch(exp * 1000, isUtc: true);
+      return DateTime.now().toUtc().isAfter(expiry.subtract(const Duration(seconds: 30)));
     } catch (_) {
       return true;
     }
@@ -331,7 +359,12 @@ class AuthNotifier extends Notifier<AuthState> {
   Future<void> forceLogout() async {
     try {
       await RevenueCatService.logOut();
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[auth] forceLogout: RevenueCat error (ignored): $e');
+    }
+
+    // Stop presence heartbeat
+    await ref.read(presenceManagerProvider).stop();
 
     ref.read(notificationManagerProvider).dispose();
 
@@ -343,6 +376,7 @@ class AuthNotifier extends Notifier<AuthState> {
     ref.invalidate(questionProvider);
     ref.invalidate(subscriptionProvider);
     ref.invalidate(notificationProvider);
+    ref.invalidate(userLanguagesProvider);
 
     state = const AuthState(status: AuthStatus.unauthenticated);
   }

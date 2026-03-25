@@ -1,0 +1,501 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/core/theme/app_colors.dart';
+import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
+import 'package:qulo_v2/core/widgets/diamond_icon.dart';
+import 'package:qulo_v2/providers/api_provider.dart';
+
+class ChatQuestionStep2 extends ConsumerStatefulWidget {
+  final String matchId;
+  final int timeLimitSeconds;
+  final String hintText;
+  final String? rewardMediaUrl;
+  final String? rewardMediaType;
+  final bool hasUnmatchRisk;
+  final bool hasChatLock;
+  final bool hasPowerBlock;
+  final void Function({
+    int? timeLimitSeconds,
+    String? hintText,
+    String? rewardMediaUrl,
+    String? rewardMediaType,
+    bool? hasUnmatchRisk,
+    bool? hasChatLock,
+    bool? hasPowerBlock,
+  }) onChanged;
+
+  const ChatQuestionStep2({
+    super.key,
+    required this.matchId,
+    required this.timeLimitSeconds,
+    required this.hintText,
+    this.rewardMediaUrl,
+    this.rewardMediaType,
+    required this.hasUnmatchRisk,
+    required this.hasChatLock,
+    required this.hasPowerBlock,
+    required this.onChanged,
+  });
+
+  @override
+  ConsumerState<ChatQuestionStep2> createState() => _ChatQuestionStep2State();
+}
+
+class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
+  late final TextEditingController _hintCtrl;
+  bool _isUploading = false;
+
+  static const _timerOptions = [15, 30, 45, 60, 90];
+
+  @override
+  void initState() {
+    super.initState();
+    _hintCtrl = TextEditingController(text: widget.hintText);
+  }
+
+  @override
+  void didUpdateWidget(covariant ChatQuestionStep2 oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.hintText != _hintCtrl.text) {
+      _hintCtrl.text = widget.hintText;
+    }
+  }
+
+  @override
+  void dispose() {
+    _hintCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(AppSpacing.pagePadding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            context.tr('chat_q_settings_title'),
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+              color: context.appColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+
+          // Timer chips
+          _Step2SectionLabel(text: context.tr('chat_q_timer_label')),
+          const SizedBox(height: AppSpacing.sm),
+          _TimerChips(
+            selectedSeconds: widget.timeLimitSeconds,
+            options: _timerOptions,
+            onChanged: (v) => widget.onChanged(timeLimitSeconds: v),
+          ),
+          const SizedBox(height: AppSpacing.xl),
+
+          // Hint text
+          _Step2SectionLabel(text: context.tr('chat_q_hint_label')),
+          const SizedBox(height: AppSpacing.xs),
+          TextFormField(
+            controller: _hintCtrl,
+            maxLength: 200,
+            maxLines: 2,
+            minLines: 1,
+            style: TextStyle(color: context.appColors.textPrimary),
+            onChanged: (v) => widget.onChanged(hintText: v),
+            decoration: _inputDecoration(context, context.tr('chat_q_hint_placeholder')),
+          ),
+          const SizedBox(height: AppSpacing.xl),
+
+          // Reward media
+          _Step2SectionLabel(text: context.tr('chat_q_reward_label')),
+          const SizedBox(height: AppSpacing.sm),
+          _RewardMediaRow(
+            rewardMediaUrl: widget.rewardMediaUrl,
+            rewardMediaType: widget.rewardMediaType,
+            isUploading: _isUploading,
+            onPickPhoto: _pickPhoto,
+            onRemove: () {
+              widget.onChanged(
+                rewardMediaUrl: '',
+                rewardMediaType: '',
+              );
+            },
+          ),
+          const SizedBox(height: AppSpacing.xl),
+
+          // Unmatch risk
+          _SettingSwitch(
+            title: context.tr('chat_q_unmatch_title'),
+            subtitle: context.tr('chat_q_unmatch_desc'),
+            value: widget.hasUnmatchRisk,
+            activeColor: context.appColors.error,
+            icon: Icons.warning_amber_rounded,
+            onChanged: (v) => widget.onChanged(hasUnmatchRisk: v),
+          ),
+          const SizedBox(height: AppSpacing.md),
+
+          // Chat lock
+          _SettingSwitch(
+            title: context.tr('chat_q_chatlock_title'),
+            subtitle: context.tr('chat_q_chatlock_desc'),
+            value: widget.hasChatLock,
+            activeColor: context.appColors.primary,
+            icon: Icons.lock_outline,
+            onChanged: (v) => widget.onChanged(hasChatLock: v),
+          ),
+          const SizedBox(height: AppSpacing.md),
+
+          // Power block
+          _SettingSwitch(
+            title: context.tr('chat_q_powerblock_title'),
+            subtitle: widget.hasPowerBlock
+                ? context.tr('chat_q_powerblock_desc_on')
+                : context.tr('chat_q_powerblock_desc_off'),
+            value: widget.hasPowerBlock,
+            activeColor: context.appColors.primaryDark,
+            icon: Icons.shield_outlined,
+            badge: '40',
+            badgeColor: context.appColors.primaryDark,
+            onChanged: (v) => widget.onChanged(hasPowerBlock: v),
+          ),
+          const SizedBox(height: AppSpacing.xl),
+        ],
+      ),
+    );
+  }
+
+  InputDecoration _inputDecoration(BuildContext context, String hint) {
+    return InputDecoration(
+      hintText: hint,
+      hintStyle: TextStyle(color: context.appColors.textHint),
+      filled: true,
+      fillColor: context.appColors.surfaceElevated,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        borderSide: BorderSide(color: context.appColors.primary, width: 1),
+      ),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
+    );
+  }
+
+  Future<void> _pickPhoto() async {
+    final picker = ref.read(imagePickerManagerProvider);
+    final picked = await picker.pickFromGallery();
+    if (picked == null) return;
+
+    setState(() => _isUploading = true);
+    try {
+      final repo = ref.read(chatRepositoryProvider);
+      final result = await repo.uploadMedia(
+        widget.matchId,
+        bytes: picked.bytes,
+        mimeType: picked.mimeType,
+      );
+      result.when(
+        success: (url) {
+          widget.onChanged(
+            rewardMediaUrl: url,
+            rewardMediaType: 'image',
+          );
+        },
+        failure: (_) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(AppLocalizations.of(context).get('chat_media_upload_failed'))),
+            );
+          }
+        },
+      );
+    } finally {
+      if (mounted) setState(() => _isUploading = false);
+    }
+  }
+}
+
+class _Step2SectionLabel extends StatelessWidget {
+  final String text;
+
+  const _Step2SectionLabel({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Text(
+      text,
+      style: theme.textTheme.bodyMedium?.copyWith(
+        color: context.appColors.textSecondary,
+        fontWeight: FontWeight.w500,
+      ),
+    );
+  }
+}
+
+class _TimerChips extends StatelessWidget {
+  final int selectedSeconds;
+  final List<int> options;
+  final ValueChanged<int> onChanged;
+
+  const _TimerChips({
+    required this.selectedSeconds,
+    required this.options,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Wrap(
+      spacing: AppSpacing.sm,
+      children: options.map((seconds) {
+        final isSelected = selectedSeconds == seconds;
+        return ChoiceChip(
+          label: Text('${seconds}s'),
+          selected: isSelected,
+          onSelected: (_) => onChanged(seconds),
+          selectedColor: context.appColors.primarySurface,
+          backgroundColor: context.appColors.surfaceElevated,
+          side: BorderSide(
+            color: isSelected ? context.appColors.primary : context.appColors.border,
+          ),
+          labelStyle: theme.textTheme.bodyMedium?.copyWith(
+            color: isSelected ? context.appColors.primary : context.appColors.textSecondary,
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+          ),
+          showCheckmark: false,
+        );
+      }).toList(),
+    );
+  }
+}
+
+class _RewardMediaRow extends StatelessWidget {
+  final String? rewardMediaUrl;
+  final String? rewardMediaType;
+  final bool isUploading;
+  final VoidCallback onPickPhoto;
+  final VoidCallback onRemove;
+
+  const _RewardMediaRow({
+    this.rewardMediaUrl,
+    this.rewardMediaType,
+    required this.isUploading,
+    required this.onPickPhoto,
+    required this.onRemove,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final hasMedia = rewardMediaUrl != null && rewardMediaUrl!.isNotEmpty;
+
+    if (hasMedia) {
+      return Container(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        decoration: BoxDecoration(
+          color: context.appColors.surfaceElevated,
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        ),
+        child: Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+              child: Image.network(
+                rewardMediaUrl!,
+                width: 48,
+                height: 48,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => Container(
+                  width: 48,
+                  height: 48,
+                  color: context.appColors.surfaceElevated,
+                  child: Icon(Icons.image, color: context.appColors.textHint),
+                ),
+              ),
+            ),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: Text(
+                AppLocalizations.of(context).get('chat_media_added'),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: context.appColors.success,
+                ),
+              ),
+            ),
+            IconButton(
+              icon: Icon(Icons.close, color: context.appColors.textHint),
+              onPressed: onRemove,
+              iconSize: 20,
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Row(
+      children: [
+        _MediaButton(
+          icon: Icons.photo_outlined,
+          label: AppLocalizations.of(context).get('chat_add_photo'),
+          isLoading: isUploading,
+          onTap: isUploading ? null : onPickPhoto,
+        ),
+      ],
+    );
+  }
+}
+
+class _MediaButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool isLoading;
+  final VoidCallback? onTap;
+
+  const _MediaButton({
+    required this.icon,
+    required this.label,
+    this.isLoading = false,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.lg,
+          vertical: AppSpacing.sm,
+        ),
+        decoration: BoxDecoration(
+          color: context.appColors.surfaceElevated,
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+          border: Border.all(color: context.appColors.border),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (isLoading)
+              const AppLoadingWidget.small()
+            else
+              Icon(icon, size: 18, color: context.appColors.textSecondary),
+            const SizedBox(width: AppSpacing.sm),
+            Text(
+              label,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: context.appColors.textSecondary,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SettingSwitch extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final bool value;
+  final Color activeColor;
+  final IconData icon;
+  final String? badge;
+  final Color? badgeColor;
+  final ValueChanged<bool> onChanged;
+
+  const _SettingSwitch({
+    required this.title,
+    required this.subtitle,
+    required this.value,
+    required this.activeColor,
+    required this.icon,
+    this.badge,
+    this.badgeColor,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: context.appColors.surfaceElevated,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+      ),
+      child: SwitchListTile(
+        value: value,
+        onChanged: onChanged,
+        activeThumbColor: activeColor,
+        activeTrackColor: activeColor.withValues(alpha: 0.4),
+        secondary: Icon(icon, color: value ? activeColor : context.appColors.textHint),
+        title: Row(
+          children: [
+            Text(
+              title,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: value ? activeColor : context.appColors.textPrimary,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            if (badge != null) ...[
+              const SizedBox(width: AppSpacing.sm),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.sm,
+                  vertical: 2,
+                ),
+                decoration: BoxDecoration(
+                  color: (badgeColor ?? activeColor).withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      badge!,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: badgeColor ?? activeColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(width: 2),
+                    DiamondIcon.purple(size: 12, showGlow: false),
+                  ],
+                ),
+              ),
+            ],
+          ],
+        ),
+        subtitle: Text(
+          subtitle,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: context.appColors.textHint,
+          ),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        ),
+      ),
+    );
+  }
+}

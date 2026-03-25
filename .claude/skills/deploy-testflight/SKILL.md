@@ -8,6 +8,11 @@ description: Use when deploying Qulo iOS app to TestFlight, building IPA, upload
 ## Overview
 Qulo iOS uygulamasini TestFlight'a deploy eder. Build number otomatik arttirilir, IPA olusturulur ve App Store Connect'e yuklenir.
 
+## IMPORTANT: Execution Rules
+- Bu skill calistirildiginda HICBIR IZIN SORULMAZ — tum adimlari otomatik ve force olarak calistir
+- `.env` dosyasinda API key ve Issuer ID mevcut — script otomatik okur
+- Upload basarisiz olursa Transporter ile otomatik ac, kullaniciya soru sorma
+
 ## When to Use
 - Kullanici "testflight'a yukle", "deploy et", "build al" dediginde
 - iOS release build gerektiginde
@@ -16,48 +21,38 @@ Qulo iOS uygulamasini TestFlight'a deploy eder. Build number otomatik arttirilir
 ## Prerequisites
 - Xcode ve Flutter SDK kurulu
 - `ios/ExportOptions.plist` mevcut
-- App Store Connect API key ayarli (opsiyonel, manuel upload da mumkun)
+- `.env` dosyasinda `APP_STORE_API_KEY` ve `APP_STORE_API_ISSUER` tanimli
 
-## Quick Reference
-
-| Adim | Komut |
-|------|-------|
-| Tam deploy | `./deploy_testflight.sh` |
-| Sadece build | `flutter build ipa --release --export-options-plist=ios/ExportOptions.plist` |
-| Manuel upload | Transporter.app ile `build/ios/ipa/*.ipa` yukle |
+## App Store Connect Credentials
+- **API Key ID:** B24C75LYRD
+- **Issuer ID:** .env dosyasindan okunur
+- **Key file:** ~/private_keys/AuthKey_B24C75LYRD.p8
+- Script `.env` dosyasini otomatik yukler, ayrica export'a gerek yok
 
 ## Steps
 
-### 1. Script ile otomatik deploy
+### 1. Tek komutla deploy
 ```bash
-cd /Users/berkantcalikusu/IdeaProjects/qulov2
+cd /Users/berkantcalikusu/IdeaProjects/qulo/qulov2
 chmod +x deploy_testflight.sh
 ./deploy_testflight.sh
 ```
 
 Script sunlari yapar:
-1. `pubspec.yaml`'da build number +1 arttirir
-2. `flutter clean && flutter pub get`
-3. `flutter build ipa --release` ile IPA olusturur
-4. `xcrun altool` ile TestFlight'a yukler
+1. `.env` dosyasini yukler (API key + Issuer ID)
+2. `pubspec.yaml`'da build number +1 arttirir
+3. `flutter clean && flutter pub get`
+4. `flutter build ipa --release` ile IPA olusturur
+5. `xcrun altool` ile TestFlight'a yukler
 
 ### 2. API URL degistirme
 ```bash
 API_BASE_URL="https://custom-api.example.com/api/v1" ./deploy_testflight.sh
 ```
-Default: `https://api.qulo.app/api/v1`
+Default: `https://qulo-server-production.up.railway.app/api/v1`
 
-### 3. App Store Connect API key ayarlama
-```bash
-export APP_STORE_API_KEY="YOUR_KEY"
-export APP_STORE_API_ISSUER="YOUR_ISSUER"
-./deploy_testflight.sh
-```
-Key yoksa script uyari verir, IPA'yi manuel yukleyebilirsin.
-
-### 4. Manuel upload (altool basarisiz olursa)
-- Transporter.app ac, `build/ios/ipa/*.ipa` dosyasini suruklep birak
-- Veya: `xcrun altool --upload-app --type ios --file "build/ios/ipa/Runner.ipa" --apiKey KEY --apiIssuer ISSUER`
+### 3. Upload basarisiz olursa
+Transporter.app ile `build/ios/ipa/*.ipa` dosyasini suruklep birak
 
 ## Common Mistakes
 - ExportOptions.plist eksikse build basarisiz olur — `ios/ExportOptions.plist` kontrol et

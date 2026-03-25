@@ -1,8 +1,11 @@
 import 'dart:developer' as dev;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/constants/app_constants.dart';
+import 'package:qulo_v2/data/models/chat_question_model.dart';
 import 'package:qulo_v2/data/models/notification_model.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
+import 'package:qulo_v2/providers/chat_provider.dart' show chatQuestionCacheProvider, activeChatMatchIdProvider;
 import 'package:qulo_v2/providers/user_provider.dart';
 
 class NotificationState {
@@ -46,6 +49,7 @@ class NotificationNotifier extends Notifier<NotificationState> {
         },
         onForegroundMessage: _handleForegroundMessage,
         onMessageOpenedApp: _handleMessageTap,
+        shouldSuppress: _shouldSuppressBanner,
       );
 
       await manager.init();
@@ -81,7 +85,56 @@ class NotificationNotifier extends Notifier<NotificationState> {
   void _handleForegroundMessage(RemoteMessage message) {
     dev.log('[NotificationNotifier] Foreground notification received: ${message.notification?.title}', name: 'Notification');
     state = state.copyWith(unreadCount: state.unreadCount + 1);
-    _onForegroundNotification?.call(message);
+
+    final type = message.data['type'] as String?;
+    if (type == NotificationTypes.chatQuestionAnswered) {
+      final questionId = message.data['question_id'] as String?;
+      if (questionId != null) {
+        dev.log('[NotificationNotifier] Question answered via FCM, refreshing: $questionId', name: 'Notification');
+        _refreshQuestionCache(questionId);
+      }
+    }
+
+    // Banner suppress is already handled by shouldSuppressNotification callback
+    // in NotificationManager (which also suppresses local notifications).
+    // Only show in-app banner for non-suppressed messages.
+    if (!_shouldSuppressBanner(message)) {
+      _onForegroundNotification?.call(message);
+    }
+  }
+
+  /// Mesaj bildirimi + kullanıcı o chat'e bakıyorsa banner'ı bastır.
+  bool _shouldSuppressBanner(RemoteMessage message) {
+    final type = message.data['type'] as String?;
+    if (type != NotificationTypes.newMessage &&
+        type != NotificationTypes.newMessageImage) {
+      return false;
+    }
+
+    final actionUrl = message.data['action_url'] as String?;
+    if (actionUrl == null) return false;
+
+    // action_url format: /chat/{matchId}
+    final activeChatMatchId = ref.read(activeChatMatchIdProvider);
+    if (activeChatMatchId == null) return false;
+
+    return actionUrl.contains('/chat/$activeChatMatchId');
+  }
+
+  Future<void> _refreshQuestionCache(String questionId) async {
+    final repo = ref.read(chatRepositoryProvider);
+    final result = await repo.getQuestion(questionId);
+    result.when(
+      success: (question) {
+        ref.read(chatQuestionCacheProvider.notifier).update((state) {
+          final copy = Map<String, ChatQuestionModel>.from(state);
+          copy[questionId] = question;
+          return copy;
+        });
+        dev.log('[NotificationNotifier] Question cache updated: $questionId', name: 'Notification');
+      },
+      failure: (_) {},
+    );
   }
 
   void _handleMessageTap(RemoteMessage message) {
@@ -93,7 +146,10 @@ class NotificationNotifier extends Notifier<NotificationState> {
     }
     if (actionUrl != null && actionUrl.isNotEmpty) {
       if (_onNavigate == null) {
-        dev.log('[NotificationNotifier] WARNING: _onNavigate is null, cannot navigate to $actionUrl', name: 'Notification');
+        // Callback henuz set edilmedi (terminated state race condition)
+        // URL'yi sakla, setUICallbacks'te replay edilecek
+        dev.log('[NotificationNotifier] _onNavigate not ready, queuing: $actionUrl', name: 'Notification');
+        _pendingNavigationUrl = actionUrl;
         return;
       }
       _onNavigate!(actionUrl);
@@ -103,6 +159,7 @@ class NotificationNotifier extends Notifier<NotificationState> {
   // UI callbacks — set by app shell
   void Function(RemoteMessage)? _onForegroundNotification;
   void Function(String actionUrl)? _onNavigate;
+  String? _pendingNavigationUrl;
 
   void setUICallbacks({
     void Function(RemoteMessage)? onForegroundNotification,
@@ -110,6 +167,14 @@ class NotificationNotifier extends Notifier<NotificationState> {
   }) {
     _onForegroundNotification = onForegroundNotification;
     _onNavigate = onNavigate;
+
+    // Replay queued navigation from terminated state
+    if (_pendingNavigationUrl != null && onNavigate != null) {
+      dev.log('[NotificationNotifier] Replaying pending navigation: $_pendingNavigationUrl', name: 'Notification');
+      final url = _pendingNavigationUrl!;
+      _pendingNavigationUrl = null;
+      onNavigate(url);
+    }
   }
 
   Future<void> fetchNotifications({int page = 1}) async {

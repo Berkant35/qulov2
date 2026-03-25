@@ -20,10 +20,10 @@ class ProfileCompletionBar extends StatelessWidget {
     final theme = Theme.of(context);
     final progress = (completionPercent / 100).clamp(0.0, 1.0);
     final color = completionPercent >= 80
-        ? AppColors.secondary
+        ? context.appColors.secondary
         : completionPercent >= 50
-            ? AppColors.warning
-            : AppColors.error;
+            ? context.appColors.warning
+            : context.appColors.error;
 
     return GestureDetector(
       onTap: onTap,

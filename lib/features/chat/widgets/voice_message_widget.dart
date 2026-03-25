@@ -34,8 +34,8 @@ class _VoiceMessageWidgetState extends ConsumerState<VoiceMessageWidget> {
         vertical: AppSpacing.sm,
       ),
       decoration: BoxDecoration(
-        gradient: widget.isMine ? AppColors.purpleGradient : null,
-        color: widget.isMine ? null : AppColors.surfaceInput,
+        gradient: widget.isMine ? context.appColors.purpleGradient : null,
+        color: widget.isMine ? null : context.appColors.surfaceElevated,
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
       ),
       child: StreamBuilder<PlayerState>(
@@ -96,13 +96,13 @@ class _VoiceMessageWidgetState extends ConsumerState<VoiceMessageWidget> {
                             ),
                             activeTrackColor: widget.isMine
                                 ? Colors.white
-                                : AppColors.primary,
+                                : context.appColors.primary,
                             inactiveTrackColor: widget.isMine
                                 ? Colors.white38
-                                : AppColors.textHint,
+                                : context.appColors.textHint,
                             thumbColor: widget.isMine
                                 ? Colors.white
-                                : AppColors.primary,
+                                : context.appColors.primary,
                           ),
                           child: Slider(
                             value: progress.clamp(0.0, 1.0),
@@ -124,7 +124,7 @@ class _VoiceMessageWidgetState extends ConsumerState<VoiceMessageWidget> {
                           fontSize: 11,
                           color: widget.isMine
                               ? Colors.white70
-                              : AppColors.textSecondary,
+                              : context.appColors.textSecondary,
                         ),
                       ),
                     ],
@@ -173,12 +173,12 @@ class _PlayPauseButton extends StatelessWidget {
         height: 36,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: isMine ? Colors.white24 : AppColors.primarySurface,
+          color: isMine ? Colors.white24 : context.appColors.primarySurface,
         ),
         child: Icon(
           isPlaying ? Icons.pause : Icons.play_arrow,
           size: 20,
-          color: isMine ? Colors.white : AppColors.primary,
+          color: isMine ? Colors.white : context.appColors.primary,
         ),
       ),
     );

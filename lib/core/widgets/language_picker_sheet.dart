@@ -65,10 +65,10 @@ class _LanguagePickerSheetState extends State<LanguagePickerSheet> {
                     }
                   });
                 },
-                selectedColor: AppColors.primarySurface,
-                checkmarkColor: AppColors.primary,
+                selectedColor: context.appColors.primarySurface,
+                checkmarkColor: context.appColors.primary,
                 side: BorderSide(
-                  color: isSelected ? AppColors.primary : AppColors.border,
+                  color: isSelected ? context.appColors.primary : context.appColors.border,
                 ),
               );
             }).toList(),
@@ -85,7 +85,7 @@ class _LanguagePickerSheetState extends State<LanguagePickerSheet> {
           FilledButton(
             onPressed: () => Navigator.of(context).pop(_selected),
             style: FilledButton.styleFrom(
-              backgroundColor: AppColors.primary,
+              backgroundColor: context.appColors.primary,
               padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
             ),
             child: Text(context.tr('save')),

@@ -24,7 +24,7 @@ class OnboardingIndicators extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: 4),
           decoration: BoxDecoration(
             color: i == currentPage
-                ? AppColors.primary
+                ? context.appColors.primary
                 : Theme.of(context).hintColor,
             borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
           ),

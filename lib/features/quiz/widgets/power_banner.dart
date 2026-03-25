@@ -16,7 +16,7 @@ class PowerBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = color ?? AppColors.primary;
+    final c = color ?? context.appColors.primary;
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.md),
       child: Container(

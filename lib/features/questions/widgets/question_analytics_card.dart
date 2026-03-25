@@ -22,9 +22,9 @@ class QuestionAnalyticsCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.appColors.border),
       ),
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
@@ -38,7 +38,7 @@ class QuestionAnalyticsCard extends StatelessWidget {
           Text(
             item.questionText,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: AppColors.textPrimary,
+              color: context.appColors.textPrimary,
             ),
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
@@ -51,13 +51,13 @@ class QuestionAnalyticsCard extends StatelessWidget {
               StatChip(
                 label: context.tr('analytics_correct'),
                 value: '${stats.correct}',
-                color: AppColors.success,
+                color: context.appColors.success,
               ),
               const SizedBox(width: AppSpacing.md),
               StatChip(
                 label: context.tr('analytics_wrong'),
                 value: '${stats.wrong}',
-                color: AppColors.error,
+                color: context.appColors.error,
               ),
               const SizedBox(width: AppSpacing.md),
               StatChip(
@@ -65,7 +65,7 @@ class QuestionAnalyticsCard extends StatelessWidget {
                 value: context
                     .tr('analytics_seconds')
                     .replaceAll('{n}', '${stats.avgTime}'),
-                color: AppColors.info,
+                color: context.appColors.info,
               ),
             ],
           ),
@@ -120,13 +120,13 @@ class _QuestionCardHeader extends StatelessWidget {
               vertical: AppSpacing.xs,
             ),
             decoration: BoxDecoration(
-              color: AppColors.primarySurface,
+              color: context.appColors.primarySurface,
               borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
             ),
             child: Text(
               context.tr('question_category_${item.category}'),
               style: theme.textTheme.labelSmall?.copyWith(
-                color: AppColors.primary,
+                color: context.appColors.primary,
                 fontSize: 10,
               ),
             ),

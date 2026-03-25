@@ -47,7 +47,7 @@ class _QuestionVitrinCardState extends ConsumerState<QuestionVitrinCard> {
               color: theme.colorScheme.surface,
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
               border: Border.all(
-                color: AppColors.primary.withValues(alpha: 0.2),
+                color: context.appColors.primary.withValues(alpha: 0.2),
               ),
             ),
             child: Column(
@@ -68,7 +68,7 @@ class _QuestionVitrinCardState extends ConsumerState<QuestionVitrinCard> {
                         icon: Icon(
                           Icons.people_outline,
                           size: 20,
-                          color: AppColors.primary,
+                          color: context.appColors.primary,
                         ),
                         value: '${totals.totalSolveCount}',
                         label: context.tr('profile_vitrin_solves'),
@@ -80,7 +80,7 @@ class _QuestionVitrinCardState extends ConsumerState<QuestionVitrinCard> {
                         icon: Icon(
                           Icons.trending_up,
                           size: 20,
-                          color: AppColors.warning,
+                          color: context.appColors.warning,
                         ),
                         value: '%${totals.overallSuccessRate}',
                         label: context.tr('profile_vitrin_success'),

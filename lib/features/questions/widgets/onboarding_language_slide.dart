@@ -28,7 +28,7 @@ class OnboardingLanguageSlide extends StatelessWidget {
             height: 120,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.primary.withValues(alpha: 0.1),
+              color: context.appColors.primary.withValues(alpha: 0.1),
             ),
             child: const Center(
               child: Text(
@@ -66,10 +66,10 @@ class OnboardingLanguageSlide extends StatelessWidget {
                 label: Text('$flag ${context.tr('locale_$locale')}'),
                 selected: isSelected,
                 onSelected: (_) => onToggle(locale),
-                selectedColor: AppColors.primarySurface,
-                checkmarkColor: AppColors.primary,
+                selectedColor: context.appColors.primarySurface,
+                checkmarkColor: context.appColors.primary,
                 side: BorderSide(
-                  color: isSelected ? AppColors.primary : AppColors.border,
+                  color: isSelected ? context.appColors.primary : context.appColors.border,
                 ),
               );
             }).toList(),

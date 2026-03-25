@@ -29,7 +29,7 @@ class PowerShopCard extends ConsumerStatefulWidget {
 class _PowerShopCardState extends ConsumerState<PowerShopCard> {
   String? _buyingWith; // 'purple' or 'green' or null
 
-  PowerType get _powerType => PowerType.fromApiName(widget.power.name);
+  PowerType get _powerType => PowerType.fromApiName(widget.power.name) ?? PowerType.oracle;
 
   String get _powerLabel {
     final key = switch (widget.power.name) {
@@ -84,7 +84,7 @@ class _PowerShopCardState extends ConsumerState<PowerShopCard> {
                       .replaceAll('{required}', '$required')
                       .replaceAll('{current}', '$current'),
                 ),
-                backgroundColor: AppColors.error,
+                backgroundColor: context.appColors.error,
                 action: SnackBarAction(
                   label: context.tr('purchase_get_diamonds'),
                   textColor: Colors.white,
@@ -99,7 +99,7 @@ class _PowerShopCardState extends ConsumerState<PowerShopCard> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(f.message ?? context.tr('purchase_failed')),
-                backgroundColor: AppColors.error,
+                backgroundColor: context.appColors.error,
               ),
             );
           }
@@ -211,7 +211,7 @@ class _BuyButton extends StatelessWidget {
           vertical: AppSpacing.xs,
         ),
         decoration: BoxDecoration(
-          color: AppColors.surfaceElevated,
+          color: context.appColors.surfaceElevated,
           borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
           border: Border.all(
             color: theme.colorScheme.outline.withValues(alpha: 0.2),

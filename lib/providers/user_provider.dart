@@ -9,7 +9,11 @@ class UserNotifier extends AsyncNotifier<UserModel?> {
   Future<UserModel?> build() async => null;
 
   Future<void> fetchMe() async {
-    state = const AsyncLoading();
+    // Preserve previous value during loading so UI doesn't flash to 0
+    final previous = state.valueOrNull;
+    state = previous != null
+        ? const AsyncLoading<UserModel?>().copyWithPrevious(AsyncData(previous))
+        : const AsyncLoading();
     final result = await ref.read(userRepositoryProvider).getMe();
     state = result.when(
       success: (data) => AsyncData(data),
@@ -23,10 +27,14 @@ class UserNotifier extends AsyncNotifier<UserModel?> {
 
   Future<Result<UserModel>> updateProfile(Map<String, dynamic> data) async {
     final result = await ref.read(userRepositoryProvider).updateProfile(data);
-    result.when(
-      success: (updated) => state = AsyncData(updated),
-      failure: (f) => dev.log('updateProfile failed: $f', name: 'UserNotifier'),
-    );
+    if (result.isSuccess) {
+      await fetchMe();
+    } else {
+      result.when(
+        success: (_) {},
+        failure: (f) => dev.log('updateProfile failed: $f', name: 'UserNotifier'),
+      );
+    }
     return result;
   }
 
@@ -44,10 +52,14 @@ class UserNotifier extends AsyncNotifier<UserModel?> {
 
   Future<Result<void>> updateDetails(Map<String, dynamic> data) async {
     final result = await ref.read(userRepositoryProvider).updateDetails(data);
-    result.when(
-      success: (_) => fetchMe(),
-      failure: (f) => dev.log('updateDetails failed: $f', name: 'UserNotifier'),
-    );
+    if (result.isSuccess) {
+      await fetchMe();
+    } else {
+      result.when(
+        success: (_) {},
+        failure: (f) => dev.log('updateDetails failed: $f', name: 'UserNotifier'),
+      );
+    }
     return result;
   }
 

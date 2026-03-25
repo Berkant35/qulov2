@@ -22,7 +22,7 @@ class AnswerDistributionChart extends StatelessWidget {
         Text(
           context.tr('analytics_answer_distribution'),
           style: theme.textTheme.labelSmall?.copyWith(
-            color: AppColors.textSecondary,
+            color: context.appColors.textSecondary,
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
@@ -42,7 +42,7 @@ class AnswerDistributionChart extends StatelessWidget {
                         .tr('analytics_answer_n')
                         .replaceAll('{n}', '${i + 1}'),
                     style: theme.textTheme.labelSmall?.copyWith(
-                      color: AppColors.textSecondary,
+                      color: context.appColors.textSecondary,
                       fontSize: 10,
                     ),
                   ),
@@ -53,9 +53,9 @@ class AnswerDistributionChart extends StatelessWidget {
                         BorderRadius.circular(AppSpacing.radiusFull),
                     child: LinearProgressIndicator(
                       value: fraction,
-                      backgroundColor: AppColors.border,
+                      backgroundColor: context.appColors.border,
                       valueColor: AlwaysStoppedAnimation<Color>(
-                        AppColors.primary.withValues(
+                        context.appColors.primary.withValues(
                           alpha: 0.4 + fraction * 0.6,
                         ),
                       ),
@@ -69,7 +69,7 @@ class AnswerDistributionChart extends StatelessWidget {
                   child: Text(
                     '$count',
                     style: theme.textTheme.labelSmall?.copyWith(
-                      color: AppColors.textPrimary,
+                      color: context.appColors.textPrimary,
                       fontWeight: FontWeight.w600,
                     ),
                     textAlign: TextAlign.end,

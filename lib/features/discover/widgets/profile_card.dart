@@ -178,7 +178,7 @@ class _ProfileCardState extends State<ProfileCard> {
                       ),
                       if (widget.card.isBoosted) ...[
                         const SizedBox(width: AppSpacing.sm),
-                        QIcon(QIcons.icZap, color: AppColors.warning, size: 20),
+                        QIcon(QIcons.icZap, color: context.appColors.warning, size: 20),
                       ],
                     ],
                   ),
@@ -199,12 +199,12 @@ class _ProfileCardState extends State<ProfileCard> {
                       margin: const EdgeInsets.only(top: AppSpacing.xs),
                       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 2),
                       decoration: BoxDecoration(
-                        color: AppColors.primarySurface,
+                        color: context.appColors.primarySurface,
                         borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                       ),
                       child: Text(
                         _relationshipGoalLabel(context, widget.card.relationshipGoal),
-                        style: theme.textTheme.labelSmall?.copyWith(color: AppColors.primary),
+                        style: theme.textTheme.labelSmall?.copyWith(color: context.appColors.primary),
                       ),
                     ),
                   const SizedBox(height: AppSpacing.sm),
@@ -234,7 +234,7 @@ class _QuestionInfoSection extends StatelessWidget {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
         decoration: BoxDecoration(
-          color: AppColors.primarySurface,
+          color: context.appColors.primarySurface,
           borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
         ),
         child: Text(
@@ -254,7 +254,7 @@ class _QuestionInfoSection extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
               decoration: BoxDecoration(
-                color: AppColors.primarySurface,
+                color: context.appColors.primarySurface,
                 borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
               ),
               child: Text(

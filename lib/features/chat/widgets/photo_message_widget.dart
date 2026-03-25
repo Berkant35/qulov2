@@ -37,7 +37,7 @@ class PhotoMessageWidget extends StatelessWidget {
             placeholder: (context, url) => Container(
               width: 200,
               height: 200,
-              color: AppColors.surfaceInput,
+              color: context.appColors.surfaceElevated,
               child: const Center(
                 child: AppLoadingWidget.small(),
               ),
@@ -45,7 +45,7 @@ class PhotoMessageWidget extends StatelessWidget {
             errorWidget: (context, url, error) => Container(
               width: 200,
               height: 200,
-              color: AppColors.surfaceInput,
+              color: context.appColors.surfaceElevated,
               child: const Center(
                 child: Icon(
                   Icons.broken_image_outlined,

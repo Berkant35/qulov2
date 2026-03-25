@@ -28,6 +28,12 @@ class EditProfileDetailsSection extends ConsumerWidget {
     required this.frequencyItems,
   });
 
+  String? _guardValue(String? value, List<DropdownMenuItem<String>> items) {
+    if (value == null) return null;
+    final validValues = items.map((e) => e.value).toSet();
+    return validValues.contains(value) ? value : null;
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final epState = ref.watch(editProfileProvider);
@@ -41,7 +47,7 @@ class EditProfileDetailsSection extends ConsumerWidget {
       child: Column(
         children: [
           DropdownButtonFormField<String>(
-            initialValue: epState.selectedZodiac,
+            initialValue: _guardValue(epState.selectedZodiac, zodiacItems),
             decoration: InputDecoration(labelText: context.tr('zodiac')),
             items: zodiacItems,
             onChanged: (v) =>
@@ -64,7 +70,7 @@ class EditProfileDetailsSection extends ConsumerWidget {
           ),
           const SizedBox(height: AppSpacing.itemGap),
           DropdownButtonFormField<String>(
-            initialValue: epState.selectedSmoking,
+            initialValue: _guardValue(epState.selectedSmoking, frequencyItems),
             decoration: InputDecoration(labelText: context.tr('smoking')),
             items: frequencyItems,
             onChanged: (v) =>
@@ -73,7 +79,7 @@ class EditProfileDetailsSection extends ConsumerWidget {
           ),
           const SizedBox(height: AppSpacing.itemGap),
           DropdownButtonFormField<String>(
-            initialValue: epState.selectedAlcohol,
+            initialValue: _guardValue(epState.selectedAlcohol, frequencyItems),
             decoration: InputDecoration(labelText: context.tr('alcohol')),
             items: frequencyItems,
             onChanged: (v) =>

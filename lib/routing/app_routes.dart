@@ -79,12 +79,21 @@ final _routes = <RouteBase>[
     builder: (context, state) => const QuestionOnboardingScreen(),
   ),
 
-  // Map Picker (root navigator — full screen over bottom nav)
+  // Map Confirm (root navigator — full screen over bottom nav)
   GoRoute(
     parentNavigatorKey: rootNavigatorKey,
-    path: '/map-picker',
-    name: RouteNames.mapPicker,
-    builder: (context, state) => const MapPickerScreen(),
+    path: '/map-confirm',
+    name: RouteNames.mapConfirm,
+    builder: (context, state) {
+      final extra = state.extra as Map<String, dynamic>;
+      return MapConfirmScreen(
+        cityName: extra['cityName'] as String,
+        country: extra['country'] as String,
+        flag: extra['flag'] as String,
+        lat: extra['lat'] as double,
+        lng: extra['lng'] as double,
+      );
+    },
   ),
 
   // Quiz (root navigator — full screen over bottom nav)
@@ -123,6 +132,41 @@ final _routes = <RouteBase>[
     ),
   ),
 
+  // Create Chat Question (root navigator — full screen stepper)
+  GoRoute(
+    parentNavigatorKey: rootNavigatorKey,
+    path: '/chat/:matchId/create-question',
+    name: RouteNames.createChatQuestion,
+    builder: (context, state) => CreateChatQuestionScreen(
+      matchId: state.pathParameters['matchId']!,
+    ),
+  ),
+
+  // Solve Chat Question (root navigator — full screen over bottom nav)
+  GoRoute(
+    parentNavigatorKey: rootNavigatorKey,
+    path: '/chat-question/:questionId/solve',
+    name: RouteNames.solveChatQuestion,
+    pageBuilder: (context, state) => CustomTransitionPage(
+      key: state.pageKey,
+      child: SolveChatQuestionScreen(
+        question: state.extra as ChatQuestionModel,
+      ),
+      transitionDuration: const Duration(milliseconds: 500),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: ScaleTransition(
+            scale: Tween<double>(begin: 0.85, end: 1.0).animate(
+              CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+            ),
+            child: child,
+          ),
+        );
+      },
+    ),
+  ),
+
   // Profile Detail (root navigator — full screen over bottom nav)
   GoRoute(
     parentNavigatorKey: rootNavigatorKey,
@@ -132,6 +176,17 @@ final _routes = <RouteBase>[
       userId: state.pathParameters['userId']!,
       args: state.extra is ProfileDetailArgs ? state.extra as ProfileDetailArgs : null,
     ),
+  ),
+
+  // Profile Preview (root navigator — full screen, no bottom nav)
+  GoRoute(
+    parentNavigatorKey: rootNavigatorKey,
+    path: '/profile/preview',
+    name: RouteNames.profilePreview,
+    builder: (context, state) {
+      final source = state.extra is String ? state.extra as String : 'profile_screen';
+      return ProfilePreviewScreen(source: source);
+    },
   ),
 
   // Main shell (bottom nav)
@@ -227,6 +282,11 @@ final _routes = <RouteBase>[
               builder: (context, state) => const SubscriptionComparisonScreen(),
             ),
             GoRoute(
+              path: 'performance',
+              name: RouteNames.performance,
+              builder: (context, state) => const PerformanceDashboardScreen(),
+            ),
+            GoRoute(
               path: 'settings',
               name: RouteNames.settings,
               builder: (context, state) => const SettingsScreen(),
@@ -286,7 +346,12 @@ class _MainShellState extends ConsumerState<_MainShell> {
           ),
           NavigationBar(
             selectedIndex: widget.shell.currentIndex,
-            onDestinationSelected: (i) => widget.shell.goBranch(i, initialLocation: i == widget.shell.currentIndex),
+            onDestinationSelected: (i) {
+              if (i == 0 && widget.shell.currentIndex != 0) {
+                ref.read(discoverProvider.notifier).loadCards();
+              }
+              widget.shell.goBranch(i, initialLocation: i == widget.shell.currentIndex);
+            },
             destinations: [
               NavigationDestination(
                 icon: QIcon(QIcons.icCompass, size: 24),

@@ -29,13 +29,13 @@ class BestQuestionHighlight extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppColors.secondary.withValues(alpha: 0.12),
-            AppColors.secondary.withValues(alpha: 0.04),
+            context.appColors.secondary.withValues(alpha: 0.12),
+            context.appColors.secondary.withValues(alpha: 0.04),
           ],
         ),
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         border: Border.all(
-          color: AppColors.secondary.withValues(alpha: 0.3),
+          color: context.appColors.secondary.withValues(alpha: 0.3),
         ),
       ),
       child: Row(
@@ -49,7 +49,7 @@ class BestQuestionHighlight extends StatelessWidget {
                 Text(
                   context.tr('analytics_best_question'),
                   style: theme.textTheme.labelMedium?.copyWith(
-                    color: AppColors.secondary,
+                    color: context.appColors.secondary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -57,7 +57,7 @@ class BestQuestionHighlight extends StatelessWidget {
                 Text(
                   item.questionText,
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: AppColors.textPrimary,
+                    color: context.appColors.textPrimary,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -70,7 +70,7 @@ class BestQuestionHighlight extends StatelessWidget {
                     Text(
                       '${item.stats.greenEarned}',
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: AppColors.secondary,
+                        color: context.appColors.secondary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

@@ -1,126 +1,215 @@
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/l10n/app_localizations.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/data/models/chat_question_model.dart';
+import 'package:qulo_v2/features/chat/widgets/blurred_media_preview.dart';
 
 class ChatQuestionCard extends StatelessWidget {
   final ChatQuestionModel question;
   final bool isMyQuestion;
-  final Function(String)? onAnswer;
+  /// Called when the receiver taps "Soruyu Aç" — navigate to solve screen.
+  final VoidCallback? onOpen;
 
   const ChatQuestionCard({
     super.key,
     required this.question,
     required this.isMyQuestion,
-    this.onAnswer,
+    this.onOpen,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final borderColor = question.hasUnmatchRisk
-        ? AppColors.error.withValues(alpha: 0.6)
-        : AppColors.primary.withValues(alpha: 0.3);
+        ? context.appColors.error.withValues(alpha: 0.6)
+        : question.hasChatLock
+            ? context.appColors.warning.withValues(alpha: 0.6)
+            : context.appColors.primary.withValues(alpha: 0.3);
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-      padding: const EdgeInsets.all(AppSpacing.cardPadding),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        border: Border.all(color: borderColor),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Warning badge
-          if (question.hasUnmatchRisk) ...[
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: AppColors.error.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('\u26a0\ufe0f', style: TextStyle(fontSize: 12)),
-                  const SizedBox(width: 4),
-                  Text(
-                    'Bu soru riskli!',
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: AppColors.error,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-          ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+          padding: const EdgeInsets.all(AppSpacing.cardPadding),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surface,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            border: Border.all(color: borderColor),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Badges row
+              _BadgesRow(question: question),
 
-          // Question text
-          Text(
-            question.questionText,
-            style: theme.textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+              // Question text
+              Text(
+                question.questionText,
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: context.appColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+
+              // Options / action
+              if (!question.isAnswered && !isMyQuestion)
+                _OpenButton(onOpen: onOpen)
+              else if (!question.isAnswered && isMyQuestion)
+                _WaitingOptions(question: question)
+              else
+                _AnsweredOptions(question: question),
+            ],
+          ),
+        ),
+
+        // Blurred media preview (below the card)
+        if (question.hasRewardMedia)
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+            child: BlurredMediaPreview(
+              mediaUrl: question.rewardMediaUrl,
+              mediaType: question.rewardMediaType ?? 'image',
+              isRevealed: question.isCorrect == true,
             ),
           ),
-          const SizedBox(height: AppSpacing.md),
-
-          // Options
-          if (!question.isAnswered && !isMyQuestion)
-            _UnansweredOptions(
-              question: question,
-              onAnswer: onAnswer,
-            )
-          else if (!question.isAnswered && isMyQuestion)
-            _WaitingOptions(question: question)
-          else
-            _AnsweredOptions(question: question),
-        ],
-      ),
-    );
-  }
-
-}
-
-/// Two tappable option buttons for the receiver
-class _UnansweredOptions extends StatelessWidget {
-  final ChatQuestionModel question;
-  final Function(String)? onAnswer;
-
-  const _UnansweredOptions({
-    required this.question,
-    this.onAnswer,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Column(
-      children: [
-        _OptionButton(
-          label: 'A',
-          text: question.optionA,
-          theme: theme,
-          onTap: () => onAnswer?.call('A'),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        _OptionButton(
-          label: 'B',
-          text: question.optionB,
-          theme: theme,
-          onTap: () => onAnswer?.call('B'),
-        ),
       ],
     );
   }
 }
 
-/// Sender sees options as text + waiting hint
+// ─── Badges Row ───────────────────────────────────────────────────────────────
+
+class _BadgesRow extends StatelessWidget {
+  final ChatQuestionModel question;
+
+  const _BadgesRow({required this.question});
+
+  @override
+  Widget build(BuildContext context) {
+    final badges = <Widget>[];
+
+    if (question.hasUnmatchRisk) {
+      badges.add(_Badge(
+        icon: '\u26a0\ufe0f',
+        label: 'Bu soru riskli!',
+        color: context.appColors.error,
+      ));
+    }
+
+    if (question.isPowerBlocked) {
+      badges.add(_Badge(
+        icon: '\u26a1',
+        label: 'Güç Engeli',
+        color: context.appColors.warning,
+      ));
+    }
+
+    if (question.hasChatLock) {
+      badges.add(_Badge(
+        icon: '\ud83d\udd12',
+        label: 'Sohbet Kilitli',
+        color: context.appColors.warning,
+      ));
+    }
+
+    if (question.timeLimitSeconds > 0) {
+      badges.add(_Badge(
+        icon: '\u23f1',
+        label: '${question.timeLimitSeconds}s',
+        color: context.appColors.textSecondary,
+      ));
+    }
+
+    if (badges.isEmpty) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+      child: Wrap(
+        spacing: AppSpacing.xs,
+        runSpacing: AppSpacing.xs,
+        children: badges,
+      ),
+    );
+  }
+}
+
+class _Badge extends StatelessWidget {
+  final String icon;
+  final String label;
+  final Color color;
+
+  const _Badge({
+    required this.icon,
+    required this.label,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(icon, style: const TextStyle(fontSize: 11)),
+          const SizedBox(width: 3),
+          Text(
+            label,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: color,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Open Button (receiver, unanswered) ───────────────────────────────────────
+
+class _OpenButton extends StatelessWidget {
+  final VoidCallback? onOpen;
+
+  const _OpenButton({this.onOpen});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton.icon(
+        onPressed: onOpen,
+        icon: const Icon(Icons.lock_open_rounded, size: 16),
+        label: Text(AppLocalizations.of(context).get('chat_open_question')),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: context.appColors.primary,
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+          ),
+          textStyle: const TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Waiting Options (sender) ─────────────────────────────────────────────────
+
 class _WaitingOptions extends StatelessWidget {
   final ChatQuestionModel question;
 
@@ -129,17 +218,20 @@ class _WaitingOptions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final options = _buildOptionLabels(question);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _OptionText(label: 'A', text: question.optionA, theme: theme),
-        const SizedBox(height: AppSpacing.xs),
-        _OptionText(label: 'B', text: question.optionB, theme: theme),
+        for (final opt in options) ...[
+          _OptionText(label: opt.$1, text: opt.$2, theme: theme),
+          if (opt != options.last) const SizedBox(height: AppSpacing.xs),
+        ],
         const SizedBox(height: AppSpacing.sm),
         Text(
-          'Cevap bekleniyor...',
+          AppLocalizations.of(context).get('chat_waiting_answer'),
           style: theme.textTheme.bodySmall?.copyWith(
-            color: AppColors.textHint,
+            color: context.appColors.textHint,
             fontStyle: FontStyle.italic,
           ),
         ),
@@ -148,7 +240,8 @@ class _WaitingOptions extends StatelessWidget {
   }
 }
 
-/// Options with color feedback after answering
+// ─── Answered Options (both sides) ───────────────────────────────────────────
+
 class _AnsweredOptions extends StatelessWidget {
   final ChatQuestionModel question;
 
@@ -159,34 +252,29 @@ class _AnsweredOptions extends StatelessWidget {
     final theme = Theme.of(context);
     final answeredOpt = question.answeredOption;
     final isCorrect = question.isCorrect ?? false;
+    final options = _buildOptionLabels(question);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _AnsweredOption(
-          label: 'A',
-          text: question.optionA,
-          isSelected: answeredOpt == 'A',
-          isCorrectChoice: isCorrect && answeredOpt == 'A',
-          isWrongChoice: !isCorrect && answeredOpt == 'A',
-          theme: theme,
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        _AnsweredOption(
-          label: 'B',
-          text: question.optionB,
-          isSelected: answeredOpt == 'B',
-          isCorrectChoice: isCorrect && answeredOpt == 'B',
-          isWrongChoice: !isCorrect && answeredOpt == 'B',
-          theme: theme,
-        ),
+        for (final opt in options) ...[
+          _AnsweredOption(
+            label: opt.$1,
+            text: opt.$2,
+            isSelected: answeredOpt == opt.$1,
+            isCorrectChoice: isCorrect && answeredOpt == opt.$1,
+            isWrongChoice: !isCorrect && answeredOpt == opt.$1,
+            theme: theme,
+          ),
+          if (opt != options.last) const SizedBox(height: AppSpacing.sm),
+        ],
         // Unmatch result
         if (!isCorrect && question.hasUnmatchRisk) ...[
           const SizedBox(height: AppSpacing.sm),
           Text(
-            'Unmatch gerceklesti',
+            AppLocalizations.of(context).get('chat_unmatch_occurred'),
             style: theme.textTheme.bodySmall?.copyWith(
-              color: AppColors.error,
+              color: context.appColors.error,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -196,70 +284,26 @@ class _AnsweredOptions extends StatelessWidget {
   }
 }
 
-/// Tappable option button for unanswered questions
-class _OptionButton extends StatelessWidget {
-  final String label;
-  final String text;
-  final ThemeData theme;
-  final VoidCallback? onTap;
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
-  const _OptionButton({
-    required this.label,
-    required this.text,
-    required this.theme,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: AppColors.surfaceInput,
-      borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.md,
-            vertical: AppSpacing.sm,
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 24,
-                height: 24,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.15),
-                  shape: BoxShape.circle,
-                ),
-                child: Text(
-                  label,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: Text(
-                  text,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+/// Returns list of (label, text) pairs for options A/B or A/B/C/D.
+List<(String, String)> _buildOptionLabels(ChatQuestionModel question) {
+  if (question.optionCount == 4) {
+    return [
+      ('A', question.optionA),
+      ('B', question.optionB),
+      ('C', question.optionC ?? ''),
+      ('D', question.optionD ?? ''),
+    ];
   }
+  return [
+    ('A', question.optionA),
+    ('B', question.optionB),
+  ];
 }
 
-/// Static option text for the sender's view
+// ─── Sub-widgets ──────────────────────────────────────────────────────────────
+
 class _OptionText extends StatelessWidget {
   final String label;
   final String text;
@@ -278,7 +322,7 @@ class _OptionText extends StatelessWidget {
         Text(
           '$label.',
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: AppColors.textSecondary,
+            color: context.appColors.textSecondary,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -287,7 +331,7 @@ class _OptionText extends StatelessWidget {
           child: Text(
             text,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: AppColors.textSecondary,
+              color: context.appColors.textSecondary,
             ),
           ),
         ),
@@ -296,7 +340,6 @@ class _OptionText extends StatelessWidget {
   }
 }
 
-/// Option with color feedback after answering
 class _AnsweredOption extends StatelessWidget {
   final String label;
   final String text;
@@ -316,18 +359,18 @@ class _AnsweredOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color bgColor = AppColors.surfaceInput;
-    Color textColor = AppColors.textSecondary;
-    Color labelColor = AppColors.textHint;
+    Color bgColor = context.appColors.surfaceElevated;
+    Color textColor = context.appColors.textSecondary;
+    Color labelColor = context.appColors.textHint;
 
     if (isCorrectChoice) {
-      bgColor = AppColors.success.withValues(alpha: 0.15);
-      textColor = AppColors.success;
-      labelColor = AppColors.success;
+      bgColor = context.appColors.success.withValues(alpha: 0.15);
+      textColor = context.appColors.success;
+      labelColor = context.appColors.success;
     } else if (isWrongChoice) {
-      bgColor = AppColors.error.withValues(alpha: 0.15);
-      textColor = AppColors.error;
-      labelColor = AppColors.error;
+      bgColor = context.appColors.error.withValues(alpha: 0.15);
+      textColor = context.appColors.error;
+      labelColor = context.appColors.error;
     }
 
     return Container(

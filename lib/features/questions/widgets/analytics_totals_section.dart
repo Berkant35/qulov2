@@ -13,10 +13,10 @@ class AnalyticsTotalsSection extends StatelessWidget {
 
   const AnalyticsTotalsSection({super.key, required this.totals});
 
-  Color _successRateColor(int rate) {
-    if (rate >= 70) return AppColors.success;
-    if (rate >= 40) return AppColors.warning;
-    return AppColors.error;
+  Color _successRateColor(BuildContext context, int rate) {
+    if (rate >= 70) return context.appColors.success;
+    if (rate >= 40) return context.appColors.warning;
+    return context.appColors.error;
   }
 
   @override
@@ -26,20 +26,20 @@ class AnalyticsTotalsSection extends StatelessWidget {
         AnalyticsStatCard(
           label: context.tr('analytics_total_solves'),
           value: '${totals.totalSolveCount}',
-          icon: QIcon(QIcons.icTarget, size: 24, color: AppColors.info),
+          icon: QIcon(QIcons.icTarget, size: 24, color: context.appColors.info),
         ),
         const SizedBox(width: AppSpacing.sm),
         AnalyticsStatCard(
           label: context.tr('analytics_success_rate'),
           value: '%${totals.overallSuccessRate}',
-          valueColor: _successRateColor(totals.overallSuccessRate),
-          icon: QIcon(QIcons.icChart, size: 24, color: AppColors.warning),
+          valueColor: _successRateColor(context, totals.overallSuccessRate),
+          icon: QIcon(QIcons.icChart, size: 24, color: context.appColors.warning),
         ),
         const SizedBox(width: AppSpacing.sm),
         AnalyticsStatCard(
           label: context.tr('analytics_green_earned'),
           value: '${totals.totalGreenEarned}',
-          valueColor: AppColors.secondary,
+          valueColor: context.appColors.secondary,
           icon: const DiamondIcon.green(size: 24, showGlow: false),
         ),
       ],

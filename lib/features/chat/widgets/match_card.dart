@@ -4,6 +4,7 @@ import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/data/models/match_model.dart';
+import 'package:qulo_v2/features/chat/widgets/chat_message_item.dart' show questionPrefix;
 
 class MatchCard extends StatelessWidget {
   final MatchModel match;
@@ -41,7 +42,7 @@ class MatchCard extends StatelessWidget {
                   width: 12,
                   height: 12,
                   decoration: BoxDecoration(
-                    color: AppColors.secondary,
+                    color: context.appColors.secondary,
                     shape: BoxShape.circle,
                     border: Border.all(color: theme.colorScheme.surface, width: 2),
                   ),
@@ -56,7 +57,7 @@ class MatchCard extends StatelessWidget {
           ),
         ),
         subtitle: Text(
-          match.lastMessage ?? u?.city ?? '',
+          _displayLastMessage(context),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: theme.textTheme.bodySmall?.copyWith(
@@ -74,21 +75,21 @@ class MatchCard extends StatelessWidget {
               Text(
                 _formatRelativeTime(context, match.lastMessageSentAt!),
                 style: theme.textTheme.labelSmall?.copyWith(
-                  color: hasUnread ? AppColors.primary : theme.colorScheme.onSurfaceVariant,
+                  color: hasUnread ? context.appColors.primary : theme.colorScheme.onSurfaceVariant,
                   fontWeight: hasUnread ? FontWeight.w600 : FontWeight.normal,
                 ),
               )
             else if (u?.isOnline == true)
               Text(
                 context.tr('online'),
-                style: theme.textTheme.labelSmall?.copyWith(color: AppColors.secondary),
+                style: theme.textTheme.labelSmall?.copyWith(color: context.appColors.secondary),
               ),
             if (hasUnread) ...[
               const SizedBox(height: 4),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: AppColors.primary,
+                  color: context.appColors.primary,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
@@ -109,24 +110,33 @@ class MatchCard extends StatelessWidget {
     );
   }
 
+  String _displayLastMessage(BuildContext context) {
+    final msg = match.lastMessage;
+    if (msg == null || msg.isEmpty) return match.user?.city ?? '';
+    if (msg.startsWith(questionPrefix)) return '🎯 ${context.tr('chat_question_sent')}';
+    return msg;
+  }
+
   String _formatRelativeTime(BuildContext context, String isoTime) {
     try {
       final dt = DateTime.parse(isoTime);
-      final now = DateTime.now();
+      final now = DateTime.now().toUtc();
       final diff = now.difference(dt);
 
       if (diff.inMinutes < 1) return context.tr('now');
       if (diff.inMinutes < 60) return '${diff.inMinutes}dk';
       if (diff.inHours < 24) return '${diff.inHours}s';
 
-      final today = DateTime(now.year, now.month, now.day);
-      final messageDay = DateTime(dt.year, dt.month, dt.day);
+      final localNow = DateTime.now();
+      final localDt = dt.toLocal();
+      final today = DateTime(localNow.year, localNow.month, localNow.day);
+      final messageDay = DateTime(localDt.year, localDt.month, localDt.day);
       final dayDiff = today.difference(messageDay).inDays;
 
       if (dayDiff == 1) return context.tr('yesterday');
       if (dayDiff < 7) return '${dayDiff}g';
 
-      return '${dt.day}.${dt.month}';
+      return '${localDt.day}.${localDt.month}';
     } catch (_) {
       return '';
     }

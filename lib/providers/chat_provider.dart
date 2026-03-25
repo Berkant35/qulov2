@@ -9,7 +9,15 @@ import 'package:qulo_v2/providers/auth_provider.dart';
 class ChatNotifier extends FamilyAsyncNotifier<ChatState, String> {
   @override
   Future<ChatState> build(String matchId) async {
-    return const ChatState();
+    final result = await ref.read(chatRepositoryProvider).getMessages(matchId, page: 1);
+    return result.when(
+      success: (response) => ChatState(
+        messages: response.messages,
+        total: response.total,
+        page: response.page,
+      ),
+      failure: (f) => throw f,
+    );
   }
 
   Future<void> loadMessages({int page = 1}) async {
@@ -155,6 +163,33 @@ class ChatNotifier extends FamilyAsyncNotifier<ChatState, String> {
     );
   }
 
+  /// Updates the chat-lock state based on whether there is an unanswered
+  /// chat-locked question where [currentUserId] is the answerer (not sender).
+  void updateChatLock({
+    required String currentUserId,
+    required Map<String, ChatQuestionModel> questionCache,
+  }) {
+    final current = state.valueOrNull ?? const ChatState();
+    // Find any message that is a question marker
+    const prefix = '__QUESTION__:';
+    bool locked = false;
+    for (final msg in current.messages) {
+      if (!msg.content.startsWith(prefix)) continue;
+      final qId = msg.content.replaceFirst(prefix, '');
+      final question = questionCache[qId];
+      if (question == null) continue;
+      if (question.hasChatLock &&
+          !question.isAnswered &&
+          question.senderId != currentUserId) {
+        locked = true;
+        break;
+      }
+    }
+    if (locked != current.hasChatLock) {
+      state = AsyncData(current.copyWith(hasChatLock: locked));
+    }
+  }
+
   Future<void> disableMedia() async {
     final repo = ref.read(chatRepositoryProvider);
     await repo.disableMedia(arg);
@@ -199,6 +234,9 @@ class ChatState {
   final int page;
   final bool mediaEnabled;
   final MediaRequestModel? pendingMediaRequest;
+  /// True when there is an unanswered chat-locked question that the current
+  /// user must answer before they can send new messages.
+  final bool hasChatLock;
 
   const ChatState({
     this.messages = const [],
@@ -206,6 +244,7 @@ class ChatState {
     this.page = 1,
     this.mediaEnabled = false,
     this.pendingMediaRequest,
+    this.hasChatLock = false,
   });
 
   ChatState copyWith({
@@ -215,6 +254,7 @@ class ChatState {
     bool? mediaEnabled,
     MediaRequestModel? pendingMediaRequest,
     bool clearPendingMediaRequest = false,
+    bool? hasChatLock,
   }) {
     return ChatState(
       messages: messages ?? this.messages,
@@ -224,33 +264,61 @@ class ChatState {
       pendingMediaRequest: clearPendingMediaRequest
           ? null
           : (pendingMediaRequest ?? this.pendingMediaRequest),
+      hasChatLock: hasChatLock ?? this.hasChatLock,
     );
   }
 }
 
 final chatProvider = AsyncNotifierProvider.family<ChatNotifier, ChatState, String>(ChatNotifier.new);
 
-/// Cache for chat questions fetched by ID — avoids re-fetching on every rebuild.
+/// Kullanıcının o an açık olan chat ekranının matchId'si.
+/// Chat ekranı açıkken set edilir, kapanınca null'a döner.
+/// In-app banner suppress logic'inde kullanılır.
+final activeChatMatchIdProvider = StateProvider<String?>((ref) => null);
+
+/// Cache for chat questions fetched by ID — realtime updates write here,
+/// widgets read from here via [chatQuestionProvider].
 final chatQuestionCacheProvider =
     StateProvider<Map<String, ChatQuestionModel>>((ref) => {});
 
-/// Provider that fetches a single chat question by ID, using cache.
-final chatQuestionProvider =
-    FutureProvider.family<ChatQuestionModel?, String>((ref, questionId) async {
-  // Check cache first
+/// Fetch provider — cache'de yoksa API'den ceker, cache'e yazar.
+final chatQuestionFetchProvider =
+    FutureProvider.autoDispose.family<void, String>((ref, questionId) async {
   final cache = ref.read(chatQuestionCacheProvider);
-  if (cache.containsKey(questionId)) return cache[questionId];
+  if (cache.containsKey(questionId)) return;
 
-  try {
-    final service = ref.read(chatQuestionServiceProvider);
-    final question = await service.getQuestion(questionId);
-    // Update cache
-    ref.read(chatQuestionCacheProvider.notifier).update((state) => {
-          ...state,
-          questionId: question,
-        });
-    return question;
-  } catch (_) {
-    return null;
+  final repo = ref.read(chatRepositoryProvider);
+  final result = await repo.getQuestion(questionId);
+  result.when(
+    success: (question) {
+      ref.read(chatQuestionCacheProvider.notifier).update((state) {
+        final copy = Map<String, ChatQuestionModel>.from(state);
+        copy[questionId] = question;
+        return copy;
+      });
+    },
+    failure: (_) {},
+  );
+});
+
+/// Cache-reactive provider — widget'lar bunu watch eder.
+/// Cache guncellenince (realtime veya API) widget otomatik rebuild olur.
+final chatQuestionProvider =
+    Provider.autoDispose.family<AsyncValue<ChatQuestionModel?>, String>((ref, questionId) {
+  final cache = ref.watch(chatQuestionCacheProvider);
+  if (cache.containsKey(questionId)) {
+    return AsyncValue.data(cache[questionId]);
   }
+  // Cache'de yok — fetch tetikle
+  final fetch = ref.watch(chatQuestionFetchProvider(questionId));
+  return fetch.when(
+    loading: () => const AsyncValue.loading(),
+    error: (e, st) => AsyncValue.error(e, st),
+    data: (_) {
+      final updated = ref.read(chatQuestionCacheProvider);
+      final question = updated[questionId];
+      if (question == null) return const AsyncValue.loading();
+      return AsyncValue.data(question);
+    },
+  );
 });

@@ -178,8 +178,8 @@ class _DiscoverCardViewState extends ConsumerState<DiscoverCardView>
                                 ),
                                 decoration: BoxDecoration(
                                   color: _dragOffset > 0
-                                      ? AppColors.secondary.withValues(alpha: 0.9)
-                                      : AppColors.error.withValues(alpha: 0.9),
+                                      ? context.appColors.secondary.withValues(alpha: 0.9)
+                                      : context.appColors.error.withValues(alpha: 0.9),
                                   borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                                   border: Border.all(
                                     color: Colors.white,
@@ -303,7 +303,7 @@ class DiscoverSolveButton extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: AppSpacing.md),
       decoration: BoxDecoration(
-        gradient: AppColors.primaryButtonGradient,
+        gradient: context.appColors.primaryButtonGradient,
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       ),
       child: Material(
@@ -365,11 +365,11 @@ class DiscoverActionButtons extends ConsumerWidget {
                 onTap: canUndo ? onUndo : null,
                 builder: (context, isLoading, safeTap) => CircleIconButton(
                   iconPath: QIcons.icArrowLeft,
-                  iconColor: canUndo && !isLoading ? AppColors.warning : AppColors.textHint,
+                  iconColor: canUndo && !isLoading ? context.appColors.warning : context.appColors.textHint,
                   backgroundColor: Theme.of(context).colorScheme.surface,
                   borderColor: canUndo && !isLoading
-                      ? AppColors.warning
-                      : AppColors.textHint.withValues(alpha: 0.3),
+                      ? context.appColors.warning
+                      : context.appColors.textHint.withValues(alpha: 0.3),
                   size: 44,
                   onTap: safeTap ?? () {},
                 ),
@@ -382,8 +382,8 @@ class DiscoverActionButtons extends ConsumerWidget {
                   : context.tr('undo'),
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
                 color: hasUndoRight
-                    ? (canUndo ? AppColors.warning : AppColors.textHint)
-                    : AppColors.textHint,
+                    ? (canUndo ? context.appColors.warning : context.appColors.textHint)
+                    : context.appColors.textHint,
                 fontSize: 10,
               ),
             ),
@@ -392,9 +392,9 @@ class DiscoverActionButtons extends ConsumerWidget {
         const SizedBox(width: AppSpacing.xl),
         CircleIconButton(
           iconPath: QIcons.icX,
-          iconColor: AppColors.error,
+          iconColor: context.appColors.error,
           backgroundColor: Theme.of(context).colorScheme.surface,
-          borderColor: AppColors.error,
+          borderColor: context.appColors.error,
           onTap: onReject,
         ),
       ],

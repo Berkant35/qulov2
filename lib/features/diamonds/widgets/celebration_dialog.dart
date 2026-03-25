@@ -30,7 +30,7 @@ class CelebrationDialog extends StatelessWidget {
         decoration: BoxDecoration(
           color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
-          border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+          border: Border.all(color: context.appColors.primary.withValues(alpha: 0.3)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -42,13 +42,13 @@ class CelebrationDialog extends StatelessWidget {
                 vertical: AppSpacing.md,
               ),
               decoration: BoxDecoration(
-                gradient: AppColors.purpleGradient,
+                gradient: context.appColors.purpleGradient,
                 borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
               ),
               child: Text(
                 planName,
                 style: theme.textTheme.headlineSmall?.copyWith(
-                  color: Colors.white,
+                  color: AppColors.textPrimary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -79,7 +79,7 @@ class CelebrationDialog extends StatelessWidget {
                         ? context.tr('celebration_diamonds_premium')
                         : context.tr('celebration_diamonds_plus'),
                     style: theme.textTheme.titleMedium?.copyWith(
-                      color: AppColors.primary,
+                      color: context.appColors.primary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

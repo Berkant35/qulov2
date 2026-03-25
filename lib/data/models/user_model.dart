@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import 'package:qulo_v2/data/models/discover_model.dart';
+import 'package:qulo_v2/data/models/public_profile_model.dart';
 import 'package:qulo_v2/data/models/user_details_model.dart';
 
 part 'user_model.g.dart';
@@ -66,6 +68,8 @@ class UserModel extends Equatable {
   final List<String> preferredLanguages;
   @JsonKey(name: 'completion_rewards_claimed', defaultValue: {})
   final Map<String, dynamic> completionRewardsClaimed;
+  @JsonKey(name: 'strict_language_mode', defaultValue: false)
+  final bool strictLanguageMode;
   @JsonKey(name: 'referral_code')
   final String? referralCode;
   final UserDetailsModel? details;
@@ -107,6 +111,7 @@ class UserModel extends Equatable {
     this.relationshipGoal,
     this.preferredLanguages = const [],
     this.completionRewardsClaimed = const {},
+    this.strictLanguageMode = false,
     this.referralCode,
     this.details,
   });
@@ -122,6 +127,32 @@ class UserModel extends Equatable {
     lat, lng, photos, profileCompletion, greenDiamonds, purpleDiamonds,
     isOnline, lastSeenAt, emailVerified, passportCity, boostUntil,
     likeReceivedCount, timesShownCount, badgeRewardsClaimed, questionCount,
-    relationshipGoal, preferredLanguages, completionRewardsClaimed, referralCode,
+    relationshipGoal, preferredLanguages, completionRewardsClaimed, strictLanguageMode, referralCode,
   ];
+}
+
+extension UserModelToPublicProfile on UserModel {
+  PublicProfileModel toPublicProfile() {
+    return PublicProfileModel(
+      userId: id,
+      name: name,
+      age: age,
+      bio: bio,
+      city: city,
+      country: country,
+      photos: photos ?? [],
+      distanceKm: 0,
+      relationshipGoal: relationshipGoal,
+      isOnline: false,
+      lastSeen: null,
+      profileCompletion: profileCompletion,
+      isBoosted: boostUntil != null &&
+          DateTime.tryParse(boostUntil!)?.isAfter(DateTime.now().toUtc()) ==
+              true,
+      details: details,
+      questionInfo: QuestionInfoModel(
+        count: questionCount,
+      ),
+    );
+  }
 }

@@ -51,7 +51,7 @@ class QuizResultContent extends StatelessWidget {
                   ? context.tr('quiz_result_matched')
                   : context.tr('quiz_result_not_matched'),
               style: theme.textTheme.headlineSmall?.copyWith(
-                color: matched ? AppColors.secondary : AppColors.error,
+                color: matched ? context.appColors.secondary : context.appColors.error,
                 fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.center,
@@ -80,8 +80,8 @@ class QuizResultContent extends StatelessWidget {
                 child: FilledButton(
                   onPressed: onStartChat,
                   style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.secondary,
-                    foregroundColor: AppColors.background,
+                    backgroundColor: context.appColors.secondary,
+                    foregroundColor: context.appColors.background,
                     padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
@@ -126,10 +126,10 @@ class _TopIcon extends StatelessWidget {
         height: 80,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: AppColors.secondarySurface,
+          color: context.appColors.secondarySurface,
         ),
-        child: const Center(
-          child: QIcon(QIcons.icHeart, size: 40, color: AppColors.secondary),
+        child: Center(
+          child: QIcon(QIcons.icHeart, size: 40, color: context.appColors.secondary),
         ),
       );
     }
@@ -140,8 +140,8 @@ class _TopIcon extends StatelessWidget {
         shape: BoxShape.circle,
         color: Color(0x1ACF6679),
       ),
-      child: const Center(
-        child: QIcon(QIcons.icX, size: 40, color: AppColors.error),
+      child: Center(
+        child: QIcon(QIcons.icX, size: 40, color: context.appColors.error),
       ),
     );
   }
@@ -152,20 +152,20 @@ class _Badge extends StatelessWidget {
 
   const _Badge({required this.performanceBadge});
 
-  (String icon, Color color, String labelKey) get _badgeConfig {
+  (String icon, Color color, String labelKey) _badgeConfig(BuildContext context) {
     return switch (performanceBadge) {
       'flawless' => (QIcons.icCrown, AppColors.gold, 'quiz_result_flawless'),
-      'speed_solver' => (QIcons.icZap, AppColors.info, 'quiz_result_speed_solver'),
-      'power_master' => (QIcons.icGem, AppColors.primary, 'quiz_result_power_master'),
-      'determined' => (QIcons.icFire, AppColors.warning, 'quiz_result_determined'),
-      _ => (QIcons.icTarget, AppColors.textSecondary, 'quiz_result_determined'),
+      'speed_solver' => (QIcons.icZap, context.appColors.info, 'quiz_result_speed_solver'),
+      'power_master' => (QIcons.icGem, context.appColors.primary, 'quiz_result_power_master'),
+      'determined' => (QIcons.icFire, context.appColors.warning, 'quiz_result_determined'),
+      _ => (QIcons.icTarget, context.appColors.textSecondary, 'quiz_result_determined'),
     };
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final (icon, color, labelKey) = _badgeConfig;
+    final (icon, color, labelKey) = _badgeConfig(context);
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -215,14 +215,14 @@ class _Stats extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.surfaceElevated,
+        color: context.appColors.surfaceElevated,
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       ),
       child: Column(
         children: [
           _StatRow(
             icon: QIcons.icCheckCircle,
-            iconColor: AppColors.secondary,
+            iconColor: context.appColors.secondary,
             label: context
                 .tr('quiz_result_correct_count')
                 .replaceAll('{correct}', '$totalCorrect')
@@ -232,7 +232,7 @@ class _Stats extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           _StatRow(
             icon: QIcons.icClock,
-            iconColor: AppColors.info,
+            iconColor: context.appColors.info,
             label: '${context.tr('quiz_result_time_spent')}: ${totalTimeSpent}s',
             theme: theme,
           ),
@@ -240,7 +240,7 @@ class _Stats extends StatelessWidget {
             const SizedBox(height: AppSpacing.md),
             _StatRow(
               icon: QIcons.icZap,
-              iconColor: AppColors.primary,
+              iconColor: context.appColors.primary,
               label: '${context.tr('quiz_result_powers_used')}: $powersUsed',
               theme: theme,
             ),

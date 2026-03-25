@@ -32,7 +32,7 @@ class ChatMessageList extends StatelessWidget {
     return chatState.when(
       loading: () => const Center(child: AppLoadingWidget.large()),
       error: (e, _) => Center(
-        child: Text('Error: $e', style: const TextStyle(color: AppColors.error)),
+        child: Text('Error: $e', style: TextStyle(color: context.appColors.error)),
       ),
       data: (state) {
         if (state.messages.isEmpty) {
@@ -55,6 +55,13 @@ class ChatMessageList extends StatelessWidget {
             final isMe = msg.senderId == myId;
             final nextMsg =
                 i < state.messages.length - 1 ? state.messages[i + 1] as MessageModel : null;
+            // prevMsg = message displayed BELOW this one (reverse list: i-1)
+            final prevMsg =
+                i > 0 ? state.messages[i - 1] as MessageModel : null;
+
+            // --- Grouping logic ---
+            // Messages from the same sender within the same minute are grouped.
+            final grouping = _computeGrouping(msg, prevMsg, nextMsg);
 
             return ChatMessageItem(
               message: msg,
@@ -65,10 +72,79 @@ class ChatMessageList extends StatelessWidget {
               isLast: i == state.messages.length - 1,
               onLongPress: onLongPress,
               groupReactions: groupReactions,
+              showTimestamp: grouping.showTimestamp,
+              isGroupStart: grouping.isGroupStart,
+              isGroupEnd: grouping.isGroupEnd,
             );
           },
         );
       },
     );
   }
+
+  /// Determines grouping flags for a message.
+  ///
+  /// The list is reversed (index 0 = newest). So:
+  /// - `prevMsg` (i-1) is the message displayed BELOW (newer / closer to bottom)
+  /// - `nextMsg` (i+1) is the message displayed ABOVE (older / closer to top)
+  ///
+  /// Two consecutive messages are in the same group when:
+  /// 1. Same sender
+  /// 2. Both timestamps exist and fall within the same minute
+  static _MessageGrouping _computeGrouping(
+    MessageModel msg,
+    MessageModel? prevMsg,
+    MessageModel? nextMsg,
+  ) {
+    final sameGroupAsBelow = _isSameGroup(msg, prevMsg);
+    final sameGroupAsAbove = _isSameGroup(msg, nextMsg);
+
+    // isGroupStart = first message of a visual group (top-most in the group = closest to older msgs)
+    // In the reversed list this means: no same-group message ABOVE (nextMsg).
+    final isGroupStart = !sameGroupAsAbove;
+
+    // isGroupEnd = last message of a visual group (bottom-most = closest to newer msgs)
+    // In the reversed list this means: no same-group message BELOW (prevMsg).
+    final isGroupEnd = !sameGroupAsBelow;
+
+    // Show timestamp only on the last (bottom) message of the group.
+    final showTimestamp = isGroupEnd;
+
+    return _MessageGrouping(
+      showTimestamp: showTimestamp,
+      isGroupStart: isGroupStart,
+      isGroupEnd: isGroupEnd,
+    );
+  }
+
+  /// Returns true when both messages belong to the same visual group.
+  static bool _isSameGroup(MessageModel a, MessageModel? b) {
+    if (b == null) return false;
+    if (a.senderId != b.senderId) return false;
+
+    final tA = DateTime.tryParse(a.createdAt ?? '');
+    final tB = DateTime.tryParse(b.createdAt ?? '');
+    if (tA == null || tB == null) return false;
+
+    // Same minute check
+    final localA = tA.toLocal();
+    final localB = tB.toLocal();
+    return localA.year == localB.year &&
+        localA.month == localB.month &&
+        localA.day == localB.day &&
+        localA.hour == localB.hour &&
+        localA.minute == localB.minute;
+  }
+}
+
+class _MessageGrouping {
+  final bool showTimestamp;
+  final bool isGroupStart;
+  final bool isGroupEnd;
+
+  const _MessageGrouping({
+    required this.showTimestamp,
+    required this.isGroupStart,
+    required this.isGroupEnd,
+  });
 }

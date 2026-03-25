@@ -5,7 +5,7 @@ import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 
-class QuestionPreviewCard extends StatelessWidget {
+class QuestionPreviewCard extends StatefulWidget {
   final String questionText;
   final String answer1;
   final String answer2;
@@ -30,16 +30,22 @@ class QuestionPreviewCard extends StatelessWidget {
   });
 
   @override
+  State<QuestionPreviewCard> createState() => _QuestionPreviewCardState();
+}
+
+class _QuestionPreviewCardState extends State<QuestionPreviewCard> {
+  bool _isExpanded = false;
+
+  @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final answers = [answer1, answer2, answer3, answer4];
+    final answers = [widget.answer1, widget.answer2, widget.answer3, widget.answer4];
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surfaceElevated,
+        color: context.appColors.surfaceElevated,
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
         border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.3),
+          color: context.appColors.primary.withValues(alpha: 0.3),
           width: 1,
         ),
       ),
@@ -48,56 +54,80 @@ class QuestionPreviewCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Header: Preview label + badges
-          Row(
-            children: [
-              Text(
-                context.tr('question_create_preview'),
-                style: theme.textTheme.labelSmall?.copyWith(
-                  color: AppColors.primary,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 1.2,
+          // Header: Preview label + badges + toggle
+          GestureDetector(
+            onTap: () => setState(() => _isExpanded = !_isExpanded),
+            behavior: HitTestBehavior.opaque,
+            child: Row(
+              children: [
+                Text(
+                  context.tr('question_create_preview'),
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: context.appColors.primary,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 1.2,
+                  ),
                 ),
-              ),
-              const Spacer(),
-              if (category != null) ...[
-                _CategoryBadge(category: category!),
                 const SizedBox(width: AppSpacing.xs),
+                AnimatedRotation(
+                  turns: _isExpanded ? 0.5 : 0,
+                  duration: const Duration(milliseconds: 200),
+                  child: Icon(
+                    Icons.keyboard_arrow_down,
+                    size: 18,
+                    color: context.appColors.primary,
+                  ),
+                ),
+                const Spacer(),
+                if (widget.category != null) ...[
+                  _CategoryBadge(category: widget.category!),
+                  const SizedBox(width: AppSpacing.xs),
+                ],
+                _TimeBadge(timeLimit: widget.timeLimit),
+                if (widget.hintText != null && widget.hintText!.isNotEmpty) ...[
+                  const SizedBox(width: AppSpacing.xs),
+                  QIcon(QIcons.icLightbulb, size: 14, color: context.appColors.warning),
+                ],
               ],
-              _TimeBadge(timeLimit: timeLimit),
-              if (hintText != null && hintText!.isNotEmpty) ...[
-                const SizedBox(width: AppSpacing.xs),
-                QIcon(QIcons.icLightbulb, size: 14, color: AppColors.warning),
-              ],
-            ],
-          ),
-          const SizedBox(height: AppSpacing.md),
-
-          // Question text
-          Text(
-            questionText.isEmpty ? '...' : questionText,
-            style: theme.textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: questionText.isEmpty ? AppColors.textHint : null,
             ),
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: AppSpacing.md),
 
-          // Answer pills — 2x2 grid
-          Wrap(
-            spacing: AppSpacing.sm,
-            runSpacing: AppSpacing.sm,
-            children: List.generate(4, (i) {
-              final isCorrect = i + 1 == correctAnswer;
-              final text = answers[i];
-              return _AnswerPill(
-                label: text.isEmpty ? '...' : text,
-                isCorrect: isCorrect,
-                isEmpty: text.isEmpty,
-              );
-            }),
+          // Collapsible content
+          AnimatedCrossFade(
+            firstChild: const SizedBox.shrink(),
+            secondChild: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: AppSpacing.md),
+                // Question text
+                Text(
+                  widget.questionText.isEmpty ? '...' : widget.questionText,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: widget.questionText.isEmpty ? context.appColors.textHint : null,
+                  ),
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: AppSpacing.md),
+                // Answer pills — 2x2 grid
+                Wrap(
+                  spacing: AppSpacing.sm,
+                  runSpacing: AppSpacing.sm,
+                  children: List.generate(4, (i) {
+                    final isCorrect = i + 1 == widget.correctAnswer;
+                    final text = answers[i];
+                    return _AnswerPill(
+                      label: text.isEmpty ? '...' : text,
+                      isCorrect: isCorrect,
+                      isEmpty: text.isEmpty,
+                    );
+                  }),
+                ),
+              ],
+            ),
+            crossFadeState: _isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+            duration: const Duration(milliseconds: 200),
           ),
         ],
       ),
@@ -117,13 +147,13 @@ class _CategoryBadge extends StatelessWidget {
         vertical: 2,
       ),
       decoration: BoxDecoration(
-        color: AppColors.primarySurface,
+        color: context.appColors.primarySurface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
       ),
       child: Text(
         context.tr('question_category_$category'),
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-          color: AppColors.primary,
+          color: context.appColors.primary,
           fontSize: 10,
         ),
       ),
@@ -143,18 +173,18 @@ class _TimeBadge extends StatelessWidget {
         vertical: 2,
       ),
       decoration: BoxDecoration(
-        color: AppColors.surfaceInput,
+        color: context.appColors.surfaceElevated,
         borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          QIcon(QIcons.icClock, size: 10, color: AppColors.textSecondary),
+          QIcon(QIcons.icClock, size: 10, color: context.appColors.textSecondary),
           const SizedBox(width: 3),
           Text(
             '${timeLimit}s',
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: AppColors.textSecondary,
+              color: context.appColors.textSecondary,
               fontSize: 10,
             ),
           ),
@@ -175,8 +205,15 @@ class _AnswerPill extends StatelessWidget {
     this.isEmpty = false,
   });
 
+  Color _textColor(BuildContext context) {
+    if (isEmpty) return context.appColors.textHint;
+    if (isCorrect) return context.appColors.secondary;
+    return context.appColors.textPrimary;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       constraints: const BoxConstraints(minWidth: 100),
       padding: const EdgeInsets.symmetric(
@@ -185,23 +222,19 @@ class _AnswerPill extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: isCorrect
-            ? AppColors.secondary.withValues(alpha: 0.15)
-            : AppColors.surface,
+            ? context.appColors.secondary.withValues(alpha: 0.15)
+            : theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         border: Border.all(
           color: isCorrect
-              ? AppColors.secondary.withValues(alpha: 0.5)
-              : AppColors.border,
+              ? context.appColors.secondary.withValues(alpha: 0.5)
+              : context.appColors.border,
         ),
       ),
       child: Text(
         label,
         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: isEmpty
-              ? AppColors.textHint
-              : isCorrect
-                  ? AppColors.secondary
-                  : AppColors.textPrimary,
+          color: _textColor(context),
           fontWeight: isCorrect ? FontWeight.w600 : FontWeight.normal,
         ),
         maxLines: 1,

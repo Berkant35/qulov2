@@ -169,10 +169,10 @@ class _FeatureRow extends StatelessWidget {
           width: AppSpacing.xxl,
           height: AppSpacing.xxl,
           decoration: BoxDecoration(
-            color: AppColors.primarySurface,
+            color: context.appColors.primarySurface,
             borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
           ),
-          child: Icon(icon, color: AppColors.primary, size: 18),
+          child: Icon(icon, color: context.appColors.primary, size: 18),
         ),
         const SizedBox(width: AppSpacing.md),
         Expanded(
@@ -230,13 +230,13 @@ class SwipeLimitSheet extends StatelessWidget {
       icon: Container(
         width: 64,
         height: 64,
-        decoration: const BoxDecoration(
-          color: AppColors.primarySurface,
+        decoration: BoxDecoration(
+          color: context.appColors.primarySurface,
           shape: BoxShape.circle,
         ),
-        child: const Icon(
+        child: Icon(
           Icons.swipe,
-          color: AppColors.primary,
+          color: context.appColors.primary,
           size: 32,
         ),
       ),

@@ -23,8 +23,8 @@ class ProfileReportButton extends ConsumerWidget {
         onPressed: () => _showSheet(context),
         child: Text(
           context.tr('report_or_block'),
-          style: const TextStyle(
-            color: AppColors.textSecondary,
+          style: TextStyle(
+            color: context.appColors.textSecondary,
             fontSize: 13,
           ),
         ),
@@ -35,7 +35,7 @@ class ProfileReportButton extends ConsumerWidget {
   void _showSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(AppSpacing.radiusLg),
@@ -51,20 +51,20 @@ class ProfileReportButton extends ConsumerWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.textSecondary.withValues(alpha: 0.3),
+                color: context.appColors.textSecondary.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
             const SizedBox(height: AppSpacing.lg),
             // Report option
             ListTile(
-              leading: const Icon(
+              leading: Icon(
                 Icons.flag_outlined,
-                color: AppColors.warning,
+                color: context.appColors.warning,
               ),
               title: Text(
                 context.tr('report'),
-                style: const TextStyle(color: AppColors.textPrimary),
+                style: TextStyle(color: context.appColors.textPrimary),
               ),
               onTap: () {
                 Navigator.pop(context);
@@ -73,13 +73,13 @@ class ProfileReportButton extends ConsumerWidget {
             ),
             // Block option
             ListTile(
-              leading: const Icon(
+              leading: Icon(
                 Icons.block,
-                color: AppColors.error,
+                color: context.appColors.error,
               ),
               title: Text(
                 context.tr('block'),
-                style: const TextStyle(color: AppColors.error),
+                style: TextStyle(color: context.appColors.error),
               ),
               onTap: () {
                 Navigator.pop(context);

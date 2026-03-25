@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
@@ -6,14 +7,18 @@ import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/data/models/user_model.dart';
+import 'package:qulo_v2/providers/location_provider.dart';
+import 'package:qulo_v2/providers/passport_provider.dart';
 
-class DetailChips extends StatelessWidget {
+class DetailChips extends ConsumerWidget {
   final UserModel user;
+  final bool isOwnProfile;
   final VoidCallback? onTap;
 
   const DetailChips({
     super.key,
     required this.user,
+    this.isOwnProfile = false,
     this.onTap,
   });
 
@@ -31,10 +36,25 @@ class DetailChips extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final details = user.details;
 
+    String? locationLabel;
+    if (isOwnProfile) {
+      final passport = ref.watch(passportProvider);
+      final location = ref.watch(locationProvider);
+      locationLabel = passport.isActive && passport.city != null
+          ? '${location.city ?? "?"} → ${passport.city}'
+          : location.city;
+    }
+
     final chips = <_ChipData>[
+      if (locationLabel != null && locationLabel.isNotEmpty)
+        _ChipData(
+          icon: QIcons.icLocation,
+          filled: true,
+          label: locationLabel,
+        ),
       _ChipData(
         icon: QIcons.icHeight,
         filled: details?.height != null,
@@ -112,12 +132,12 @@ class _DetailChipItem extends StatelessWidget {
 
     final colors = theme.colorScheme;
     final bgColor =
-        isFilled ? AppColors.primarySurface : colors.surface;
+        isFilled ? context.appColors.primarySurface : colors.surface;
     final borderColor = isFilled
-        ? AppColors.primary.withValues(alpha: 0.3)
+        ? context.appColors.primary.withValues(alpha: 0.3)
         : colors.outline;
     final iconColor = isFilled
-        ? AppColors.primary
+        ? context.appColors.primary
         : colors.onSurfaceVariant.withValues(alpha: 0.4);
     final textColor = isFilled
         ? null

@@ -5,8 +5,10 @@ import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/services/haptic_manager.dart';
+import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/data/models/quiz_model.dart';
+import 'package:qulo_v2/features/diamonds/widgets/paywall_bottom_sheet.dart';
 import 'package:qulo_v2/providers/quiz_provider.dart';
 import 'package:qulo_v2/providers/exchange_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
@@ -39,14 +41,28 @@ mixin QuizScreenMixin on ConsumerState<QuizScreen> {
   void initMixin() {
     Future.microtask(() async {
       if (!mounted) return;
+      ref.read(quizProvider.notifier).reset();
       ref.read(exchangeProvider.notifier).fetchAll();
-      await ref.read(quizProvider.notifier).startSession(widget.targetId);
+      final result = await ref.read(quizProvider.notifier).startSession(widget.targetId);
       if (!mounted) return;
-      startQuestionTimer();
-      sessionStopwatch.start();
-      AnalyticsManager.instance.logEvent(
-        AnalyticsEvents.quizStart,
-        params: {AnalyticsEvents.paramPartnerId: widget.targetId},
+      result.when(
+        success: (_) {
+          startQuestionTimer();
+          sessionStopwatch.start();
+          AnalyticsManager.instance.logEvent(
+            AnalyticsEvents.quizStart,
+            params: {AnalyticsEvents.paramPartnerId: widget.targetId},
+          );
+        },
+        failure: (f) {
+          AnalyticsManager.instance.logEvent(
+            AnalyticsEvents.quizStartFailed,
+            params: {
+              AnalyticsEvents.paramPartnerId: widget.targetId,
+              AnalyticsEvents.paramErrorCode: f is ServerFailure ? f.code : 'unknown',
+            },
+          );
+        },
       );
     });
   }
@@ -177,7 +193,7 @@ mixin QuizScreenMixin on ConsumerState<QuizScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(f.message ?? context.tr('quiz_power_failed')),
-              backgroundColor: AppColors.error,
+              backgroundColor: context.appColors.error,
             ),
           );
         }
@@ -253,11 +269,14 @@ mixin QuizScreenMixin on ConsumerState<QuizScreen> {
         }
       },
       failure: (f) {
-        if (mounted) {
+        if (!mounted) return;
+        if (f is ServerFailure && f.code == 'INSUFFICIENT_DIAMONDS') {
+          PaywallBottomSheetContent.show(ref, trigger: 'quiz_rescue');
+        } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(f.message ?? context.tr('quiz_rescue_failed')),
-              backgroundColor: AppColors.error,
+              backgroundColor: context.appColors.error,
             ),
           );
         }
@@ -332,7 +351,7 @@ mixin QuizScreenMixin on ConsumerState<QuizScreen> {
       final power = rates.powers.where((p) => p.name == powerName).firstOrNull;
       if (power != null) return power.purpleCost;
     }
-    return 20;
+    return 0;
   }
 
   void onStartChat() {

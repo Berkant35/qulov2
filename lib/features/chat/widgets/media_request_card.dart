@@ -28,19 +28,20 @@ class MediaRequestCard extends StatelessWidget {
 
     switch (status) {
       case 'accepted':
-        borderColor = AppColors.success.withValues(alpha: 0.5);
+        borderColor = context.appColors.success.withValues(alpha: 0.5);
         icon = Icons.check_circle_outline;
-        iconColor = AppColors.success;
+        iconColor = context.appColors.success;
       case 'rejected':
-        borderColor = AppColors.textHint.withValues(alpha: 0.4);
+        borderColor = context.appColors.textHint.withValues(alpha: 0.4);
         icon = Icons.close;
-        iconColor = AppColors.textHint;
+        iconColor = context.appColors.textHint;
       default: // pending
-        borderColor = AppColors.primary.withValues(alpha: 0.4);
+        borderColor = context.appColors.primary.withValues(alpha: 0.4);
         icon = Icons.camera_alt_outlined;
-        iconColor = AppColors.primary;
+        iconColor = context.appColors.primary;
     }
 
+    final theme = Theme.of(context);
     return Container(
       margin: const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm,
@@ -48,7 +49,7 @@ class MediaRequestCard extends StatelessWidget {
       ),
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         border: Border.all(color: borderColor, width: 1.5),
       ),
@@ -91,7 +92,7 @@ class _MediaRequestContent extends StatelessWidget {
         return Text(
           'Medya paylaşımı aktif',
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: AppColors.success,
+            color: context.appColors.success,
             fontWeight: FontWeight.w600,
           ),
         );
@@ -99,7 +100,7 @@ class _MediaRequestContent extends StatelessWidget {
         return Text(
           'Medya isteği reddedildi',
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: AppColors.textHint,
+            color: context.appColors.textHint,
           ),
         );
       default: // pending
@@ -110,7 +111,7 @@ class _MediaRequestContent extends StatelessWidget {
               Text(
                 'Medya isteği gönderildi',
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: AppColors.textPrimary,
+                  color: context.appColors.textPrimary,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -118,7 +119,7 @@ class _MediaRequestContent extends StatelessWidget {
               Text(
                 'Cevap bekleniyor...',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppColors.textHint,
+                  color: context.appColors.textHint,
                   fontStyle: FontStyle.italic,
                 ),
               ),
@@ -131,7 +132,7 @@ class _MediaRequestContent extends StatelessWidget {
               Text(
                 '\u{1F4F7} Medya paylaşmak istiyor',
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: AppColors.textPrimary,
+                  color: context.appColors.textPrimary,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -142,8 +143,8 @@ class _MediaRequestContent extends StatelessWidget {
                     child: OutlinedButton(
                       onPressed: onReject,
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: AppColors.textSecondary,
-                        side: const BorderSide(color: AppColors.border),
+                        foregroundColor: context.appColors.textSecondary,
+                        side: BorderSide(color: context.appColors.border),
                         shape: RoundedRectangleBorder(
                           borderRadius:
                               BorderRadius.circular(AppSpacing.radiusSm),
@@ -157,8 +158,8 @@ class _MediaRequestContent extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: onAccept,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: AppColors.textPrimary,
+                        backgroundColor: context.appColors.primary,
+                        foregroundColor: context.appColors.textPrimary,
                         shape: RoundedRectangleBorder(
                           borderRadius:
                               BorderRadius.circular(AppSpacing.radiusSm),

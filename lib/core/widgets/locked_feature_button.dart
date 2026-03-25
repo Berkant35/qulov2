@@ -34,7 +34,7 @@ class LockedFeatureButton extends ConsumerWidget {
                 width: 28,
                 height: 28,
                 decoration: BoxDecoration(
-                  color: AppColors.surfaceElevated,
+                  color: context.appColors.surfaceElevated,
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
@@ -43,8 +43,8 @@ class LockedFeatureButton extends ConsumerWidget {
                     ),
                   ],
                 ),
-                child: const Center(
-                  child: QIcon(QIcons.icLock, size: 14, color: AppColors.primary),
+                child: Center(
+                  child: QIcon(QIcons.icLock, size: 14, color: context.appColors.primary),
                 ),
               ),
             ],

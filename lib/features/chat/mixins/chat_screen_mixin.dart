@@ -16,16 +16,13 @@ import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/data/models/message_model.dart';
 import 'package:qulo_v2/providers/chat_provider.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
-import 'package:qulo_v2/providers/diamond_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/features/chat/screens/chat_screen.dart';
-import 'package:qulo_v2/features/chat/sheets/create_question_sheet.dart';
+import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/features/chat/widgets/reaction_picker.dart';
 
 mixin ChatScreenMixin on ConsumerState<ChatScreen> {
-  static const _pendingMediaMsg =
-      'Medya istegi zaten gonderildi. Karsi tarafin yaniti bekleniyor.';
 
   final msgCtrl = TextEditingController();
   final scrollCtrl = ScrollController();
@@ -53,19 +50,28 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
     scrollCtrl.addListener(_onScroll);
     _loadQuizSummaryDismissState();
     Future.microtask(() {
+      // Aktif chat'i işaretle — in-app banner suppress için
+      ref.read(activeChatMatchIdProvider.notifier).state = widget.matchId;
+      // Clear question cache so cards re-fetch fresh data
+      ref.read(chatQuestionCacheProvider.notifier).state = {};
+
       final notifier = ref.read(chatProvider(widget.matchId).notifier);
-      notifier.loadMessages();
       notifier.markAsRead();
       notifier.loadMediaStatus();
       _subscribeRealtime();
       _subscribeTyping();
       _subscribeMediaRequests();
+      // Question updates handled via FCM (NotificationNotifier)
     });
   }
 
   void disposeMixin() {
     _disposed = true;
     _chatStopwatch.stop();
+    // Aktif chat'i temizle — guard against disposed ref
+    try {
+      ref.read(activeChatMatchIdProvider.notifier).state = null;
+    } catch (_) {}
     AnalyticsManager.instance.logEvent(
       AnalyticsEvents.chatClose,
       params: {
@@ -212,6 +218,8 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
         .subscribe();
   }
 
+  // Question updates come via FCM (NotificationNotifier._refreshQuestionCache).
+
   void sendTypingEvent() {
     final myId = ref.read(authProvider).userId;
     _typingChannel?.sendBroadcastMessage(
@@ -229,7 +237,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
       builder: (_) => Container(
         padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
-          color: AppColors.surfaceElevated,
+          color: context.appColors.surfaceElevated,
           borderRadius: const BorderRadius.vertical(
               top: Radius.circular(AppSpacing.radiusLg)),
         ),
@@ -248,14 +256,14 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
               if (isMe) ...[
                 const SizedBox(height: AppSpacing.lg),
                 ListTile(
-                  leading: const Icon(Icons.delete_outline,
-                      color: AppColors.error),
+                  leading: Icon(Icons.delete_outline,
+                      color: context.appColors.error),
                   title: Text(
-                    'Mesaji Sil',
+                    AppLocalizations.of(context).get('chat_delete_message'),
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge
-                        ?.copyWith(color: AppColors.error),
+                        ?.copyWith(color: context.appColors.error),
                   ),
                   onTap: () {
                     Navigator.pop(context);
@@ -291,32 +299,16 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
     );
   }
 
-  // ─── Question Sheet ───
+  // ─── Question Screen ───
 
-  void showCreateQuestionSheet() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => CreateQuestionSheet(
-        matchId: widget.matchId,
-        onSubmit: (data) async {
-          final service = ref.read(chatQuestionServiceProvider);
-          final question =
-              await service.createQuestion(widget.matchId, data);
-          ref.read(chatQuestionCacheProvider.notifier).update((state) => {
-                ...state,
-                question.id: question,
-              });
-          ref.invalidate(diamondProvider);
-          await ref
-              .read(chatProvider(widget.matchId).notifier)
-              .loadMessages();
-          WidgetsBinding.instance
-              .addPostFrameCallback((_) => scrollToBottom());
-        },
-      ),
+  Future<void> showCreateQuestionSheet() async {
+    final result = await ref.read(navigationServiceProvider).push<bool>(
+      RouteNames.createChatQuestion,
+      params: {'matchId': widget.matchId},
     );
+    if (result == true && mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => scrollToBottom());
+    }
   }
 
   // ─── Unmatch ───
@@ -344,47 +336,26 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
   // ─── Media ───
 
   Future<void> handlePhotoTap() async {
-    final chatState = ref.read(chatProvider(widget.matchId)).valueOrNull;
+    var chatState = ref.read(chatProvider(widget.matchId)).valueOrNull;
     if (chatState == null) return;
-    if (chatState.mediaEnabled) {
+    if (!chatState.mediaEnabled) {
+      await ref.read(chatProvider(widget.matchId).notifier).loadMediaStatus();
+      chatState = ref.read(chatProvider(widget.matchId)).valueOrNull;
+    }
+    if (chatState?.mediaEnabled == true) {
       _showPhotoSourceSheet();
     } else {
-      _showMediaConsentDialog();
+      _autoRequestMedia();
     }
   }
 
-  Future<void> _showMediaConsentDialog() async {
-    // Zaten pending request varsa tekrar gönderme
+  Future<void> _autoRequestMedia() async {
     final pending = ref.read(chatProvider(widget.matchId)).valueOrNull?.pendingMediaRequest;
+    final l10n = AppLocalizations.of(context);
     if (pending != null) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text(_pendingMediaMsg)),
-        );
-      }
-      return;
-    }
-
-    final confirmed =
-        await ref.read(navigationServiceProvider).showAppDialog<bool>(
-              const ConfirmDialog(
-                name: 'media_consent',
-                title: 'Medya Paylasimi',
-                message:
-                    'Medya paylasmak icin karsi tarafin da onay vermesi gerekiyor. Istek gonderilsin mi?',
-                confirmText: 'Istek Gonder',
-                cancelText: 'Iptal',
-              ),
-            );
-    if (confirmed != true) return;
-
-    // Dialog süresince state değişmiş olabilir — tekrar kontrol et
-    final freshPending =
-        ref.read(chatProvider(widget.matchId)).valueOrNull?.pendingMediaRequest;
-    if (freshPending != null) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text(_pendingMediaMsg)),
+          SnackBar(content: Text(l10n.get('chat_media_pending'))),
         );
       }
       return;
@@ -395,16 +366,19 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
       success: (_) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Medya istegi gonderildi!')),
+            SnackBar(content: Text(l10n.get('chat_media_request_sent'))),
           );
         }
       },
       failure: (failure) {
         if (!mounted) return;
+        if (failure is ServerFailure && failure.code == 'MEDIA_ALREADY_ENABLED') {
+          ref.read(chatProvider(widget.matchId).notifier).loadMediaStatus();
+          return;
+        }
         final msg = switch (failure) {
-          ServerFailure(code: 'MEDIA_REQUEST_PENDING') => _pendingMediaMsg,
-          ServerFailure(code: 'MEDIA_ALREADY_ENABLED') => 'Medya paylasimi zaten aktif.',
-          _ => 'Medya istegi gonderilemedi. Lutfen tekrar deneyin.',
+          ServerFailure(code: 'MEDIA_REQUEST_PENDING') => l10n.get('chat_media_pending'),
+          _ => l10n.get('chat_media_request_failed'),
         };
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
       },
@@ -418,7 +392,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
       builder: (_) => Container(
         padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
-          color: AppColors.surfaceElevated,
+          color: context.appColors.surfaceElevated,
           borderRadius: const BorderRadius.vertical(
               top: Radius.circular(AppSpacing.radiusLg)),
         ),
@@ -428,7 +402,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
             children: [
               ListTile(
                 leading: const Icon(Icons.photo_library_outlined),
-                title: const Text('Galeriden Sec'),
+                title: Text(AppLocalizations.of(context).get('from_gallery')),
                 onTap: () {
                   Navigator.pop(context);
                   _pickAndSendPhoto(ImageSource.gallery);
@@ -436,7 +410,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
               ),
               ListTile(
                 leading: const Icon(Icons.camera_alt_outlined),
-                title: const Text('Kamera'),
+                title: Text(AppLocalizations.of(context).get('from_camera')),
                 onTap: () {
                   Navigator.pop(context);
                   _pickAndSendPhoto(ImageSource.camera);
@@ -456,17 +430,14 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
         : await picker.pickFromCamera();
     if (picked == null) return;
 
-    final fileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
-    final storagePath = 'chat-media/${widget.matchId}/$fileName';
-
     try {
-      await Supabase.instance.client.storage
-          .from('chat-media')
-          .uploadBinary(storagePath, picked.bytes);
-
-      final url = Supabase.instance.client.storage
-          .from('chat-media')
-          .getPublicUrl(storagePath);
+      final uploadResult = await ref.read(chatRepositoryProvider).uploadMedia(
+        widget.matchId,
+        bytes: picked.bytes,
+        mimeType: picked.mimeType,
+      );
+      final url = uploadResult.when(success: (u) => u, failure: (_) => null);
+      if (url == null) throw Exception('Upload failed');
 
       await ref
           .read(chatProvider(widget.matchId).notifier)
@@ -482,8 +453,8 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Fotograf gonderilemedi. Lutfen tekrar deneyin.')),
+          SnackBar(
+              content: Text(AppLocalizations.of(context).get('chat_photo_send_failed'))),
         );
       }
     }
@@ -491,14 +462,18 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
 
   // ─── Voice ───
 
-  void startVoiceRecording() {
-    final chatState = ref.read(chatProvider(widget.matchId)).valueOrNull;
+  Future<void> startVoiceRecording() async {
+    var chatState = ref.read(chatProvider(widget.matchId)).valueOrNull;
     if (chatState == null) return;
     if (!chatState.mediaEnabled) {
-      _showMediaConsentDialog();
-      return;
+      await ref.read(chatProvider(widget.matchId).notifier).loadMediaStatus();
+      chatState = ref.read(chatProvider(widget.matchId)).valueOrNull;
     }
-    setState(() => isRecording = true);
+    if (chatState?.mediaEnabled == true) {
+      setState(() => isRecording = true);
+    } else {
+      _autoRequestMedia();
+    }
   }
 
   Future<void> handleVoiceComplete(
@@ -506,17 +481,15 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
     setState(() => isRecording = false);
 
     final file = File(filePath);
-    final fileName = '${DateTime.now().millisecondsSinceEpoch}.m4a';
-    final storagePath = 'chat-media/${widget.matchId}/$fileName';
 
     try {
-      await Supabase.instance.client.storage
-          .from('chat-media')
-          .upload(storagePath, file);
-
-      final url = Supabase.instance.client.storage
-          .from('chat-media')
-          .getPublicUrl(storagePath);
+      final uploadResult = await ref.read(chatRepositoryProvider).uploadMedia(
+        widget.matchId,
+        file: file,
+        mimeType: 'audio/m4a',
+      );
+      final url = uploadResult.when(success: (u) => u, failure: (_) => null);
+      if (url == null) throw Exception('Upload failed');
 
       await ref.read(chatProvider(widget.matchId).notifier).sendMessage(
           'Sesli mesaj',
@@ -534,9 +507,9 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
               content:
-                  Text('Sesli mesaj gonderilemedi. Lutfen tekrar deneyin.')),
+                  Text(AppLocalizations.of(context).get('chat_voice_send_failed'))),
         );
       }
     }
@@ -547,14 +520,14 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
   }
 
   Future<void> handleDisableMedia() async {
+    final l10n = AppLocalizations.of(context);
     final confirmed =
         await ref.read(navigationServiceProvider).showAppDialog<bool>(
-              const ConfirmDialog(
+              ConfirmDialog(
                 name: 'media_disable',
-                title: 'Medya Paylasimini Kapat',
-                message:
-                    'Medya paylasimini kapatmak istediginize emin misiniz?',
-                confirmText: 'Kapat',
+                title: l10n.get('chat_media_disable_title'),
+                message: l10n.get('chat_media_disable_message'),
+                confirmText: l10n.get('chat_media_disable_confirm'),
                 isDestructive: true,
               ),
             );

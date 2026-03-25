@@ -40,20 +40,20 @@ class QuestionStepQuestion extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  AppColors.primary.withValues(alpha: 0.1),
-                  AppColors.primary.withValues(alpha: 0.05),
+                  context.appColors.primary.withValues(alpha: 0.1),
+                  context.appColors.primary.withValues(alpha: 0.05),
                 ],
               ),
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             ),
             child: Column(
               children: [
-                QIcon(QIcons.icWand, size: 28, color: AppColors.primary),
+                QIcon(QIcons.icWand, size: 28, color: context.appColors.primary),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
                   context.tr('question_create_motto'),
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: AppColors.primary,
+                    color: context.appColors.primary,
                     fontWeight: FontWeight.w600,
                   ),
                   textAlign: TextAlign.center,
@@ -62,7 +62,7 @@ class QuestionStepQuestion extends StatelessWidget {
                 Text(
                   context.tr('question_create_motto_tip'),
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: AppColors.textSecondary,
+                    color: context.appColors.textSecondary,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -109,7 +109,7 @@ class QuestionStepQuestion extends StatelessWidget {
                     onLocaleChanged(result.first);
                   }
                 },
-                side: BorderSide(color: AppColors.primary),
+                side: BorderSide(color: context.appColors.primary),
               ),
             ],
           ),
@@ -134,10 +134,10 @@ class QuestionStepQuestion extends StatelessWidget {
                 onSelected: (selected) {
                   onCategoryChanged(selected ? cat : null);
                 },
-                selectedColor: AppColors.primarySurface,
-                checkmarkColor: AppColors.primary,
+                selectedColor: context.appColors.primarySurface,
+                checkmarkColor: context.appColors.primary,
                 side: BorderSide(
-                  color: isSelected ? AppColors.primary : AppColors.border,
+                  color: isSelected ? context.appColors.primary : context.appColors.border,
                 ),
               );
             }).toList(),

@@ -36,10 +36,10 @@ class QuestionsListCard extends StatelessWidget {
           alignment: Alignment.centerRight,
           padding: const EdgeInsets.only(right: AppSpacing.xl),
           decoration: BoxDecoration(
-            color: AppColors.error.withValues(alpha: 0.15),
+            color: context.appColors.error.withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           ),
-          child: Icon(Icons.delete_outline, color: AppColors.error),
+          child: Icon(Icons.delete_outline, color: context.appColors.error),
         ),
         confirmDismiss: (_) async {
           onDelete();
@@ -49,9 +49,9 @@ class QuestionsListCard extends StatelessWidget {
           onTap: onTap,
           child: Container(
             decoration: BoxDecoration(
-              color: AppColors.surfaceElevated,
+              color: context.appColors.surfaceElevated,
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-              border: Border.all(color: AppColors.border),
+              border: Border.all(color: context.appColors.border),
             ),
             padding: const EdgeInsets.all(AppSpacing.lg),
             child: Column(
@@ -64,13 +64,13 @@ class QuestionsListCard extends StatelessWidget {
                       height: 28,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: AppColors.primarySurface,
+                        color: context.appColors.primarySurface,
                       ),
                       child: Center(
                         child: Text(
                           '${question.orderNum}',
                           style: theme.textTheme.labelSmall?.copyWith(
-                            color: AppColors.primary,
+                            color: context.appColors.primary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -84,7 +84,7 @@ class QuestionsListCard extends StatelessWidget {
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.primarySurface,
+                          color: context.appColors.primarySurface,
                           borderRadius:
                               BorderRadius.circular(AppSpacing.radiusFull),
                         ),
@@ -92,7 +92,7 @@ class QuestionsListCard extends StatelessWidget {
                           context
                               .tr('question_category_${question.category}'),
                           style: theme.textTheme.labelSmall?.copyWith(
-                            color: AppColors.primary,
+                            color: context.appColors.primary,
                             fontSize: 10,
                           ),
                         ),
@@ -106,13 +106,13 @@ class QuestionsListCard extends StatelessWidget {
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.surfaceInput,
+                          color: context.appColors.surfaceElevated,
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
                           '${AppConstants.localeFlagEmojis[question.locale] ?? ''} ${question.locale!.toUpperCase()}',
                           style: theme.textTheme.labelSmall?.copyWith(
-                            color: AppColors.textSecondary,
+                            color: context.appColors.textSecondary,
                             fontSize: 10,
                           ),
                         ),
@@ -125,7 +125,7 @@ class QuestionsListCard extends StatelessWidget {
                         vertical: 2,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.surfaceInput,
+                        color: context.appColors.surfaceElevated,
                         borderRadius:
                             BorderRadius.circular(AppSpacing.radiusFull),
                       ),
@@ -133,12 +133,12 @@ class QuestionsListCard extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           QIcon(QIcons.icClock,
-                              size: 10, color: AppColors.textSecondary),
+                              size: 10, color: context.appColors.textSecondary),
                           const SizedBox(width: 3),
                           Text(
                             '${question.timeLimit}s',
                             style: theme.textTheme.labelSmall?.copyWith(
-                              color: AppColors.textSecondary,
+                              color: context.appColors.textSecondary,
                               fontSize: 10,
                             ),
                           ),
@@ -148,7 +148,7 @@ class QuestionsListCard extends StatelessWidget {
                     const Spacer(),
                     IconButton(
                       icon: Icon(Icons.delete_outline,
-                          color: AppColors.error, size: 18),
+                          color: context.appColors.error, size: 18),
                       onPressed: onDelete,
                       constraints: const BoxConstraints(),
                       padding: EdgeInsets.zero,
@@ -171,7 +171,7 @@ class QuestionsListCard extends StatelessWidget {
                     Text(
                       '${question.statsSolveCount} ${context.tr('profile_vitrin_solves')}',
                       style: theme.textTheme.labelSmall?.copyWith(
-                        color: AppColors.textSecondary,
+                        color: context.appColors.textSecondary,
                       ),
                     ),
                     const SizedBox(width: AppSpacing.sm),
@@ -180,7 +180,7 @@ class QuestionsListCard extends StatelessWidget {
                       height: 4,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: AppColors.textHint,
+                        color: context.appColors.textHint,
                       ),
                     ),
                     const SizedBox(width: AppSpacing.sm),

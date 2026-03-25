@@ -19,7 +19,7 @@ class GreenEarnedBanner extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.secondarySurface,
+        color: context.appColors.secondarySurface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
       ),
       child: Row(
@@ -33,7 +33,7 @@ class GreenEarnedBanner extends StatelessWidget {
                   .tr('analytics_green_question')
                   .replaceAll('{n}', '$greenEarned'),
               style: theme.textTheme.bodySmall?.copyWith(
-                color: AppColors.secondary,
+                color: context.appColors.secondary,
                 fontWeight: FontWeight.w600,
               ),
             ),

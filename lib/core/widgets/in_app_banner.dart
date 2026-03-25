@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
+import 'package:qulo_v2/core/utils/text_utils.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 
 class InAppBanner extends StatefulWidget {
@@ -79,7 +80,7 @@ class _InAppBannerState extends State<InAppBanner>
             margin: const EdgeInsets.all(AppSpacing.md),
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: AppColors.surfaceElevated,
+              color: context.appColors.surfaceElevated,
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
               boxShadow: const [
                 BoxShadow(
@@ -91,7 +92,7 @@ class _InAppBannerState extends State<InAppBanner>
             ),
             child: Row(
               children: [
-                QIcon(QIcons.icBellFilled, size: 24, color: AppColors.primary),
+                QIcon(QIcons.icBellFilled, size: 24, color: context.appColors.primary),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Column(
@@ -100,19 +101,19 @@ class _InAppBannerState extends State<InAppBanner>
                     children: [
                       Text(
                         widget.title,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 14,
-                          color: AppColors.textPrimary,
+                          color: context.appColors.textPrimary,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
-                        widget.body,
-                        style: const TextStyle(
+                        sanitizeNotificationBody(widget.body),
+                        style: TextStyle(
                           fontSize: 12,
-                          color: AppColors.textSecondary,
+                          color: context.appColors.textSecondary,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,

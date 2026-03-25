@@ -6,6 +6,7 @@ import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/diamond_icon.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
+import 'package:qulo_v2/providers/economy_config_provider.dart';
 import 'package:qulo_v2/providers/exchange_provider.dart';
 
 class ConvertSection extends ConsumerStatefulWidget {
@@ -21,7 +22,8 @@ class _ConvertSectionState extends ConsumerState<ConvertSection> {
 
   int get _greenAmount => _sliderValue.toInt();
   int get _convertRatio =>
-      ref.read(exchangeProvider).rates?.convertRatio ?? 3;
+      ref.read(exchangeProvider).rates?.convertRatio ??
+      ref.read(economyConfigProvider).core.greenToPurpleRatio;
   int get _purpleResult => _greenAmount ~/ _convertRatio;
 
   int get _maxGreen {
@@ -94,7 +96,7 @@ class _ConvertSectionState extends ConsumerState<ConvertSection> {
                   Text(
                     '$_greenAmount',
                     style: theme.textTheme.headlineSmall?.copyWith(
-                      color: AppColors.secondary,
+                      color: context.appColors.secondary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -116,7 +118,7 @@ class _ConvertSectionState extends ConsumerState<ConvertSection> {
                   Text(
                     '$_purpleResult',
                     style: theme.textTheme.headlineSmall?.copyWith(
-                      color: AppColors.primary,
+                      color: context.appColors.primary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -130,10 +132,10 @@ class _ConvertSectionState extends ConsumerState<ConvertSection> {
           // Slider
           SliderTheme(
             data: SliderTheme.of(context).copyWith(
-              activeTrackColor: AppColors.secondary,
-              inactiveTrackColor: AppColors.secondary.withValues(alpha: 0.2),
-              thumbColor: AppColors.secondary,
-              overlayColor: AppColors.secondary.withValues(alpha: 0.1),
+              activeTrackColor: context.appColors.secondary,
+              inactiveTrackColor: context.appColors.secondary.withValues(alpha: 0.2),
+              thumbColor: context.appColors.secondary,
+              overlayColor: context.appColors.secondary.withValues(alpha: 0.1),
             ),
             child: Slider(
               value: _sliderValue.clamp(ratio.toDouble(), maxGreen.toDouble()),
@@ -170,7 +172,7 @@ class _ConvertSectionState extends ConsumerState<ConvertSection> {
                   ? _onConvert
                   : null,
               style: FilledButton.styleFrom(
-                backgroundColor: AppColors.secondary,
+                backgroundColor: context.appColors.secondary,
                 foregroundColor: Colors.black,
                 padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                 shape: RoundedRectangleBorder(

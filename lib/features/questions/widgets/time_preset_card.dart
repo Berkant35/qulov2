@@ -26,10 +26,10 @@ class TimePresetCard extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primarySurface : AppColors.surface,
+          color: isSelected ? context.appColors.primarySurface : theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.border,
+            color: isSelected ? context.appColors.primary : context.appColors.border,
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -40,7 +40,7 @@ class TimePresetCard extends StatelessWidget {
             Text(
               '${seconds}s',
               style: theme.textTheme.headlineSmall?.copyWith(
-                color: isSelected ? AppColors.primary : AppColors.textPrimary,
+                color: isSelected ? context.appColors.primary : context.appColors.textPrimary,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -48,7 +48,7 @@ class TimePresetCard extends StatelessWidget {
             Text(
               label,
               style: theme.textTheme.bodySmall?.copyWith(
-                color: isSelected ? AppColors.primary : AppColors.textPrimary,
+                color: isSelected ? context.appColors.primary : context.appColors.textPrimary,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -56,7 +56,7 @@ class TimePresetCard extends StatelessWidget {
             Text(
               description,
               style: theme.textTheme.labelSmall?.copyWith(
-                color: AppColors.textSecondary,
+                color: context.appColors.textSecondary,
                 fontSize: 10,
               ),
               textAlign: TextAlign.center,

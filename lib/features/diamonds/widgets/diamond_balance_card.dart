@@ -37,7 +37,7 @@ class DiamondBalanceCard extends StatelessWidget {
               icon: const DiamondIcon.purple(size: 32, showGlow: true),
               count: purpleCount,
               label: context.tr('purple_diamonds'),
-              color: AppColors.primary,
+              color: context.appColors.primary,
             ),
           ),
           Container(
@@ -50,7 +50,7 @@ class DiamondBalanceCard extends StatelessWidget {
               icon: const DiamondIcon.green(size: 32, showGlow: true),
               count: greenCount,
               label: context.tr('green_diamonds'),
-              color: AppColors.secondary,
+              color: context.appColors.secondary,
             ),
           ),
         ],

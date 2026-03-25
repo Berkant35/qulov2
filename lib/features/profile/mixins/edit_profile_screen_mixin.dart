@@ -7,10 +7,14 @@ import 'package:qulo_v2/core/services/image_picker_manager.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/core/widgets/milestone_celebration_sheet.dart';
+import 'package:qulo_v2/providers/economy_config_provider.dart';
 import 'package:qulo_v2/providers/edit_profile_provider.dart';
+import 'package:qulo_v2/providers/user_languages_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
 import 'package:qulo_v2/features/profile/screens/edit_profile_screen.dart';
+import 'package:qulo_v2/features/profile/widgets/profile_save_success_sheet.dart';
+import 'package:qulo_v2/routing/route_names.dart';
 
 mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
   // ─── Controllers ───
@@ -27,9 +31,14 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
 
   void initMixin() {
     _loadControllers();
+    _addCompletionListeners();
   }
 
   void disposeMixin() {
+    // Remove listeners before dispose
+    for (final c in _completionControllers) {
+      c.removeListener(_onCompletionFieldChanged);
+    }
     bioController.dispose();
     nameController.dispose();
     cityController.dispose();
@@ -40,6 +49,30 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
     petsController.dispose();
     musicController.dispose();
     personalityController.dispose();
+  }
+
+  List<TextEditingController> get _completionControllers => [
+        bioController,
+        nameController,
+        cityController,
+        heightController,
+        weightController,
+        jobController,
+        schoolController,
+        petsController,
+        musicController,
+        personalityController,
+      ];
+
+  void _addCompletionListeners() {
+    for (final c in _completionControllers) {
+      c.addListener(_onCompletionFieldChanged);
+    }
+  }
+
+  void _onCompletionFieldChanged() {
+    // Trigger rebuild so section completion texts update reactively
+    if (mounted) setState(() {});
   }
 
   void _loadControllers() {
@@ -256,40 +289,56 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
 
     if (success) {
       AnalyticsManager.instance.logEvent(AnalyticsEvents.profileEditSave);
+      // Sync: userLanguagesProvider'ı userProvider'dan güncelle
+      ref.read(userLanguagesProvider.notifier).syncFromUser();
     }
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            success ? context.tr('save_success') : context.tr('save_error'),
-          ),
-        ),
-      );
+      if (!success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.tr('save_error'))),
+        );
+        return;
+      }
 
-      if (success) {
-        // Detect newly claimed milestones
-        final newMilestones =
-            ref.read(userProvider.notifier).detectNewMilestones(oldClaimed);
+      // Detect newly claimed milestones
+      final newMilestones =
+          ref.read(userProvider.notifier).detectNewMilestones(oldClaimed);
 
-        if (newMilestones.isNotEmpty) {
-          const milestoneRewards = {25: 5, 50: 15, 75: 30, 100: 50};
-          final highestMilestone = newMilestones.last;
+      if (newMilestones.isNotEmpty) {
+        final milestoneRewards = ref.read(economyConfigProvider).rewards.milestones;
+        final highestMilestone = newMilestones.last;
 
-          await ref.read(navigationServiceProvider).showAppBottomSheet(
-                CustomBottomSheet(
-                  name: 'milestone_celebration',
-                  builder: (_) => MilestoneCelebrationSheet(
-                    milestone: highestMilestone,
-                    reward: milestoneRewards[highestMilestone] ?? 0,
-                  ),
+        await ref.read(navigationServiceProvider).showAppBottomSheet(
+              CustomBottomSheet(
+                name: 'milestone_celebration',
+                builder: (_) => MilestoneCelebrationSheet(
+                  milestone: highestMilestone,
+                  reward: milestoneRewards[highestMilestone] ?? 0,
                 ),
-              );
-        }
+              ),
+            );
+      }
 
-        if (mounted) {
-          ref.read(navigationServiceProvider).pop();
-        }
+      // Show success sheet (after milestone if any)
+      if (mounted) {
+        await ref.read(navigationServiceProvider).showAppBottomSheet(
+          CustomBottomSheet(
+            name: 'profile_save_success',
+            builder: (_) => ProfileSaveSuccessSheet(
+              onPreview: () {
+                ref.read(navigationServiceProvider).closeOverlay();
+                AnalyticsManager.instance.logEvent(
+                  AnalyticsEvents.saveSuccessPreviewTapped,
+                );
+                ref.read(navigationServiceProvider).push(
+                  RouteNames.profilePreview,
+                  extra: 'edit_screen',
+                );
+              },
+            ),
+          ),
+        );
       }
     }
   }
@@ -335,7 +384,9 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
   // ─── Progress Helpers ───
 
   int? nextMilestone(int completion) {
-    for (final m in [25, 50, 75, 100]) {
+    final milestones = ref.read(economyConfigProvider).rewards.milestones;
+    final sortedKeys = milestones.keys.toList()..sort();
+    for (final m in sortedKeys) {
       if (completion < m) return m;
     }
     return null;
@@ -343,7 +394,7 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
 
   String milestoneMessage(int completion) {
     final next = nextMilestone(completion);
-    const rewards = {25: 5, 50: 15, 75: 30, 100: 50};
+    final rewards = ref.read(economyConfigProvider).rewards.milestones;
     if (next == null) return '';
     return '%$next tamamla, ${rewards[next]} elmas kazan!';
   }

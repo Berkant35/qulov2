@@ -27,16 +27,16 @@ class MilestoneCelebrationSheet extends StatelessWidget {
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: AppColors.textHint,
+              color: context.appColors.textHint,
               borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
             ),
           ),
           const SizedBox(height: AppSpacing.xl),
 
           // Celebration icon
-          const Icon(
+          Icon(
             Icons.celebration,
-            color: AppColors.primary,
+            color: context.appColors.primary,
             size: 64,
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -46,7 +46,7 @@ class MilestoneCelebrationSheet extends StatelessWidget {
             'Tebrikler!',
             style: theme.textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
+              color: context.appColors.textPrimary,
             ),
           ),
           const SizedBox(height: AppSpacing.sm),
@@ -55,7 +55,7 @@ class MilestoneCelebrationSheet extends StatelessWidget {
           Text(
             'Profilini %$milestone tamamladın!',
             style: theme.textTheme.bodyLarge?.copyWith(
-              color: AppColors.textSecondary,
+              color: context.appColors.textSecondary,
             ),
             textAlign: TextAlign.center,
           ),
@@ -71,7 +71,7 @@ class MilestoneCelebrationSheet extends StatelessWidget {
                 '+$reward',
                 style: theme.textTheme.headlineMedium?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: AppColors.primary,
+                  color: context.appColors.primary,
                 ),
               ),
             ],
@@ -82,7 +82,7 @@ class MilestoneCelebrationSheet extends StatelessWidget {
           Text(
             'Mor elmas kazandın!',
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: AppColors.textSecondary,
+              color: context.appColors.textSecondary,
             ),
           ),
 
@@ -93,16 +93,16 @@ class MilestoneCelebrationSheet extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
-                border: Border.all(color: AppColors.secondary),
+                border: Border.all(color: context.appColors.secondary),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                color: AppColors.secondarySurface,
+                color: context.appColors.secondarySurface,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.bolt,
-                    color: AppColors.secondary,
+                    color: context.appColors.secondary,
                     size: 28,
                   ),
                   const SizedBox(width: AppSpacing.sm),
@@ -110,7 +110,7 @@ class MilestoneCelebrationSheet extends StatelessWidget {
                     child: Text(
                       '24 saatlik ücretsiz boost kazandın!',
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: AppColors.secondary,
+                        color: context.appColors.secondary,
                         fontWeight: FontWeight.w600,
                       ),
                     ),

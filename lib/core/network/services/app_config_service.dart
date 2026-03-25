@@ -9,4 +9,7 @@ abstract class AppConfigRetrofitService {
 
   @GET('/app/config')
   Future<dynamic> getConfig();
+
+  @GET('/app/economy')
+  Future<dynamic> getEconomyConfig();
 }

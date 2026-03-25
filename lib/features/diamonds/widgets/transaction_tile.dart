@@ -26,7 +26,7 @@ class TransactionTile extends StatelessWidget {
           dense: true,
           leading: QIcon(
             isPositive ? QIcons.icPlusCircle : QIcons.icMinusCircle,
-            color: isPositive ? AppColors.success : AppColors.error,
+            color: isPositive ? context.appColors.success : context.appColors.error,
           ),
           title: Text(transaction.reason),
           subtitle: Text(
@@ -38,7 +38,7 @@ class TransactionTile extends StatelessWidget {
           trailing: Text(
             '${isPositive ? '+' : ''}${transaction.amount}',
             style: theme.textTheme.titleSmall?.copyWith(
-              color: isPositive ? AppColors.success : AppColors.error,
+              color: isPositive ? context.appColors.success : context.appColors.error,
               fontWeight: FontWeight.bold,
             ),
           ),

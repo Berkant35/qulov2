@@ -51,10 +51,13 @@ class AppScaffold extends StatelessWidget {
           : null,
       floatingActionButton: floatingActionButton,
       bottomNavigationBar: bottomNavigationBar,
-      body: SafeArea(
-        top: !hasAppBar,
-        bottom: bottomNavigationBar == null,
-        child: Stack(
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        behavior: HitTestBehavior.translucent,
+        child: SafeArea(
+          top: !hasAppBar,
+          bottom: bottomNavigationBar == null,
+          child: Stack(
           children: [
             if (showBackground)
               Positioned.fill(
@@ -73,6 +76,7 @@ class AppScaffold extends StatelessWidget {
               ),
             ),
           ],
+        ),
         ),
       ),
     );

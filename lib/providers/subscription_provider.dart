@@ -37,7 +37,12 @@ class SubscriptionNotifier extends AsyncNotifier<SubscriptionInfo> {
     }
     try {
       final customerInfo = await RevenueCatService.purchasePackage(package);
-      final txId = customerInfo.originalAppUserId;
+      // Subscription transactions are managed by RevenueCat webhook;
+      // pass active entitlement's latest purchase date as reference.
+      final entitlement = customerInfo.entitlements.active.values
+          .where((e) => e.productIdentifier == package.storeProduct.identifier)
+          .firstOrNull;
+      final txId = entitlement?.latestPurchaseDate;
       await _notifyBackend(package.storeProduct.identifier, txId);
       state = AsyncData(await fetchStatus());
       return true;
@@ -54,7 +59,12 @@ class SubscriptionNotifier extends AsyncNotifier<SubscriptionInfo> {
     }
     try {
       final customerInfo = await RevenueCatService.purchaseByProductId(productId);
-      final txId = customerInfo.originalAppUserId;
+      // Subscription transactions are managed by RevenueCat webhook;
+      // pass active entitlement's latest purchase date as reference.
+      final entitlement = customerInfo.entitlements.active.values
+          .where((e) => e.productIdentifier == productId)
+          .firstOrNull;
+      final txId = entitlement?.latestPurchaseDate;
       await _notifyBackend(productId, txId);
       state = AsyncData(await fetchStatus());
       return true;
