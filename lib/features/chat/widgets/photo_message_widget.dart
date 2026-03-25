@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
+import 'package:qulo_v2/core/widgets/fullscreen_photo_viewer.dart';
 
 class PhotoMessageWidget extends StatelessWidget {
   final String imageUrl;
@@ -19,7 +20,7 @@ class PhotoMessageWidget extends StatelessWidget {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute<void>(
-            builder: (_) => _FullScreenPhotoViewer(imageUrl: imageUrl),
+            builder: (_) => FullscreenPhotoViewer(imageUrl: imageUrl),
           ),
         );
       },
@@ -49,51 +50,8 @@ class PhotoMessageWidget extends StatelessWidget {
               child: const Center(
                 child: Icon(
                   Icons.broken_image_outlined,
-                  color: Colors.white54,
+                  color: AppColors.onScrimSubtle,
                   size: 32,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _FullScreenPhotoViewer extends StatelessWidget {
-  final String imageUrl;
-
-  const _FullScreenPhotoViewer({required this.imageUrl});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
-      extendBodyBehindAppBar: true,
-      body: Center(
-        child: Hero(
-          tag: imageUrl,
-          child: InteractiveViewer(
-            child: CachedNetworkImage(
-              imageUrl: imageUrl,
-              fit: BoxFit.contain,
-              placeholder: (context, url) => const Center(
-                child: AppLoadingWidget.small(),
-              ),
-              errorWidget: (context, url, error) => const Center(
-                child: Icon(
-                  Icons.broken_image_outlined,
-                  color: Colors.white54,
-                  size: 48,
                 ),
               ),
             ),

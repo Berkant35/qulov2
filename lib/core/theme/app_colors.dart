@@ -54,6 +54,14 @@ abstract final class AppColors {
   static const Color pink = Color(0xFFE91E63);
   static const Color red = Color(0xFFF44336);
 
+  // ─── Scrim / Overlay ───
+  /// Semi-transparent dark scrim — used for blur overlays, lock icons, etc.
+  static const scrimDark = Color(0x80000000); // black 50%
+  static const scrimLight = Color(0x33000000); // black 20%
+  /// Icon/text color placed on top of a dark scrim
+  static const onScrim = Color(0xFFFFFFFF);
+  static const onScrimSubtle = Color(0xCCFFFFFF); // white 80%
+
   // ─── Gradients ───
   static const purpleGradient = LinearGradient(
     colors: [Color(0xFFBB86FC), Color(0xFF9C27B0)],
