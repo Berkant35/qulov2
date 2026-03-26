@@ -408,7 +408,7 @@ const frTranslations = <String, String>{
   'mark_all_read': 'Tout marquer comme lu',
   'no_notifications': 'Pas encore de notifications',
   'no_notifications_desc': 'Tu verras tes matchs et messages ici',
-  'time_just_now': 'À l'instant',
+  'time_just_now': 'À l\'instant',
   'time_minutes_ago': '{n} min',
   'time_hours_ago': 'Il y a {n}h',
   'time_days_ago': 'Il y a {n}j',
