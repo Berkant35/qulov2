@@ -29,6 +29,7 @@ class PowerShopCard extends ConsumerStatefulWidget {
 class _PowerShopCardState extends ConsumerState<PowerShopCard>
     with SingleTickerProviderStateMixin {
   String? _buyingWith; // 'purple' or 'green' or null
+  int _quantity = 1;
 
   late final AnimationController _pulseController;
   late final Animation<double> _scaleAnimation;
@@ -121,7 +122,7 @@ class _PowerShopCardState extends ConsumerState<PowerShopCard>
 
     final result = await ref
         .read(exchangeProvider.notifier)
-        .buyPower(widget.power.name, diamondType.toUpperCase(), 1);
+        .buyPower(widget.power.name, diamondType.toUpperCase(), _quantity);
 
     if (mounted) {
       result.when(
@@ -238,13 +239,20 @@ class _PowerShopCardState extends ConsumerState<PowerShopCard>
           ),
           const SizedBox(width: AppSpacing.sm),
 
+          // Quantity stepper
+          _QuantityStepper(
+            quantity: _quantity,
+            onChanged: (q) => setState(() => _quantity = q),
+          ),
+          const SizedBox(width: AppSpacing.sm),
+
           // Buy buttons
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               // Purple cost button
               _BuyButton(
-                cost: widget.power.purpleCost,
+                cost: widget.power.purpleCost * _quantity,
                 icon: const DiamondIcon.purple(size: 16, showGlow: false),
                 isLoading: _buyingWith == 'purple',
                 onTap: () => _onBuy('purple'),
@@ -252,7 +260,7 @@ class _PowerShopCardState extends ConsumerState<PowerShopCard>
               const SizedBox(height: AppSpacing.xs),
               // Green cost button
               _BuyButton(
-                cost: widget.power.greenCost,
+                cost: widget.power.greenCost * _quantity,
                 icon: const DiamondIcon.green(size: 16, showGlow: false),
                 isLoading: _buyingWith == 'green',
                 onTap: () => _onBuy('green'),
@@ -260,6 +268,85 @@ class _PowerShopCardState extends ConsumerState<PowerShopCard>
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _QuantityStepper extends StatelessWidget {
+  final int quantity;
+  final ValueChanged<int> onChanged;
+
+  const _QuantityStepper({
+    required this.quantity,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: context.appColors.surfaceElevated,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+        border: Border.all(
+          color: theme.colorScheme.outline.withValues(alpha: 0.2),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _StepperButton(
+            icon: Icons.remove,
+            enabled: quantity > 1,
+            onTap: () => onChanged(quantity - 1),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            child: Text(
+              '$quantity',
+              style: theme.textTheme.labelMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          _StepperButton(
+            icon: Icons.add,
+            enabled: quantity < 99,
+            onTap: () => onChanged(quantity + 1),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StepperButton extends StatelessWidget {
+  final IconData icon;
+  final bool enabled;
+  final VoidCallback onTap;
+
+  const _StepperButton({
+    required this.icon,
+    required this.enabled,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: enabled ? onTap : null,
+      borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: Icon(
+          icon,
+          size: 16,
+          color: enabled
+              ? context.appColors.primary
+              : Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
+        ),
       ),
     );
   }

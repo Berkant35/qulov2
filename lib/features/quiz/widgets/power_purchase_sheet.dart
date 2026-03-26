@@ -31,14 +31,14 @@ class _PowerPurchaseSheetState extends ConsumerState<PowerPurchaseSheet> {
     });
   }
 
-  Future<void> _onBuy(String powerName, String diamondType) async {
+  Future<void> _onBuy(String powerName, String diamondType, int quantity) async {
     final key = '${powerName}_$diamondType';
     if (_buyingKey != null) return;
     setState(() => _buyingKey = key);
 
     final result = await ref
         .read(exchangeProvider.notifier)
-        .buyPower(powerName, diamondType, 1);
+        .buyPower(powerName, diamondType, quantity);
 
     if (!mounted) return;
 
@@ -156,7 +156,7 @@ class _PowerRow extends StatefulWidget {
   final ExchangeRatePower power;
   final int inventoryCount;
   final String? buyingKey;
-  final Future<void> Function(String powerName, String diamondType) onBuy;
+  final Future<void> Function(String powerName, String diamondType, int quantity) onBuy;
 
   const _PowerRow({
     required this.power,
@@ -175,6 +175,7 @@ class _PowerRowState extends State<_PowerRow>
   late final Animation<double> _scaleAnimation;
   late final Animation<double> _glowAnimation;
   late int _previousCount;
+  int _quantity = 1;
 
   @override
   void initState() {
@@ -331,22 +332,107 @@ class _PowerRowState extends State<_PowerRow>
                 ],
               ),
             ),
+            // Quantity stepper
+            _QuantityStepper(
+              quantity: _quantity,
+              onChanged: (q) => setState(() => _quantity = q),
+            ),
+            const SizedBox(width: AppSpacing.sm),
             // Purple buy button
             _BuyChip(
-              cost: widget.power.purpleCost,
+              cost: widget.power.purpleCost * _quantity,
               icon: const DiamondIcon.purple(size: 14, showGlow: false),
               isLoading: widget.buyingKey == '${widget.power.name}_PURPLE',
-              onTap: () => widget.onBuy(widget.power.name, 'PURPLE'),
+              onTap: () => widget.onBuy(widget.power.name, 'PURPLE', _quantity),
             ),
             const SizedBox(width: AppSpacing.xs),
             // Green buy button
             _BuyChip(
-              cost: widget.power.greenCost,
+              cost: widget.power.greenCost * _quantity,
               icon: const DiamondIcon.green(size: 14, showGlow: false),
               isLoading: widget.buyingKey == '${widget.power.name}_GREEN',
-              onTap: () => widget.onBuy(widget.power.name, 'GREEN'),
+              onTap: () => widget.onBuy(widget.power.name, 'GREEN', _quantity),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _QuantityStepper extends StatelessWidget {
+  final int quantity;
+  final ValueChanged<int> onChanged;
+
+  const _QuantityStepper({
+    required this.quantity,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: context.appColors.surfaceElevated,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+        border: Border.all(
+          color: theme.colorScheme.outline.withValues(alpha: 0.2),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _StepperButton(
+            icon: Icons.remove,
+            enabled: quantity > 1,
+            onTap: () => onChanged(quantity - 1),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            child: Text(
+              '$quantity',
+              style: theme.textTheme.labelMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          _StepperButton(
+            icon: Icons.add,
+            enabled: quantity < 99,
+            onTap: () => onChanged(quantity + 1),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StepperButton extends StatelessWidget {
+  final IconData icon;
+  final bool enabled;
+  final VoidCallback onTap;
+
+  const _StepperButton({
+    required this.icon,
+    required this.enabled,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: enabled ? onTap : null,
+      borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: Icon(
+          icon,
+          size: 16,
+          color: enabled
+              ? context.appColors.primary
+              : Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
         ),
       ),
     );
