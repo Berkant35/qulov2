@@ -26,8 +26,66 @@ class PowerShopCard extends ConsumerStatefulWidget {
   ConsumerState<PowerShopCard> createState() => _PowerShopCardState();
 }
 
-class _PowerShopCardState extends ConsumerState<PowerShopCard> {
+class _PowerShopCardState extends ConsumerState<PowerShopCard>
+    with SingleTickerProviderStateMixin {
   String? _buyingWith; // 'purple' or 'green' or null
+
+  late final AnimationController _pulseController;
+  late final Animation<double> _scaleAnimation;
+  late final Animation<double> _glowAnimation;
+  int _previousCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _previousCount = widget.inventoryCount;
+
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+
+    _scaleAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween(begin: 1.0, end: 1.35)
+            .chain(CurveTween(curve: Curves.easeOut)),
+        weight: 40,
+      ),
+      TweenSequenceItem(
+        tween: Tween(begin: 1.35, end: 1.0)
+            .chain(CurveTween(curve: Curves.easeOutBack)),
+        weight: 60,
+      ),
+    ]).animate(_pulseController);
+
+    _glowAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween(begin: 0.0, end: 0.6)
+            .chain(CurveTween(curve: Curves.easeOut)),
+        weight: 35,
+      ),
+      TweenSequenceItem(
+        tween: Tween(begin: 0.6, end: 0.0)
+            .chain(CurveTween(curve: Curves.easeIn)),
+        weight: 65,
+      ),
+    ]).animate(_pulseController);
+  }
+
+  @override
+  void didUpdateWidget(PowerShopCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.inventoryCount > _previousCount) {
+      _pulseController.forward(from: 0);
+    }
+    _previousCount = widget.inventoryCount;
+  }
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    super.dispose();
+  }
 
   PowerType get _powerType => PowerType.fromApiName(widget.power.name) ?? PowerType.oracle;
 
@@ -68,9 +126,7 @@ class _PowerShopCardState extends ConsumerState<PowerShopCard> {
     if (mounted) {
       result.when(
         success: (_) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(context.tr('purchase_success'))),
-          );
+          // animation in didUpdateWidget is the feedback
         },
         failure: (f) {
           if (f is ServerFailure && f.code == 'INSUFFICIENT_DIAMONDS') {
@@ -125,11 +181,35 @@ class _PowerShopCardState extends ConsumerState<PowerShopCard> {
       child: Row(
         children: [
           // Power icon with inventory badge
-          PowerIcon(
-            type: _powerType,
-            size: 32,
-            showCount: widget.inventoryCount > 0,
-            count: widget.inventoryCount,
+          AnimatedBuilder(
+            animation: _pulseController,
+            builder: (context, child) {
+              return Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: _pulseController.isAnimating
+                      ? [
+                          BoxShadow(
+                            color: _powerType.color
+                                .withValues(alpha: _glowAnimation.value),
+                            blurRadius: 12,
+                            spreadRadius: 2,
+                          ),
+                        ]
+                      : null,
+                ),
+                child: Transform.scale(
+                  scale: _scaleAnimation.value,
+                  child: child,
+                ),
+              );
+            },
+            child: PowerIcon(
+              type: _powerType,
+              size: 32,
+              showCount: widget.inventoryCount > 0,
+              count: widget.inventoryCount,
+            ),
           ),
           const SizedBox(width: AppSpacing.md),
 
