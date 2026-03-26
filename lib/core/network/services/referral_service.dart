@@ -19,4 +19,10 @@ abstract class ReferralService {
 
   @POST('/referrals/validate-code')
   Future<ValidateCodeResponse> validateCode(@Body() Map<String, dynamic> data);
+
+  @POST('/referrals/apply')
+  Future<dynamic> applyCode(@Body() Map<String, dynamic> data);
+
+  @GET('/referrals/my-referrer')
+  Future<MyReferrerResponse> getMyReferrer();
 }

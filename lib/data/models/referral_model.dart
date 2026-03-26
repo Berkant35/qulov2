@@ -70,3 +70,22 @@ class ValidateCodeResponse extends Equatable {
   @override
   List<Object?> get props => [valid, referrerName];
 }
+
+@JsonSerializable()
+class MyReferrerResponse extends Equatable {
+  @JsonKey(name: 'referrerName')
+  final String? referrerName;
+  final String? status;
+
+  const MyReferrerResponse({
+    this.referrerName,
+    this.status,
+  });
+
+  factory MyReferrerResponse.fromJson(Map<String, dynamic> json) =>
+      _$MyReferrerResponseFromJson(json);
+  Map<String, dynamic> toJson() => _$MyReferrerResponseToJson(this);
+
+  @override
+  List<Object?> get props => [referrerName, status];
+}

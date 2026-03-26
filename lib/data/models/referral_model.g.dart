@@ -52,3 +52,15 @@ Map<String, dynamic> _$ValidateCodeResponseToJson(
   'valid': instance.valid,
   'referrerName': instance.referrerName,
 };
+
+MyReferrerResponse _$MyReferrerResponseFromJson(Map<String, dynamic> json) =>
+    MyReferrerResponse(
+      referrerName: json['referrerName'] as String?,
+      status: json['status'] as String?,
+    );
+
+Map<String, dynamic> _$MyReferrerResponseToJson(MyReferrerResponse instance) =>
+    <String, dynamic>{
+      'referrerName': instance.referrerName,
+      'status': instance.status,
+    };

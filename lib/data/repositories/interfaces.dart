@@ -173,6 +173,9 @@ abstract class IReferralRepository {
   Future<Result<List<ReferralItem>>> getHistory();
 
   Future<Result<ValidateCodeResponse>> validateCode(String code);
+
+  Future<Result<String>> applyCode(String code);
+  Future<Result<MyReferrerResponse>> getMyReferrer();
 }
 
 // ─── User ───
