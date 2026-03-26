@@ -211,6 +211,7 @@ const enTranslations = <String, String>{
   'accept_terms': 'I accept the',
   'terms_of_service': 'Terms of Service',
   'privacy_policy': 'Privacy Policy',
+  'legal': 'Legal',
   'and_word': 'and',
   'must_accept_terms': 'You must accept the terms to continue',
 
@@ -407,6 +408,10 @@ const enTranslations = <String, String>{
   'mark_all_read': 'Mark All Read',
   'no_notifications': 'No notifications yet',
   'no_notifications_desc': 'You\'ll see matches and messages here',
+  'time_just_now': 'Just now',
+  'time_minutes_ago': '{n}m ago',
+  'time_hours_ago': '{n}h ago',
+  'time_days_ago': '{n}d ago',
   'just_now': 'Just now',
   'minutes_ago': '{} min ago',
   'hours_ago': '{} hours ago',
@@ -431,7 +436,7 @@ const enTranslations = <String, String>{
   'question_create_step_answers': 'Add Answers',
   'question_create_step_settings': 'Settings',
   'question_create_motto': 'Ask questions about yourself \u2014 not Googleable!',
-  'question_create_motto_tip': 'Tip: Personal questions like "My favorite season?" get more solves',
+  'question_create_motto_tip': 'Tip: Personal questions help you find people who match your criteria',
   'question_create_select_category': 'Select Category',
   'question_create_select_time': 'Select Time',
   'question_create_hint_label': 'Hint (optional)',
@@ -702,6 +707,7 @@ const enTranslations = <String, String>{
 
   // Exchange center
   'exchange_title': 'Exchange Center',
+  'exchange_subtitle': 'Convert diamonds into powers',
   'exchange_convert_title': 'Diamond Conversion',
   'exchange_convert_button': 'Convert',
   'exchange_powers_title': 'Power Rights',
@@ -721,6 +727,7 @@ const enTranslations = <String, String>{
   'referral_title': 'Invite a Friend',
   'referral_description': 'Invite a friend, both of you get 25 purple diamonds!',
   'referral_compact_cta': 'Bring a friend, earn diamonds',
+  'referral_compact_subtitle': 'Each invite = purple diamond reward',
   'referral_copy': 'Copy',
   'referral_share': 'Share',
   'referral_progress': 'Invites used',
@@ -730,6 +737,13 @@ const enTranslations = <String, String>{
   'referral_code_valid': 'Referred by: ',
   'referral_code_invalid': 'Invalid referral code',
   'referral_already_logged_in': 'Referral codes can only be used during registration',
+  'referral_enter_code': 'Have an invite code? Enter it here:',
+  'referral_apply': 'Apply',
+  'referral_invited_by': 'Invited by: ',
+  'referral_reward_earned': 'You earned 25 purple diamonds!',
+  'referral_complete_profile': 'Complete your profile to 60% to claim your reward!',
+  'referral_self_error': 'You cannot use your own code',
+  'referral_already_error': 'You have already used an invite code',
 
   // Paywall
   'paywall_title_undo': 'Unlock Undo',
@@ -817,4 +831,9 @@ const enTranslations = <String, String>{
   'reason_referral': 'Referral Bonus',
   'reason_subscription': 'Subscription Bonus',
   'reason_boost': 'Boost',
+
+  // Splash
+  'splash_flow_ask': 'Ask',
+  'splash_flow_answer': 'Answer',
+  'splash_flow_match': 'Match',
 };

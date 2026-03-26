@@ -211,6 +211,7 @@ const ptTranslations = <String, String>{
   'accept_terms': 'Eu aceito os',
   'terms_of_service': 'Termos de Serviço',
   'privacy_policy': 'Política de Privacidade',
+  'legal': 'Jurídico',
   'and_word': 'e',
   'must_accept_terms': 'Você deve aceitar os termos para continuar',
 
@@ -407,6 +408,10 @@ const ptTranslations = <String, String>{
   'mark_all_read': 'Marcar Tudo como Lido',
   'no_notifications': 'Nenhuma notificação ainda',
   'no_notifications_desc': 'Você verá matches e mensagens aqui',
+  'time_just_now': 'Agora',
+  'time_minutes_ago': '{n} min atrás',
+  'time_hours_ago': '{n}h atrás',
+  'time_days_ago': '{n}d atrás',
   'just_now': 'Agora mesmo',
   'minutes_ago': '{} min atrás',
   'hours_ago': '{} horas atrás',
@@ -431,7 +436,7 @@ const ptTranslations = <String, String>{
   'question_create_step_answers': 'Adicionar Respostas',
   'question_create_step_settings': 'Configurações',
   'question_create_motto': 'Faça perguntas sobre você \u2014 que não dá para pesquisar no Google!',
-  'question_create_motto_tip': 'Dica: Perguntas pessoais como "Minha estação favorita?" têm mais respostas',
+  'question_create_motto_tip': 'Dica: Perguntas pessoais ajudam a encontrar pessoas que combinam com seus critérios',
   'question_create_select_category': 'Selecionar Categoria',
   'question_create_select_time': 'Selecionar Tempo',
   'question_create_hint_label': 'Dica (opcional)',
@@ -702,6 +707,7 @@ const ptTranslations = <String, String>{
 
   // Exchange center
   'exchange_title': 'Centro de Trocas',
+  'exchange_subtitle': 'Converta diamantes em poderes',
   'exchange_convert_title': 'Conversão de Diamantes',
   'exchange_convert_button': 'Converter',
   'exchange_powers_title': 'Direitos de Poderes',
@@ -721,6 +727,7 @@ const ptTranslations = <String, String>{
   'referral_title': 'Convidar um Amigo',
   'referral_description': 'Convide um amigo, ambos ganham 25 diamantes roxos!',
   'referral_compact_cta': 'Traga um amigo, ganhe diamantes',
+  'referral_compact_subtitle': 'Cada convite = recompensa de diamante roxo',
   'referral_copy': 'Copiar',
   'referral_share': 'Compartilhar',
   'referral_progress': 'Convites usados',
@@ -730,6 +737,13 @@ const ptTranslations = <String, String>{
   'referral_code_valid': 'Convidado por: ',
   'referral_code_invalid': 'Código de convite inválido',
   'referral_already_logged_in': 'Códigos de convite só podem ser usados durante o cadastro',
+  'referral_enter_code': 'Have an invite code? Enter it here:',
+  'referral_apply': 'Apply',
+  'referral_invited_by': 'Invited by: ',
+  'referral_reward_earned': 'You earned 25 purple diamonds!',
+  'referral_complete_profile': 'Complete your profile to 60% to claim your reward!',
+  'referral_self_error': 'You cannot use your own code',
+  'referral_already_error': 'You have already used an invite code',
 
   // Paywall
   'paywall_title_undo': 'Desbloquear Desfazer',
@@ -817,4 +831,9 @@ const ptTranslations = <String, String>{
   'reason_referral': 'Referral Bonus',
   'reason_subscription': 'Subscription Bonus',
   'reason_boost': 'Boost',
+
+  // Splash
+  'splash_flow_ask': 'Pergunte',
+  'splash_flow_answer': 'Responda',
+  'splash_flow_match': 'Match',
 };

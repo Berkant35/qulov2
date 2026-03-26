@@ -211,6 +211,7 @@ const koTranslations = <String, String>{
   'accept_terms': '동의합니다',
   'terms_of_service': '이용약관',
   'privacy_policy': '개인정보처리방침',
+  'legal': '법적 정보',
   'and_word': '및',
   'must_accept_terms': '계속하려면 약관에 동의해야 해요',
 
@@ -405,6 +406,10 @@ const koTranslations = <String, String>{
   'mark_all_read': '모두 읽음 처리',
   'no_notifications': '아직 알림이 없어요',
   'no_notifications_desc': '매칭과 메시지가 여기에 표시돼요',
+  'time_just_now': '방금',
+  'time_minutes_ago': '{n}분 전',
+  'time_hours_ago': '{n}시간 전',
+  'time_days_ago': '{n}일 전',
   'just_now': '방금',
   'minutes_ago': '{}분 전',
   'hours_ago': '{}시간 전',
@@ -429,7 +434,7 @@ const koTranslations = <String, String>{
   'question_create_step_answers': '답변 추가',
   'question_create_step_settings': '설정',
   'question_create_motto': '나에 대한 질문을 만들어요 \u2014 검색으로 찾을 수 없는 질문!',
-  'question_create_motto_tip': '팁: "내가 좋아하는 계절은?" 같은 개인적인 질문이 풀이 수가 더 높아요',
+  'question_create_motto_tip': '팁: 개인적인 질문은 당신의 기준에 맞는 사람을 찾는 데 도움이 됩니다',
   'question_create_select_category': '카테고리 선택',
   'question_create_select_time': '시간 선택',
   'question_create_hint_label': '힌트 (선택사항)',
@@ -700,6 +705,7 @@ const koTranslations = <String, String>{
 
   // Exchange center
   'exchange_title': '교환소',
+  'exchange_subtitle': '다이아몬드를 파워로 변환',
   'exchange_convert_title': '다이아몬드 전환',
   'exchange_convert_button': '전환',
   'exchange_powers_title': '파워 권한',
@@ -719,6 +725,7 @@ const koTranslations = <String, String>{
   'referral_title': '친구 초대',
   'referral_description': '친구를 초대하면 둘 다 보라색 다이아몬드 25개를 받아요!',
   'referral_compact_cta': '친구를 초대하고 다이아몬드를 받으세요',
+  'referral_compact_subtitle': '초대할 때마다 보라 다이아몬드 보상',
   'referral_copy': '복사',
   'referral_share': '공유',
   'referral_progress': '사용된 초대',
@@ -728,6 +735,13 @@ const koTranslations = <String, String>{
   'referral_code_valid': '추천인: ',
   'referral_code_invalid': '유효하지 않은 초대 코드예요',
   'referral_already_logged_in': '초대 코드는 회원가입 시에만 사용할 수 있어요',
+  'referral_enter_code': 'Have an invite code? Enter it here:',
+  'referral_apply': 'Apply',
+  'referral_invited_by': 'Invited by: ',
+  'referral_reward_earned': 'You earned 25 purple diamonds!',
+  'referral_complete_profile': 'Complete your profile to 60% to claim your reward!',
+  'referral_self_error': 'You cannot use your own code',
+  'referral_already_error': 'You have already used an invite code',
 
   // Paywall
   'paywall_title_undo': '되돌리기 잠금 해제',
@@ -815,4 +829,9 @@ const koTranslations = <String, String>{
   'reason_referral': 'Referral Bonus',
   'reason_subscription': 'Subscription Bonus',
   'reason_boost': 'Boost',
+
+  // Splash
+  'splash_flow_ask': '질문',
+  'splash_flow_answer': '답변',
+  'splash_flow_match': '매칭',
 };

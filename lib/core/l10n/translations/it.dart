@@ -211,6 +211,7 @@ const itTranslations = <String, String>{
   'accept_terms': 'Accetto i',
   'terms_of_service': 'Termini di servizio',
   'privacy_policy': 'Informativa sulla privacy',
+  'legal': 'Legale',
   'and_word': 'e',
   'must_accept_terms': 'Devi accettare i termini per continuare',
 
@@ -407,6 +408,10 @@ const itTranslations = <String, String>{
   'mark_all_read': 'Segna tutto come letto',
   'no_notifications': 'Nessuna notifica',
   'no_notifications_desc': 'Qui vedrai match e messaggi',
+  'time_just_now': 'Adesso',
+  'time_minutes_ago': '{n} min fa',
+  'time_hours_ago': '{n}h fa',
+  'time_days_ago': '{n}g fa',
   'just_now': 'Adesso',
   'minutes_ago': '{} min fa',
   'hours_ago': '{} ore fa',
@@ -431,7 +436,7 @@ const itTranslations = <String, String>{
   'question_create_step_answers': 'Aggiungi risposte',
   'question_create_step_settings': 'Impostazioni',
   'question_create_motto': 'Fai domande su di te \u2014 non cercabili su Google!',
-  'question_create_motto_tip': 'Consiglio: Domande personali come "La mia stagione preferita?" ricevono più risposte',
+  'question_create_motto_tip': 'Consiglio: Le domande personali ti aiutano a trovare persone che corrispondono ai tuoi criteri',
   'question_create_select_category': 'Seleziona categoria',
   'question_create_select_time': 'Seleziona tempo',
   'question_create_hint_label': 'Suggerimento (opzionale)',
@@ -702,6 +707,7 @@ const itTranslations = <String, String>{
 
   // Exchange center
   'exchange_title': 'Centro scambi',
+  'exchange_subtitle': 'Converti i diamanti in poteri',
   'exchange_convert_title': 'Conversione diamanti',
   'exchange_convert_button': 'Converti',
   'exchange_powers_title': 'Diritti poteri',
@@ -721,6 +727,7 @@ const itTranslations = <String, String>{
   'referral_title': 'Invita un amico',
   'referral_description': 'Invita un amico, entrambi ricevete 25 diamanti viola!',
   'referral_compact_cta': 'Porta un amico, guadagna diamanti',
+  'referral_compact_subtitle': 'Ogni invito = ricompensa diamante viola',
   'referral_copy': 'Copia',
   'referral_share': 'Condividi',
   'referral_progress': 'Inviti utilizzati',
@@ -730,6 +737,13 @@ const itTranslations = <String, String>{
   'referral_code_valid': 'Invitato da: ',
   'referral_code_invalid': 'Codice referral non valido',
   'referral_already_logged_in': 'I codici referral possono essere usati solo durante la registrazione',
+  'referral_enter_code': 'Have an invite code? Enter it here:',
+  'referral_apply': 'Apply',
+  'referral_invited_by': 'Invited by: ',
+  'referral_reward_earned': 'You earned 25 purple diamonds!',
+  'referral_complete_profile': 'Complete your profile to 60% to claim your reward!',
+  'referral_self_error': 'You cannot use your own code',
+  'referral_already_error': 'You have already used an invite code',
 
   // Paywall
   'paywall_title_undo': 'Sblocca annulla',
@@ -817,4 +831,9 @@ const itTranslations = <String, String>{
   'reason_referral': 'Referral Bonus',
   'reason_subscription': 'Subscription Bonus',
   'reason_boost': 'Boost',
+
+  // Splash
+  'splash_flow_ask': 'Chiedi',
+  'splash_flow_answer': 'Rispondi',
+  'splash_flow_match': 'Match',
 };

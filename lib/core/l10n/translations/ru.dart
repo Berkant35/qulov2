@@ -211,6 +211,7 @@ const ruTranslations = <String, String>{
   'accept_terms': 'Я принимаю',
   'terms_of_service': 'Условия использования',
   'privacy_policy': 'Политику конфиденциальности',
+  'legal': 'Правовая информация',
   'and_word': 'и',
   'must_accept_terms': 'Необходимо принять условия для продолжения',
 
@@ -405,6 +406,10 @@ const ruTranslations = <String, String>{
   'mark_all_read': 'Прочитать все',
   'no_notifications': 'Пока нет уведомлений',
   'no_notifications_desc': 'Здесь появятся совпадения и сообщения',
+  'time_just_now': 'Только что',
+  'time_minutes_ago': '{n} мин назад',
+  'time_hours_ago': '{n} ч назад',
+  'time_days_ago': '{n} дн назад',
   'just_now': 'Только что',
   'minutes_ago': '{} мин назад',
   'hours_ago': '{} ч назад',
@@ -429,7 +434,7 @@ const ruTranslations = <String, String>{
   'question_create_step_answers': 'Добавьте ответы',
   'question_create_step_settings': 'Настройки',
   'question_create_motto': 'Задавайте вопросы о себе \u2014 не гуглится!',
-  'question_create_motto_tip': 'Совет: Личные вопросы типа "Мой любимый сезон?" собирают больше ответов',
+  'question_create_motto_tip': 'Совет: Личные вопросы помогут найти людей, подходящих под твои критерии',
   'question_create_select_category': 'Выберите категорию',
   'question_create_select_time': 'Выберите время',
   'question_create_hint_label': 'Подсказка (необязательно)',
@@ -700,6 +705,7 @@ const ruTranslations = <String, String>{
 
   // Exchange center
   'exchange_title': 'Центр обмена',
+  'exchange_subtitle': 'Конвертируй алмазы в силы',
   'exchange_convert_title': 'Конвертация алмазов',
   'exchange_convert_button': 'Конвертировать',
   'exchange_powers_title': 'Права сил',
@@ -719,6 +725,7 @@ const ruTranslations = <String, String>{
   'referral_title': 'Пригласите друга',
   'referral_description': 'Пригласите друга — оба получите 25 фиолетовых алмазов!',
   'referral_compact_cta': 'Пригласите друга — получите алмазы',
+  'referral_compact_subtitle': 'Каждое приглашение = награда фиолетовый бриллиант',
   'referral_copy': 'Копировать',
   'referral_share': 'Поделиться',
   'referral_progress': 'Использовано приглашений',
@@ -728,6 +735,13 @@ const ruTranslations = <String, String>{
   'referral_code_valid': 'Приглашён: ',
   'referral_code_invalid': 'Неверный код приглашения',
   'referral_already_logged_in': 'Коды приглашений можно использовать только при регистрации',
+  'referral_enter_code': 'Have an invite code? Enter it here:',
+  'referral_apply': 'Apply',
+  'referral_invited_by': 'Invited by: ',
+  'referral_reward_earned': 'You earned 25 purple diamonds!',
+  'referral_complete_profile': 'Complete your profile to 60% to claim your reward!',
+  'referral_self_error': 'You cannot use your own code',
+  'referral_already_error': 'You have already used an invite code',
 
   // Paywall
   'paywall_title_undo': 'Разблокировать отмену',
@@ -815,4 +829,9 @@ const ruTranslations = <String, String>{
   'reason_referral': 'Referral Bonus',
   'reason_subscription': 'Subscription Bonus',
   'reason_boost': 'Boost',
+
+  // Splash
+  'splash_flow_ask': 'Спроси',
+  'splash_flow_answer': 'Ответь',
+  'splash_flow_match': 'Совпадение',
 };

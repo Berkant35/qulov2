@@ -211,6 +211,7 @@ const nlTranslations = <String, String>{
   'accept_terms': 'Ik accepteer de',
   'terms_of_service': 'Servicevoorwaarden',
   'privacy_policy': 'Privacybeleid',
+  'legal': 'Juridisch',
   'and_word': 'en',
   'must_accept_terms': 'Je moet de voorwaarden accepteren om door te gaan',
 
@@ -405,6 +406,10 @@ const nlTranslations = <String, String>{
   'mark_all_read': 'Alles als gelezen markeren',
   'no_notifications': 'Nog geen meldingen',
   'no_notifications_desc': 'Je ziet hier matches en berichten',
+  'time_just_now': 'Zojuist',
+  'time_minutes_ago': '{n} min geleden',
+  'time_hours_ago': '{n}u geleden',
+  'time_days_ago': '{n}d geleden',
   'just_now': 'Zojuist',
   'minutes_ago': '{} min geleden',
   'hours_ago': '{} uur geleden',
@@ -429,7 +434,7 @@ const nlTranslations = <String, String>{
   'question_create_step_answers': 'Voeg antwoorden toe',
   'question_create_step_settings': 'Instellingen',
   'question_create_motto': 'Stel vragen over jezelf \u2014 niet Googlebaar!',
-  'question_create_motto_tip': 'Tip: Persoonlijke vragen zoals "Mijn favoriete seizoen?" worden vaker opgelost',
+  'question_create_motto_tip': 'Tip: Persoonlijke vragen helpen je mensen te vinden die bij jouw criteria passen',
   'question_create_select_category': 'Selecteer categorie',
   'question_create_select_time': 'Selecteer tijd',
   'question_create_hint_label': 'Hint (optioneel)',
@@ -700,6 +705,7 @@ const nlTranslations = <String, String>{
 
   // Exchange center
   'exchange_title': 'Wisselcentrum',
+  'exchange_subtitle': 'Converteer diamanten naar krachten',
   'exchange_convert_title': 'Diamant conversie',
   'exchange_convert_button': 'Omzetten',
   'exchange_powers_title': 'Krachtrechten',
@@ -719,6 +725,7 @@ const nlTranslations = <String, String>{
   'referral_title': 'Nodig een vriend uit',
   'referral_description': 'Nodig een vriend uit, jullie krijgen allebei 25 paarse diamanten!',
   'referral_compact_cta': 'Nodig een vriend uit, verdien diamanten',
+  'referral_compact_subtitle': 'Elke uitnodiging = paarse diamant beloning',
   'referral_copy': 'Kopi\u00ebren',
   'referral_share': 'Delen',
   'referral_progress': 'Gebruikte uitnodigingen',
@@ -728,6 +735,13 @@ const nlTranslations = <String, String>{
   'referral_code_valid': 'Verwezen door: ',
   'referral_code_invalid': 'Ongeldige verwijscode',
   'referral_already_logged_in': 'Verwijscodes kunnen alleen tijdens registratie worden gebruikt',
+  'referral_enter_code': 'Have an invite code? Enter it here:',
+  'referral_apply': 'Apply',
+  'referral_invited_by': 'Invited by: ',
+  'referral_reward_earned': 'You earned 25 purple diamonds!',
+  'referral_complete_profile': 'Complete your profile to 60% to claim your reward!',
+  'referral_self_error': 'You cannot use your own code',
+  'referral_already_error': 'You have already used an invite code',
 
   // Paywall
   'paywall_title_undo': 'Ontgrendel ongedaan maken',
@@ -815,4 +829,9 @@ const nlTranslations = <String, String>{
   'reason_referral': 'Referral Bonus',
   'reason_subscription': 'Subscription Bonus',
   'reason_boost': 'Boost',
+
+  // Splash
+  'splash_flow_ask': 'Vraag',
+  'splash_flow_answer': 'Antwoord',
+  'splash_flow_match': 'Match',
 };

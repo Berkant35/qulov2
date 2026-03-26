@@ -211,6 +211,7 @@ const esTranslations = <String, String>{
   'accept_terms': 'Acepto los',
   'terms_of_service': 'Términos de servicio',
   'privacy_policy': 'Política de privacidad',
+  'legal': 'Legal',
   'and_word': 'y',
   'must_accept_terms': 'Debes aceptar los términos para continuar',
 
@@ -407,6 +408,10 @@ const esTranslations = <String, String>{
   'mark_all_read': 'Marcar todo como leído',
   'no_notifications': 'Aún no hay notificaciones',
   'no_notifications_desc': 'Aquí verás tus matches y mensajes',
+  'time_just_now': 'Justo ahora',
+  'time_minutes_ago': 'Hace {n} min',
+  'time_hours_ago': 'Hace {n}h',
+  'time_days_ago': 'Hace {n}d',
   'just_now': 'Ahora mismo',
   'minutes_ago': 'hace {} min',
   'hours_ago': 'hace {} horas',
@@ -431,7 +436,7 @@ const esTranslations = <String, String>{
   'question_create_step_answers': 'Añadir respuestas',
   'question_create_step_settings': 'Ajustes',
   'question_create_motto': 'Haz preguntas sobre ti \u2014 ¡que no se puedan buscar en Google!',
-  'question_create_motto_tip': 'Consejo: Preguntas personales como "¿Mi estación favorita?" se resuelven más',
+  'question_create_motto_tip': 'Consejo: Las preguntas personales te ayudan a encontrar personas que coincidan con tus criterios',
   'question_create_select_category': 'Seleccionar categoría',
   'question_create_select_time': 'Seleccionar tiempo',
   'question_create_hint_label': 'Pista (opcional)',
@@ -702,6 +707,7 @@ const esTranslations = <String, String>{
 
   // Exchange center
   'exchange_title': 'Centro de intercambio',
+  'exchange_subtitle': 'Convierte diamantes en poderes',
   'exchange_convert_title': 'Conversión de diamantes',
   'exchange_convert_button': 'Convertir',
   'exchange_powers_title': 'Derechos de poderes',
@@ -721,6 +727,7 @@ const esTranslations = <String, String>{
   'referral_title': 'Invitar a un amigo/a',
   'referral_description': '¡Invita a un amigo/a y ambos reciben 25 diamantes morados!',
   'referral_compact_cta': 'Invita a un amigo/a, gana diamantes',
+  'referral_compact_subtitle': 'Cada invitación = recompensa de diamante morado',
   'referral_copy': 'Copiar',
   'referral_share': 'Compartir',
   'referral_progress': 'Invitaciones usadas',
@@ -730,6 +737,13 @@ const esTranslations = <String, String>{
   'referral_code_valid': 'Referido por: ',
   'referral_code_invalid': 'Código de referido inválido',
   'referral_already_logged_in': 'Los códigos de referido solo se pueden usar durante el registro',
+  'referral_enter_code': 'Have an invite code? Enter it here:',
+  'referral_apply': 'Apply',
+  'referral_invited_by': 'Invited by: ',
+  'referral_reward_earned': 'You earned 25 purple diamonds!',
+  'referral_complete_profile': 'Complete your profile to 60% to claim your reward!',
+  'referral_self_error': 'You cannot use your own code',
+  'referral_already_error': 'You have already used an invite code',
 
   // Paywall
   'paywall_title_undo': 'Desbloquear Deshacer',
@@ -817,4 +831,9 @@ const esTranslations = <String, String>{
   'reason_referral': 'Referral Bonus',
   'reason_subscription': 'Subscription Bonus',
   'reason_boost': 'Boost',
+
+  // Splash
+  'splash_flow_ask': 'Pregunta',
+  'splash_flow_answer': 'Responde',
+  'splash_flow_match': 'Match',
 };

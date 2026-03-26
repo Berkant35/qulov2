@@ -211,6 +211,7 @@ const jaTranslations = <String, String>{
   'accept_terms': '同意します',
   'terms_of_service': '利用規約',
   'privacy_policy': 'プライバシーポリシー',
+  'legal': '法的情報',
   'and_word': 'と',
   'must_accept_terms': '続けるには利用規約に同意してください',
 
@@ -407,6 +408,10 @@ const jaTranslations = <String, String>{
   'mark_all_read': 'すべて既読にする',
   'no_notifications': '通知はまだありません',
   'no_notifications_desc': 'ここにマッチやメッセージが表示されます',
+  'time_just_now': 'たった今',
+  'time_minutes_ago': '{n}分前',
+  'time_hours_ago': '{n}時間前',
+  'time_days_ago': '{n}日前',
   'just_now': 'たった今',
   'minutes_ago': '{}分前',
   'hours_ago': '{}時間前',
@@ -431,7 +436,7 @@ const jaTranslations = <String, String>{
   'question_create_step_answers': '回答を追加',
   'question_create_step_settings': '設定',
   'question_create_motto': '自分についての質問を作りましょう \u2014 検索できないものにしてね！',
-  'question_create_motto_tip': 'ヒント：「私の好きな季節は？」のような質問がたくさん解かれます',
+  'question_create_motto_tip': 'ヒント：個人的な質問は、あなたの基準に合う人を見つけるのに役立ちます',
   'question_create_select_category': 'カテゴリを選択',
   'question_create_select_time': '制限時間を選択',
   'question_create_hint_label': 'ヒント（任意）',
@@ -702,6 +707,7 @@ const jaTranslations = <String, String>{
 
   // Exchange center
   'exchange_title': '交換センター',
+  'exchange_subtitle': 'ダイヤモンドをパワーに変換',
   'exchange_convert_title': 'ダイヤ変換',
   'exchange_convert_button': '変換',
   'exchange_powers_title': 'パワー権利',
@@ -721,6 +727,7 @@ const jaTranslations = <String, String>{
   'referral_title': '友達を招待',
   'referral_description': '友達を招待すると、2人ともパープルダイヤ25個もらえます！',
   'referral_compact_cta': '友達を招待してダイヤを獲得',
+  'referral_compact_subtitle': '招待ごとに紫ダイヤモンド報酬',
   'referral_copy': 'コピー',
   'referral_share': 'シェア',
   'referral_progress': '使用済み招待',
@@ -730,6 +737,13 @@ const jaTranslations = <String, String>{
   'referral_code_valid': '紹介者：',
   'referral_code_invalid': '無効な招待コードです',
   'referral_already_logged_in': '招待コードは登録時のみ使用できます',
+  'referral_enter_code': 'Have an invite code? Enter it here:',
+  'referral_apply': 'Apply',
+  'referral_invited_by': 'Invited by: ',
+  'referral_reward_earned': 'You earned 25 purple diamonds!',
+  'referral_complete_profile': 'Complete your profile to 60% to claim your reward!',
+  'referral_self_error': 'You cannot use your own code',
+  'referral_already_error': 'You have already used an invite code',
 
   // Paywall
   'paywall_title_undo': 'アンドゥを解除',
@@ -817,4 +831,9 @@ const jaTranslations = <String, String>{
   'reason_referral': 'Referral Bonus',
   'reason_subscription': 'Subscription Bonus',
   'reason_boost': 'Boost',
+
+  // Splash
+  'splash_flow_ask': '質問',
+  'splash_flow_answer': '回答',
+  'splash_flow_match': 'マッチ',
 };

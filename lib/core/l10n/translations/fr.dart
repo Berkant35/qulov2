@@ -211,6 +211,7 @@ const frTranslations = <String, String>{
   'accept_terms': 'J\'accepte les',
   'terms_of_service': 'Conditions d\'utilisation',
   'privacy_policy': 'Politique de confidentialité',
+  'legal': 'Mentions légales',
   'and_word': 'et',
   'must_accept_terms': 'Tu dois accepter les conditions pour continuer',
 
@@ -407,6 +408,10 @@ const frTranslations = <String, String>{
   'mark_all_read': 'Tout marquer comme lu',
   'no_notifications': 'Pas encore de notifications',
   'no_notifications_desc': 'Tu verras tes matchs et messages ici',
+  'time_just_now': 'À l'instant',
+  'time_minutes_ago': '{n} min',
+  'time_hours_ago': 'Il y a {n}h',
+  'time_days_ago': 'Il y a {n}j',
   'just_now': 'À l\'instant',
   'minutes_ago': 'il y a {} min',
   'hours_ago': 'il y a {} heures',
@@ -431,7 +436,7 @@ const frTranslations = <String, String>{
   'question_create_step_answers': 'Ajouter les réponses',
   'question_create_step_settings': 'Paramètres',
   'question_create_motto': 'Pose des questions sur toi \u2014 pas googlables !',
-  'question_create_motto_tip': 'Astuce : Les questions personnelles comme « Ma saison préférée ? » sont plus résolues',
+  'question_create_motto_tip': 'Astuce : Les questions personnelles vous aident à trouver des personnes correspondant à vos critères',
   'question_create_select_category': 'Choisir la catégorie',
   'question_create_select_time': 'Choisir le temps',
   'question_create_hint_label': 'Indice (optionnel)',
@@ -702,6 +707,7 @@ const frTranslations = <String, String>{
 
   // Exchange center
   'exchange_title': 'Centre d\'échange',
+  'exchange_subtitle': 'Convertir les diamants en pouvoirs',
   'exchange_convert_title': 'Conversion de diamants',
   'exchange_convert_button': 'Convertir',
   'exchange_powers_title': 'Droits de pouvoirs',
@@ -721,6 +727,7 @@ const frTranslations = <String, String>{
   'referral_title': 'Inviter un(e) ami(e)',
   'referral_description': 'Invite un(e) ami(e), vous recevez tous les deux 25 diamants violets !',
   'referral_compact_cta': 'Invite un(e) ami(e), gagne des diamants',
+  'referral_compact_subtitle': 'Chaque invitation = récompense diamant violet',
   'referral_copy': 'Copier',
   'referral_share': 'Partager',
   'referral_progress': 'Invitations utilisées',
@@ -730,6 +737,13 @@ const frTranslations = <String, String>{
   'referral_code_valid': 'Parrainé par : ',
   'referral_code_invalid': 'Code de parrainage invalide',
   'referral_already_logged_in': 'Les codes de parrainage ne peuvent être utilisés que lors de l\'inscription',
+  'referral_enter_code': 'Have an invite code? Enter it here:',
+  'referral_apply': 'Apply',
+  'referral_invited_by': 'Invited by: ',
+  'referral_reward_earned': 'You earned 25 purple diamonds!',
+  'referral_complete_profile': 'Complete your profile to 60% to claim your reward!',
+  'referral_self_error': 'You cannot use your own code',
+  'referral_already_error': 'You have already used an invite code',
 
   // Paywall
   'paywall_title_undo': 'Débloquer l\'annulation',
@@ -817,4 +831,9 @@ const frTranslations = <String, String>{
   'reason_referral': 'Referral Bonus',
   'reason_subscription': 'Subscription Bonus',
   'reason_boost': 'Boost',
+
+  // Splash
+  'splash_flow_ask': 'Demander',
+  'splash_flow_answer': 'Répondre',
+  'splash_flow_match': 'Match',
 };

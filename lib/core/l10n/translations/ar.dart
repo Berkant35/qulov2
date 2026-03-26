@@ -211,6 +211,7 @@ const arTranslations = <String, String>{
   'accept_terms': 'أوافق على',
   'terms_of_service': 'شروط الخدمة',
   'privacy_policy': 'سياسة الخصوصية',
+  'legal': 'قانوني',
   'and_word': 'و',
   'must_accept_terms': 'يجب الموافقة على الشروط للمتابعة',
 
@@ -405,6 +406,10 @@ const arTranslations = <String, String>{
   'mark_all_read': 'تعيين الكل كمقروء',
   'no_notifications': 'لا توجد إشعارات بعد',
   'no_notifications_desc': 'ستظهر التوافقات والرسائل هنا',
+  'time_just_now': 'الآن',
+  'time_minutes_ago': 'منذ {n} د',
+  'time_hours_ago': 'منذ {n} س',
+  'time_days_ago': 'منذ {n} ي',
   'just_now': 'الآن',
   'minutes_ago': 'قبل {} دقيقة',
   'hours_ago': 'قبل {} ساعة',
@@ -429,7 +434,7 @@ const arTranslations = <String, String>{
   'question_create_step_answers': 'أضف الإجابات',
   'question_create_step_settings': 'الإعدادات',
   'question_create_motto': 'اسأل أسئلة عن نفسك \u2014 لا يمكن البحث عنها!',
-  'question_create_motto_tip': 'نصيحة: الأسئلة الشخصية مثل "موسمي المفضل؟" تحصل على حلول أكثر',
+  'question_create_motto_tip': 'نصيحة: الأسئلة الشخصية تساعدك في العثور على أشخاص يتوافقون مع معاييرك',
   'question_create_select_category': 'اختر الفئة',
   'question_create_select_time': 'اختر الوقت',
   'question_create_hint_label': 'تلميح (اختياري)',
@@ -700,6 +705,7 @@ const arTranslations = <String, String>{
 
   // Exchange center
   'exchange_title': 'مركز التبديل',
+  'exchange_subtitle': 'حوّل الماس إلى قوى',
   'exchange_convert_title': 'تحويل الماسات',
   'exchange_convert_button': 'تحويل',
   'exchange_powers_title': 'حقوق القوى',
@@ -719,6 +725,7 @@ const arTranslations = <String, String>{
   'referral_title': 'ادعُ صديقاً',
   'referral_description': 'ادعُ صديقاً، كلاكما يحصل على ٢٥ ماسة بنفسجية!',
   'referral_compact_cta': 'ادعُ صديقاً واكسب ماسات',
+  'referral_compact_subtitle': 'كل دعوة = مكافأة ماسة بنفسجية',
   'referral_copy': 'نسخ',
   'referral_share': 'مشاركة',
   'referral_progress': 'الدعوات المستخدمة',
@@ -728,6 +735,13 @@ const arTranslations = <String, String>{
   'referral_code_valid': 'تمت الدعوة بواسطة: ',
   'referral_code_invalid': 'رمز دعوة غير صالح',
   'referral_already_logged_in': 'يمكن استخدام رموز الدعوة أثناء التسجيل فقط',
+  'referral_enter_code': 'Have an invite code? Enter it here:',
+  'referral_apply': 'Apply',
+  'referral_invited_by': 'Invited by: ',
+  'referral_reward_earned': 'You earned 25 purple diamonds!',
+  'referral_complete_profile': 'Complete your profile to 60% to claim your reward!',
+  'referral_self_error': 'You cannot use your own code',
+  'referral_already_error': 'You have already used an invite code',
 
   // Paywall
   'paywall_title_undo': 'افتح التراجع',
@@ -815,4 +829,9 @@ const arTranslations = <String, String>{
   'reason_referral': 'Referral Bonus',
   'reason_subscription': 'Subscription Bonus',
   'reason_boost': 'Boost',
+
+  // Splash
+  'splash_flow_ask': 'اسأل',
+  'splash_flow_answer': 'أجب',
+  'splash_flow_match': 'تطابق',
 };

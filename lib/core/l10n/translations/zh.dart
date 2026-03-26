@@ -211,6 +211,7 @@ const zhTranslations = <String, String>{
   'accept_terms': '我接受',
   'terms_of_service': '服务条款',
   'privacy_policy': '隐私政策',
+  'legal': '法律信息',
   'and_word': '和',
   'must_accept_terms': '你必须接受条款才能继续',
 
@@ -405,6 +406,10 @@ const zhTranslations = <String, String>{
   'mark_all_read': '全部标为已读',
   'no_notifications': '暂无通知',
   'no_notifications_desc': '匹配和消息会显示在这里',
+  'time_just_now': '刚刚',
+  'time_minutes_ago': '{n}分钟前',
+  'time_hours_ago': '{n}小时前',
+  'time_days_ago': '{n}天前',
   'just_now': '刚刚',
   'minutes_ago': '{}分钟前',
   'hours_ago': '{}小时前',
@@ -429,7 +434,7 @@ const zhTranslations = <String, String>{
   'question_create_step_answers': '添加选项',
   'question_create_step_settings': '设置',
   'question_create_motto': '提问关于你自己的问题 — 别问百度能搜到的！',
-  'question_create_motto_tip': '提示：像"我最喜欢的季节？"这样的个人问题更受欢迎',
+  'question_create_motto_tip': '提示：个人问题有助于找到符合你标准的人',
   'question_create_select_category': '选择分类',
   'question_create_select_time': '选择时间',
   'question_create_hint_label': '提示（可选）',
@@ -700,6 +705,7 @@ const zhTranslations = <String, String>{
 
   // Exchange center
   'exchange_title': '兑换中心',
+  'exchange_subtitle': '将钻石转换为力量',
   'exchange_convert_title': '钻石兑换',
   'exchange_convert_button': '兑换',
   'exchange_powers_title': '道具权益',
@@ -719,6 +725,7 @@ const zhTranslations = <String, String>{
   'referral_title': '邀请好友',
   'referral_description': '邀请好友，双方各得25紫钻！',
   'referral_compact_cta': '邀请好友，赚取钻石',
+  'referral_compact_subtitle': '每次邀请 = 紫色钻石奖励',
   'referral_copy': '复制',
   'referral_share': '分享',
   'referral_progress': '已使用邀请',
@@ -728,6 +735,13 @@ const zhTranslations = <String, String>{
   'referral_code_valid': '邀请人：',
   'referral_code_invalid': '无效邀请码',
   'referral_already_logged_in': '邀请码只能在注册时使用',
+  'referral_enter_code': 'Have an invite code? Enter it here:',
+  'referral_apply': 'Apply',
+  'referral_invited_by': 'Invited by: ',
+  'referral_reward_earned': 'You earned 25 purple diamonds!',
+  'referral_complete_profile': 'Complete your profile to 60% to claim your reward!',
+  'referral_self_error': 'You cannot use your own code',
+  'referral_already_error': 'You have already used an invite code',
 
   // Paywall
   'paywall_title_undo': '解锁撤销',
@@ -815,4 +829,9 @@ const zhTranslations = <String, String>{
   'reason_referral': 'Referral Bonus',
   'reason_subscription': 'Subscription Bonus',
   'reason_boost': 'Boost',
+
+  // Splash
+  'splash_flow_ask': '提问',
+  'splash_flow_answer': '回答',
+  'splash_flow_match': '匹配',
 };

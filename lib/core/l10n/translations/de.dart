@@ -211,6 +211,7 @@ const deTranslations = <String, String>{
   'accept_terms': 'Ich akzeptiere die',
   'terms_of_service': 'Nutzungsbedingungen',
   'privacy_policy': 'Datenschutzrichtlinie',
+  'legal': 'Rechtliches',
   'and_word': 'und',
   'must_accept_terms': 'Du musst die Bedingungen akzeptieren, um fortzufahren',
 
@@ -407,6 +408,10 @@ const deTranslations = <String, String>{
   'mark_all_read': 'Alle als gelesen markieren',
   'no_notifications': 'Noch keine Benachrichtigungen',
   'no_notifications_desc': 'Hier siehst du Matches und Nachrichten',
+  'time_just_now': 'Gerade eben',
+  'time_minutes_ago': '{n} Min.',
+  'time_hours_ago': 'Vor {n} Std.',
+  'time_days_ago': 'Vor {n} T.',
   'just_now': 'Gerade eben',
   'minutes_ago': 'vor {} Min.',
   'hours_ago': 'vor {} Std.',
@@ -431,7 +436,7 @@ const deTranslations = <String, String>{
   'question_create_step_answers': 'Antworten hinzufügen',
   'question_create_step_settings': 'Einstellungen',
   'question_create_motto': 'Stelle Fragen über dich \u2014 nicht googelbar!',
-  'question_create_motto_tip': 'Tipp: Persönliche Fragen wie „Meine Lieblingsjahreszeit?" werden öfter gelöst',
+  'question_create_motto_tip': 'Tipp: Persönliche Fragen helfen dir, Menschen zu finden, die deinen Kriterien entsprechen',
   'question_create_select_category': 'Kategorie auswählen',
   'question_create_select_time': 'Zeit auswählen',
   'question_create_hint_label': 'Hinweis (optional)',
@@ -702,6 +707,7 @@ const deTranslations = <String, String>{
 
   // Exchange center
   'exchange_title': 'Tauschzentrum',
+  'exchange_subtitle': 'Diamanten in Kräfte umwandeln',
   'exchange_convert_title': 'Diamanten-Umwandlung',
   'exchange_convert_button': 'Umwandeln',
   'exchange_powers_title': 'Kräfte-Rechte',
@@ -721,6 +727,7 @@ const deTranslations = <String, String>{
   'referral_title': 'Freund einladen',
   'referral_description': 'Lade einen Freund ein, beide erhalten 25 lila Diamanten!',
   'referral_compact_cta': 'Freund einladen, Diamanten verdienen',
+  'referral_compact_subtitle': 'Jede Einladung = lila Diamant Belohnung',
   'referral_copy': 'Kopieren',
   'referral_share': 'Teilen',
   'referral_progress': 'Einladungen genutzt',
@@ -730,6 +737,13 @@ const deTranslations = <String, String>{
   'referral_code_valid': 'Empfohlen von: ',
   'referral_code_invalid': 'Ungültiger Empfehlungscode',
   'referral_already_logged_in': 'Empfehlungscodes können nur bei der Registrierung verwendet werden',
+  'referral_enter_code': 'Have an invite code? Enter it here:',
+  'referral_apply': 'Apply',
+  'referral_invited_by': 'Invited by: ',
+  'referral_reward_earned': 'You earned 25 purple diamonds!',
+  'referral_complete_profile': 'Complete your profile to 60% to claim your reward!',
+  'referral_self_error': 'You cannot use your own code',
+  'referral_already_error': 'You have already used an invite code',
 
   // Paywall
   'paywall_title_undo': 'Rückgängig freischalten',
@@ -817,4 +831,9 @@ const deTranslations = <String, String>{
   'reason_referral': 'Referral Bonus',
   'reason_subscription': 'Subscription Bonus',
   'reason_boost': 'Boost',
+
+  // Splash
+  'splash_flow_ask': 'Fragen',
+  'splash_flow_answer': 'Antworten',
+  'splash_flow_match': 'Match',
 };

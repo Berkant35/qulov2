@@ -211,6 +211,7 @@ const trTranslations = <String, String>{
   'accept_terms': 'Kabul ediyorum:',
   'terms_of_service': 'Kullanım Koşulları',
   'privacy_policy': 'Gizlilik Politikası',
+  'legal': 'Yasal',
   'and_word': 've',
   'must_accept_terms': 'Devam etmek için koşulları kabul etmelisiniz',
 
@@ -407,6 +408,10 @@ const trTranslations = <String, String>{
   'mark_all_read': 'Tümünü Okundu Yap',
   'no_notifications': 'Henüz bildirim yok',
   'no_notifications_desc': 'Eşleşmeler ve mesajlar geldiğinde burada göreceksin',
+  'time_just_now': 'Az önce',
+  'time_minutes_ago': '{n} dk önce',
+  'time_hours_ago': '{n} saat önce',
+  'time_days_ago': '{n} gün önce',
   'just_now': 'Az önce',
   'minutes_ago': '{} dk önce',
   'hours_ago': '{} saat önce',
@@ -431,7 +436,7 @@ const trTranslations = <String, String>{
   'question_create_step_answers': 'Şıkları Gir',
   'question_create_step_settings': 'Ayarlar',
   'question_create_motto': 'Seni anlatan sorular sor \u2014 cevabı Google\'da bulunmasın',
-  'question_create_motto_tip': 'İpucu: "En sevdiğim mevsim?" gibi kişisel sorular daha çok çözülür',
+  'question_create_motto_tip': 'İpucu: Kişisel sorular, senin kriterlerine uygun kişileri bulmanda sana yardımcı olur',
   'question_create_select_category': 'Kategori Seç',
   'question_create_select_time': 'Süre Seç',
   'question_create_hint_label': 'İpucu (opsiyonel)',
@@ -702,6 +707,7 @@ const trTranslations = <String, String>{
 
   // Exchange center
   'exchange_title': 'Dönüşüm Merkezi',
+  'exchange_subtitle': 'Elmasları güçlere dönüştür',
   'exchange_convert_title': 'Elmas Dönüşümü',
   'exchange_convert_button': 'Dönüştür',
   'exchange_powers_title': 'Power Hakları',
@@ -721,6 +727,7 @@ const trTranslations = <String, String>{
   'referral_title': 'Arkadaşını Davet Et',
   'referral_description': 'Arkadaşını davet et, ikimize de 25 mor elmas hediye!',
   'referral_compact_cta': 'Arkadaşını getir, elmas kazan',
+  'referral_compact_subtitle': 'Her davet = mor elmas ödülü',
   'referral_copy': 'Kopyala',
   'referral_share': 'Paylaş',
   'referral_progress': 'Davet kullanıldı',
@@ -730,6 +737,13 @@ const trTranslations = <String, String>{
   'referral_code_valid': 'Davet eden: ',
   'referral_code_invalid': 'Geçersiz davet kodu',
   'referral_already_logged_in': 'Davet kodu sadece yeni kayıt sırasında kullanılabilir',
+  'referral_enter_code': 'Davet kodun var mı? Buraya gir:',
+  'referral_apply': 'Uygula',
+  'referral_invited_by': 'Davet eden: ',
+  'referral_reward_earned': '25 mor elmas kazandın!',
+  'referral_complete_profile': 'Profilini %60 tamamla, ödülünü kazan!',
+  'referral_self_error': 'Kendi kodunu kullanamazsın',
+  'referral_already_error': 'Zaten bir davet kodu kullandın',
 
   // Paywall
   'paywall_title_undo': 'Geri Alma\'nın Kilidini Aç',
@@ -817,4 +831,9 @@ const trTranslations = <String, String>{
   'reason_referral': 'Davet Odulu',
   'reason_subscription': 'Abonelik Bonusu',
   'reason_boost': 'Boost',
+
+  // Splash
+  'splash_flow_ask': 'Sor',
+  'splash_flow_answer': 'Cevapla',
+  'splash_flow_match': 'Eşleş',
 };

@@ -211,6 +211,7 @@ const plTranslations = <String, String>{
   'accept_terms': 'Akceptuj\u0119',
   'terms_of_service': 'Regulamin',
   'privacy_policy': 'Polityk\u0119 prywatno\u015bci',
+  'legal': 'Informacje prawne',
   'and_word': 'i',
   'must_accept_terms': 'Musisz zaakceptowa\u0107 regulamin, aby kontynuowa\u0107',
 
@@ -405,6 +406,10 @@ const plTranslations = <String, String>{
   'mark_all_read': 'Oznacz wszystkie jako przeczytane',
   'no_notifications': 'Brak powiadomie\u0144',
   'no_notifications_desc': 'Tutaj zobaczysz dopasowania i wiadomo\u015bci',
+  'time_just_now': 'Przed chwilą',
+  'time_minutes_ago': '{n} min temu',
+  'time_hours_ago': '{n} godz. temu',
+  'time_days_ago': '{n} dni temu',
   'just_now': 'W\u0142a\u015bnie',
   'minutes_ago': '{} min temu',
   'hours_ago': '{} godz. temu',
@@ -429,7 +434,7 @@ const plTranslations = <String, String>{
   'question_create_step_answers': 'Dodaj odpowiedzi',
   'question_create_step_settings': 'Ustawienia',
   'question_create_motto': 'Zadawaj pytania o sobie \u2014 nie takie, kt\u00f3re mo\u017cna wygooglowa\u0107!',
-  'question_create_motto_tip': 'Wskaz\u00f3wka: Osobiste pytania jak \u201eMoja ulubiona pora roku?\u201d maj\u0105 wi\u0119cej rozwi\u0105za\u0144',
+  'question_create_motto_tip': 'Wskazówka: Osobiste pytania pomagają znaleźć osoby pasujące do twoich kryteriów',
   'question_create_select_category': 'Wybierz kategori\u0119',
   'question_create_select_time': 'Wybierz czas',
   'question_create_hint_label': 'Wskaz\u00f3wka (opcjonalnie)',
@@ -700,6 +705,7 @@ const plTranslations = <String, String>{
 
   // Exchange center
   'exchange_title': 'Centrum wymiany',
+  'exchange_subtitle': 'Zamień diamenty na moce',
   'exchange_convert_title': 'Wymiana diament\u00f3w',
   'exchange_convert_button': 'Wymie\u0144',
   'exchange_powers_title': 'Uprawnienia mocy',
@@ -719,6 +725,7 @@ const plTranslations = <String, String>{
   'referral_title': 'Zapro\u015b znajomego',
   'referral_description': 'Zapro\u015b znajomego, oboje otrzymacie 25 fioletowych diament\u00f3w!',
   'referral_compact_cta': 'Zapro\u015b znajomego, zdobywaj diamenty',
+  'referral_compact_subtitle': 'Każde zaproszenie = nagroda fioletowy diament',
   'referral_copy': 'Kopiuj',
   'referral_share': 'Udost\u0119pnij',
   'referral_progress': 'U\u017cyte zaproszenia',
@@ -728,6 +735,13 @@ const plTranslations = <String, String>{
   'referral_code_valid': 'Polecony przez: ',
   'referral_code_invalid': 'Nieprawid\u0142owy kod polecaj\u0105cy',
   'referral_already_logged_in': 'Kody polecaj\u0105ce mo\u017cna u\u017cywa\u0107 tylko podczas rejestracji',
+  'referral_enter_code': 'Have an invite code? Enter it here:',
+  'referral_apply': 'Apply',
+  'referral_invited_by': 'Invited by: ',
+  'referral_reward_earned': 'You earned 25 purple diamonds!',
+  'referral_complete_profile': 'Complete your profile to 60% to claim your reward!',
+  'referral_self_error': 'You cannot use your own code',
+  'referral_already_error': 'You have already used an invite code',
 
   // Paywall
   'paywall_title_undo': 'Odblokuj cofni\u0119cia',
@@ -815,4 +829,9 @@ const plTranslations = <String, String>{
   'reason_referral': 'Referral Bonus',
   'reason_subscription': 'Subscription Bonus',
   'reason_boost': 'Boost',
+
+  // Splash
+  'splash_flow_ask': 'Zapytaj',
+  'splash_flow_answer': 'Odpowiedz',
+  'splash_flow_match': 'Dopasuj',
 };

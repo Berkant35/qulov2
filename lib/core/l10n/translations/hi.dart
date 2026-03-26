@@ -211,6 +211,7 @@ const hiTranslations = <String, String>{
   'accept_terms': 'मैं स्वीकार करता/करती हूँ',
   'terms_of_service': 'सेवा की शर्तें',
   'privacy_policy': 'गोपनीयता नीति',
+  'legal': 'कानूनी',
   'and_word': 'और',
   'must_accept_terms': 'जारी रखने के लिए शर्तें स्वीकार करें',
 
@@ -407,6 +408,10 @@ const hiTranslations = <String, String>{
   'mark_all_read': 'सभी पढ़ा गया',
   'no_notifications': 'अभी कोई नोटिफ़िकेशन नहीं',
   'no_notifications_desc': 'यहाँ आपके मैच और मैसेज दिखेंगे',
+  'time_just_now': 'अभी',
+  'time_minutes_ago': '{n} मिनट पहले',
+  'time_hours_ago': '{n} घंटे पहले',
+  'time_days_ago': '{n} दिन पहले',
   'just_now': 'अभी',
   'minutes_ago': '{} मिनट पहले',
   'hours_ago': '{} घंटे पहले',
@@ -431,7 +436,7 @@ const hiTranslations = <String, String>{
   'question_create_step_answers': 'जवाब जोड़ें',
   'question_create_step_settings': 'सेटिंग्स',
   'question_create_motto': 'अपने बारे में सवाल पूछें \u2014 जो गूगल पर न मिलें!',
-  'question_create_motto_tip': 'टिप: "मेरा पसंदीदा मौसम?" जैसे पर्सनल सवालों के ज़्यादा जवाब आते हैं',
+  'question_create_motto_tip': 'सुझाव: व्यक्तिगत प्रश्न आपके मानदंडों से मेल खाने वाले लोगों को खोजने में मदद करते हैं',
   'question_create_select_category': 'कैटेगरी चुनें',
   'question_create_select_time': 'समय चुनें',
   'question_create_hint_label': 'हिंट (वैकल्पिक)',
@@ -702,6 +707,7 @@ const hiTranslations = <String, String>{
 
   // Exchange center
   'exchange_title': 'एक्सचेंज सेंटर',
+  'exchange_subtitle': 'हीरे को शक्तियों में बदलें',
   'exchange_convert_title': 'हीरा रूपांतरण',
   'exchange_convert_button': 'कन्वर्ट करें',
   'exchange_powers_title': 'पावर अधिकार',
@@ -721,6 +727,7 @@ const hiTranslations = <String, String>{
   'referral_title': 'दोस्त को बुलाएं',
   'referral_description': 'दोस्त को बुलाएं, दोनों को 25 बैंगनी हीरे मिलें!',
   'referral_compact_cta': 'दोस्त लाएं, हीरे कमाएं',
+  'referral_compact_subtitle': 'हर आमंत्रण = बैंगनी हीरा इनाम',
   'referral_copy': 'कॉपी',
   'referral_share': 'शेयर',
   'referral_progress': 'इन्वाइट इस्तेमाल हुए',
@@ -730,6 +737,13 @@ const hiTranslations = <String, String>{
   'referral_code_valid': 'रेफ़र किया: ',
   'referral_code_invalid': 'अमान्य रेफ़रल कोड',
   'referral_already_logged_in': 'रेफ़रल कोड सिर्फ़ रजिस्ट्रेशन के समय इस्तेमाल हो सकते हैं',
+  'referral_enter_code': 'Have an invite code? Enter it here:',
+  'referral_apply': 'Apply',
+  'referral_invited_by': 'Invited by: ',
+  'referral_reward_earned': 'You earned 25 purple diamonds!',
+  'referral_complete_profile': 'Complete your profile to 60% to claim your reward!',
+  'referral_self_error': 'You cannot use your own code',
+  'referral_already_error': 'You have already used an invite code',
 
   // Paywall
   'paywall_title_undo': 'अन्डू अनलॉक करें',
@@ -817,4 +831,9 @@ const hiTranslations = <String, String>{
   'reason_referral': 'Referral Bonus',
   'reason_subscription': 'Subscription Bonus',
   'reason_boost': 'Boost',
+
+  // Splash
+  'splash_flow_ask': 'पूछो',
+  'splash_flow_answer': 'जवाब दो',
+  'splash_flow_match': 'मैच',
 };

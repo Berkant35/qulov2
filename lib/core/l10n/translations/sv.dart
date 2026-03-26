@@ -211,6 +211,7 @@ const svTranslations = <String, String>{
   'accept_terms': 'Jag godkänner',
   'terms_of_service': 'Användarvillkor',
   'privacy_policy': 'Integritetspolicy',
+  'legal': 'Juridisk',
   'and_word': 'och',
   'must_accept_terms': 'Du måste godkänna villkoren för att fortsätta',
 
@@ -407,6 +408,10 @@ const svTranslations = <String, String>{
   'mark_all_read': 'Markera alla som lästa',
   'no_notifications': 'Inga aviseringar ännu',
   'no_notifications_desc': 'Här ser du matchningar och meddelanden',
+  'time_just_now': 'Nyss',
+  'time_minutes_ago': '{n} min sedan',
+  'time_hours_ago': '{n}h sedan',
+  'time_days_ago': '{n}d sedan',
   'just_now': 'Just nu',
   'minutes_ago': '{} min sedan',
   'hours_ago': '{} timmar sedan',
@@ -431,7 +436,7 @@ const svTranslations = <String, String>{
   'question_create_step_answers': 'Lägg till svar',
   'question_create_step_settings': 'Inställningar',
   'question_create_motto': 'Ställ frågor om dig själv \u2014 inget som går att googla!',
-  'question_create_motto_tip': 'Tips: Personliga frågor som "Min favoritårstid?" får fler svar',
+  'question_create_motto_tip': 'Tips: Personliga frågor hjälper dig att hitta personer som matchar dina kriterier',
   'question_create_select_category': 'Välj kategori',
   'question_create_select_time': 'Välj tid',
   'question_create_hint_label': 'Ledtråd (valfritt)',
@@ -702,6 +707,7 @@ const svTranslations = <String, String>{
 
   // Exchange center
   'exchange_title': 'Växelcentral',
+  'exchange_subtitle': 'Omvandla diamanter till krafter',
   'exchange_convert_title': 'Diamantkonvertering',
   'exchange_convert_button': 'Konvertera',
   'exchange_powers_title': 'Krafträttigheter',
@@ -721,6 +727,7 @@ const svTranslations = <String, String>{
   'referral_title': 'Bjud in en vän',
   'referral_description': 'Bjud in en vän, båda får 25 lila diamanter!',
   'referral_compact_cta': 'Bjud in en vän, tjäna diamanter',
+  'referral_compact_subtitle': 'Varje inbjudan = lila diamantbelöning',
   'referral_copy': 'Kopiera',
   'referral_share': 'Dela',
   'referral_progress': 'Inbjudningar använda',
@@ -730,6 +737,13 @@ const svTranslations = <String, String>{
   'referral_code_valid': 'Inbjuden av: ',
   'referral_code_invalid': 'Ogiltig inbjudningskod',
   'referral_already_logged_in': 'Inbjudningskoder kan bara användas vid registrering',
+  'referral_enter_code': 'Have an invite code? Enter it here:',
+  'referral_apply': 'Apply',
+  'referral_invited_by': 'Invited by: ',
+  'referral_reward_earned': 'You earned 25 purple diamonds!',
+  'referral_complete_profile': 'Complete your profile to 60% to claim your reward!',
+  'referral_self_error': 'You cannot use your own code',
+  'referral_already_error': 'You have already used an invite code',
 
   // Paywall
   'paywall_title_undo': 'Lås upp Ångra',
@@ -817,4 +831,9 @@ const svTranslations = <String, String>{
   'reason_referral': 'Referral Bonus',
   'reason_subscription': 'Subscription Bonus',
   'reason_boost': 'Boost',
+
+  // Splash
+  'splash_flow_ask': 'Fråga',
+  'splash_flow_answer': 'Svara',
+  'splash_flow_match': 'Matcha',
 };
