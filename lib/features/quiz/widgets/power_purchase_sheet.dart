@@ -44,7 +44,7 @@ class _PowerPurchaseSheetState extends ConsumerState<PowerPurchaseSheet> {
 
     result.when(
       success: (_) {
-        Navigator.of(context).pop();
+        // Sheet stays open — user closes manually
       },
       failure: (f) {
         if (f is ServerFailure && f.code == 'INSUFFICIENT_DIAMONDS') {
@@ -152,7 +152,7 @@ class _PowerPurchaseSheetState extends ConsumerState<PowerPurchaseSheet> {
   }
 }
 
-class _PowerRow extends StatelessWidget {
+class _PowerRow extends StatefulWidget {
   final ExchangeRatePower power;
   final int inventoryCount;
   final String? buyingKey;
@@ -165,8 +165,71 @@ class _PowerRow extends StatelessWidget {
     required this.onBuy,
   });
 
+  @override
+  State<_PowerRow> createState() => _PowerRowState();
+}
+
+class _PowerRowState extends State<_PowerRow>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _pulseController;
+  late final Animation<double> _scaleAnimation;
+  late final Animation<double> _glowAnimation;
+  late int _previousCount;
+
+  @override
+  void initState() {
+    super.initState();
+    _previousCount = widget.inventoryCount;
+
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+
+    _scaleAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween(begin: 1.0, end: 1.35)
+            .chain(CurveTween(curve: Curves.easeOut)),
+        weight: 40,
+      ),
+      TweenSequenceItem(
+        tween: Tween(begin: 1.35, end: 1.0)
+            .chain(CurveTween(curve: Curves.easeOutBack)),
+        weight: 60,
+      ),
+    ]).animate(_pulseController);
+
+    _glowAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween(begin: 0.0, end: 0.6)
+            .chain(CurveTween(curve: Curves.easeOut)),
+        weight: 35,
+      ),
+      TweenSequenceItem(
+        tween: Tween(begin: 0.6, end: 0.0)
+            .chain(CurveTween(curve: Curves.easeIn)),
+        weight: 65,
+      ),
+    ]).animate(_pulseController);
+  }
+
+  @override
+  void didUpdateWidget(_PowerRow oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.inventoryCount > _previousCount) {
+      _pulseController.forward(from: 0);
+    }
+    _previousCount = widget.inventoryCount;
+  }
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    super.dispose();
+  }
+
   String _powerLabel(BuildContext context) {
-    final key = switch (power.name) {
+    final key = switch (widget.power.name) {
       'ORACLE' => 'power_oracle',
       'HALF' => 'power_half',
       'SKIP' => 'power_skip',
@@ -175,13 +238,13 @@ class _PowerRow extends StatelessWidget {
       'HINT' => 'power_hint',
       'POWER_BLOCK' => 'power_block',
       'POWER_UNBLOCK' => 'power_unblock',
-      _ => power.name,
+      _ => widget.power.name,
     };
     return context.tr(key);
   }
 
   String _powerDesc(BuildContext context) {
-    final key = switch (power.name) {
+    final key = switch (widget.power.name) {
       'ORACLE' => 'power_oracle_desc',
       'HALF' => 'power_half_desc',
       'SKIP' => 'power_skip_desc',
@@ -198,7 +261,7 @@ class _PowerRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final powerType = PowerType.fromApiName(power.name);
+    final powerType = PowerType.fromApiName(widget.power.name);
     if (powerType == null) return const SizedBox.shrink();
 
     return Padding(
@@ -217,11 +280,35 @@ class _PowerRow extends StatelessWidget {
         ),
         child: Row(
           children: [
-            PowerIcon(
-              type: powerType,
-              size: 28,
-              showCount: inventoryCount > 0,
-              count: inventoryCount,
+            AnimatedBuilder(
+              animation: _pulseController,
+              builder: (context, child) {
+                return Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: _pulseController.isAnimating
+                        ? [
+                            BoxShadow(
+                              color: powerType.color
+                                  .withValues(alpha: _glowAnimation.value),
+                              blurRadius: 12,
+                              spreadRadius: 2,
+                            ),
+                          ]
+                        : null,
+                  ),
+                  child: Transform.scale(
+                    scale: _scaleAnimation.value,
+                    child: child,
+                  ),
+                );
+              },
+              child: PowerIcon(
+                type: powerType,
+                size: 28,
+                showCount: widget.inventoryCount > 0,
+                count: widget.inventoryCount,
+              ),
             ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
@@ -246,18 +333,18 @@ class _PowerRow extends StatelessWidget {
             ),
             // Purple buy button
             _BuyChip(
-              cost: power.purpleCost,
+              cost: widget.power.purpleCost,
               icon: const DiamondIcon.purple(size: 14, showGlow: false),
-              isLoading: buyingKey == '${power.name}_PURPLE',
-              onTap: () => onBuy(power.name, 'PURPLE'),
+              isLoading: widget.buyingKey == '${widget.power.name}_PURPLE',
+              onTap: () => widget.onBuy(widget.power.name, 'PURPLE'),
             ),
             const SizedBox(width: AppSpacing.xs),
             // Green buy button
             _BuyChip(
-              cost: power.greenCost,
+              cost: widget.power.greenCost,
               icon: const DiamondIcon.green(size: 14, showGlow: false),
-              isLoading: buyingKey == '${power.name}_GREEN',
-              onTap: () => onBuy(power.name, 'GREEN'),
+              isLoading: widget.buyingKey == '${widget.power.name}_GREEN',
+              onTap: () => widget.onBuy(widget.power.name, 'GREEN'),
             ),
           ],
         ),
