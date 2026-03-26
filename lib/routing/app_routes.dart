@@ -31,7 +31,7 @@ final _routes = <RouteBase>[
     name: RouteNames.invite,
     redirect: (context, state) {
       final code = state.pathParameters['code'] ?? '';
-      return '/auth/login/register?referralCode=$code';
+      return '/profile/diamonds?referralCode=$code';
     },
   ),
 
@@ -280,7 +280,10 @@ final _routes = <RouteBase>[
             GoRoute(
               path: 'diamonds',
               name: RouteNames.diamonds,
-              builder: (context, state) => const DiamondsScreen(),
+              builder: (context, state) {
+                final referralCode = state.uri.queryParameters['referralCode'];
+                return DiamondsScreen(referralCode: referralCode);
+              },
             ),
             GoRoute(
               path: 'passport',
