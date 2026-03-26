@@ -156,7 +156,6 @@ class AuthNotifier extends Notifier<AuthState> {
     double? lat,
     double? lng,
     String locale = 'tr',
-    String? referralCode,
   }) async {
     AnalyticsManager.instance.logEvent(AnalyticsEvents.authRegisterStart, params: {
       AnalyticsEvents.paramMethod: 'email',
@@ -172,7 +171,6 @@ class AuthNotifier extends Notifier<AuthState> {
       lat: lat,
       lng: lng,
       locale: locale,
-      referralCode: referralCode,
     );
     result.when(
       success: (_) {
@@ -363,8 +361,9 @@ class AuthNotifier extends Notifier<AuthState> {
       debugPrint('[auth] forceLogout: RevenueCat error (ignored): $e');
     }
 
-    // Stop presence heartbeat
-    await ref.read(presenceManagerProvider).stop();
+    // Stop presence heartbeat — pause instead of stop to skip offline API call
+    // (token is already invalid during force logout)
+    ref.read(presenceManagerProvider).pause();
 
     ref.read(notificationManagerProvider).dispose();
 

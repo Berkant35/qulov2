@@ -51,10 +51,7 @@ final _routes = <RouteBase>[
       GoRoute(
         path: 'register',
         name: RouteNames.register,
-        builder: (context, state) {
-          final referralCode = state.uri.queryParameters['referralCode'];
-          return RegisterScreen(referralCode: referralCode);
-        },
+        builder: (context, state) => const RegisterScreen(),
       ),
       GoRoute(
         path: 'forgot-password',
@@ -120,6 +117,32 @@ final _routes = <RouteBase>[
         );
       },
     ),
+  ),
+
+  // Legal (root navigator — full screen, no bottom nav)
+  GoRoute(
+    parentNavigatorKey: rootNavigatorKey,
+    path: '/terms',
+    name: RouteNames.terms,
+    builder: (context, state) {
+      final locale = AppLocalizations.of(context).locale.languageCode;
+      return LegalWebViewScreen(
+        title: AppLocalizations.of(context).get('terms_of_service'),
+        url: '${Env.legalBaseUrl}/$locale/terms/',
+      );
+    },
+  ),
+  GoRoute(
+    parentNavigatorKey: rootNavigatorKey,
+    path: '/privacy-policy',
+    name: RouteNames.privacyPolicy,
+    builder: (context, state) {
+      final locale = AppLocalizations.of(context).locale.languageCode;
+      return LegalWebViewScreen(
+        title: AppLocalizations.of(context).get('privacy_policy'),
+        url: '${Env.legalBaseUrl}/$locale/privacy-policy/',
+      );
+    },
   ),
 
   // Chat (root navigator — full screen, no bottom nav)
