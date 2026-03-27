@@ -16,160 +16,88 @@ import 'package:qulo_v2/features/splash/splash_screen.dart';
 mixin SplashScreenMixin on ConsumerState<SplashScreen>
     implements TickerProvider {
   // ─── Animation Controllers ───
-  late final AnimationController rainFadeInController;
-  late final AnimationController logoController;
-  late final AnimationController glowPulseController;
-  late final AnimationController shimmerController;
-  late final AnimationController ringExpandController;
-  late final AnimationController textController;
-  late final AnimationController flowStoryController;
+  late final AnimationController glitchController;
+  late final AnimationController glowController;
+  late final AnimationController fadeOutController;
 
   // ─── Animations ───
-  late final Animation<double> rainFadeIn;
-  late final Animation<double> logoFade;
-  late final Animation<double> logoScale;
-  late final Animation<double> glowPulse;
-  late final Animation<double> shimmerAnimation;
-  late final Animation<double> ringExpandAnimation;
-  late final Animation<double> textAnimation;
-  late final Animation<double> flowStoryAnimation;
+  late final Animation<double> glitchAnimation;
+  late final Animation<double> glowAnimation;
+  late final Animation<double> fadeOutAnimation;
 
   final Stopwatch _splashStopwatch = Stopwatch()..start();
+  bool _authCheckDone = false;
+  bool _animationDone = false;
 
   void initMixin() {
     _setupControllers();
     _setupAnimations();
     _startAnimation();
+    _startAuthCheckInParallel();
   }
 
   void _setupControllers() {
-    rainFadeInController = AnimationController(
+    glitchController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 800),
+      duration: AppDurations.splashGlitch,
     );
 
-    logoController = AnimationController(
+    glowController = AnimationController(
       vsync: this,
-      duration: AppDurations.splashLogo,
+      duration: AppDurations.splashGlowSettle,
     );
 
-    glowPulseController = AnimationController(
+    fadeOutController = AnimationController(
       vsync: this,
-      duration: AppDurations.splashGlowPulse,
-    );
-
-    shimmerController = AnimationController(
-      vsync: this,
-      duration: AppDurations.splashShimmer,
-    );
-
-    ringExpandController = AnimationController(
-      vsync: this,
-      duration: AppDurations.splashRingExpand,
-    );
-
-    textController = AnimationController(
-      vsync: this,
-      duration: AppDurations.splashStaggeredText,
-    );
-
-    flowStoryController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 2000),
+      duration: AppDurations.splashFadeOut,
     );
   }
 
   void _setupAnimations() {
-    rainFadeIn = CurvedAnimation(
-      parent: rainFadeInController,
+    glitchAnimation = CurvedAnimation(
+      parent: glitchController,
+      curve: Curves.easeOutCubic,
+    );
+
+    glowAnimation = CurvedAnimation(
+      parent: glowController,
+      curve: Curves.easeOut,
+    );
+
+    fadeOutAnimation = CurvedAnimation(
+      parent: fadeOutController,
       curve: Curves.easeIn,
-    );
-
-    logoFade = CurvedAnimation(
-      parent: logoController,
-      curve: Curves.easeIn,
-    );
-
-    logoScale = Tween<double>(begin: 0.5, end: 1.0).animate(
-      CurvedAnimation(parent: logoController, curve: Curves.elasticOut),
-    );
-
-    glowPulse = CurvedAnimation(
-      parent: glowPulseController,
-      curve: Curves.easeInOut,
-    );
-
-    shimmerAnimation = CurvedAnimation(
-      parent: shimmerController,
-      curve: Curves.easeInOut,
-    );
-
-    ringExpandAnimation = CurvedAnimation(
-      parent: ringExpandController,
-      curve: Curves.easeOut,
-    );
-
-    textAnimation = CurvedAnimation(
-      parent: textController,
-      curve: Curves.easeOut,
-    );
-
-    flowStoryAnimation = CurvedAnimation(
-      parent: flowStoryController,
-      curve: Curves.easeOut,
     );
   }
 
   void disposeMixin() {
-    rainFadeInController.dispose();
-    logoController.dispose();
-    glowPulseController.dispose();
-    shimmerController.dispose();
-    ringExpandController.dispose();
-    textController.dispose();
-    flowStoryController.dispose();
+    glitchController.dispose();
+    glowController.dispose();
+    fadeOutController.dispose();
   }
 
   Future<void> _startAnimation() async {
-    // Phase 1: Question rain fades in
-    await Future.delayed(AppDurations.splashInitDelay);
-    if (!mounted) return;
-    rainFadeInController.forward();
-
-    // Phase 2: Logo enters with elastic bounce (400ms after rain starts)
-    await Future.delayed(const Duration(milliseconds: 400));
-    if (!mounted) return;
-    logoController.forward();
-    ringExpandController.forward();
-
-    // Phase 3: Glow pulse starts looping after logo lands
-    await Future.delayed(const Duration(milliseconds: 500));
-    if (!mounted) return;
-    glowPulseController.repeat(reverse: true);
-
-    // Phase 4: Shimmer sweep across logo
-    await Future.delayed(const Duration(milliseconds: 300));
-    if (!mounted) return;
-    shimmerController.forward();
-
-    // Phase 5: Staggered text
-    await Future.delayed(const Duration(milliseconds: 200));
-    if (!mounted) return;
-    textController.forward();
-
-    // Phase 6: Flow story timeline (? → ✓ → ❤️)
-    await Future.delayed(const Duration(milliseconds: 400));
-    if (!mounted) return;
-    flowStoryController.forward();
-
-    // Hold before auth check
-    await Future.delayed(AppDurations.splashHold);
+    // Phase 1: Glitch chaos (1000ms)
+    await glitchController.forward().orCancel.catchError((_) {});
     if (!mounted) return;
 
-    _checkVersionAndAuth();
+    // Phase 2: Glow settle (500ms)
+    await glowController.forward().orCancel.catchError((_) {});
+    if (!mounted) return;
+
+    // Ensure minimum display time (3000ms total)
+    final elapsed = _splashStopwatch.elapsedMilliseconds;
+    final remaining = AppDurations.splashMinDisplay.inMilliseconds - elapsed;
+    if (remaining > 0) {
+      await Future.delayed(Duration(milliseconds: remaining));
+    }
+    if (!mounted) return;
+
+    _animationDone = true;
+    _tryProceed();
   }
 
-  Future<void> _checkVersionAndAuth() async {
+  Future<void> _startAuthCheckInParallel() async {
     _splashStopwatch.stop();
     AnalyticsManager.instance.logEvent(
       AnalyticsEvents.appSplashDuration,
@@ -204,7 +132,13 @@ mixin SplashScreenMixin on ConsumerState<SplashScreen>
         break;
     }
 
-    _continueToAuth();
+    _authCheckDone = true;
+    _tryProceed();
+  }
+
+  void _tryProceed() {
+    if (!_animationDone || !_authCheckDone || !mounted) return;
+    ref.read(authProvider.notifier).checkAuth();
   }
 
   Future<void> _showOptionalUpdateThenContinue() async {
@@ -212,7 +146,8 @@ mixin SplashScreenMixin on ConsumerState<SplashScreen>
     final isDismissed = await notifier.isOptionalUpdateDismissed();
 
     if (isDismissed) {
-      _continueToAuth();
+      _authCheckDone = true;
+      _tryProceed();
       return;
     }
 
@@ -236,10 +171,7 @@ mixin SplashScreenMixin on ConsumerState<SplashScreen>
       await notifier.dismissOptionalUpdate();
     }
 
-    _continueToAuth();
-  }
-
-  void _continueToAuth() {
-    ref.read(authProvider.notifier).checkAuth();
+    _authCheckDone = true;
+    _tryProceed();
   }
 }
