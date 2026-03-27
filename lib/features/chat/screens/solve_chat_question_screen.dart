@@ -8,9 +8,9 @@ import 'package:qulo_v2/data/models/chat_question_model.dart';
 import 'package:qulo_v2/features/chat/mixins/solve_chat_question_screen_mixin.dart';
 import 'package:qulo_v2/features/chat/widgets/chat_question_result.dart';
 import 'package:qulo_v2/features/chat/widgets/solve_question_body.dart';
-import 'package:qulo_v2/providers/diamond_provider.dart';
 import 'package:qulo_v2/providers/exchange_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
+import 'package:qulo_v2/providers/user_provider.dart';
 
 class SolveChatQuestionScreen extends ConsumerStatefulWidget {
   final ChatQuestionModel question;
@@ -54,17 +54,19 @@ class _SolveChatQuestionScreenState
 
     final q = widget.question;
 
-    // Task 2: Power inventory counts
+    // Power inventory counts + unblock cost
     final exchange = ref.watch(exchangeProvider);
     final powerCounts = <String, int>{};
     for (final type in PowerType.values) {
       final c = exchange.getCount(type.apiName);
       if (c > 0) powerCounts[type.apiName] = c;
     }
+    final unblockCost = exchange.rates?.powers
+        .where((p) => p.name == 'POWER_UNBLOCK')
+        .firstOrNull?.purpleCost ?? 0;
 
-    // Task 3: Diamond balance
-    final diamonds = ref.watch(diamondProvider);
-    final balance = diamonds.valueOrNull;
+    // Diamond balance from user singleton
+    final user = ref.watch(userProvider).valueOrNull;
 
     // Task 4: Sender profile info
     final matchUser = ref.watch(matchListProvider).whenData((matches) {
@@ -88,8 +90,8 @@ class _SolveChatQuestionScreenState
           onPressed: () => Navigator.of(context).pop(false),
         ),
         actions: [
-          if (balance != null)
-            _CompactDiamondBalance(purple: balance.purple, green: balance.green),
+          if (user != null)
+            _CompactDiamondBalance(purple: user.purpleDiamonds, green: user.greenDiamonds),
         ],
         padding: EdgeInsets.zero,
         body: SolveQuestionBody(
@@ -107,6 +109,7 @@ class _SolveChatQuestionScreenState
           onSubmit: submitAnswer,
           onPowerTap: usePower,
           powerCounts: powerCounts,
+          unblockCost: unblockCost,
           senderPhotoUrl: senderPhotoUrl,
           senderName: senderName,
         ),

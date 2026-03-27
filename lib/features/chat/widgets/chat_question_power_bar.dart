@@ -14,6 +14,7 @@ class ChatQuestionPowerBar extends StatelessWidget {
   final Future<void> Function(String powerName) onPowerTap;
   final Set<String> disabledPowers;
   final Map<String, int> powerCounts;
+  final int unblockCost;
 
   const ChatQuestionPowerBar({
     super.key,
@@ -23,6 +24,7 @@ class ChatQuestionPowerBar extends StatelessWidget {
     required this.onPowerTap,
     this.disabledPowers = const {},
     this.powerCounts = const {},
+    this.unblockCost = 0,
   });
 
   List<PowerType> get _availablePowers {
@@ -42,7 +44,8 @@ class ChatQuestionPowerBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final powers = _availablePowers;
 
-    return Stack(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -52,18 +55,22 @@ class ChatQuestionPowerBar extends StatelessWidget {
             return _ChatPowerButton(
               type: type,
               isUsed: isUsed,
+              isLocked: isPowerBlocked,
               count: powerCounts[type.apiName] ?? 0,
-              onTap: isUsed
+              onTap: (isUsed || isPowerBlocked)
                   ? null
                   : () async => onPowerTap(type.apiName),
             );
           }).toList(),
         ),
-        if (isPowerBlocked)
-          _PowerBlockOverlay(
+        if (isPowerBlocked) ...[
+          const SizedBox(height: AppSpacing.sm),
+          _UnlockButton(
             onUnblock: onPowerTap,
             unblockCount: powerCounts['POWER_UNBLOCK'] ?? 0,
+            unblockCost: unblockCost,
           ),
+        ],
       ],
     );
   }
@@ -72,12 +79,14 @@ class ChatQuestionPowerBar extends StatelessWidget {
 class _ChatPowerButton extends StatelessWidget {
   final PowerType type;
   final bool isUsed;
+  final bool isLocked;
   final int count;
   final Future<void> Function()? onTap;
 
   const _ChatPowerButton({
     required this.type,
     required this.isUsed,
+    this.isLocked = false,
     required this.count,
     this.onTap,
   });
@@ -91,7 +100,7 @@ class _ChatPowerButton extends StatelessWidget {
       builder: (context, isLoading, safeTap) => GestureDetector(
         onTap: safeTap,
         child: Opacity(
-          opacity: isUsed ? 1.0 : (count > 0 ? 1.0 : 0.4),
+          opacity: isUsed ? 1.0 : isLocked ? 0.35 : (count > 0 ? 1.0 : 0.4),
           child: SizedBox(
             width: 52,
             child: Column(
@@ -120,14 +129,16 @@ class _ChatPowerButton extends StatelessWidget {
                             ? const AppLoadingWidget.small()
                             : isUsed
                                 ? Icon(Icons.check, size: 20, color: Colors.grey)
-                                : QIcon(
-                                    type.iconPath,
-                                    size: 22,
-                                    color: color,
-                                  ),
+                                : isLocked
+                                    ? Icon(Icons.lock, size: 18, color: Colors.grey.withValues(alpha: 0.6))
+                                    : QIcon(
+                                        type.iconPath,
+                                        size: 22,
+                                        color: color,
+                                      ),
                       ),
                     ),
-                    if (!isUsed && count > 0)
+                    if (!isUsed && !isLocked && count > 0)
                       Positioned(
                         top: -4,
                         right: -4,
@@ -155,7 +166,7 @@ class _ChatPowerButton extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 9,
                     fontWeight: FontWeight.w500,
-                    color: isUsed ? Colors.grey : color,
+                    color: (isUsed || isLocked) ? Colors.grey : color,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -179,13 +190,15 @@ class _ChatPowerButton extends StatelessWidget {
       };
 }
 
-class _PowerBlockOverlay extends StatelessWidget {
+class _UnlockButton extends StatelessWidget {
   final Future<void> Function(String powerName) onUnblock;
   final int unblockCount;
+  final int unblockCost;
 
-  const _PowerBlockOverlay({
+  const _UnlockButton({
     required this.onUnblock,
     this.unblockCount = 0,
+    this.unblockCost = 0,
   });
 
   @override
@@ -193,69 +206,70 @@ class _PowerBlockOverlay extends StatelessWidget {
     final colors = context.appColors;
     final hasInventory = unblockCount > 0;
 
-    return Positioned.fill(
-      child: SafeTapButton(
-        onTap: () async => onUnblock('POWER_UNBLOCK'),
-        builder: (context, isLoading, onTap) => GestureDetector(
-          onTap: onTap,
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.85),
-              borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-            ),
-            child: Center(
-              child: isLoading
-                  ? const AppLoadingWidget.small()
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.lock, color: colors.warning, size: 18),
-                        const SizedBox(width: AppSpacing.sm),
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Güçler Kilitli',
+    return SafeTapButton(
+      onTap: () async => onUnblock('POWER_UNBLOCK'),
+      builder: (context, isLoading, onTap) => GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg,
+            vertical: AppSpacing.sm,
+          ),
+          decoration: BoxDecoration(
+            color: colors.warning.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            border: Border.all(color: colors.warning.withValues(alpha: 0.4)),
+          ),
+          child: isLoading
+              ? const Center(child: AppLoadingWidget.small())
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.lock_open, size: 16, color: colors.warning),
+                    const SizedBox(width: AppSpacing.sm),
+                    Text(
+                      'Kilidi Aç',
+                      style: TextStyle(
+                        color: colors.warning,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: colors.warning.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
+                      ),
+                      child: hasInventory
+                          ? Text(
+                              '$unblockCount adet',
                               style: TextStyle(
                                 color: colors.warning,
-                                fontSize: 13,
+                                fontSize: 11,
                                 fontWeight: FontWeight.w600,
                               ),
-                            ),
-                            Row(
+                            )
+                          : Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(Icons.lock_open, size: 10, color: colors.warning.withValues(alpha: 0.7)),
+                                const DiamondIcon.purple(size: 12, showGlow: false),
                                 const SizedBox(width: 3),
-                                if (hasInventory)
-                                  Text(
-                                    '$unblockCount adet',
-                                    style: TextStyle(
-                                      color: colors.warning.withValues(alpha: 0.7),
-                                      fontSize: 10,
-                                    ),
-                                  )
-                                else ...[
-                                  const DiamondIcon.purple(size: 10, showGlow: false),
-                                  const SizedBox(width: 2),
-                                  Text(
-                                    'ile aç',
-                                    style: TextStyle(
-                                      color: colors.warning.withValues(alpha: 0.7),
-                                      fontSize: 10,
-                                    ),
+                                Text(
+                                  '$unblockCost',
+                                  style: TextStyle(
+                                    color: colors.warning,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w600,
                                   ),
-                                ],
+                                ),
                               ],
                             ),
-                          ],
-                        ),
-                      ],
                     ),
-            ),
-          ),
+                  ],
+                ),
         ),
       ),
     );

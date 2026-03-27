@@ -26,6 +26,7 @@ class SolveQuestionBody extends StatelessWidget {
   final Future<void> Function() onSubmit;
   final Future<void> Function(String) onPowerTap;
   final Map<String, int> powerCounts;
+  final int unblockCost;
   final String? senderPhotoUrl;
   final String? senderName;
 
@@ -45,6 +46,7 @@ class SolveQuestionBody extends StatelessWidget {
     required this.onSubmit,
     required this.onPowerTap,
     this.powerCounts = const {},
+    this.unblockCost = 0,
     this.senderPhotoUrl,
     this.senderName,
   });
@@ -144,6 +146,7 @@ class SolveQuestionBody extends StatelessWidget {
             hasHint: question.hintText != null &&
                 question.hintText!.isNotEmpty,
             onPowerTap: onPowerTap,
+            unblockCost: unblockCost,
             disabledPowers: {
               if (suggestedOption != null) 'ORACLE',
               if (removedOptions.isNotEmpty) 'HALF',
