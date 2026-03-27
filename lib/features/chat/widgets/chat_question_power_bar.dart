@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:qulo_v2/core/l10n/app_localizations.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
+import 'package:qulo_v2/core/widgets/diamond_icon.dart';
 import 'package:qulo_v2/core/widgets/power_icon.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/core/widgets/safe_tap_button.dart';
@@ -59,7 +59,11 @@ class ChatQuestionPowerBar extends StatelessWidget {
             );
           }).toList(),
         ),
-        if (isPowerBlocked) _PowerBlockOverlay(onUnblock: onPowerTap),
+        if (isPowerBlocked)
+          _PowerBlockOverlay(
+            onUnblock: onPowerTap,
+            unblockCount: powerCounts['POWER_UNBLOCK'] ?? 0,
+          ),
       ],
     );
   }
@@ -177,46 +181,80 @@ class _ChatPowerButton extends StatelessWidget {
 
 class _PowerBlockOverlay extends StatelessWidget {
   final Future<void> Function(String powerName) onUnblock;
+  final int unblockCount;
 
-  const _PowerBlockOverlay({required this.onUnblock});
+  const _PowerBlockOverlay({
+    required this.onUnblock,
+    this.unblockCount = 0,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
+    final hasInventory = unblockCount > 0;
+
     return Positioned.fill(
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.7),
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        ),
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.lock, color: context.appColors.warning, size: 24),
-              const SizedBox(height: AppSpacing.xs),
-              Text(
-                'Güçler Engellenmiş',
-                style: TextStyle(
-                  color: context.appColors.warning,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              SafeTapButton(
-                onTap: () async => onUnblock('POWER_UNBLOCK'),
-                builder: (context, isLoading, onTap) => TextButton.icon(
-                  onPressed: onTap,
-                  icon: isLoading
-                      ? const AppLoadingWidget.small()
-                      : const Icon(Icons.lock_open, size: 16),
-                  label: Text(AppLocalizations.of(context).get('chat_unlock')),
-                  style: TextButton.styleFrom(
-                    foregroundColor: context.appColors.warning,
-                  ),
-                ),
-              ),
-            ],
+      child: SafeTapButton(
+        onTap: () async => onUnblock('POWER_UNBLOCK'),
+        builder: (context, isLoading, onTap) => GestureDetector(
+          onTap: onTap,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.black.withValues(alpha: 0.85),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            ),
+            child: Center(
+              child: isLoading
+                  ? const AppLoadingWidget.small()
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.lock, color: colors.warning, size: 18),
+                        const SizedBox(width: AppSpacing.sm),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Güçler Kilitli',
+                              style: TextStyle(
+                                color: colors.warning,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.lock_open, size: 10, color: colors.warning.withValues(alpha: 0.7)),
+                                const SizedBox(width: 3),
+                                if (hasInventory)
+                                  Text(
+                                    '$unblockCount adet',
+                                    style: TextStyle(
+                                      color: colors.warning.withValues(alpha: 0.7),
+                                      fontSize: 10,
+                                    ),
+                                  )
+                                else ...[
+                                  const DiamondIcon.purple(size: 10, showGlow: false),
+                                  const SizedBox(width: 2),
+                                  Text(
+                                    'ile aç',
+                                    style: TextStyle(
+                                      color: colors.warning.withValues(alpha: 0.7),
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+            ),
           ),
         ),
       ),
