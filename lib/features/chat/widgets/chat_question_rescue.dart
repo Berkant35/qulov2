@@ -3,10 +3,15 @@ import 'package:qulo_v2/core/l10n/app_localizations.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
+import 'package:qulo_v2/core/widgets/diamond_icon.dart';
 import 'package:qulo_v2/core/widgets/safe_tap_button.dart';
 
 class ChatQuestionRescue extends StatelessWidget {
   final bool isPowerBlocked;
+  final int skipCost;
+  final int skipCount;
+  final int unblockCost;
+  final int unblockCount;
   final VoidCallback onSkip;
   final VoidCallback onPowerUnblock;
   final VoidCallback onGiveUp;
@@ -14,6 +19,10 @@ class ChatQuestionRescue extends StatelessWidget {
   const ChatQuestionRescue({
     super.key,
     required this.isPowerBlocked,
+    this.skipCost = 0,
+    this.skipCount = 0,
+    this.unblockCost = 0,
+    this.unblockCount = 0,
     required this.onSkip,
     required this.onPowerUnblock,
     required this.onGiveUp,
@@ -98,18 +107,14 @@ class ChatQuestionRescue extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: AppSpacing.lg),
-              // Power unblock button
+              // Power unblock button with cost
               SafeTapButton(
                 onTap: () async => onPowerUnblock(),
                 builder: (context, isLoading, onTap) => SizedBox(
                   width: double.infinity,
                   height: 52,
-                  child: ElevatedButton.icon(
+                  child: ElevatedButton(
                     onPressed: onTap,
-                    icon: isLoading
-                        ? const AppLoadingWidget.small()
-                        : const Icon(Icons.lock_open, size: 20),
-                    label: Text(AppLocalizations.of(context).get('chat_unlock')),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: context.appColors.warning,
                       foregroundColor: Colors.black,
@@ -118,22 +123,54 @@ class ChatQuestionRescue extends StatelessWidget {
                             BorderRadius.circular(AppSpacing.radiusMd),
                       ),
                     ),
+                    child: isLoading
+                        ? const AppLoadingWidget.small()
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.lock_open, size: 20),
+                              const SizedBox(width: AppSpacing.sm),
+                              Text(AppLocalizations.of(context).get('chat_unlock')),
+                              const SizedBox(width: AppSpacing.sm),
+                              if (unblockCount > 0)
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withValues(alpha: 0.15),
+                                    borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
+                                  ),
+                                  child: Text('×$unblockCount', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
+                                )
+                              else if (unblockCost > 0)
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withValues(alpha: 0.15),
+                                    borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const DiamondIcon.purple(size: 12, showGlow: false),
+                                      const SizedBox(width: 3),
+                                      Text('$unblockCost', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
+                                    ],
+                                  ),
+                                ),
+                            ],
+                          ),
                   ),
                 ),
               ),
             ] else ...[
-              // Skip button
+              // Skip button with cost
               SafeTapButton(
                 onTap: () async => onSkip(),
                 builder: (context, isLoading, onTap) => SizedBox(
                   width: double.infinity,
                   height: 52,
-                  child: ElevatedButton.icon(
+                  child: ElevatedButton(
                     onPressed: onTap,
-                    icon: isLoading
-                        ? const AppLoadingWidget.small()
-                        : const Icon(Icons.skip_next_rounded, size: 22),
-                    label: Text(AppLocalizations.of(context).get('chat_skip')),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: context.appColors.info,
                       foregroundColor: Colors.white,
@@ -142,6 +179,42 @@ class ChatQuestionRescue extends StatelessWidget {
                             BorderRadius.circular(AppSpacing.radiusMd),
                       ),
                     ),
+                    child: isLoading
+                        ? const AppLoadingWidget.small()
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.skip_next_rounded, size: 22),
+                              const SizedBox(width: AppSpacing.sm),
+                              Text(AppLocalizations.of(context).get('chat_skip')),
+                              const SizedBox(width: AppSpacing.sm),
+                              if (skipCount > 0)
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.2),
+                                    borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
+                                  ),
+                                  child: Text('×$skipCount', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
+                                )
+                              else if (skipCost > 0)
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.2),
+                                    borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const DiamondIcon.purple(size: 12, showGlow: false),
+                                      const SizedBox(width: 3),
+                                      Text('$skipCost', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
+                                    ],
+                                  ),
+                                ),
+                            ],
+                          ),
                   ),
                 ),
               ),

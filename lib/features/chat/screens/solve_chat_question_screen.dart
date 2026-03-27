@@ -54,16 +54,22 @@ class _SolveChatQuestionScreenState
 
     final q = widget.question;
 
-    // Power inventory counts + unblock cost
+    // Power inventory counts + costs from economy config
     final exchange = ref.watch(exchangeProvider);
     final powerCounts = <String, int>{};
+    final powerPurpleCosts = <String, int>{};
+    final powerGreenCosts = <String, int>{};
     for (final type in PowerType.values) {
       final c = exchange.getCount(type.apiName);
       if (c > 0) powerCounts[type.apiName] = c;
+      final rate = exchange.rates?.powers
+          .where((p) => p.name == type.apiName)
+          .firstOrNull;
+      if (rate != null) {
+        powerPurpleCosts[type.apiName] = rate.purpleCost;
+        powerGreenCosts[type.apiName] = rate.greenCost;
+      }
     }
-    final unblockCost = exchange.rates?.powers
-        .where((p) => p.name == 'POWER_UNBLOCK')
-        .firstOrNull?.purpleCost ?? 0;
 
     // Diamond balance from user singleton
     final user = ref.watch(userProvider).valueOrNull;
@@ -109,7 +115,8 @@ class _SolveChatQuestionScreenState
           onSubmit: submitAnswer,
           onPowerTap: usePower,
           powerCounts: powerCounts,
-          unblockCost: unblockCost,
+          powerPurpleCosts: powerPurpleCosts,
+          powerGreenCosts: powerGreenCosts,
           senderPhotoUrl: senderPhotoUrl,
           senderName: senderName,
         ),

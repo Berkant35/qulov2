@@ -14,7 +14,8 @@ class ChatQuestionPowerBar extends StatelessWidget {
   final Future<void> Function(String powerName) onPowerTap;
   final Set<String> disabledPowers;
   final Map<String, int> powerCounts;
-  final int unblockCost;
+  final Map<String, int> powerPurpleCosts;
+  final Map<String, int> powerGreenCosts;
 
   const ChatQuestionPowerBar({
     super.key,
@@ -24,7 +25,8 @@ class ChatQuestionPowerBar extends StatelessWidget {
     required this.onPowerTap,
     this.disabledPowers = const {},
     this.powerCounts = const {},
-    this.unblockCost = 0,
+    this.powerPurpleCosts = const {},
+    this.powerGreenCosts = const {},
   });
 
   List<PowerType> get _availablePowers {
@@ -57,6 +59,8 @@ class ChatQuestionPowerBar extends StatelessWidget {
               isUsed: isUsed,
               isLocked: isPowerBlocked,
               count: powerCounts[type.apiName] ?? 0,
+              purpleCost: powerPurpleCosts[type.apiName] ?? 0,
+              greenCost: powerGreenCosts[type.apiName] ?? 0,
               onTap: (isUsed || isPowerBlocked)
                   ? null
                   : () async => onPowerTap(type.apiName),
@@ -68,7 +72,7 @@ class ChatQuestionPowerBar extends StatelessWidget {
           _UnlockButton(
             onUnblock: onPowerTap,
             unblockCount: powerCounts['POWER_UNBLOCK'] ?? 0,
-            unblockCost: unblockCost,
+            unblockCost: powerPurpleCosts['POWER_UNBLOCK'] ?? 0,
           ),
         ],
       ],
@@ -81,6 +85,8 @@ class _ChatPowerButton extends StatelessWidget {
   final bool isUsed;
   final bool isLocked;
   final int count;
+  final int purpleCost;
+  final int greenCost;
   final Future<void> Function()? onTap;
 
   const _ChatPowerButton({
@@ -88,6 +94,8 @@ class _ChatPowerButton extends StatelessWidget {
     required this.isUsed,
     this.isLocked = false,
     required this.count,
+    this.purpleCost = 0,
+    this.greenCost = 0,
     this.onTap,
   });
 
@@ -170,6 +178,28 @@ class _ChatPowerButton extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
+                // Maliyet — envanterde yoksa göster
+                if (!isUsed && !isLocked && count <= 0 && (purpleCost > 0 || greenCost > 0))
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const DiamondIcon.purple(size: 8, showGlow: false),
+                        Text(
+                          '$purpleCost',
+                          style: TextStyle(fontSize: 8, color: color.withValues(alpha: 0.7)),
+                        ),
+                        const SizedBox(width: 3),
+                        const DiamondIcon.green(size: 8, showGlow: false),
+                        Text(
+                          '$greenCost',
+                          style: TextStyle(fontSize: 8, color: color.withValues(alpha: 0.7)),
+                        ),
+                      ],
+                    ),
+                  ),
               ],
             ),
           ),

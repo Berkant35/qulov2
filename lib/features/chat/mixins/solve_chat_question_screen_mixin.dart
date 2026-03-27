@@ -206,8 +206,23 @@ mixin SolveChatQuestionScreenMixin
           top: Radius.circular(AppSpacing.radiusXl),
         ),
       ),
-      builder: (_) => ChatQuestionRescue(
+      builder: (_) {
+        final exchange = ref.read(exchangeProvider);
+        final skipCount = exchange.getCount('SKIP');
+        final skipCost = exchange.rates?.powers
+            .where((p) => p.name == 'SKIP')
+            .firstOrNull?.purpleCost ?? 0;
+        final unblockCount = exchange.getCount('POWER_UNBLOCK');
+        final unblockCost = exchange.rates?.powers
+            .where((p) => p.name == 'POWER_UNBLOCK')
+            .firstOrNull?.purpleCost ?? 0;
+
+        return ChatQuestionRescue(
         isPowerBlocked: powerBlockActive,
+        skipCost: skipCost,
+        skipCount: skipCount,
+        unblockCost: unblockCost,
+        unblockCount: unblockCount,
         onSkip: () {
           Navigator.of(context).pop();
           submitWithSkip();
@@ -221,7 +236,8 @@ mixin SolveChatQuestionScreenMixin
           Navigator.of(context).pop();
           submitGiveUp();
         },
-      ),
+      );
+      },
     );
   }
 
