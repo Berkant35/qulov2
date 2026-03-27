@@ -177,6 +177,16 @@ const frTranslations = <String, String>{
   'delete_account': 'Supprimer le compte',
   'delete_account_desc': 'Cette action est irréversible. Toutes tes données seront supprimées.',
 
+  // Notification Preferences
+  'notification_settings': 'Notification Settings',
+  'notification_settings_desc': 'Disabled notifications will still appear in your inbox',
+  'notif_messages': 'Messages',
+  'notif_messages_desc': 'New message notifications',
+  'notif_matches': 'Matches',
+  'notif_matches_desc': 'Match and question answer notifications',
+  'notif_campaigns': 'Campaigns',
+  'notif_campaigns_desc': 'Promotional and campaign notifications',
+
   // Powers
   'my_powers': 'Mes pouvoirs',
   'power_copy': 'Copier',

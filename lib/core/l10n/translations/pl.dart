@@ -177,6 +177,16 @@ const plTranslations = <String, String>{
   'delete_account': 'Usu\u0144 konto',
   'delete_account_desc': 'Ta operacja jest nieodwracalna. Wszystkie Twoje dane zostan\u0105 usuni\u0119te.',
 
+  // Notification Preferences
+  'notification_settings': 'Notification Settings',
+  'notification_settings_desc': 'Disabled notifications will still appear in your inbox',
+  'notif_messages': 'Messages',
+  'notif_messages_desc': 'New message notifications',
+  'notif_matches': 'Matches',
+  'notif_matches_desc': 'Match and question answer notifications',
+  'notif_campaigns': 'Campaigns',
+  'notif_campaigns_desc': 'Promotional and campaign notifications',
+
   // Powers
   'my_powers': 'Moje moce',
   'power_copy': 'Kopiuj',

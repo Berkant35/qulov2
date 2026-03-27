@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
+import 'package:qulo_v2/core/widgets/fullscreen_photo_viewer.dart';
 
 class RewardMediaReveal extends StatefulWidget {
   final String mediaUrl;
@@ -58,37 +59,57 @@ class _RewardMediaRevealState extends State<RewardMediaReveal>
       return _AudioReveal(controller: _controller);
     }
 
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        return Transform.scale(
-          scale: _scaleAnimation.value,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-            child: ImageFiltered(
-              imageFilter: ImageFilter.blur(
-                sigmaX: _blurAnimation.value,
-                sigmaY: _blurAnimation.value,
-              ),
-              child: child,
+    final heroTag = 'reward_${widget.mediaUrl}';
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => FullscreenPhotoViewer(
+              imageUrl: widget.mediaUrl,
+              heroTag: heroTag,
             ),
           ),
         );
       },
-      child: CachedNetworkImage(
-        imageUrl: widget.mediaUrl,
-        height: 200,
-        width: double.infinity,
-        fit: BoxFit.cover,
-        placeholder: (ctx, __) => Container(
-          height: 200,
-          color: context.appColors.surfaceElevated,
-          child: const Center(child: AppLoadingWidget.small()),
-        ),
-        errorWidget: (ctx, __, ___) => Container(
-          height: 200,
-          color: context.appColors.surfaceElevated,
-          child: Icon(Icons.broken_image, color: context.appColors.textHint),
+      child: Hero(
+        tag: heroTag,
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (context, child) {
+            return Transform.scale(
+              scale: _scaleAnimation.value,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+                child: ImageFiltered(
+                  imageFilter: ImageFilter.blur(
+                    sigmaX: _blurAnimation.value,
+                    sigmaY: _blurAnimation.value,
+                  ),
+                  child: child,
+                ),
+              ),
+            );
+          },
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 300),
+            child: CachedNetworkImage(
+              imageUrl: widget.mediaUrl,
+              width: double.infinity,
+              fit: BoxFit.contain,
+              placeholder: (ctx, __) => Container(
+                height: 200,
+                color: context.appColors.surfaceElevated,
+                child: const Center(child: AppLoadingWidget.small()),
+              ),
+              errorWidget: (ctx, __, ___) => Container(
+                height: 200,
+                color: context.appColors.surfaceElevated,
+                child: Icon(Icons.broken_image,
+                    color: context.appColors.textHint),
+              ),
+            ),
+          ),
         ),
       ),
     );

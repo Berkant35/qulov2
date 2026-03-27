@@ -10,7 +10,7 @@ class ThemeNotifier extends Notifier<AppThemeMode> {
   @override
   AppThemeMode build() {
     _loadFromPrefs();
-    return AppThemeMode.system;
+    return AppThemeMode.dark;
   }
 
   Future<void> _loadFromPrefs() async {

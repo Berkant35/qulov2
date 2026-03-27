@@ -177,6 +177,16 @@ const trTranslations = <String, String>{
   'delete_account': 'Hesabı Sil',
   'delete_account_desc': 'Bu işlem geri alınamaz. Tüm verilerin silinecek.',
 
+  // Notification Preferences
+  'notification_settings': 'Bildirim Ayarları',
+  'notification_settings_desc': 'Kapatılan bildirimler gelen kutunuzda görünmeye devam eder',
+  'notif_messages': 'Mesajlar',
+  'notif_messages_desc': 'Yeni mesaj bildirimleri',
+  'notif_matches': 'Eşleşmeler',
+  'notif_matches_desc': 'Eşleşme ve soru cevap bildirimleri',
+  'notif_campaigns': 'Kampanyalar',
+  'notif_campaigns_desc': 'Promosyon ve kampanya bildirimleri',
+
   // Powers
   'my_powers': 'Güçlerim',
   'power_copy': 'Kopya',

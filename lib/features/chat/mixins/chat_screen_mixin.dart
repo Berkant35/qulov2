@@ -56,7 +56,9 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
       ref.read(chatQuestionCacheProvider.notifier).state = {};
 
       final notifier = ref.read(chatProvider(widget.matchId).notifier);
+      notifier.loadMessages();
       notifier.markAsRead();
+      ref.read(matchListProvider.notifier).clearUnreadCount(widget.matchId);
       notifier.loadMediaStatus();
       _subscribeRealtime();
       _subscribeTyping();
@@ -158,14 +160,19 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
           ),
           callback: (payload) {
             if (_disposed) return;
-            final newMsg = MessageModel.fromJson(payload.newRecord);
-            if (newMsg.senderId != myId) {
-              ref
-                  .read(chatProvider(widget.matchId).notifier)
-                  .addRealtimeMessage(newMsg);
-              ref.read(chatProvider(widget.matchId).notifier).markAsRead();
-              WidgetsBinding.instance
-                  .addPostFrameCallback((_) => scrollToBottom());
+            try {
+              final newMsg = MessageModel.fromJson(payload.newRecord);
+              if (newMsg.senderId != myId) {
+                ref
+                    .read(chatProvider(widget.matchId).notifier)
+                    .addRealtimeMessage(newMsg);
+                ref.read(chatProvider(widget.matchId).notifier).markAsRead();
+                WidgetsBinding.instance
+                    .addPostFrameCallback((_) => scrollToBottom());
+              }
+            } catch (e) {
+              debugPrint('[chat] Realtime parse error: $e');
+              debugPrint('[chat] Payload: ${payload.newRecord}');
             }
           },
         )

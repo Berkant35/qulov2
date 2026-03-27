@@ -35,6 +35,10 @@ abstract final class RouteNames {
   static const createChatQuestion = 'create-chat-question';
   static const solveChatQuestion = 'solve-chat-question';
 
+  // Legal
+  static const terms = 'terms';
+  static const privacyPolicy = 'privacy-policy';
+
   // Referral
   static const invite = 'invite';
 

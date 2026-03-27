@@ -51,7 +51,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
           SettingsThemeTile(onChanged: onThemeChanged),
           _HapticTile(),
           const SizedBox(height: AppSpacing.sm),
-          SettingsLegalSection(onOpenUrl: onOpenUrl),
+          SettingsLegalSection(
+            onTerms: onOpenTerms,
+            onPrivacy: onOpenPrivacy,
+          ),
           const SizedBox(height: AppSpacing.sm),
           SettingsActionTile(
             icon: Icons.logout,

@@ -5,6 +5,7 @@ import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/network/services/user_service.dart';
 import 'package:qulo_v2/data/models/public_profile_model.dart';
 import 'package:qulo_v2/data/models/user_model.dart';
+import 'package:qulo_v2/data/models/notification_preferences_model.dart';
 import 'package:qulo_v2/data/models/user_details_model.dart';
 import 'package:qulo_v2/data/repositories/interfaces.dart';
 
@@ -119,6 +120,32 @@ class UserRepository implements IUserRepository {
     try {
       final response = await _service.getPublicProfile(userId);
       return Success(response);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
+
+  Future<Result<NotificationPreferencesModel>> getNotificationPreferences() async {
+    try {
+      final response = await _service.getNotificationPreferences();
+      final model = NotificationPreferencesModel.fromJson(
+        response as Map<String, dynamic>,
+      );
+      return Success(model);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
+
+  Future<Result<NotificationPreferencesModel>> updateNotificationPreferences(
+    Map<String, dynamic> body,
+  ) async {
+    try {
+      final response = await _service.updateNotificationPreferences(body);
+      final model = NotificationPreferencesModel.fromJson(
+        response as Map<String, dynamic>,
+      );
+      return Success(model);
     } on DioException catch (e) {
       return Failure(e.toAppFailure());
     }

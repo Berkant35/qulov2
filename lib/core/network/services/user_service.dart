@@ -30,4 +30,12 @@ abstract class UserService {
 
   @GET('/users/{id}/profile')
   Future<PublicProfileModel> getPublicProfile(@Path('id') String userId);
+
+  @GET('/users/me/notification-preferences')
+  Future<dynamic> getNotificationPreferences();
+
+  @PATCH('/users/me/notification-preferences')
+  Future<dynamic> updateNotificationPreferences(
+    @Body() Map<String, dynamic> body,
+  );
 }

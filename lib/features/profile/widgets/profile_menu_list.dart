@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/widgets/diamond_icon.dart';
@@ -17,6 +18,8 @@ class ProfileMenuList extends ConsumerWidget {
     required this.onSubscription,
     required this.onPerformance,
     required this.onPassport,
+    required this.onTerms,
+    required this.onPrivacy,
   });
 
   final int questionCount;
@@ -26,6 +29,8 @@ class ProfileMenuList extends ConsumerWidget {
   final VoidCallback onDiamonds;
   final VoidCallback onSubscription;
   final VoidCallback onPassport;
+  final VoidCallback onTerms;
+  final VoidCallback onPrivacy;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -65,6 +70,28 @@ class ProfileMenuList extends ConsumerWidget {
           iconPath: QIcons.icPlane,
           title: context.tr('passport'),
           onTap: onPassport,
+        ),
+        const SizedBox(height: 8),
+        Padding(
+          padding: const EdgeInsets.only(left: 16, top: 8, bottom: 4),
+          child: Text(
+            context.tr('legal'),
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ),
+        ProfileMenuItem(
+          iconWidget: Icon(Icons.description_outlined,
+              color: context.appColors.primary, size: 24),
+          title: context.tr('terms_of_service'),
+          onTap: onTerms,
+        ),
+        ProfileMenuItem(
+          iconWidget: Icon(Icons.privacy_tip_outlined,
+              color: context.appColors.primary, size: 24),
+          title: context.tr('privacy_policy'),
+          onTap: onPrivacy,
         ),
       ],
     );

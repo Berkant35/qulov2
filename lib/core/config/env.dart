@@ -20,4 +20,8 @@ abstract final class Env {
     'REVENUECAT_GOOGLE_KEY',
     defaultValue: 'goog_tAQvpZTakPHMKEYCoFvjSpGmjmv',
   );
+  static const legalBaseUrl = String.fromEnvironment(
+    'LEGAL_BASE_URL',
+    defaultValue: 'https://quloapp.com',
+  );
 }

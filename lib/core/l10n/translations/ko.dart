@@ -177,6 +177,16 @@ const koTranslations = <String, String>{
   'delete_account': '계정 삭제',
   'delete_account_desc': '이 작업은 되돌릴 수 없어요. 모든 데이터가 삭제돼요.',
 
+  // Notification Preferences
+  'notification_settings': 'Notification Settings',
+  'notification_settings_desc': 'Disabled notifications will still appear in your inbox',
+  'notif_messages': 'Messages',
+  'notif_messages_desc': 'New message notifications',
+  'notif_matches': 'Matches',
+  'notif_matches_desc': 'Match and question answer notifications',
+  'notif_campaigns': 'Campaigns',
+  'notif_campaigns_desc': 'Promotional and campaign notifications',
+
   // Powers
   'my_powers': '내 파워',
   'power_copy': '복사',

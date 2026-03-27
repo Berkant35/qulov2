@@ -177,6 +177,16 @@ const zhTranslations = <String, String>{
   'delete_account': '删除账号',
   'delete_account_desc': '此操作不可撤销，所有数据将被删除。',
 
+  // Notification Preferences
+  'notification_settings': 'Notification Settings',
+  'notification_settings_desc': 'Disabled notifications will still appear in your inbox',
+  'notif_messages': 'Messages',
+  'notif_messages_desc': 'New message notifications',
+  'notif_matches': 'Matches',
+  'notif_matches_desc': 'Match and question answer notifications',
+  'notif_campaigns': 'Campaigns',
+  'notif_campaigns_desc': 'Promotional and campaign notifications',
+
   // Powers
   'my_powers': '我的道具',
   'power_copy': '抄袭',

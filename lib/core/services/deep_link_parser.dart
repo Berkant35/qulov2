@@ -102,4 +102,20 @@ abstract class DeepLinkParser {
     dev.log('[DeepLinkParser] Unsupported path: $path', name: 'DeepLink');
     return null;
   }
+
+  /// Bildirim action_url'ini (ör. "/chat/abc123") parse eder.
+  /// Host doğrulaması yapmaz — sadece path üzerinden navType belirler.
+  static DeepLinkNavType resolveNavType(String actionUrl) {
+    final uri = Uri.tryParse(actionUrl);
+    if (uri == null || uri.pathSegments.isEmpty) return DeepLinkNavType.go;
+
+    final first = uri.pathSegments.first;
+
+    // push gerektiren route'lar
+    if (first == 'chat' || first == 'profile-detail') {
+      return DeepLinkNavType.push;
+    }
+
+    return DeepLinkNavType.go;
+  }
 }

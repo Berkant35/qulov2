@@ -50,6 +50,14 @@ class NotificationNotifier extends Notifier<NotificationState> {
         onForegroundMessage: _handleForegroundMessage,
         onMessageOpenedApp: _handleMessageTap,
         shouldSuppress: _shouldSuppressBanner,
+        onLocalNotificationTap: (actionUrl) {
+          dev.log('[NotificationNotifier] Local notification tapped: $actionUrl', name: 'Notification');
+          if (_onNavigate != null) {
+            _onNavigate!(actionUrl);
+          } else {
+            _pendingNavigationUrl = actionUrl;
+          }
+        },
       );
 
       await manager.init();

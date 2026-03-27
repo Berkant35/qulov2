@@ -177,7 +177,11 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
                   });
                   removeEntry();
                   if (actionUrl != null && actionUrl.isNotEmpty) {
-                    ref.read(routerProvider).go(actionUrl);
+                    final navType = DeepLinkParser.resolveNavType(actionUrl);
+                    final router = ref.read(routerProvider);
+                    navType == DeepLinkNavType.push
+                        ? router.push(actionUrl)
+                        : router.go(actionUrl);
                   }
                 },
                 onDismiss: () {
@@ -193,7 +197,11 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
         overlayState.insert(entry);
       },
       onNavigate: (actionUrl) {
-        ref.read(routerProvider).go(actionUrl);
+        final navType = DeepLinkParser.resolveNavType(actionUrl);
+        final router = ref.read(routerProvider);
+        navType == DeepLinkNavType.push
+            ? router.push(actionUrl)
+            : router.go(actionUrl);
       },
     );
   }

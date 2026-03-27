@@ -219,6 +219,19 @@ class MatchListNotifier extends AsyncNotifier<List<MatchModel>> {
     return result;
   }
 
+  /// Chat ekranı açıldığında badge'i anında sıfırlar (realtime'a bağımlı değil).
+  void clearUnreadCount(String matchId) {
+    final current = state.valueOrNull;
+    if (current == null) return;
+
+    final updated = current.map((m) {
+      if (m.matchId != matchId || m.unreadCount == 0) return m;
+      return m.copyWith(unreadCount: 0);
+    }).toList();
+
+    state = AsyncData(updated);
+  }
+
   // --- Sorting ---
 
   List<MatchModel> _sortMatches(List<MatchModel> matches) {

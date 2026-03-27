@@ -6,9 +6,9 @@ import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/widgets/language_picker_sheet.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/features/settings/screens/settings_screen.dart';
-import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
 import 'package:qulo_v2/providers/locale_provider.dart';
+import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/providers/theme_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
 
@@ -66,8 +66,12 @@ mixin SettingsScreenMixin on ConsumerState<SettingsScreen> {
     ref.read(themeProvider.notifier).setThemeMode(newTheme);
   }
 
-  Future<void> onOpenUrl(String url) {
-    return ref.read(urlLauncherManagerProvider).launch(url);
+  Future<void> onOpenTerms() async {
+    ref.read(navigationServiceProvider).push(RouteNames.terms);
+  }
+
+  Future<void> onOpenPrivacy() async {
+    ref.read(navigationServiceProvider).push(RouteNames.privacyPolicy);
   }
 
   Future<void> onLogout() async {

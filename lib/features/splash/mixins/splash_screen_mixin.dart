@@ -15,23 +15,74 @@ import 'package:qulo_v2/features/splash/splash_screen.dart';
 
 mixin SplashScreenMixin on ConsumerState<SplashScreen>
     implements TickerProvider {
+  // ─── Animation Controllers ───
+  late final AnimationController rainFadeInController;
   late final AnimationController logoController;
+  late final AnimationController glowPulseController;
+  late final AnimationController shimmerController;
+  late final AnimationController ringExpandController;
   late final AnimationController textController;
+  late final AnimationController flowStoryController;
+
+  // ─── Animations ───
+  late final Animation<double> rainFadeIn;
   late final Animation<double> logoFade;
   late final Animation<double> logoScale;
-  late final Animation<double> textFade;
+  late final Animation<double> glowPulse;
+  late final Animation<double> shimmerAnimation;
+  late final Animation<double> ringExpandAnimation;
+  late final Animation<double> textAnimation;
+  late final Animation<double> flowStoryAnimation;
 
   final Stopwatch _splashStopwatch = Stopwatch()..start();
 
   void initMixin() {
+    _setupControllers();
+    _setupAnimations();
+    _startAnimation();
+  }
+
+  void _setupControllers() {
+    rainFadeInController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+
     logoController = AnimationController(
       vsync: this,
       duration: AppDurations.splashLogo,
     );
 
+    glowPulseController = AnimationController(
+      vsync: this,
+      duration: AppDurations.splashGlowPulse,
+    );
+
+    shimmerController = AnimationController(
+      vsync: this,
+      duration: AppDurations.splashShimmer,
+    );
+
+    ringExpandController = AnimationController(
+      vsync: this,
+      duration: AppDurations.splashRingExpand,
+    );
+
     textController = AnimationController(
       vsync: this,
-      duration: AppDurations.splashText,
+      duration: AppDurations.splashStaggeredText,
+    );
+
+    flowStoryController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2000),
+    );
+  }
+
+  void _setupAnimations() {
+    rainFadeIn = CurvedAnimation(
+      parent: rainFadeInController,
+      curve: Curves.easeIn,
     );
 
     logoFade = CurvedAnimation(
@@ -39,34 +90,79 @@ mixin SplashScreenMixin on ConsumerState<SplashScreen>
       curve: Curves.easeIn,
     );
 
-    logoScale = Tween<double>(begin: 0.7, end: 1.0).animate(
-      CurvedAnimation(parent: logoController, curve: Curves.easeOutBack),
+    logoScale = Tween<double>(begin: 0.5, end: 1.0).animate(
+      CurvedAnimation(parent: logoController, curve: Curves.elasticOut),
     );
 
-    textFade = CurvedAnimation(
+    glowPulse = CurvedAnimation(
+      parent: glowPulseController,
+      curve: Curves.easeInOut,
+    );
+
+    shimmerAnimation = CurvedAnimation(
+      parent: shimmerController,
+      curve: Curves.easeInOut,
+    );
+
+    ringExpandAnimation = CurvedAnimation(
+      parent: ringExpandController,
+      curve: Curves.easeOut,
+    );
+
+    textAnimation = CurvedAnimation(
       parent: textController,
-      curve: Curves.easeIn,
+      curve: Curves.easeOut,
     );
 
-    _startAnimation();
+    flowStoryAnimation = CurvedAnimation(
+      parent: flowStoryController,
+      curve: Curves.easeOut,
+    );
   }
 
   void disposeMixin() {
+    rainFadeInController.dispose();
     logoController.dispose();
+    glowPulseController.dispose();
+    shimmerController.dispose();
+    ringExpandController.dispose();
     textController.dispose();
+    flowStoryController.dispose();
   }
 
   Future<void> _startAnimation() async {
+    // Phase 1: Question rain fades in
     await Future.delayed(AppDurations.splashInitDelay);
     if (!mounted) return;
+    rainFadeInController.forward();
 
-    logoController.forward();
-
-    await Future.delayed(AppDurations.splashTextDelay);
+    // Phase 2: Logo enters with elastic bounce (400ms after rain starts)
+    await Future.delayed(const Duration(milliseconds: 400));
     if (!mounted) return;
+    logoController.forward();
+    ringExpandController.forward();
 
+    // Phase 3: Glow pulse starts looping after logo lands
+    await Future.delayed(const Duration(milliseconds: 500));
+    if (!mounted) return;
+    glowPulseController.repeat(reverse: true);
+
+    // Phase 4: Shimmer sweep across logo
+    await Future.delayed(const Duration(milliseconds: 300));
+    if (!mounted) return;
+    shimmerController.forward();
+
+    // Phase 5: Staggered text
+    await Future.delayed(const Duration(milliseconds: 200));
+    if (!mounted) return;
     textController.forward();
 
+    // Phase 6: Flow story timeline (? → ✓ → ❤️)
+    await Future.delayed(const Duration(milliseconds: 400));
+    if (!mounted) return;
+    flowStoryController.forward();
+
+    // Hold before auth check
     await Future.delayed(AppDurations.splashHold);
     if (!mounted) return;
 

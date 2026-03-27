@@ -186,6 +186,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                   onDiamonds: () => navigateTo(RouteNames.diamonds),
                   onSubscription: () => navigateTo(RouteNames.subscription),
                   onPassport: () => navigateTo(RouteNames.passport),
+                  onTerms: () => pushTo(RouteNames.terms),
+                  onPrivacy: () => pushTo(RouteNames.privacyPolicy),
                 ),
               ],
             ),
