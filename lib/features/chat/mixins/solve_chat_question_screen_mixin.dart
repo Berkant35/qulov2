@@ -43,9 +43,12 @@ mixin SolveChatQuestionScreenMixin
       return;
     }
 
-    // Fetch inventory if empty (deferred to avoid modifying provider during build)
+    // Fetch fresh data (deferred to avoid modifying provider during build)
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
+      // Elmas bakiyesini güncel al
+      ref.read(diamondProvider.notifier).fetchBalance();
+      // Envanter verisi yoksa fetch et
       final exchange = ref.read(exchangeProvider);
       if (exchange.inventory.isEmpty) {
         ref.read(exchangeProvider.notifier).fetchAll();
