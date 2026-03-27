@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/l10n/app_localizations.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/widgets/power_icon.dart';
 import 'package:qulo_v2/data/models/chat_question_model.dart';
 import 'package:qulo_v2/features/chat/widgets/blurred_media_preview.dart';
 
@@ -277,6 +278,38 @@ class _AnsweredOptions extends StatelessWidget {
               color: context.appColors.error,
               fontWeight: FontWeight.w600,
             ),
+          ),
+        ],
+        // Powers used
+        if (question.powersUsed.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.sm),
+          Wrap(
+            spacing: AppSpacing.xs,
+            runSpacing: AppSpacing.xs,
+            children: question.powersUsed.map((name) {
+              final powerName = name.toString();
+              final type = PowerType.fromApiName(powerName);
+              if (type == null) return const SizedBox.shrink();
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: type.color.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                  border: Border.all(color: type.color.withValues(alpha: 0.3)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    PowerIcon(type: type, size: 12),
+                    const SizedBox(width: 3),
+                    Text(
+                      powerName,
+                      style: TextStyle(fontSize: 9, color: type.color, fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
           ),
         ],
       ],
