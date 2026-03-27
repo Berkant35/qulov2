@@ -12,6 +12,7 @@ import 'package:qulo_v2/features/diamonds/widgets/paywall_bottom_sheet.dart';
 import 'package:qulo_v2/features/quiz/widgets/quiz_timer.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
+import 'package:qulo_v2/providers/exchange_provider.dart';
 
 mixin SolveChatQuestionScreenMixin
     on ConsumerState<SolveChatQuestionScreen> {
@@ -39,6 +40,13 @@ mixin SolveChatQuestionScreenMixin
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) Navigator.of(context).pop(false);
       });
+      return;
+    }
+
+    // Fetch inventory if empty
+    final exchange = ref.read(exchangeProvider);
+    if (exchange.inventory.isEmpty) {
+      ref.read(exchangeProvider.notifier).fetchAll();
     }
   }
 
@@ -96,6 +104,7 @@ mixin SolveChatQuestionScreenMixin
     apiResult.when(
       success: (data) {
         ref.invalidate(diamondProvider);
+        ref.invalidate(exchangeProvider);
 
         switch (powerName) {
           case 'ORACLE':
