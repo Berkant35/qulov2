@@ -28,29 +28,24 @@ class ChatQuestionMessage extends ConsumerWidget {
     WidgetRef ref,
     ChatQuestionModel question,
   ) async {
-    await ref.read(navigationServiceProvider).push(
-      RouteNames.solveChatQuestion,
-      params: {'questionId': question.id},
-      extra: question,
-    );
+    final wasAnswered = await ref
+        .read(navigationServiceProvider)
+        .push<bool>(
+          RouteNames.solveChatQuestion,
+          params: {'questionId': question.id},
+          extra: {'question': question, 'matchId': matchId},
+        );
 
-    // After returning from solve screen, refresh the question from API
-    // (the cache will be stale if the user answered)
-    if (context.mounted) {
-      _refreshQuestion(ref);
+    if (!context.mounted) return;
+
+    if (wasAnswered == true) {
+      ref.read(chatQuestionCacheProvider.notifier).update((state) {
+        final updated = Map<String, ChatQuestionModel>.from(state);
+        updated.remove(questionId);
+        return updated;
+      });
+      ref.invalidate(chatQuestionFetchProvider(questionId));
     }
-  }
-
-  void _refreshQuestion(WidgetRef ref) {
-    // Cache'den sil + fetch provider'i invalidate et
-    // Cache temizlenince chatQuestionProvider rebuild olur,
-    // fetch provider invalidate edilince API'den taze veri cekilir
-    ref.read(chatQuestionCacheProvider.notifier).update((state) {
-      final updated = Map<String, ChatQuestionModel>.from(state);
-      updated.remove(questionId);
-      return updated;
-    });
-    ref.invalidate(chatQuestionFetchProvider(questionId));
   }
 
   @override

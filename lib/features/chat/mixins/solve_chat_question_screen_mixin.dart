@@ -33,6 +33,13 @@ mixin SolveChatQuestionScreenMixin
 
   void initMixin() {
     powerBlockActive = widget.question.isPowerBlocked;
+
+    // Guard: don't allow re-solving answered questions
+    if (widget.question.isAnswered) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) Navigator.of(context).pop(false);
+      });
+    }
   }
 
   void disposeMixin() {

@@ -8,8 +8,13 @@ import 'package:qulo_v2/features/chat/widgets/solve_question_body.dart';
 
 class SolveChatQuestionScreen extends ConsumerStatefulWidget {
   final ChatQuestionModel question;
+  final String matchId;
 
-  const SolveChatQuestionScreen({super.key, required this.question});
+  const SolveChatQuestionScreen({
+    super.key,
+    required this.question,
+    required this.matchId,
+  });
 
   @override
   ConsumerState<SolveChatQuestionScreen> createState() =>
@@ -51,7 +56,7 @@ class _SolveChatQuestionScreenState
             : q.questionText,
         leading: IconButton(
           icon: const Icon(Icons.close),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.of(context).pop(false),
         ),
         padding: EdgeInsets.zero,
         body: SolveQuestionBody(

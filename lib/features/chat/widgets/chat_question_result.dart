@@ -107,7 +107,7 @@ class ChatQuestionResultScreen extends ConsumerWidget {
               width: double.infinity,
               height: 52,
               child: ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () => Navigator.of(context).pop(true),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: context.appColors.primary,
                   shape: RoundedRectangleBorder(
