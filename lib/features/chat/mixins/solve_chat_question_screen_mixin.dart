@@ -134,6 +134,7 @@ mixin SolveChatQuestionScreenMixin
                 isCorrect: true,
                 unmatched: false,
                 rewardMediaUrl: widget.question.rewardMediaUrl,
+                powersUsed: const ['SKIP'],
               );
             });
             return;

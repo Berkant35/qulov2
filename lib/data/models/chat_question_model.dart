@@ -101,19 +101,34 @@ class ChatQuestionAnswerResponse extends Equatable {
   @JsonKey(name: 'reward_media_url')
   final String? rewardMediaUrl;
   final ChatQuestionModel? question;
+  @JsonKey(name: 'green_reward')
+  final int greenReward;
+  @JsonKey(name: 'powers_used')
+  final List<String> powersUsed;
+  @JsonKey(name: 'correct_option')
+  final String? correctOption;
+  @JsonKey(name: 'answered_option')
+  final String? answeredOption;
+  @JsonKey(name: 'time_spent')
+  final int? timeSpent;
 
   const ChatQuestionAnswerResponse({
     required this.isCorrect,
     required this.unmatched,
     this.rewardMediaUrl,
     this.question,
+    this.greenReward = 0,
+    this.powersUsed = const [],
+    this.correctOption,
+    this.answeredOption,
+    this.timeSpent,
   });
 
   factory ChatQuestionAnswerResponse.fromJson(Map<String, dynamic> json) =>
       _$ChatQuestionAnswerResponseFromJson(json);
 
   @override
-  List<Object?> get props => [isCorrect, unmatched, rewardMediaUrl];
+  List<Object?> get props => [isCorrect, unmatched, rewardMediaUrl, greenReward, powersUsed, correctOption, answeredOption];
 }
 
 @JsonSerializable(createToJson: false)
