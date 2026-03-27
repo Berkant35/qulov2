@@ -1,141 +1,135 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qulo_v2/core/constants/app_assets.dart';
 import 'package:qulo_v2/core/constants/app_sizes.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
+import 'package:qulo_v2/features/splash/widgets/glitch_painter.dart';
 
-class SplashLogo extends StatelessWidget {
-  final Animation<double> fadeIn;
-  final Animation<double> scale;
-  final Animation<double> glowPulse;
-  final Animation<double> shimmer;
-  final Animation<double> ringExpand;
+class SplashLogo extends StatefulWidget {
+  /// 0→1: glitch chaos→stable
+  final Animation<double> glitch;
+
+  /// 0→1: glow pulse settle
+  final Animation<double> glow;
 
   const SplashLogo({
     super.key,
-    required this.fadeIn,
-    required this.scale,
-    required this.glowPulse,
-    required this.shimmer,
-    required this.ringExpand,
+    required this.glitch,
+    required this.glow,
   });
+
+  @override
+  State<SplashLogo> createState() => _SplashLogoState();
+}
+
+class _SplashLogoState extends State<SplashLogo> {
+  ui.Image? _rasterImage;
+  static const _sliceCount = 12;
+  final _seeds = GlitchSliceSeed.generate(_sliceCount);
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_rasterImage == null) {
+      _rasterizeSvg();
+    }
+  }
+
+  Future<void> _rasterizeSvg() async {
+    final pictureInfo = await vg.loadPicture(
+      SvgAssetLoader(AppAssets.logoSvg),
+      null,
+    );
+
+    // Render at 2x for sharpness
+    const targetSize = AppSizes.logoLg * 2;
+    final recorder = ui.PictureRecorder();
+    final canvas = Canvas(recorder);
+    final scale = targetSize / pictureInfo.size.width;
+    canvas.scale(scale, scale);
+    canvas.drawPicture(pictureInfo.picture);
+    pictureInfo.picture.dispose();
+
+    final image = await recorder
+        .endRecording()
+        .toImage(targetSize.toInt(), targetSize.toInt());
+
+    if (mounted) {
+      setState(() => _rasterImage = image);
+    }
+  }
+
+  @override
+  void dispose() {
+    _rasterImage?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final primary = context.appColors.primary;
 
-    return AnimatedBuilder(
-      animation: Listenable.merge([fadeIn, glowPulse, shimmer, ringExpand]),
-      builder: (context, child) {
-        final glowAlpha = 0.2 + 0.25 * glowPulse.value;
-        final glowRadius = 50.0 + 30.0 * glowPulse.value;
+    if (_rasterImage == null) {
+      return const SizedBox(
+        width: AppSizes.logoLg,
+        height: AppSizes.logoLg,
+      );
+    }
 
-        return FadeTransition(
-          opacity: fadeIn,
-          child: ScaleTransition(
-            scale: scale,
-            child: SizedBox(
-              width: AppSizes.logoLg * 2.2,
-              height: AppSizes.logoLg * 2.2,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  // Expanding ring
-                  if (ringExpand.value > 0)
-                    _ExpandingRing(
-                      progress: ringExpand.value,
-                      color: primary,
-                    ),
-                  // Neon glow
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: primary.withValues(alpha: glowAlpha),
-                          blurRadius: glowRadius,
-                          spreadRadius: 15 + 10 * glowPulse.value,
-                        ),
-                        BoxShadow(
-                          color: primary.withValues(alpha: glowAlpha * 0.5),
-                          blurRadius: glowRadius * 1.8,
-                          spreadRadius: 5,
-                        ),
-                      ],
-                    ),
-                    child: child,
-                  ),
-                  // Shimmer sweep
-                  if (shimmer.value > 0)
-                    ClipOval(
-                      child: SizedBox(
-                        width: AppSizes.logoLg,
-                        height: AppSizes.logoLg,
-                        child: ShaderMask(
-                          shaderCallback: (bounds) {
-                            final sweep = shimmer.value * 2.0 - 0.5;
-                            return LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                Colors.transparent,
-                                Colors.white.withValues(alpha: 0.4),
-                                Colors.transparent,
-                              ],
-                              stops: [
-                                (sweep - 0.2).clamp(0.0, 1.0),
-                                sweep.clamp(0.0, 1.0),
-                                (sweep + 0.2).clamp(0.0, 1.0),
-                              ],
-                            ).createShader(bounds);
-                          },
-                          blendMode: BlendMode.srcATop,
-                          child: Container(
-                            color: Colors.white.withValues(alpha: 0.15),
-                          ),
-                        ),
+    return AnimatedBuilder(
+      animation: Listenable.merge([widget.glitch, widget.glow]),
+      builder: (context, _) {
+        final glowValue = widget.glow.value;
+        // Glow settle: 0→0.4→0.2
+        final glowAlpha = glowValue < 0.5
+            ? glowValue * 0.8 // 0→0.4
+            : 0.4 - (glowValue - 0.5) * 0.4; // 0.4→0.2
+        final glowRadius = 40.0 + 20.0 * glowValue;
+
+        return SizedBox(
+          width: AppSizes.logoLg,
+          height: AppSizes.logoLg,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              // Neon glow (visible after glitch stabilizes)
+              if (widget.glitch.value > 0.8)
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: primary.withValues(alpha: glowAlpha),
+                        blurRadius: glowRadius,
+                        spreadRadius: 10,
                       ),
-                    ),
-                ],
+                      BoxShadow(
+                        color: primary.withValues(alpha: glowAlpha * 0.5),
+                        blurRadius: glowRadius * 1.6,
+                        spreadRadius: 5,
+                      ),
+                    ],
+                  ),
+                ),
+              // Glitch painter
+              RepaintBoundary(
+                child: CustomPaint(
+                  size: const Size(AppSizes.logoLg, AppSizes.logoLg),
+                  painter: GlitchPainter(
+                    image: _rasterImage!,
+                    progress: widget.glitch.value,
+                    seeds: _seeds,
+                    tintColor: primary,
+                    sliceCount: _sliceCount,
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
         );
       },
-      child: SvgPicture.asset(
-        AppAssets.logoSvg,
-        width: AppSizes.logoLg,
-        height: AppSizes.logoLg,
-        colorFilter: ColorFilter.mode(
-          context.appColors.primary,
-          BlendMode.srcIn,
-        ),
-      ),
-    );
-  }
-}
-
-class _ExpandingRing extends StatelessWidget {
-  final double progress;
-  final Color color;
-
-  const _ExpandingRing({required this.progress, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    final size = AppSizes.logoLg * (1.0 + progress * 0.8);
-    final opacity = (1.0 - progress).clamp(0.0, 1.0) * 0.4;
-
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: color.withValues(alpha: opacity),
-          width: 2.0 - progress * 1.5,
-        ),
-      ),
     );
   }
 }
