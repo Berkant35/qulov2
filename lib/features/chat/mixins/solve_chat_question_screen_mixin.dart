@@ -43,11 +43,14 @@ mixin SolveChatQuestionScreenMixin
       return;
     }
 
-    // Fetch inventory if empty
-    final exchange = ref.read(exchangeProvider);
-    if (exchange.inventory.isEmpty) {
-      ref.read(exchangeProvider.notifier).fetchAll();
-    }
+    // Fetch inventory if empty (deferred to avoid modifying provider during build)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final exchange = ref.read(exchangeProvider);
+      if (exchange.inventory.isEmpty) {
+        ref.read(exchangeProvider.notifier).fetchAll();
+      }
+    });
   }
 
   void disposeMixin() {
@@ -63,7 +66,7 @@ mixin SolveChatQuestionScreenMixin
     setState(() => isSubmitting = true);
 
     final remaining = timerKey.currentState?.remainingSeconds ?? 0;
-    final timeSpent = startTime - remaining;
+    final timeSpent = (startTime - remaining).clamp(0, startTime * 2);
 
     final apiResult = await ref.read(chatRepositoryProvider).answerQuestion(
       widget.question.id,
