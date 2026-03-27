@@ -33,7 +33,9 @@ mixin SplashScreenMixin on ConsumerState<SplashScreen>
     _setupControllers();
     _setupAnimations();
     _startAnimation();
-    _startAuthCheckInParallel();
+    // Delay auth check to after first frame — calling providers
+    // during initState/build triggers Riverpod's "modify while building" error.
+    Future.microtask(_startAuthCheckInParallel);
   }
 
   void _setupControllers() {
@@ -98,14 +100,6 @@ mixin SplashScreenMixin on ConsumerState<SplashScreen>
   }
 
   Future<void> _startAuthCheckInParallel() async {
-    _splashStopwatch.stop();
-    AnalyticsManager.instance.logEvent(
-      AnalyticsEvents.appSplashDuration,
-      params: {
-        AnalyticsEvents.paramDurationMs: _splashStopwatch.elapsedMilliseconds,
-      },
-    );
-
     final status = await ref.read(appConfigProvider.notifier).checkVersion();
     if (!mounted) return;
 
@@ -138,6 +132,15 @@ mixin SplashScreenMixin on ConsumerState<SplashScreen>
 
   void _tryProceed() {
     if (!_animationDone || !_authCheckDone || !mounted) return;
+
+    _splashStopwatch.stop();
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.appSplashDuration,
+      params: {
+        AnalyticsEvents.paramDurationMs: _splashStopwatch.elapsedMilliseconds,
+      },
+    );
+
     ref.read(authProvider.notifier).checkAuth();
   }
 
