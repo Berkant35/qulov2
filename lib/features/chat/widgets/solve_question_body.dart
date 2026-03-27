@@ -24,7 +24,7 @@ class SolveQuestionBody extends StatelessWidget {
   final VoidCallback onTimeout;
   final ValueChanged<String> onOptionSelected;
   final Future<void> Function() onSubmit;
-  final ValueChanged<String> onPowerTap;
+  final Future<void> Function(String) onPowerTap;
   final Map<String, int> powerCounts;
   final String? senderPhotoUrl;
   final String? senderName;

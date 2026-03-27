@@ -11,7 +11,7 @@ class ChatQuestionPowerBar extends StatelessWidget {
   final int optionCount;
   final bool isPowerBlocked;
   final bool hasHint;
-  final void Function(String powerName) onPowerTap;
+  final Future<void> Function(String powerName) onPowerTap;
   final Set<String> disabledPowers;
   final Map<String, int> powerCounts;
 
@@ -176,7 +176,7 @@ class _ChatPowerButton extends StatelessWidget {
 }
 
 class _PowerBlockOverlay extends StatelessWidget {
-  final void Function(String powerName) onUnblock;
+  final Future<void> Function(String powerName) onUnblock;
 
   const _PowerBlockOverlay({required this.onUnblock});
 
