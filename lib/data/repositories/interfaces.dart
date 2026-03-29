@@ -155,7 +155,8 @@ abstract class IQuizRepository {
 abstract class IReportRepository {
   Future<Result<void>> createReport({
     required String reportedId,
-    required String reason,
+    required String category,
+    String? reason,
     String? description,
   });
 }

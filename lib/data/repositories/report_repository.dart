@@ -11,13 +11,15 @@ class ReportRepository implements IReportRepository {
   @override
   Future<Result<void>> createReport({
     required String reportedId,
-    required String reason,
+    required String category,
+    String? reason,
     String? description,
   }) async {
     try {
       await _service.createReport({
         'reported_id': reportedId,
-        'reason': reason,
+        'category': category,
+        if (reason != null && reason.isNotEmpty) 'reason': reason,
         if (description != null) 'description': description,
       });
       return const Success(null);
