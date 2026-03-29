@@ -461,7 +461,9 @@ class _PurpleSpentCardState extends State<_PurpleSpentCard> {
                         ),
                       ),
                       Text(
-                        'Güç kullanımı için harcandı',
+                        grouped.length == 1
+                            ? '${grouped.keys.first} için harcandı'
+                            : 'Güç kullanımı için harcandı',
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: context.appColors.textSecondary,
                         ),

@@ -175,7 +175,7 @@ mixin SolveChatQuestionScreenMixin
     apiResult.when(
       success: (data) {
         ref.invalidate(diamondProvider);
-        ref.invalidate(exchangeProvider);
+        ref.read(exchangeProvider.notifier).fetchAll();
 
         // Track power usage for result screen
         if (data.cost != null && data.cost! > 0) {
