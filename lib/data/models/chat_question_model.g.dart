@@ -31,6 +31,7 @@ ChatQuestionModel _$ChatQuestionModelFromJson(Map<String, dynamic> json) =>
       hasPowerBlock: json['has_power_block'] as bool? ?? false,
       powerBlockRemoved: json['power_block_removed'] as bool? ?? false,
       powersUsed: json['powers_used'] as List<dynamic>? ?? const [],
+      isAbandoned: json['is_abandoned'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$ChatQuestionModelToJson(ChatQuestionModel instance) =>
@@ -58,6 +59,7 @@ Map<String, dynamic> _$ChatQuestionModelToJson(ChatQuestionModel instance) =>
       'has_power_block': instance.hasPowerBlock,
       'power_block_removed': instance.powerBlockRemoved,
       'powers_used': instance.powersUsed,
+      'is_abandoned': instance.isAbandoned,
     };
 
 ChatQuestionAnswerResponse _$ChatQuestionAnswerResponseFromJson(
@@ -78,6 +80,7 @@ ChatQuestionAnswerResponse _$ChatQuestionAnswerResponseFromJson(
   correctOption: json['correct_option'] as String?,
   answeredOption: json['answered_option'] as String?,
   timeSpent: (json['time_spent'] as num?)?.toInt(),
+  isAbandoned: json['is_abandoned'] as bool? ?? false,
 );
 
 UsePowerResponse _$UsePowerResponseFromJson(Map<String, dynamic> json) =>
