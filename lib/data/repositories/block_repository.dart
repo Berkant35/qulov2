@@ -27,4 +27,14 @@ class BlockRepository implements IBlockRepository {
       return Failure(e.toAppFailure());
     }
   }
+
+  @override
+  Future<Result<List<Map<String, dynamic>>>> getBlockedUsers() async {
+    try {
+      final response = await _service.getBlockedUsers();
+      return Success(response.cast<Map<String, dynamic>>());
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
 }

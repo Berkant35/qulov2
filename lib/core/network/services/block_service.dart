@@ -12,4 +12,7 @@ abstract class BlockService {
 
   @DELETE('/blocks/{userId}')
   Future<void> unblockUser(@Path('userId') String userId);
+
+  @GET('/blocks')
+  Future<List<dynamic>> getBlockedUsers();
 }
