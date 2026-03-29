@@ -131,8 +131,11 @@ mixin SolveChatQuestionScreenMixin
       },
       failure: (f) {
         setState(() => isSubmitting = false);
+        timerKey.currentState?.resume();
         if (mounted) {
-          Navigator.of(context).pop(true);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Bir hata oluştu, tekrar deneyin')),
+          );
         }
       },
     );
@@ -144,6 +147,8 @@ mixin SolveChatQuestionScreenMixin
       Navigator.of(context).pop(true);
       return;
     }
+
+    if (timedOut) return;
 
     final shouldAbandon = await showAbandonWarningDialog(
       context,
@@ -345,6 +350,12 @@ mixin SolveChatQuestionScreenMixin
   // ── Rescue (after wrong answer) ────────────────────────────
 
   Future<void> handleRescue() async {
+    // If power block is still active, show rescue sheet instead of calling API
+    if (powerBlockActive) {
+      showRescueSheet();
+      return;
+    }
+
     final apiResult = await ref.read(chatRepositoryProvider).rescueQuestion(
       widget.question.id,
     );

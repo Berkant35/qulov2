@@ -54,6 +54,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
       ref.read(activeChatMatchIdProvider.notifier).state = widget.matchId;
       // Clear question cache so cards re-fetch fresh data
       ref.read(chatQuestionCacheProvider.notifier).state = {};
+      ref.read(openedQuestionIdsProvider.notifier).state = {};
 
       final notifier = ref.read(chatProvider(widget.matchId).notifier);
       notifier.loadMessages();
