@@ -552,7 +552,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
         ?.where((m) => m.matchId == widget.matchId)
         .firstOrNull
         ?.user
-        .userId;
+        ?.userId;
   }
 
   void onChatReport() {
