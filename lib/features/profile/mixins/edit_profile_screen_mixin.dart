@@ -264,7 +264,6 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
     final profileData = <String, dynamic>{
       'bio': bioController.text.trim(),
       'city': cityController.text.trim(),
-      'gender_pref': epState.selectedGenderPref,
       'age_pref_min': epState.ageRange.start.round(),
       'age_pref_max': epState.ageRange.end.round(),
       'match_radius_km': epState.distanceKm.round(),
