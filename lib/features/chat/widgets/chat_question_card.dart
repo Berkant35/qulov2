@@ -280,37 +280,46 @@ class _AnsweredOptions extends StatelessWidget {
             ),
           ),
         ],
-        // Powers used
+        // Powers used (grouped: TIME_EXTEND ×6)
         if (question.powersUsed.isNotEmpty) ...[
           const SizedBox(height: AppSpacing.sm),
-          Wrap(
-            spacing: AppSpacing.xs,
-            runSpacing: AppSpacing.xs,
-            children: question.powersUsed.map((name) {
-              final powerName = name.toString();
-              final type = PowerType.fromApiName(powerName);
-              if (type == null) return const SizedBox.shrink();
-              return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: type.color.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-                  border: Border.all(color: type.color.withValues(alpha: 0.3)),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    PowerIcon(type: type, size: 12),
-                    const SizedBox(width: 3),
-                    Text(
-                      powerName,
-                      style: TextStyle(fontSize: 9, color: type.color, fontWeight: FontWeight.w600),
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
-          ),
+          Builder(builder: (context) {
+            // Group same powers: {ORACLE: 1, TIME_EXTEND: 6}
+            final grouped = <String, int>{};
+            for (final name in question.powersUsed) {
+              final key = name.toString();
+              grouped[key] = (grouped[key] ?? 0) + 1;
+            }
+            return Wrap(
+              spacing: AppSpacing.xs,
+              runSpacing: AppSpacing.xs,
+              children: grouped.entries.map((entry) {
+                final type = PowerType.fromApiName(entry.key);
+                if (type == null) return const SizedBox.shrink();
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: type.color.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                    border: Border.all(color: type.color.withValues(alpha: 0.3)),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      PowerIcon(type: type, size: 12),
+                      if (entry.value > 1) ...[
+                        const SizedBox(width: 2),
+                        Text(
+                          '×${entry.value}',
+                          style: TextStyle(fontSize: 9, color: type.color, fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ],
+                  ),
+                );
+              }).toList(),
+            );
+          }),
         ],
       ],
     );

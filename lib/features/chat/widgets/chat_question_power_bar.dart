@@ -6,6 +6,7 @@ import 'package:qulo_v2/core/widgets/diamond_icon.dart';
 import 'package:qulo_v2/core/widgets/power_icon.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/core/widgets/safe_tap_button.dart';
+import 'package:qulo_v2/data/models/economy_config_model.dart';
 
 class ChatQuestionPowerBar extends StatelessWidget {
   final int optionCount;
@@ -14,8 +15,7 @@ class ChatQuestionPowerBar extends StatelessWidget {
   final Future<void> Function(String powerName) onPowerTap;
   final Set<String> disabledPowers;
   final Map<String, int> powerCounts;
-  final Map<String, int> powerPurpleCosts;
-  final Map<String, int> powerGreenCosts;
+  final PowerCostsConfig powerCosts;
 
   const ChatQuestionPowerBar({
     super.key,
@@ -25,8 +25,7 @@ class ChatQuestionPowerBar extends StatelessWidget {
     required this.onPowerTap,
     this.disabledPowers = const {},
     this.powerCounts = const {},
-    this.powerPurpleCosts = const {},
-    this.powerGreenCosts = const {},
+    this.powerCosts = PowerCostsConfig.fallback,
   });
 
   List<PowerType> get _availablePowers {
@@ -53,14 +52,16 @@ class ChatQuestionPowerBar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: powers.map((type) {
             final isUsed = disabledPowers.contains(type.apiName);
+            final count = powerCounts[type.apiName] ?? 0;
+            final cost = powerCosts.forPower(type.apiName);
 
             return _ChatPowerButton(
               type: type,
               isUsed: isUsed,
               isLocked: isPowerBlocked,
-              count: powerCounts[type.apiName] ?? 0,
-              purpleCost: powerPurpleCosts[type.apiName] ?? 0,
-              greenCost: powerGreenCosts[type.apiName] ?? 0,
+              count: count,
+              purpleCost: cost?.purpleCost ?? 0,
+              greenCost: cost?.greenCost ?? 0,
               onTap: (isUsed || isPowerBlocked)
                   ? null
                   : () async => onPowerTap(type.apiName),
@@ -72,7 +73,7 @@ class ChatQuestionPowerBar extends StatelessWidget {
           _UnlockButton(
             onUnblock: onPowerTap,
             unblockCount: powerCounts['POWER_UNBLOCK'] ?? 0,
-            unblockCost: powerPurpleCosts['POWER_UNBLOCK'] ?? 0,
+            unblockCost: powerCosts.powerUnblock.purpleCost,
           ),
         ],
       ],
@@ -102,15 +103,18 @@ class _ChatPowerButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = type.color;
+    final hasInventory = count > 0;
+    // Kullanılmış → full opak, kilitli → çok soluk, envanterde var → full, envanterde yok → biraz soluk
+    final isSelectable = !isUsed && !isLocked;
 
     return SafeTapButton(
       onTap: onTap,
       builder: (context, isLoading, safeTap) => GestureDetector(
         onTap: safeTap,
         child: Opacity(
-          opacity: isUsed ? 1.0 : isLocked ? 0.35 : (count > 0 ? 1.0 : 0.4),
+          opacity: isUsed ? 1.0 : isLocked ? 0.3 : 1.0,
           child: SizedBox(
-            width: 52,
+            width: 56,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -138,15 +142,13 @@ class _ChatPowerButton extends StatelessWidget {
                             : isUsed
                                 ? Icon(Icons.check, size: 20, color: Colors.grey)
                                 : isLocked
-                                    ? Icon(Icons.lock, size: 18, color: Colors.grey.withValues(alpha: 0.6))
-                                    : QIcon(
-                                        type.iconPath,
-                                        size: 22,
-                                        color: color,
-                                      ),
+                                    ? Icon(Icons.lock, size: 18,
+                                        color: Colors.grey.withValues(alpha: 0.6))
+                                    : QIcon(type.iconPath, size: 22, color: color),
                       ),
                     ),
-                    if (!isUsed && !isLocked && count > 0)
+                    // Envanter badge
+                    if (isSelectable && hasInventory)
                       Positioned(
                         top: -4,
                         right: -4,
@@ -178,8 +180,8 @@ class _ChatPowerButton extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                // Maliyet — envanterde yoksa göster
-                if (!isUsed && !isLocked && count <= 0 && (purpleCost > 0 || greenCost > 0))
+                // Maliyet — envanterde yoksa ve seçilebilirse göster
+                if (isSelectable && !hasInventory && purpleCost > 0)
                   Padding(
                     padding: const EdgeInsets.only(top: 2),
                     child: Row(
@@ -189,13 +191,19 @@ class _ChatPowerButton extends StatelessWidget {
                         const DiamondIcon.purple(size: 8, showGlow: false),
                         Text(
                           '$purpleCost',
-                          style: TextStyle(fontSize: 8, color: color.withValues(alpha: 0.7)),
+                          style: TextStyle(
+                            fontSize: 8,
+                            color: color.withValues(alpha: 0.7),
+                          ),
                         ),
                         const SizedBox(width: 3),
                         const DiamondIcon.green(size: 8, showGlow: false),
                         Text(
                           '$greenCost',
-                          style: TextStyle(fontSize: 8, color: color.withValues(alpha: 0.7)),
+                          style: TextStyle(
+                            fontSize: 8,
+                            color: color.withValues(alpha: 0.7),
+                          ),
                         ),
                       ],
                     ),
@@ -268,14 +276,18 @@ class _UnlockButton extends StatelessWidget {
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
                         color: colors.warning.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
+                        borderRadius:
+                            BorderRadius.circular(AppSpacing.radiusFull),
                       ),
                       child: hasInventory
                           ? Text(
-                              '$unblockCount adet',
+                              '×$unblockCount',
                               style: TextStyle(
                                 color: colors.warning,
                                 fontSize: 11,
@@ -285,7 +297,8 @@ class _UnlockButton extends StatelessWidget {
                           : Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const DiamondIcon.purple(size: 12, showGlow: false),
+                                const DiamondIcon.purple(
+                                    size: 12, showGlow: false),
                                 const SizedBox(width: 3),
                                 Text(
                                   '$unblockCost',

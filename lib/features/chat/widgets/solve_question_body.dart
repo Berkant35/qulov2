@@ -5,6 +5,7 @@ import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/safe_tap_button.dart';
 import 'package:qulo_v2/data/models/chat_question_model.dart';
+import 'package:qulo_v2/data/models/economy_config_model.dart';
 import 'package:qulo_v2/features/chat/widgets/chat_question_power_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:qulo_v2/features/quiz/widgets/answer_button.dart';
@@ -26,8 +27,7 @@ class SolveQuestionBody extends StatelessWidget {
   final Future<void> Function() onSubmit;
   final Future<void> Function(String) onPowerTap;
   final Map<String, int> powerCounts;
-  final Map<String, int> powerPurpleCosts;
-  final Map<String, int> powerGreenCosts;
+  final PowerCostsConfig powerCosts;
   final String? senderPhotoUrl;
   final String? senderName;
 
@@ -47,8 +47,7 @@ class SolveQuestionBody extends StatelessWidget {
     required this.onSubmit,
     required this.onPowerTap,
     this.powerCounts = const {},
-    this.powerPurpleCosts = const {},
-    this.powerGreenCosts = const {},
+    this.powerCosts = PowerCostsConfig.fallback,
     this.senderPhotoUrl,
     this.senderName,
   });
@@ -148,8 +147,7 @@ class SolveQuestionBody extends StatelessWidget {
             hasHint: question.hintText != null &&
                 question.hintText!.isNotEmpty,
             onPowerTap: onPowerTap,
-            powerPurpleCosts: powerPurpleCosts,
-            powerGreenCosts: powerGreenCosts,
+            powerCosts: powerCosts,
             disabledPowers: {
               if (suggestedOption != null) 'ORACLE',
               if (removedOptions.isNotEmpty) 'HALF',

@@ -1,13 +1,16 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/core/widgets/diamond_icon.dart';
-import 'package:qulo_v2/core/widgets/power_icon.dart';
 import 'package:qulo_v2/data/models/chat_question_model.dart';
+import 'package:qulo_v2/data/models/economy_config_model.dart';
 import 'package:qulo_v2/features/chat/mixins/solve_chat_question_screen_mixin.dart';
 import 'package:qulo_v2/features/chat/widgets/chat_question_result.dart';
 import 'package:qulo_v2/features/chat/widgets/solve_question_body.dart';
+import 'package:qulo_v2/providers/economy_config_provider.dart';
 import 'package:qulo_v2/providers/exchange_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
@@ -54,27 +57,21 @@ class _SolveChatQuestionScreenState
 
     final q = widget.question;
 
-    // Power inventory counts + costs from economy config
+    // Power inventory counts (from exchange)
     final exchange = ref.watch(exchangeProvider);
     final powerCounts = <String, int>{};
-    final powerPurpleCosts = <String, int>{};
-    final powerGreenCosts = <String, int>{};
-    for (final type in PowerType.values) {
-      final c = exchange.getCount(type.apiName);
-      if (c > 0) powerCounts[type.apiName] = c;
-      final rate = exchange.rates?.powers
-          .where((p) => p.name == type.apiName)
-          .firstOrNull;
-      if (rate != null) {
-        powerPurpleCosts[type.apiName] = rate.purpleCost;
-        powerGreenCosts[type.apiName] = rate.greenCost;
-      }
+    for (final entry in exchange.inventory) {
+      if (entry.count > 0) powerCounts[entry.powerName] = entry.count;
     }
+
+    // Power costs (from economy config — loaded at app start)
+    final economyConfig = ref.watch(economyConfigProvider);
+    final powerCosts = economyConfig.powerCosts;
 
     // Diamond balance from user singleton
     final user = ref.watch(userProvider).valueOrNull;
 
-    // Task 4: Sender profile info
+    // Sender profile info
     final matchUser = ref.watch(matchListProvider).whenData((matches) {
       try {
         return matches.firstWhere((m) => m.matchId == widget.matchId).user;
@@ -82,43 +79,61 @@ class _SolveChatQuestionScreenState
         return null;
       }
     }).valueOrNull;
-    final senderPhotoUrl = matchUser?.photos?.isNotEmpty == true ? matchUser!.photos!.first : null;
+    final senderPhotoUrl = matchUser?.photos?.isNotEmpty == true
+        ? matchUser!.photos!.first
+        : null;
     final senderName = matchUser?.name;
 
     return PopScope(
       canPop: false,
       child: AppScaffold(
-        title: q.questionText.length > 25
-            ? '${q.questionText.substring(0, 25)}...'
-            : q.questionText,
+        title: senderName ?? '',
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () => Navigator.of(context).pop(false),
         ),
         actions: [
           if (user != null)
-            _CompactDiamondBalance(purple: user.purpleDiamonds, green: user.greenDiamonds),
+            _CompactDiamondBalance(
+              purple: user.purpleDiamonds,
+              green: user.greenDiamonds,
+            ),
         ],
         padding: EdgeInsets.zero,
-        body: SolveQuestionBody(
-          question: q,
-          timerKey: timerKey,
-          selectedOption: selectedOption,
-          isSubmitting: isSubmitting,
-          removedOptions: removedOptions,
-          suggestedOption: suggestedOption,
-          hintVisible: hintVisible,
-          hintText: hintText,
-          powerBlockActive: powerBlockActive,
-          onTimeout: onTimeout,
-          onOptionSelected: selectOption,
-          onSubmit: submitAnswer,
-          onPowerTap: usePower,
-          powerCounts: powerCounts,
-          powerPurpleCosts: powerPurpleCosts,
-          powerGreenCosts: powerGreenCosts,
-          senderPhotoUrl: senderPhotoUrl,
-          senderName: senderName,
+        body: Stack(
+          children: [
+            // Background: sender photo with low opacity
+            if (senderPhotoUrl != null)
+              Positioned.fill(
+                child: Opacity(
+                  opacity: 0.08,
+                  child: CachedNetworkImage(
+                    imageUrl: senderPhotoUrl,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            // Foreground: question body
+            SolveQuestionBody(
+              question: q,
+              timerKey: timerKey,
+              selectedOption: selectedOption,
+              isSubmitting: isSubmitting,
+              removedOptions: removedOptions,
+              suggestedOption: suggestedOption,
+              hintVisible: hintVisible,
+              hintText: hintText,
+              powerBlockActive: powerBlockActive,
+              onTimeout: onTimeout,
+              onOptionSelected: selectOption,
+              onSubmit: submitAnswer,
+              onPowerTap: usePower,
+              powerCounts: powerCounts,
+              powerCosts: powerCosts,
+              senderPhotoUrl: senderPhotoUrl,
+              senderName: senderName,
+            ),
+          ],
         ),
       ),
     );

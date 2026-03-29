@@ -327,26 +327,35 @@ class _PowersUsedCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.sm),
-          Wrap(
-            spacing: AppSpacing.sm,
-            runSpacing: AppSpacing.sm,
-            children: powers.map((name) {
-              final type = PowerType.fromApiName(name);
-              if (type == null) return const SizedBox.shrink();
-              return Chip(
-                avatar: PowerIcon(type: type, size: 16),
-                label: Text(
-                  name,
-                  style: TextStyle(fontSize: 11, color: type.color),
-                ),
-                backgroundColor: type.color.withValues(alpha: 0.1),
-                side: BorderSide(color: type.color.withValues(alpha: 0.3)),
-                padding: EdgeInsets.zero,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                visualDensity: VisualDensity.compact,
-              );
-            }).toList(),
-          ),
+          Builder(builder: (context) {
+            final grouped = <String, int>{};
+            for (final name in powers) {
+              grouped[name] = (grouped[name] ?? 0) + 1;
+            }
+            return Wrap(
+              spacing: AppSpacing.sm,
+              runSpacing: AppSpacing.sm,
+              children: grouped.entries.map((entry) {
+                final type = PowerType.fromApiName(entry.key);
+                if (type == null) return const SizedBox.shrink();
+                final label = entry.value > 1
+                    ? '${entry.key} ×${entry.value}'
+                    : entry.key;
+                return Chip(
+                  avatar: PowerIcon(type: type, size: 16),
+                  label: Text(
+                    label,
+                    style: TextStyle(fontSize: 11, color: type.color),
+                  ),
+                  backgroundColor: type.color.withValues(alpha: 0.1),
+                  side: BorderSide(color: type.color.withValues(alpha: 0.3)),
+                  padding: EdgeInsets.zero,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  visualDensity: VisualDensity.compact,
+                );
+              }).toList(),
+            );
+          }),
         ],
       ),
     );

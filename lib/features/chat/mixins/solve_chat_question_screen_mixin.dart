@@ -12,6 +12,7 @@ import 'package:qulo_v2/features/diamonds/widgets/paywall_bottom_sheet.dart';
 import 'package:qulo_v2/features/quiz/widgets/quiz_timer.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
+import 'package:qulo_v2/providers/economy_config_provider.dart';
 import 'package:qulo_v2/providers/exchange_provider.dart';
 
 mixin SolveChatQuestionScreenMixin
@@ -208,14 +209,11 @@ mixin SolveChatQuestionScreenMixin
       ),
       builder: (_) {
         final exchange = ref.read(exchangeProvider);
+        final economyConfig = ref.read(economyConfigProvider);
         final skipCount = exchange.getCount('SKIP');
-        final skipCost = exchange.rates?.powers
-            .where((p) => p.name == 'SKIP')
-            .firstOrNull?.purpleCost ?? 0;
+        final skipCost = economyConfig.powerCosts.skip.purpleCost;
         final unblockCount = exchange.getCount('POWER_UNBLOCK');
-        final unblockCost = exchange.rates?.powers
-            .where((p) => p.name == 'POWER_UNBLOCK')
-            .firstOrNull?.purpleCost ?? 0;
+        final unblockCost = economyConfig.powerCosts.powerUnblock.purpleCost;
 
         return ChatQuestionRescue(
         isPowerBlocked: powerBlockActive,
