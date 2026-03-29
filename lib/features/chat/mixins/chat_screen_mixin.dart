@@ -21,6 +21,7 @@ import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/features/chat/screens/chat_screen.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/features/chat/widgets/reaction_picker.dart';
+import 'package:qulo_v2/features/profile_detail/widgets/report_category_sheet.dart';
 
 mixin ChatScreenMixin on ConsumerState<ChatScreen> {
 
@@ -541,6 +542,96 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
             );
     if (confirmed == true) {
       await ref.read(chatProvider(widget.matchId).notifier).disableMedia();
+    }
+  }
+
+  // ─── Report & Block ───
+
+  String? _getTargetUserId() {
+    return ref.read(matchListProvider).valueOrNull
+        ?.where((m) => m.matchId == widget.matchId)
+        .firstOrNull
+        ?.user
+        .userId;
+  }
+
+  void onChatReport() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (_) => ReportCategorySheet(
+        onSelected: _showChatReportReasonDialog,
+      ),
+    );
+  }
+
+  void _showChatReportReasonDialog(String category) {
+    final nav = ref.read(navigationServiceProvider);
+    final controller = TextEditingController();
+    final isOther = category == 'OTHER';
+    final l10n = AppLocalizations.of(context);
+
+    nav.showAppDialog(
+      CustomDialog(
+        name: 'chat_report_reason',
+        builder: (ctx) => AlertDialog(
+          title: Text(l10n.get('report')),
+          content: TextField(
+            controller: controller,
+            decoration: InputDecoration(
+              hintText: l10n.get('report_reason_hint'),
+            ),
+            maxLines: 3,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => nav.closeOverlay(),
+              child: Text(l10n.get('cancel')),
+            ),
+            FilledButton(
+              onPressed: () async {
+                final reason = controller.text.trim();
+                if (isOther && reason.isEmpty) return;
+                nav.closeOverlay();
+                final targetId = _getTargetUserId();
+                if (targetId == null) return;
+                await ref.read(reportRepositoryProvider).createReport(
+                  reportedId: targetId,
+                  category: category,
+                  reason: reason.isNotEmpty ? reason : null,
+                );
+                controller.dispose();
+              },
+              child: Text(l10n.get('report')),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> onChatBlock() async {
+    final l10n = AppLocalizations.of(context);
+    final nav = ref.read(navigationServiceProvider);
+    final confirmed = await nav.showAppDialog<bool>(
+      ConfirmDialog(
+        name: 'chat_block_user',
+        title: l10n.get('block_user_title'),
+        message: l10n.get('block_user_message'),
+        confirmText: l10n.get('block'),
+        cancelText: l10n.get('cancel'),
+        isDestructive: true,
+      ),
+    );
+    if (confirmed != true) return;
+    final targetId = _getTargetUserId();
+    if (targetId == null) return;
+    await ref.read(blockRepositoryProvider).blockUser(targetId);
+    if (mounted) {
+      ref.read(navigationServiceProvider).pop();
     }
   }
 
