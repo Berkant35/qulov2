@@ -58,7 +58,9 @@ class ChatQuestionCard extends StatelessWidget {
               const SizedBox(height: AppSpacing.md),
 
               // Options / action
-              if (!question.isAnswered && !isMyQuestion)
+              if (question.isAbandoned)
+                _AbandonedOptions(question: question)
+              else if (!question.isAnswered && !isMyQuestion)
                 _OpenButton(onOpen: onOpen)
               else if (!question.isAnswered && isMyQuestion)
                 _WaitingOptions(question: question)
@@ -123,6 +125,14 @@ class _BadgesRow extends StatelessWidget {
         icon: '\u23f1',
         label: '${question.timeLimitSeconds}s',
         color: context.appColors.textSecondary,
+      ));
+    }
+
+    if (question.isAbandoned) {
+      badges.add(_Badge(
+        icon: '\ud83c\udfc3',
+        label: 'Kaçtı',
+        color: Colors.grey,
       ));
     }
 
@@ -320,6 +330,69 @@ class _AnsweredOptions extends StatelessWidget {
               }).toList(),
             );
           }),
+        ],
+      ],
+    );
+  }
+}
+
+// ─── Abandoned Options (question was abandoned by receiver) ───────────────────
+
+class _AbandonedOptions extends StatelessWidget {
+  final ChatQuestionModel question;
+
+  const _AbandonedOptions({required this.question});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final options = _buildOptionLabels(question);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (final opt in options) ...[
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.sm,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.grey.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 24,
+                  height: 24,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.withValues(alpha: 0.2),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Text(
+                    opt.$1,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    opt.$2,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (opt != options.last) const SizedBox(height: AppSpacing.sm),
         ],
       ],
     );
