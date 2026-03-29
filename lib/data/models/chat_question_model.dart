@@ -263,3 +263,15 @@ class ChatQuestionHistoryResponse extends Equatable {
   @override
   List<Object?> get props => [items, total];
 }
+
+class PowerUsageRecord {
+  final String powerName;
+  final int purpleSpent;
+  final int greenEarned;
+
+  const PowerUsageRecord({
+    required this.powerName,
+    required this.purpleSpent,
+    required this.greenEarned,
+  });
+}

@@ -31,6 +31,9 @@ mixin SolveChatQuestionScreenMixin
 
   ChatQuestionAnswerResponse? result;
 
+  int _extraTimeAdded = 0;
+  List<PowerUsageRecord> powerUsages = [];
+
   int get startTime => widget.question.timeLimitSeconds;
 
   void initMixin() {
@@ -67,7 +70,8 @@ mixin SolveChatQuestionScreenMixin
     setState(() => isSubmitting = true);
 
     final remaining = timerKey.currentState?.remainingSeconds ?? 0;
-    final timeSpent = (startTime - remaining).clamp(0, startTime * 2);
+    final totalTime = startTime + _extraTimeAdded;
+    final timeSpent = (totalTime - remaining).clamp(0, totalTime);
 
     final apiResult = await ref.read(chatRepositoryProvider).answerQuestion(
       widget.question.id,
@@ -78,6 +82,14 @@ mixin SolveChatQuestionScreenMixin
 
     apiResult.when(
       success: (response) {
+        // Track answer reward in power usages
+        if (response.greenReward > 0) {
+          powerUsages.add(PowerUsageRecord(
+            powerName: 'ANSWER',
+            purpleSpent: 0,
+            greenEarned: response.greenReward,
+          ));
+        }
         setState(() {
           answered = true;
           result = response;
@@ -110,6 +122,15 @@ mixin SolveChatQuestionScreenMixin
         ref.invalidate(diamondProvider);
         ref.invalidate(exchangeProvider);
 
+        // Track power usage for result screen
+        if (data.cost != null && data.cost! > 0) {
+          powerUsages.add(PowerUsageRecord(
+            powerName: powerName,
+            purpleSpent: data.cost!,
+            greenEarned: data.greenReward ?? 0,
+          ));
+        }
+
         switch (powerName) {
           case 'ORACLE':
             if (data.suggestedOption != null &&
@@ -125,7 +146,9 @@ mixin SolveChatQuestionScreenMixin
               hintText = data.hintText ?? widget.question.hintText;
             });
           case 'TIME_EXTEND':
-            timerKey.currentState?.addSeconds(15);
+            final extraSec = data.extraSeconds ?? 15;
+            _extraTimeAdded += extraSec;
+            timerKey.currentState?.addSeconds(extraSec);
           case 'SKIP':
             setState(() {
               answered = true;
@@ -133,7 +156,10 @@ mixin SolveChatQuestionScreenMixin
                 isCorrect: true,
                 unmatched: false,
                 rewardMediaUrl: widget.question.rewardMediaUrl,
+                greenReward: data.greenReward ?? 0,
                 powersUsed: const ['SKIP'],
+                correctOption: data.question?.answeredOption,
+                answeredOption: data.question?.answeredOption,
               );
             });
             return;
