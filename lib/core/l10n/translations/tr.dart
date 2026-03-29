@@ -311,6 +311,7 @@ const trTranslations = <String, String>{
 
   // Preferences
   'gender_preference': 'Cinsiyet Tercihi',
+  'gender_pref_locked_info': 'Cinsiyet tercihinizi değiştirmek için destek ekibine başvurun.',
   'distance_range': 'Mesafe',
   'km': 'km',
   'men': 'Erkek',

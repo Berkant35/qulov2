@@ -311,6 +311,7 @@ const enTranslations = <String, String>{
 
   // Preferences
   'gender_preference': 'Gender Preference',
+  'gender_pref_locked_info': 'Contact support to change your gender preference.',
   'distance_range': 'Distance',
   'km': 'km',
   'men': 'Men',

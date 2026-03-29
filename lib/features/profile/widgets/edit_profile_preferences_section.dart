@@ -29,7 +29,7 @@ class EditProfilePreferencesSection extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Gender preference
+          // Gender preference (locked)
           Text(
             context.tr('gender_preference'),
             style: theme.textTheme.bodyMedium?.copyWith(
@@ -37,19 +37,38 @@ class EditProfilePreferencesSection extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.sm),
-          SegmentedButton<String>(
-            segments: [
-              ButtonSegment(value: 'MAN', label: Text(context.tr('male'))),
-              ButtonSegment(value: 'WOMAN', label: Text(context.tr('female'))),
-              ButtonSegment(value: 'BOTH', label: Text(context.tr('all'))),
-            ],
-            selected: {epState.selectedGenderPref ?? 'BOTH'},
-            onSelectionChanged: (set) {
-              ref.read(editProfileProvider.notifier).setGenderPref(set.first);
-            },
-            style: SegmentedButton.styleFrom(
-              selectedBackgroundColor: context.appColors.primarySurface,
-              selectedForegroundColor: context.appColors.primary,
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(AppSpacing.md),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surfaceContainerLow,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: context.appColors.border),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.lock_outline,
+                  size: 18,
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    _genderPrefLabel(context, epState.selectedGenderPref),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurface,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            context.tr('gender_pref_locked_info'),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -128,5 +147,18 @@ class EditProfilePreferencesSection extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  String _genderPrefLabel(BuildContext context, String? pref) {
+    switch (pref) {
+      case 'MAN':
+        return context.tr('male');
+      case 'WOMAN':
+        return context.tr('female');
+      case 'BOTH':
+        return context.tr('all');
+      default:
+        return context.tr('all');
+    }
   }
 }
