@@ -28,7 +28,12 @@ class ChatQuestionMessage extends ConsumerWidget {
     WidgetRef ref,
     ChatQuestionModel question,
   ) async {
-    final wasAnswered = await ref
+    // Track as opened immediately (prevents re-showing button)
+    ref.read(openedQuestionIdsProvider.notifier).update(
+      (state) => {...state, question.id},
+    );
+
+    final wasResolved = await ref
         .read(navigationServiceProvider)
         .push<bool>(
           RouteNames.solveChatQuestion,
@@ -38,7 +43,7 @@ class ChatQuestionMessage extends ConsumerWidget {
 
     if (!context.mounted) return;
 
-    if (wasAnswered == true) {
+    if (wasResolved == true) {
       ref.read(chatQuestionCacheProvider.notifier).update((state) {
         final updated = Map<String, ChatQuestionModel>.from(state);
         updated.remove(questionId);
@@ -61,10 +66,11 @@ class ChatQuestionMessage extends ConsumerWidget {
         error: (_, __) => const _ErrorPlaceholder(),
         data: (question) {
           if (question == null) return const _ErrorPlaceholder();
+          final openedIds = ref.watch(openedQuestionIdsProvider);
           return ChatQuestionCard(
             question: question,
             isMyQuestion: isMe,
-            onOpen: question.isAnswered || isMe
+            onOpen: question.isAnswered || isMe || openedIds.contains(question.id)
                 ? null
                 : () => _openSolveScreen(context, ref, question),
           );
