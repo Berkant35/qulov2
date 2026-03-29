@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
-import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/data/models/support_ticket_model.dart';
 import 'package:qulo_v2/features/settings/screens/create_ticket_screen.dart';
@@ -62,7 +61,7 @@ class MyTicketsScreen extends ConsumerWidget {
                   Icon(
                     Icons.support_agent,
                     size: 64,
-                    color: context.appColors.textMuted,
+                    color: context.appColors.textHint,
                   ),
                   const SizedBox(height: AppSpacing.md),
                   Text(
@@ -116,8 +115,8 @@ class _TicketListItem extends StatelessWidget {
       'OPEN' => context.appColors.warning,
       'IN_PROGRESS' => Colors.blue,
       'RESOLVED' => context.appColors.success,
-      'CLOSED' => context.appColors.textMuted,
-      _ => context.appColors.textMuted,
+      'CLOSED' => context.appColors.textHint,
+      _ => context.appColors.textHint,
     };
   }
 

@@ -5,6 +5,7 @@ import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/widgets/language_picker_sheet.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/core/config/env.dart';
 import 'package:qulo_v2/features/settings/screens/settings_screen.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
 import 'package:qulo_v2/providers/locale_provider.dart';
@@ -72,6 +73,22 @@ mixin SettingsScreenMixin on ConsumerState<SettingsScreen> {
 
   Future<void> onOpenPrivacy() async {
     ref.read(navigationServiceProvider).push(RouteNames.privacyPolicy);
+  }
+
+  Future<void> onBlockedUsers() async {
+    ref.read(navigationServiceProvider).push(RouteNames.blockedUsers);
+  }
+
+  Future<void> onMyTickets() async {
+    ref.read(navigationServiceProvider).push(RouteNames.myTickets);
+  }
+
+  Future<void> onHelp() async {
+    final locale = ref.read(localeProvider).languageCode;
+    ref.read(navigationServiceProvider).push(
+      RouteNames.help,
+      extra: '${Env.legalBaseUrl}/$locale/help',
+    );
   }
 
   Future<void> onLogout() async {

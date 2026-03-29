@@ -57,6 +57,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
           ),
           const SizedBox(height: AppSpacing.sm),
           SettingsActionTile(
+            icon: Icons.block,
+            title: context.tr('blocked_users'),
+            onTap: onBlockedUsers,
+          ),
+          SettingsActionTile(
+            icon: Icons.support_agent,
+            title: context.tr('my_tickets'),
+            onTap: onMyTickets,
+          ),
+          SettingsActionTile(
+            icon: Icons.help_outline,
+            title: context.tr('help_support'),
+            onTap: onHelp,
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          SettingsActionTile(
             icon: Icons.logout,
             title: context.tr('logout'),
             onTap: onLogout,

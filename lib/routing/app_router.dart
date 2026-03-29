@@ -49,6 +49,8 @@ import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/providers/deep_link_provider.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/features/legal/screens/legal_web_view_screen.dart';
+import 'package:qulo_v2/features/settings/screens/blocked_users_screen.dart';
+import 'package:qulo_v2/features/settings/screens/my_tickets_screen.dart';
 import 'package:qulo_v2/core/config/env.dart';
 
 part 'app_routes.dart';
@@ -91,7 +93,8 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       // 4. Legal route'lar — her zaman izin ver (kayit ekranindan erisilebilir)
       final isLegalRoute = state.matchedLocation == '/terms' ||
-          state.matchedLocation == '/privacy-policy';
+          state.matchedLocation == '/privacy-policy' ||
+          state.matchedLocation == '/help';
       if (isLegalRoute) return null;
 
       // Non-auth user clicking invite link → store as pending, redirect to login

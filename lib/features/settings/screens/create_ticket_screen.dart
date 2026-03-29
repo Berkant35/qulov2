@@ -69,8 +69,6 @@ class _CreateTicketScreenState extends ConsumerState<CreateTicketScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return AppScaffold(
       title: context.tr('create_ticket'),
       body: Form(
@@ -79,7 +77,7 @@ class _CreateTicketScreenState extends ConsumerState<CreateTicketScreen> {
           children: [
             // Category dropdown
             DropdownButtonFormField<String>(
-              value: _selectedCategory,
+              initialValue: _selectedCategory,
               decoration: InputDecoration(
                 labelText: context.tr('ticket_category'),
                 border: const OutlineInputBorder(),

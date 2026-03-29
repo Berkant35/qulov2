@@ -38,6 +38,11 @@ abstract final class RouteNames {
   // Legal
   static const terms = 'terms';
   static const privacyPolicy = 'privacy-policy';
+  static const help = 'help';
+
+  // Settings sub-screens
+  static const blockedUsers = 'blocked-users';
+  static const myTickets = 'my-tickets';
 
   // Referral
   static const invite = 'invite';

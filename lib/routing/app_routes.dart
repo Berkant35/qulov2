@@ -144,6 +144,21 @@ final _routes = <RouteBase>[
       );
     },
   ),
+  GoRoute(
+    parentNavigatorKey: rootNavigatorKey,
+    path: '/help',
+    name: RouteNames.help,
+    builder: (context, state) {
+      final locale = AppLocalizations.of(context).locale.languageCode;
+      final url = state.extra is String
+          ? state.extra as String
+          : '${Env.legalBaseUrl}/$locale/help';
+      return LegalWebViewScreen(
+        title: AppLocalizations.of(context).get('help_support'),
+        url: url,
+      );
+    },
+  ),
 
   // Chat (root navigator — full screen, no bottom nav)
   GoRoute(
@@ -324,6 +339,18 @@ final _routes = <RouteBase>[
               path: 'settings',
               name: RouteNames.settings,
               builder: (context, state) => const SettingsScreen(),
+              routes: [
+                GoRoute(
+                  path: 'blocked-users',
+                  name: RouteNames.blockedUsers,
+                  builder: (context, state) => const BlockedUsersScreen(),
+                ),
+                GoRoute(
+                  path: 'my-tickets',
+                  name: RouteNames.myTickets,
+                  builder: (context, state) => const MyTicketsScreen(),
+                ),
+              ],
             ),
             GoRoute(
               path: 'notifications',

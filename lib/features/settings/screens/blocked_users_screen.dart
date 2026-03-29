@@ -6,7 +6,6 @@ import 'package:qulo_v2/core/navigation/navigation_provider.dart';
 import 'package:qulo_v2/core/navigation/models/app_dialog.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
-import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 
@@ -48,7 +47,7 @@ class BlockedUsersScreen extends ConsumerWidget {
                   Icon(
                     Icons.block,
                     size: 64,
-                    color: context.appColors.textMuted,
+                    color: context.appColors.textHint,
                   ),
                   const SizedBox(height: AppSpacing.md),
                   Text(
