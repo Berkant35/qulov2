@@ -22,7 +22,7 @@ import 'package:qulo_v2/providers/location_provider.dart';
 import 'package:qulo_v2/providers/passport_provider.dart';
 import 'package:qulo_v2/providers/user_languages_provider.dart';
 
-enum AuthStatus { initial, authenticated, unauthenticated }
+enum AuthStatus { initial, authenticated, unauthenticated, banned }
 
 class AuthState {
   final AuthStatus status;
@@ -83,6 +83,21 @@ class AuthNotifier extends Notifier<AuthState> {
       // Token not expired (or refreshed) — validate with server
       try {
         await ref.read(userProvider.notifier).fetchMe();
+
+        // Check if fetchMe resulted in a ban error
+        final userState = ref.read(userProvider);
+        if (userState is AsyncError) {
+          final failure = userState.error;
+          if (failure is ServerFailure && failure.code == 'ACCOUNT_BANNED') {
+            await _clearTokens();
+            state = state.copyWith(status: AuthStatus.banned);
+            return;
+          }
+          await _clearTokens();
+          state = state.copyWith(status: AuthStatus.unauthenticated);
+          return;
+        }
+
         ErrorManager.setUser(userId);
         AnalyticsManager.instance.setUserId(userId);
         AnalyticsManager.instance.logEvent(AnalyticsEvents.authLoginSuccess, params: {
@@ -258,7 +273,11 @@ class AuthNotifier extends Notifier<AuthState> {
           AnalyticsEvents.paramMethod: 'email',
           AnalyticsEvents.paramErrorCode: failure.message ?? 'unknown',
         });
-        state = state.copyWith(isLoading: false, failure: failure);
+        if (failure is ServerFailure && failure.code == 'ACCOUNT_BANNED') {
+          state = state.copyWith(isLoading: false, status: AuthStatus.banned, failure: failure);
+        } else {
+          state = state.copyWith(isLoading: false, failure: failure);
+        }
     }
     return result;
   }

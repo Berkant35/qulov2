@@ -13,6 +13,13 @@ final _routes = <RouteBase>[
     ),
   ),
 
+  // Auth states
+  GoRoute(
+    path: '/banned',
+    name: RouteNames.banned,
+    builder: (context, state) => const BannedScreen(),
+  ),
+
   // Update
   GoRoute(
     path: '/force-update',

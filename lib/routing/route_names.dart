@@ -50,4 +50,7 @@ abstract final class RouteNames {
   // Update
   static const forceUpdate = 'force-update';
   static const maintenance = 'maintenance';
+
+  // Auth states
+  static const banned = 'banned';
 }

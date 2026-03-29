@@ -51,6 +51,7 @@ import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/features/legal/screens/legal_web_view_screen.dart';
 import 'package:qulo_v2/features/settings/screens/blocked_users_screen.dart';
 import 'package:qulo_v2/features/settings/screens/my_tickets_screen.dart';
+import 'package:qulo_v2/features/auth/screens/banned_screen.dart';
 import 'package:qulo_v2/core/config/env.dart';
 
 part 'app_routes.dart';
@@ -78,6 +79,12 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       // 1. Auth yukleniyor — bekle
       if (authState.status == AuthStatus.initial) return null;
+
+      // 1b. Hesap banlı — banned ekranına yönlendir
+      if (authState.status == AuthStatus.banned) {
+        if (state.matchedLocation == '/banned') return null;
+        return '/banned';
+      }
 
       // 2. Update/maintenance route'lari — her zaman izin ver
       final isUpdateRoute = state.matchedLocation == '/force-update' ||
