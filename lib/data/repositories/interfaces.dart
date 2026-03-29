@@ -13,6 +13,7 @@ import 'package:qulo_v2/data/models/question_model.dart';
 import 'package:qulo_v2/data/models/quiz_model.dart';
 import 'package:qulo_v2/data/models/referral_model.dart';
 import 'package:qulo_v2/data/models/subscription_model.dart';
+import 'package:qulo_v2/data/models/support_ticket_model.dart';
 import 'package:qulo_v2/data/models/public_profile_model.dart';
 import 'package:qulo_v2/data/models/user_details_model.dart';
 import 'package:qulo_v2/data/models/user_model.dart';
@@ -209,4 +210,16 @@ abstract class IUserRepository {
 abstract class IBlockRepository {
   Future<Result<void>> blockUser(String blockedId);
   Future<Result<void>> unblockUser(String blockedId);
+  Future<Result<List<Map<String, dynamic>>>> getBlockedUsers();
+}
+
+// ─── SupportTicket ───
+abstract class ISupportTicketRepository {
+  Future<Result<SupportTicketModel>> createTicket({
+    required String subject,
+    required String message,
+    required String category,
+  });
+  Future<Result<List<SupportTicketModel>>> getMyTickets();
+  Future<Result<SupportTicketModel>> getTicket(String id);
 }
