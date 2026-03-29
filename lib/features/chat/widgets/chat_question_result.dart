@@ -12,12 +12,14 @@ class ChatQuestionResultScreen extends ConsumerWidget {
   final ChatQuestionAnswerResponse result;
   final ChatQuestionModel question;
   final VoidCallback? onRescue;
+  final List<PowerUsageRecord> powerUsages;
 
   const ChatQuestionResultScreen({
     super.key,
     required this.result,
     required this.question,
     this.onRescue,
+    this.powerUsages = const [],
   });
 
   @override
@@ -95,8 +97,18 @@ class ChatQuestionResultScreen extends ConsumerWidget {
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.pagePadding),
                 child: Column(
                   children: [
-                    if (result.greenReward > 0)
-                      _GreenRewardCard(reward: result.greenReward),
+                    if (_totalGreen > 0)
+                      _GreenRewardDetailCard(
+                        totalGreen: _totalGreen,
+                        powerUsages: powerUsages,
+                      ),
+                    if (_totalPurple > 0) ...[
+                      const SizedBox(height: AppSpacing.md),
+                      _PurpleSpentCard(
+                        totalPurple: _totalPurple,
+                        powerUsages: powerUsages,
+                      ),
+                    ],
                     if (result.powersUsed.isNotEmpty) ...[
                       const SizedBox(height: AppSpacing.md),
                       _PowersUsedCard(powers: result.powersUsed),
@@ -161,6 +173,12 @@ class ChatQuestionResultScreen extends ConsumerWidget {
 
   bool get _hasRewardMedia =>
       result.rewardMediaUrl != null || question.rewardMediaUrl != null;
+
+  int get _totalGreen =>
+      powerUsages.fold(0, (sum, p) => sum + p.greenEarned);
+
+  int get _totalPurple =>
+      powerUsages.fold(0, (sum, p) => sum + p.purpleSpent);
 }
 
 class _ResultIcon extends StatefulWidget {
@@ -296,6 +314,243 @@ class _GreenRewardCard extends StatelessWidget {
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _GreenRewardDetailCard extends StatefulWidget {
+  final int totalGreen;
+  final List<PowerUsageRecord> powerUsages;
+
+  const _GreenRewardDetailCard({
+    required this.totalGreen,
+    required this.powerUsages,
+  });
+
+  @override
+  State<_GreenRewardDetailCard> createState() => _GreenRewardDetailCardState();
+}
+
+class _GreenRewardDetailCardState extends State<_GreenRewardDetailCard> {
+  bool _expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final successColor = context.appColors.success;
+
+    // Group by powerName and sum greenEarned
+    final grouped = <String, int>{};
+    for (final usage in widget.powerUsages) {
+      if (usage.greenEarned > 0) {
+        grouped[usage.powerName] =
+            (grouped[usage.powerName] ?? 0) + usage.greenEarned;
+      }
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: successColor.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        border: Border.all(color: successColor.withValues(alpha: 0.3)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header row — tappable to expand
+          GestureDetector(
+            onTap: grouped.length > 1
+                ? () => setState(() => _expanded = !_expanded)
+                : null,
+            behavior: HitTestBehavior.opaque,
+            child: Row(
+              children: [
+                const DiamondIcon.green(size: 24, showGlow: false),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '+${widget.totalGreen} Yeşil Elmas',
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          color: successColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        'Soru sahibine kazandırdın',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: context.appColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (grouped.length > 1)
+                  Icon(
+                    _expanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: context.appColors.textSecondary,
+                    size: 20,
+                  ),
+              ],
+            ),
+          ),
+          // Expandable detail
+          if (_expanded && grouped.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.sm),
+            Divider(
+              color: successColor.withValues(alpha: 0.2),
+              height: 1,
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            ...grouped.entries.map((entry) {
+              final label = entry.key == 'ANSWER'
+                  ? 'Doğru cevap'
+                  : entry.key;
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      label,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: context.appColors.textSecondary,
+                      ),
+                    ),
+                    Text(
+                      '+${entry.value}',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: successColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _PurpleSpentCard extends StatefulWidget {
+  final int totalPurple;
+  final List<PowerUsageRecord> powerUsages;
+
+  const _PurpleSpentCard({
+    required this.totalPurple,
+    required this.powerUsages,
+  });
+
+  @override
+  State<_PurpleSpentCard> createState() => _PurpleSpentCardState();
+}
+
+class _PurpleSpentCardState extends State<_PurpleSpentCard> {
+  bool _expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final purpleColor = context.appColors.primary;
+
+    // Group by powerName and sum purpleSpent
+    final grouped = <String, int>{};
+    for (final usage in widget.powerUsages) {
+      if (usage.purpleSpent > 0) {
+        grouped[usage.powerName] =
+            (grouped[usage.powerName] ?? 0) + usage.purpleSpent;
+      }
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: purpleColor.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        border: Border.all(color: purpleColor.withValues(alpha: 0.3)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GestureDetector(
+            onTap: grouped.length > 1
+                ? () => setState(() => _expanded = !_expanded)
+                : null,
+            behavior: HitTestBehavior.opaque,
+            child: Row(
+              children: [
+                const DiamondIcon.purple(size: 24, showGlow: false),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '-${widget.totalPurple} Mor Elmas',
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          color: purpleColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        'Güç kullanımı için harcandı',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: context.appColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (grouped.length > 1)
+                  Icon(
+                    _expanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: context.appColors.textSecondary,
+                    size: 20,
+                  ),
+              ],
+            ),
+          ),
+          if (_expanded && grouped.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.sm),
+            Divider(
+              color: purpleColor.withValues(alpha: 0.2),
+              height: 1,
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            ...grouped.entries.map((entry) => Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        entry.key,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: context.appColors.textSecondary,
+                        ),
+                      ),
+                      Text(
+                        '-${entry.value}',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: purpleColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                )),
+          ],
         ],
       ),
     );

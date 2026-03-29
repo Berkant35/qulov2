@@ -52,6 +52,7 @@ class _SolveChatQuestionScreenState
         result: result!,
         question: widget.question,
         onRescue: !result!.isCorrect ? handleRescue : null,
+        powerUsages: powerUsages,
       );
     }
 
