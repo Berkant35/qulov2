@@ -277,48 +277,6 @@ class _UnmatchWarning extends StatelessWidget {
   }
 }
 
-class _GreenRewardCard extends StatelessWidget {
-  final int reward;
-  const _GreenRewardCard({required this.reward});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: context.appColors.success.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        border: Border.all(color: context.appColors.success.withValues(alpha: 0.3)),
-      ),
-      child: Row(
-        children: [
-          const DiamondIcon.green(size: 24, showGlow: false),
-          const SizedBox(width: AppSpacing.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '+$reward Yeşil Elmas',
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    color: context.appColors.success,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  'Soru sahibine kazandırdın',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: context.appColors.textSecondary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class _GreenRewardDetailCard extends StatefulWidget {
   final int totalGreen;
