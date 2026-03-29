@@ -847,4 +847,60 @@ const enTranslations = <String, String>{
   'splash_flow_ask': 'Ask',
   'splash_flow_answer': 'Answer',
   'splash_flow_match': 'Match',
+
+  // Report categories
+  'report_select_category': 'Select Report Reason',
+  'report_cat_inappropriate': 'Inappropriate Content',
+  'report_cat_fake': 'Fake Profile',
+  'report_cat_spam': 'Spam',
+  'report_cat_harassment': 'Harassment',
+  'report_cat_underage': 'Underage',
+  'report_cat_scam': 'Scam',
+  'report_cat_offensive_photos': 'Offensive Photos',
+  'report_cat_threatening': 'Threatening',
+  'report_cat_impersonation': 'Impersonation',
+  'report_cat_other': 'Other',
+  'report_reason_title': 'Description',
+  'report_reason_optional': 'Add optional description...',
+  'report_reason_required': 'Please write a detailed description...',
+
+  // Block
+  'blocked_users': 'Blocked Users',
+  'no_blocked_users': 'No blocked users',
+  'unblock': 'Unblock',
+  'unblock_confirm_title': 'Unblock',
+  'unblock_confirm_message': 'Are you sure you want to unblock this user?',
+
+  // Support tickets
+  'my_tickets': 'My Support Tickets',
+  'no_tickets': 'No support tickets yet',
+  'create_ticket': 'Create Support Ticket',
+  'ticket_created_success': 'Your support ticket has been created',
+  'ticket_replied': 'Replied',
+  'ticket_category': 'Category',
+  'ticket_subject': 'Subject',
+  'ticket_subject_hint': 'Briefly describe your issue',
+  'ticket_subject_error': 'Subject must be at least 5 characters',
+  'ticket_message': 'Message',
+  'ticket_message_hint': 'Describe your issue in detail',
+  'ticket_message_error': 'Message must be at least 10 characters',
+  'ticket_cat_account': 'Account',
+  'ticket_cat_technical': 'Technical',
+  'ticket_cat_billing': 'Billing',
+  'ticket_cat_match': 'Match',
+  'ticket_cat_other': 'Other',
+  'ticket_status_open': 'Open',
+  'ticket_status_in_progress': 'In Progress',
+  'ticket_status_resolved': 'Resolved',
+  'ticket_status_closed': 'Closed',
+
+  // Help
+  'help_support': 'Help & Support',
+
+  // Ban
+  'account_banned_title': 'Account Suspended',
+  'account_banned_message': 'Your account has been suspended for violating community guidelines. Contact us for details.',
+
+  // Submit
+  'submit': 'Submit',
 };

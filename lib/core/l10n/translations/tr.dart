@@ -847,4 +847,60 @@ const trTranslations = <String, String>{
   'splash_flow_ask': 'Sor',
   'splash_flow_answer': 'Cevapla',
   'splash_flow_match': 'Eşleş',
+
+  // Report categories
+  'report_select_category': 'Bildirme Nedeni Seçin',
+  'report_cat_inappropriate': 'Uygunsuz İçerik',
+  'report_cat_fake': 'Sahte Profil',
+  'report_cat_spam': 'Spam',
+  'report_cat_harassment': 'Taciz',
+  'report_cat_underage': 'Yaş Altı',
+  'report_cat_scam': 'Dolandırıcılık',
+  'report_cat_offensive_photos': 'Uygunsuz Fotoğraflar',
+  'report_cat_threatening': 'Tehdit',
+  'report_cat_impersonation': 'Kimliğe Bürünme',
+  'report_cat_other': 'Diğer',
+  'report_reason_title': 'Açıklama',
+  'report_reason_optional': 'Opsiyonel açıklama ekleyin...',
+  'report_reason_required': 'Lütfen detaylı açıklama yazın...',
+
+  // Block
+  'blocked_users': 'Engellenen Kullanıcılar',
+  'no_blocked_users': 'Engellenen kullanıcı yok',
+  'unblock': 'Engeli Kaldır',
+  'unblock_confirm_title': 'Engeli Kaldır',
+  'unblock_confirm_message': 'Bu kullanıcının engelini kaldırmak istediğinize emin misiniz?',
+
+  // Support tickets
+  'my_tickets': 'Destek Taleplerim',
+  'no_tickets': 'Henüz destek talebiniz yok',
+  'create_ticket': 'Destek Talebi Oluştur',
+  'ticket_created_success': 'Destek talebiniz oluşturuldu',
+  'ticket_replied': 'Yanıtlandı',
+  'ticket_category': 'Kategori',
+  'ticket_subject': 'Konu',
+  'ticket_subject_hint': 'Sorununuzu kısaca özetleyin',
+  'ticket_subject_error': 'Konu en az 5 karakter olmalı',
+  'ticket_message': 'Mesaj',
+  'ticket_message_hint': 'Sorununuzu detaylı açıklayın',
+  'ticket_message_error': 'Mesaj en az 10 karakter olmalı',
+  'ticket_cat_account': 'Hesap',
+  'ticket_cat_technical': 'Teknik',
+  'ticket_cat_billing': 'Ödeme',
+  'ticket_cat_match': 'Eşleşme',
+  'ticket_cat_other': 'Diğer',
+  'ticket_status_open': 'Açık',
+  'ticket_status_in_progress': 'İnceleniyor',
+  'ticket_status_resolved': 'Çözüldü',
+  'ticket_status_closed': 'Kapatıldı',
+
+  // Help
+  'help_support': 'Yardım & Destek',
+
+  // Ban
+  'account_banned_title': 'Hesabınız Askıya Alındı',
+  'account_banned_message': 'Hesabınız topluluk kurallarını ihlal ettiği için askıya alınmıştır. Detaylı bilgi için bize ulaşın.',
+
+  // Submit
+  'submit': 'Gönder',
 };
