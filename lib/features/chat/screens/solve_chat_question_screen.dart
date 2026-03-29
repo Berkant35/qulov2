@@ -85,11 +85,14 @@ class _SolveChatQuestionScreenState
 
     return PopScope(
       canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) handleBackPress();
+      },
       child: AppScaffold(
         title: senderName ?? '',
         leading: IconButton(
           icon: const Icon(Icons.close),
-          onPressed: () => Navigator.of(context).pop(false),
+          onPressed: handleBackPress,
         ),
         actions: [
           if (user != null)

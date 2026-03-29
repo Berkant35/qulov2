@@ -7,6 +7,7 @@ import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/data/models/chat_question_model.dart';
 import 'package:qulo_v2/features/chat/screens/solve_chat_question_screen.dart';
+import 'package:qulo_v2/features/chat/widgets/abandon_warning_dialog.dart';
 import 'package:qulo_v2/features/chat/widgets/chat_question_rescue.dart';
 import 'package:qulo_v2/features/diamonds/widgets/paywall_bottom_sheet.dart';
 import 'package:qulo_v2/features/quiz/widgets/quiz_timer.dart';
@@ -103,6 +104,55 @@ mixin SolveChatQuestionScreenMixin
         );
       },
     );
+  }
+
+  /// Called when user confirms abandon via warning dialog.
+  /// Sends null selected_option to server, marks question as abandoned.
+  Future<void> abandonQuestion() async {
+    if (isSubmitting) return;
+    timerKey.currentState?.pause();
+
+    setState(() => isSubmitting = true);
+
+    final remaining = timerKey.currentState?.remainingSeconds ?? 0;
+    final totalTime = startTime + _extraTimeAdded;
+    final timeSpent = (totalTime - remaining).clamp(0, totalTime);
+
+    final apiResult = await ref.read(chatRepositoryProvider).answerQuestion(
+      widget.question.id,
+      {'selected_option': null, 'time_spent': timeSpent},
+    );
+
+    apiResult.when(
+      success: (response) {
+        if (mounted) {
+          Navigator.of(context).pop(true);
+        }
+      },
+      failure: (f) {
+        setState(() => isSubmitting = false);
+        if (mounted) {
+          Navigator.of(context).pop(true);
+        }
+      },
+    );
+  }
+
+  /// Handles back/close press. Shows abandon warning if question not yet answered.
+  Future<void> handleBackPress() async {
+    if (answered || result != null) {
+      Navigator.of(context).pop(true);
+      return;
+    }
+
+    final shouldAbandon = await showAbandonWarningDialog(
+      context,
+      widget.question,
+    );
+
+    if (shouldAbandon && mounted) {
+      await abandonQuestion();
+    }
   }
 
   // ── Power ──────────────────────────────────────────────────
