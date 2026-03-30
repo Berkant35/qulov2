@@ -87,7 +87,7 @@ mixin SettingsScreenMixin on ConsumerState<SettingsScreen> {
     final locale = ref.read(localeProvider).languageCode;
     ref.read(navigationServiceProvider).push(
       RouteNames.help,
-      extra: '${Env.legalBaseUrl}/$locale/help',
+      extra: 'http://192.168.1.166:3000/$locale/help',
     );
   }
 

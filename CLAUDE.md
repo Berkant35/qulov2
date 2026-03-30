@@ -16,6 +16,7 @@ Yeni ortam yapılandırmaları eklerken, kod tabanındaki mevcut kalıbı tam ol
 Herhangi bir kod değişikliğinden sonra, tamamlandığını bildirmeden önce sıfır analizci hatası olduğundan emin olmak için `flutter analyze` çalıştır. Sunucu değişiklikleri için sunucunun hatasız başladığını doğrula.
 
 ## Otomatik Review Kuralları
+- **Feature geliştirmesi öncesi (brainstorming)**: `/chat-flow-guard` skill'ini çalıştır. Chat akışına etkisi BLOCKER ise plana geçme. Ayrıca `/economy-impact` skill'ini çalıştır. Ekonomi etki analizi zorunlu.
 - **Sunucu geliştirmesi sonrası**: qulo-server'da herhangi bir feature/bugfix tamamlandığında, commit öncesi `/server-review` skill'ini çalıştır. SOLID + Security analizi zorunlu.
 - **Flutter geliştirmesi sonrası**: qulov2'de herhangi bir feature/bugfix tamamlandığında, commit öncesi `/flutter-review` skill'ini çalıştır.
 - Bu review'lar sorulmadan otomatik yapılmalı — her geliştirme döngüsünün doğal parçası.

@@ -65,7 +65,7 @@ class MyTicketsScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: AppSpacing.md),
                   Text(
-                    context.tr('my_tickets_empty'),
+                    context.tr('no_tickets'),
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           color: context.appColors.textSecondary,
                         ),
