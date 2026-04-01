@@ -903,4 +903,73 @@ const trTranslations = <String, String>{
 
   // Submit
   'submit': 'Gönder',
+
+  // Chat — Abandon Warning
+  'abandon_title': 'Sorudan Kaçıyorsun!',
+  'abandon_question_lock': 'Soru Kilidi',
+  'abandon_power_block': 'Güç Engeli',
+  'abandon_unmatch_risk': 'Unmatch Riski',
+  'abandon_features_added': 'Karşı taraf bu soruya şu özellikleri eklemiş:',
+  'abandon_flee_warning': 'Cevap vermeden çıkarsan sorudan kaçmış sayılırsın.',
+  'abandon_unmatch_warning': 'Eşleşmen sona erecek!',
+  'abandon_leave': 'Vazgeç ve Çık',
+  'abandon_stay': 'Geri Dön',
+
+  // Chat — Question Card
+  'question_risky': 'Bu soru riskli!',
+  'question_power_block': 'Güç Engeli',
+  'question_chat_locked': 'Sohbet Kilitli',
+  'question_fled': 'Kaçtı',
+
+  // Chat — Question Result
+  'result_correct': 'Doğru!',
+  'result_congrats': 'Tebrikler!',
+  'result_wrong': 'Yanlış Cevap',
+  'result_correct_subtitle': 'Soruyu doğru cevapladın!',
+  'result_wrong_subtitle': 'Bir dahaki sefere daha şanslı olursun.',
+  'result_rescue': 'Kurtarma Hakkı (Skip)',
+  'result_go_back': 'Geri Dön',
+  'result_unmatch_ended': 'Eşleşme sona erdi',
+  'result_green_earned': '+@count Yeşil Elmas',
+  'result_green_subtitle': 'Soru sahibine kazandırdın',
+  'result_correct_answer': 'Doğru cevap',
+  'result_purple_spent': '-@count Mor Elmas',
+  'result_power_spent_single': '@power için harcandı',
+  'result_power_spent_multi': 'Güç kullanımı için harcandı',
+  'result_powers_used': 'Kullanılan Güçler',
+  'result_your_answer': 'Cevabın',
+  'result_correct_label': 'Doğru',
+  'result_time': 'Süre',
+
+  // Chat — Media Request
+  'media_active': 'Medya paylaşımı aktif',
+  'media_rejected': 'Medya isteği reddedildi',
+  'media_sent': 'Medya isteği gönderildi',
+  'media_waiting': 'Cevap bekleniyor...',
+  'media_wants_share': '\u{1F4F7} Medya paylaşmak istiyor',
+  'media_reject': 'Reddet',
+  'media_accept': 'Kabul Et',
+
+  // Chat — App Bar
+  'unmatch': 'Unmatch',
+
+  // Chat — Create Question
+  'create_question': 'Soru Oluştur',
+  'drafts_history': 'Taslaklar & Geçmiş',
+
+  // Chat — Error Messages
+  'error_chat_generic': 'Bir hata oluştu, tekrar deneyin',
+  'error_rescue_failed': 'Kurtarma başarısız',
+
+  // Profile — Edit
+  'profile_photo_hint': 'İlk fotoğrafın profil fotoğrafın olur',
+  'profile_relationship_title': 'İlişki Amacı',
+  'profile_relationship_subtitle': 'Ne aradığını karşı taraf görsün',
+  'profile_relationship_serious': 'Ciddi İlişki',
+  'profile_relationship_friendship': 'Arkadaşlık',
+  'profile_relationship_not_sure': 'Emin Değilim',
+  'profile_basic_info_subtitle': 'Seni tanımamıza yardımcı ol',
+  'profile_details_subtitle': 'Profilini zenginleştir, daha fazla eşleşme al',
+  'profile_bio_subtitle': 'Kendini kısaca tanıt',
+  'profile_no_data': 'Kullanıcı verisi bulunamadı',
 };

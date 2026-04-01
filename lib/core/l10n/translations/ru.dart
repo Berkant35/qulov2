@@ -844,4 +844,73 @@ const ruTranslations = <String, String>{
   'splash_flow_ask': 'Спроси',
   'splash_flow_answer': 'Ответь',
   'splash_flow_match': 'Совпадение',
+
+  // Chat — Abandon Warning
+  'abandon_title': 'You\'re Fleeing!',
+  'abandon_question_lock': 'Question Lock',
+  'abandon_power_block': 'Power Block',
+  'abandon_unmatch_risk': 'Unmatch Risk',
+  'abandon_features_added': 'The other person added these features to the question:',
+  'abandon_flee_warning': 'If you leave without answering, you\'ll be marked as fled.',
+  'abandon_unmatch_warning': 'Your match will end!',
+  'abandon_leave': 'Leave',
+  'abandon_stay': 'Go Back',
+
+  // Chat — Question Card
+  'question_risky': 'This question is risky!',
+  'question_power_block': 'Power Block',
+  'question_chat_locked': 'Chat Locked',
+  'question_fled': 'Fled',
+
+  // Chat — Question Result
+  'result_correct': 'Correct!',
+  'result_congrats': 'Congratulations!',
+  'result_wrong': 'Wrong Answer',
+  'result_correct_subtitle': 'You answered the question correctly!',
+  'result_wrong_subtitle': 'Better luck next time.',
+  'result_rescue': 'Rescue (Skip)',
+  'result_go_back': 'Go Back',
+  'result_unmatch_ended': 'Match ended',
+  'result_green_earned': '+@count Green Diamonds',
+  'result_green_subtitle': 'Earned for the question owner',
+  'result_correct_answer': 'Correct answer',
+  'result_purple_spent': '-@count Purple Diamonds',
+  'result_power_spent_single': 'Spent for @power',
+  'result_power_spent_multi': 'Spent for power usage',
+  'result_powers_used': 'Powers Used',
+  'result_your_answer': 'Your Answer',
+  'result_correct_label': 'Correct',
+  'result_time': 'Time',
+
+  // Chat — Media Request
+  'media_active': 'Media sharing active',
+  'media_rejected': 'Media request rejected',
+  'media_sent': 'Media request sent',
+  'media_waiting': 'Waiting for response...',
+  'media_wants_share': '\u{1F4F7} Wants to share media',
+  'media_reject': 'Reject',
+  'media_accept': 'Accept',
+
+  // Chat — App Bar
+  'unmatch': 'Unmatch',
+
+  // Chat — Create Question
+  'create_question': 'Create Question',
+  'drafts_history': 'Drafts & History',
+
+  // Chat — Error Messages
+  'error_chat_generic': 'Something went wrong, please try again',
+  'error_rescue_failed': 'Rescue failed',
+
+  // Profile — Edit
+  'profile_photo_hint': 'Your first photo will be your profile photo',
+  'profile_relationship_title': 'Relationship Goal',
+  'profile_relationship_subtitle': 'Let the other person see what you\'re looking for',
+  'profile_relationship_serious': 'Serious Relationship',
+  'profile_relationship_friendship': 'Friendship',
+  'profile_relationship_not_sure': 'Not Sure',
+  'profile_basic_info_subtitle': 'Help us get to know you',
+  'profile_details_subtitle': 'Enrich your profile, get more matches',
+  'profile_bio_subtitle': 'Briefly introduce yourself',
+  'profile_no_data': 'No user data',
 };
