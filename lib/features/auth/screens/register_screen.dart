@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+import 'package:qulo_v2/core/navigation/navigation_provider.dart';
+import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_progress_bar.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
@@ -128,8 +129,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                     errorText: termsError,
                     isLoading: isLoading,
                     onRegister: register,
-                    onTerms: () => context.push('/terms'),
-                    onPrivacy: () => context.push('/privacy-policy'),
+                    onTerms: () => ref.read(navigationServiceProvider).push(RouteNames.terms),
+                    onPrivacy: () => ref.read(navigationServiceProvider).push(RouteNames.privacyPolicy),
                   ),
                 ],
               ),

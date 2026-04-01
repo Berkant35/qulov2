@@ -45,7 +45,10 @@ class NotificationCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // ─── Type Icon or Image ───
-            _buildLeading(context, meta),
+            _NotifLeading(
+              notification: notification,
+              meta: meta,
+            ),
             const SizedBox(width: AppSpacing.md),
 
             // ─── Content ───
@@ -124,8 +127,38 @@ class NotificationCard extends StatelessWidget {
     );
   }
 
-  Widget _buildLeading(BuildContext context, _NotifTypeMeta meta) {
-    // If has image, show it with a small type badge
+  /// Strip "Qulo" or "Qulo:" prefix from notification titles
+  String _cleanTitle(String title) {
+    final cleaned = title
+        .replaceFirst(RegExp(r'^Qulo\s*[:\-–—]?\s*', caseSensitive: false), '')
+        .trim();
+    return cleaned.isEmpty ? title : cleaned;
+  }
+
+  String _timeAgo(BuildContext context, String isoDate) {
+    final date = DateTime.parse(isoDate);
+    final diff = DateTime.now().toUtc().difference(date);
+    if (diff.inMinutes < 1) return context.tr('time_just_now');
+    if (diff.inHours < 1) {
+      return context.tr('time_minutes_ago').replaceAll('{n}', '${diff.inMinutes}');
+    }
+    if (diff.inDays < 1) {
+      return context.tr('time_hours_ago').replaceAll('{n}', '${diff.inHours}');
+    }
+    return context.tr('time_days_ago').replaceAll('{n}', '${diff.inDays}');
+  }
+}
+
+// ─── Notif Leading ─────────────────────────────────────────────────────────
+
+class _NotifLeading extends StatelessWidget {
+  final NotificationModel notification;
+  final _NotifTypeMeta meta;
+
+  const _NotifLeading({required this.notification, required this.meta});
+
+  @override
+  Widget build(BuildContext context) {
     if (notification.imageUrl != null) {
       return Stack(
         clipBehavior: Clip.none,
@@ -168,27 +201,6 @@ class NotificationCard extends StatelessWidget {
     }
 
     return _TypeIconCircle(meta: meta, size: 44);
-  }
-
-  /// Strip "Qulo" or "Qulo:" prefix from notification titles
-  String _cleanTitle(String title) {
-    final cleaned = title
-        .replaceFirst(RegExp(r'^Qulo\s*[:\-–—]?\s*', caseSensitive: false), '')
-        .trim();
-    return cleaned.isEmpty ? title : cleaned;
-  }
-
-  String _timeAgo(BuildContext context, String isoDate) {
-    final date = DateTime.parse(isoDate);
-    final diff = DateTime.now().toUtc().difference(date);
-    if (diff.inMinutes < 1) return context.tr('time_just_now');
-    if (diff.inHours < 1) {
-      return context.tr('time_minutes_ago').replaceAll('{n}', '${diff.inMinutes}');
-    }
-    if (diff.inDays < 1) {
-      return context.tr('time_hours_ago').replaceAll('{n}', '${diff.inHours}');
-    }
-    return context.tr('time_days_ago').replaceAll('{n}', '${diff.inDays}');
   }
 }
 

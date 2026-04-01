@@ -113,7 +113,7 @@ class _TicketListItem extends StatelessWidget {
   Color _statusColor(BuildContext context, String status) {
     return switch (status) {
       'OPEN' => context.appColors.warning,
-      'IN_PROGRESS' => Colors.blue,
+      'IN_PROGRESS' => context.appColors.info,
       'RESOLVED' => context.appColors.success,
       'CLOSED' => context.appColors.textHint,
       _ => context.appColors.textHint,

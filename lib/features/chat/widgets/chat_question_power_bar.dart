@@ -131,7 +131,7 @@ class _ChatPowerButton extends StatelessWidget {
                             : color.withValues(alpha: 0.15),
                         border: Border.all(
                           color: isUsed
-                              ? Colors.grey.withValues(alpha: 0.3)
+                              ? context.appColors.textHint.withValues(alpha: 0.3)
                               : color.withValues(alpha: 0.5),
                           width: 1.5,
                         ),
@@ -140,10 +140,10 @@ class _ChatPowerButton extends StatelessWidget {
                         child: isLoading
                             ? const AppLoadingWidget.small()
                             : isUsed
-                                ? Icon(Icons.check, size: 20, color: Colors.grey)
+                                ? Icon(Icons.check, size: 20, color: context.appColors.textHint)
                                 : isLocked
                                     ? Icon(Icons.lock, size: 18,
-                                        color: Colors.grey.withValues(alpha: 0.6))
+                                        color: context.appColors.textHint.withValues(alpha: 0.6))
                                     : QIcon(type.iconPath, size: 22, color: color),
                       ),
                     ),
@@ -176,7 +176,7 @@ class _ChatPowerButton extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 9,
                     fontWeight: FontWeight.w500,
-                    color: (isUsed || isLocked) ? Colors.grey : color,
+                    color: (isUsed || isLocked) ? context.appColors.textHint : color,
                   ),
                   textAlign: TextAlign.center,
                 ),
