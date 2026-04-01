@@ -334,7 +334,7 @@ class _GreenRewardDetailCardState extends State<_GreenRewardDetailCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        context.tr('result_green_earned').replaceAll('@count', '${widget.totalGreen}'),
+                        context.tr('result_green_earned').replaceAll('{count}', '${widget.totalGreen}'),
                         style: theme.textTheme.titleSmall?.copyWith(
                           color: successColor,
                           fontWeight: FontWeight.bold,
@@ -455,7 +455,7 @@ class _PurpleSpentCardState extends State<_PurpleSpentCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        context.tr('result_purple_spent').replaceAll('@count', '${widget.totalPurple}'),
+                        context.tr('result_purple_spent').replaceAll('{count}', '${widget.totalPurple}'),
                         style: theme.textTheme.titleSmall?.copyWith(
                           color: purpleColor,
                           fontWeight: FontWeight.bold,
@@ -463,7 +463,7 @@ class _PurpleSpentCardState extends State<_PurpleSpentCard> {
                       ),
                       Text(
                         grouped.length == 1
-                            ? context.tr('result_power_spent_single').replaceAll('@power', grouped.keys.first)
+                            ? context.tr('result_power_spent_single').replaceAll('{power}', grouped.keys.first)
                             : context.tr('result_power_spent_multi'),
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: context.appColors.textSecondary,

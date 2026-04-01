@@ -348,7 +348,7 @@ mixin SolveChatQuestionScreenMixin
       failure: (f) {
         setState(() => isSubmitting = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(f.message ?? 'Bir hata oluştu')),
+          SnackBar(content: Text(f.message ?? context.tr('error_chat_generic'))),
         );
       },
     );
