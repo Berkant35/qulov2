@@ -672,6 +672,27 @@ const trTranslations = <String, String>{
   'settings_question_languages_none': 'Hen\u00fcz dil se\u00e7ilmedi',
   'onboarding_questions_slide4_title': 'Hangi Dilleri Biliyorsun?',
   'onboarding_questions_slide4_desc': 'Sana uygun dillerdeki profilleri g\u00f6sterelim. Birden fazla se\u00e7ebilirsin!',
+
+  // Onboarding V2
+  'onboarding_v2_page1_title': "Qulo'da Eşleşmek Farklı",
+  'onboarding_v2_page1_desc': 'Burada sorularınla tanışırsın. Birisi tüm sorularını doğru cevaplarsa — eşleşirsiniz!',
+  'onboarding_v2_page2_title': 'Sorularını Hazırla',
+  'onboarding_v2_page2_desc': '2-10 soru oluştur. Kişisel, eğlenceli, Google\'lanamayan sorular sor. Biri tüm sorularını bilirse — eşleşirsiniz!',
+  'onboarding_v2_page3_title': '6 Süper Güç',
+  'onboarding_v2_page3_desc': 'Sorularını çözenler bu güçleri kullanabilir. Her güç mor elmas harcar — ve bu senin kazancın!',
+  'onboarding_v2_page4_title': 'Yeşil Elmas Kazan!',
+  'onboarding_v2_page4_desc': 'Sorularında güç kullanan her kişi sana yeşil elmas kazandırır. Daha çok soru, daha çok kazanç!',
+  'onboarding_v2_page5_title': 'Hangi Dillerde Soru Görmek İstersin?',
+  'onboarding_v2_page5_desc': 'Seçtiğin dillerdeki profilleri göstereceğiz. Birden fazla seçebilirsin.',
+  'onboarding_v2_skip': 'Atla',
+  'onboarding_v2_next': 'İleri',
+  'onboarding_v2_start': 'Başla',
+  'onboarding_v2_premium_title': 'Premium ile Daha Fazlası',
+  'onboarding_v2_premium_cta': "Premium'a Geç",
+  'onboarding_v2_premium_benefit_1': 'Sınırsız keşif',
+  'onboarding_v2_premium_benefit_2': 'Her ay mor elmas hediye',
+  'onboarding_v2_premium_benefit_3': 'Reklamsız deneyim',
+
   // Locale names
   'locale_tr': 'T\u00fcrk\u00e7e',
   'locale_en': 'English',

@@ -672,6 +672,27 @@ const enTranslations = <String, String>{
   'settings_question_languages_none': 'No languages selected yet',
   'onboarding_questions_slide4_title': 'Which Languages Do You Know?',
   'onboarding_questions_slide4_desc': 'We\'ll show you profiles with questions in your languages. You can select multiple!',
+
+  // Onboarding V2
+  'onboarding_v2_page1_title': 'Matching on Qulo is Different',
+  'onboarding_v2_page1_desc': 'Here you meet through questions. If someone answers all your questions correctly — you match!',
+  'onboarding_v2_page2_title': 'Prepare Your Questions',
+  'onboarding_v2_page2_desc': 'Create 2-10 questions. Personal, fun, questions that can\'t be Googled. If someone gets them all right — you match!',
+  'onboarding_v2_page3_title': '6 Super Powers',
+  'onboarding_v2_page3_desc': 'Solvers can use these powers on your questions. Each power costs purple diamonds — and that\'s your earnings!',
+  'onboarding_v2_page4_title': 'Earn Green Diamonds!',
+  'onboarding_v2_page4_desc': 'Every person who uses a power on your questions earns you green diamonds. More questions, more earnings!',
+  'onboarding_v2_page5_title': 'Which Languages Do You Want to See?',
+  'onboarding_v2_page5_desc': 'We\'ll show you profiles with questions in your languages. You can select multiple.',
+  'onboarding_v2_skip': 'Skip',
+  'onboarding_v2_next': 'Next',
+  'onboarding_v2_start': 'Get Started',
+  'onboarding_v2_premium_title': 'More with Premium',
+  'onboarding_v2_premium_cta': 'Go Premium',
+  'onboarding_v2_premium_benefit_1': 'Unlimited discovery',
+  'onboarding_v2_premium_benefit_2': 'Monthly purple diamond bonus',
+  'onboarding_v2_premium_benefit_3': 'Ad-free experience',
+
   // Locale names (native names, same in both languages)
   'locale_tr': 'T\u00fcrk\u00e7e',
   'locale_en': 'English',
