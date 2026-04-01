@@ -5,6 +5,8 @@ import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 
 class SocialLoginButtons extends StatelessWidget {
+  static const double _buttonHeight = 52;
+
   final bool isLoading;
   final VoidCallback onGooglePressed;
   final VoidCallback onApplePressed;
@@ -43,7 +45,7 @@ class SocialLoginButtons extends StatelessWidget {
         // Google button
         SizedBox(
           width: double.infinity,
-          height: 52,
+          height: _buttonHeight,
           child: OutlinedButton.icon(
             onPressed: isLoading ? null : onGooglePressed,
             icon: const Icon(Icons.g_mobiledata, size: 28),
@@ -64,18 +66,18 @@ class SocialLoginButtons extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           SizedBox(
             width: double.infinity,
-            height: 52,
+            height: _buttonHeight,
             child: ElevatedButton.icon(
               onPressed: isLoading ? null : onApplePressed,
               icon: const Icon(Icons.apple, size: 28),
               label: Text(context.tr('sign_in_with_apple')),
               style: ElevatedButton.styleFrom(
                 backgroundColor: theme.brightness == Brightness.dark
-                    ? Colors.white
-                    : Colors.black,
+                    ? theme.colorScheme.surface
+                    : theme.colorScheme.onSurface,
                 foregroundColor: theme.brightness == Brightness.dark
-                    ? Colors.black
-                    : Colors.white,
+                    ? theme.colorScheme.onSurface
+                    : theme.colorScheme.surface,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                 ),

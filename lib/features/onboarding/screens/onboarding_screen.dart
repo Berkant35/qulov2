@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
-import 'package:qulo_v2/core/services/analytics_manager.dart';
-import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
-import 'package:qulo_v2/core/widgets/app_scaffold.dart';
-import 'package:qulo_v2/routing/route_names.dart';
-import 'package:qulo_v2/features/onboarding/widgets/onboarding_page.dart';
-import 'package:qulo_v2/features/onboarding/widgets/onboarding_indicators.dart';
+import 'package:qulo_v2/features/onboarding/mixins/onboarding_screen_mixin.dart';
+import 'package:qulo_v2/features/onboarding/widgets/onboarding_bottom_bar.dart';
+import 'package:qulo_v2/features/onboarding/widgets/onboarding_diamonds_page.dart';
+import 'package:qulo_v2/features/onboarding/widgets/onboarding_hook_page.dart';
+import 'package:qulo_v2/features/onboarding/widgets/onboarding_language_page.dart';
+import 'package:qulo_v2/features/onboarding/widgets/onboarding_powers_page.dart';
+import 'package:qulo_v2/features/onboarding/widgets/onboarding_questions_page.dart';
+import 'package:qulo_v2/features/onboarding/widgets/parallax_background.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
@@ -17,115 +18,102 @@ class OnboardingScreen extends ConsumerStatefulWidget {
   ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
-  final _analytics = AnalyticsManager.instance;
-  final _controller = PageController();
-  int _page = 0;
-
-  static const List<String> _stepNames = ['welcome', 'quiz', 'profile'];
-
+class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
+    with TickerProviderStateMixin, OnboardingScreenMixin {
   @override
-  void initState() {
-    super.initState();
-    _analytics.logEvent(AnalyticsEvents.onboardingStart);
-    _analytics.logEvent(AnalyticsEvents.onboardingStepView, params: {
-      AnalyticsEvents.paramStepName: _stepNames[0],
-      AnalyticsEvents.paramStepIndex: 0,
-    });
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    initMixin();
   }
-
-  List<OnboardingPageData> _getPages(BuildContext context) => [
-        OnboardingPageData(
-          icon: Icons.favorite,
-          title: context.tr('onboarding_title_1'),
-          subtitle: context.tr('onboarding_sub_1'),
-        ),
-        OnboardingPageData(
-          icon: Icons.quiz,
-          title: context.tr('onboarding_title_2'),
-          subtitle: context.tr('onboarding_sub_2'),
-        ),
-        OnboardingPageData(
-          icon: Icons.person,
-          title: context.tr('onboarding_title_3'),
-          subtitle: context.tr('onboarding_sub_3'),
-        ),
-      ];
 
   @override
   void dispose() {
-    _controller.dispose();
+    disposeMixin();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final pages = _getPages(context);
-    final isLast = _page == pages.length - 1;
-
-    return AppScaffold(
-      padding: EdgeInsets.zero,
-      body: Column(
-        children: [
-          Expanded(
-            child: PageView.builder(
-              controller: _controller,
-              onPageChanged: (i) {
-                setState(() => _page = i);
-                _analytics.logEvent(AnalyticsEvents.onboardingStepView,
-                    params: {
-                      AnalyticsEvents.paramStepName: _stepNames[i],
-                      AnalyticsEvents.paramStepIndex: i,
-                    });
-              },
-              itemCount: pages.length,
-              itemBuilder: (_, i) => OnboardingPage(data: pages[i]),
-            ),
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFF0D0D0D),
+              Color(0xFF1A1A2E),
+            ],
           ),
-          OnboardingIndicators(count: pages.length, currentPage: _page),
-          const SizedBox(height: AppSpacing.xl),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.pagePadding),
-            child: SizedBox(
-              width: double.infinity,
-              height: 52,
-              child: ElevatedButton(
-                onPressed: () {
-                  _analytics.logEvent(
-                      AnalyticsEvents.onboardingStepComplete,
-                      params: {
-                        AnalyticsEvents.paramStepName: _stepNames[_page],
-                        AnalyticsEvents.paramStepIndex: _page,
-                      });
-                  if (isLast) {
-                    _analytics
-                        .logEvent(AnalyticsEvents.onboardingComplete);
-                    ref
-                        .read(navigationServiceProvider)
-                        .go(RouteNames.discover);
-                  } else {
-                    _controller.nextPage(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                    );
-                  }
-                },
-                child: Text(isLast
-                    ? context.tr('get_started')
-                    : context.tr('next')),
+        ),
+        child: SafeArea(
+          child: Stack(
+            children: [
+              // Parallax background
+              ParallaxBackground(
+                scrollOffset: scrollOffset,
+                floatingAnimation: floatingController,
               ),
-            ),
+              // Foreground: PageView + controls
+              Column(
+                children: [
+                  // Skip button (not on last page)
+                  if (!isLastPage)
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          right: AppSpacing.pagePadding,
+                          top: AppSpacing.sm,
+                        ),
+                        child: TextButton(
+                          onPressed: onSkip,
+                          child: Text(
+                            context.tr('onboarding_v2_skip'),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  color: Colors.white.withValues(alpha: 0.5),
+                                ),
+                          ),
+                        ),
+                      ),
+                    )
+                  else
+                    const SizedBox(height: AppSpacing.xxxl),
+
+                  // PageView
+                  Expanded(
+                    child: PageView(
+                      controller: pageController,
+                      onPageChanged: onPageChanged,
+                      children: [
+                        const OnboardingHookPage(),
+                        const OnboardingQuestionsPage(),
+                        const OnboardingPowersPage(),
+                        const OnboardingDiamondsPage(),
+                        OnboardingLanguagePage(
+                          selectedLanguages: selectedLanguages,
+                          onToggle: onLanguageToggle,
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Bottom bar
+                  OnboardingBottomBar(
+                    currentPage: currentPage,
+                    totalPages: totalPages,
+                    isLastPage: isLastPage,
+                    onNext: onNext,
+                    onStart: onStart,
+                  ),
+                ],
+              ),
+            ],
           ),
-          if (!isLast)
-            TextButton(
-              onPressed: () => ref
-                  .read(navigationServiceProvider)
-                  .go(RouteNames.discover),
-              child: Text(context.tr('skip')),
-            ),
-          const SizedBox(height: AppSpacing.lg),
-        ],
+        ),
       ),
     );
   }

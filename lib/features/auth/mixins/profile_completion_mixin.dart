@@ -133,12 +133,13 @@ mixin ProfileCompletionMixin on ConsumerState<ProfileCompletionScreen> {
     } catch (e) {
       setState(() {
         isRequestingLocation = false;
-        locationError = e.toString();
+        locationError = l10n.get('error_general');
       });
     }
   }
 
   Future<void> completeProfile() async {
+    final l10n = AppLocalizations.of(context);
     setState(() {
       isSubmitting = true;
       submitError = null;
@@ -146,8 +147,10 @@ mixin ProfileCompletionMixin on ConsumerState<ProfileCompletionScreen> {
 
     try {
       final authService = ref.read(authServiceProvider);
+      final birthdayStr =
+          '${birthday!.year}-${birthday!.month.toString().padLeft(2, '0')}-${birthday!.day.toString().padLeft(2, '0')}';
       await authService.completeProfile({
-        'age': calculateAge(),
+        'birthday': birthdayStr,
         'gender': gender!,
         if (lat != null) 'lat': lat,
         if (lng != null) 'lng': lng,
@@ -159,7 +162,7 @@ mixin ProfileCompletionMixin on ConsumerState<ProfileCompletionScreen> {
       if (!mounted) return;
       setState(() {
         isSubmitting = false;
-        submitError = e.toString();
+        submitError = l10n.get('error_general');
       });
     }
   }
