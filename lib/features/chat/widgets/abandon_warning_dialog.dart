@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/data/models/chat_question_model.dart';
 
 /// Shows a warning dialog when the user tries to leave the solve screen
@@ -70,7 +71,7 @@ class _AbandonWarningDialog extends StatelessWidget {
             Text(
               context.tr('abandon_unmatch_warning'),
               style: TextStyle(
-                color: Colors.red.shade400,
+                color: context.appColors.error,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -82,7 +83,7 @@ class _AbandonWarningDialog extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(true),
           child: Text(
             context.tr('abandon_leave'),
-            style: TextStyle(color: Colors.red.shade400),
+            style: TextStyle(color: context.appColors.error),
           ),
         ),
         FilledButton(
@@ -107,7 +108,7 @@ class _FeatureItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isDestructive ? Colors.red.shade400 : null;
+    final color = isDestructive ? context.appColors.error : null;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(

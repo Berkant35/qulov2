@@ -508,17 +508,21 @@ class _AnsweredOption extends StatelessWidget {
               color: labelColor.withValues(alpha: 0.2),
               shape: BoxShape.circle,
             ),
-            child: isCorrectChoice
-                ? Icon(Icons.check, size: 14, color: labelColor)
-                : isWrongChoice
-                    ? Icon(Icons.close, size: 14, color: labelColor)
-                    : Text(
-                        label,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: labelColor,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
+            child: () {
+              if (isCorrectChoice) {
+                return Icon(Icons.check, size: 14, color: labelColor);
+              }
+              if (isWrongChoice) {
+                return Icon(Icons.close, size: 14, color: labelColor);
+              }
+              return Text(
+                label,
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: labelColor,
+                  fontWeight: FontWeight.w700,
+                ),
+              );
+            }(),
           ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
