@@ -68,19 +68,20 @@ final _routes = <RouteBase>[
     ],
   ),
 
-  // Onboarding
+  // Profile Completion (root navigator — social login users without age)
   GoRoute(
+    parentNavigatorKey: rootNavigatorKey,
+    path: '/profile-completion',
+    name: RouteNames.profileCompletion,
+    builder: (context, state) => const ProfileCompletionScreen(),
+  ),
+
+  // Onboarding (root navigator — full screen over bottom nav)
+  GoRoute(
+    parentNavigatorKey: rootNavigatorKey,
     path: '/onboarding',
     name: RouteNames.onboarding,
     builder: (context, state) => const OnboardingScreen(),
-  ),
-
-  // Question Onboarding (root navigator — full screen over bottom nav)
-  GoRoute(
-    parentNavigatorKey: rootNavigatorKey,
-    path: '/questions/onboarding',
-    name: RouteNames.questionOnboarding,
-    builder: (context, state) => const QuestionOnboardingScreen(),
   ),
 
   // Map Confirm (root navigator — full screen over bottom nav)
@@ -383,16 +384,17 @@ class _MainShellState extends ConsumerState<_MainShell> {
   @override
   void initState() {
     super.initState();
-    _checkQuestionOnboarding();
+    _checkOnboarding();
   }
 
-  Future<void> _checkQuestionOnboarding() async {
+  Future<void> _checkOnboarding() async {
     final prefs = await SharedPreferences.getInstance();
-    final seen = prefs.getBool('onboarding_questions_seen') ?? false;
-    if (!seen && mounted) {
+    final seen = prefs.getBool('onboarding_v2_seen') ?? false;
+    final oldSeen = prefs.getBool('onboarding_questions_seen') ?? false;
+    if (!seen && !oldSeen && mounted) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
-          ref.read(navigationServiceProvider).push(RouteNames.questionOnboarding);
+          ref.read(navigationServiceProvider).push(RouteNames.onboarding);
         }
       });
     }

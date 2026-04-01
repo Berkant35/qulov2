@@ -24,7 +24,6 @@ import 'package:qulo_v2/features/notifications/screens/notifications_screen.dart
 import 'package:qulo_v2/features/questions/screens/question_create_screen.dart';
 import 'package:qulo_v2/features/questions/screens/question_easy_mode_screen.dart';
 import 'package:qulo_v2/features/questions/screens/question_analytics_screen.dart';
-import 'package:qulo_v2/features/questions/screens/question_onboarding_screen.dart';
 import 'package:qulo_v2/data/models/question_model.dart';
 import 'package:qulo_v2/data/models/ai_suggestion_model.dart';
 import 'package:qulo_v2/features/exchange/screens/exchange_screen.dart';
@@ -52,6 +51,7 @@ import 'package:qulo_v2/features/legal/screens/legal_web_view_screen.dart';
 import 'package:qulo_v2/features/settings/screens/blocked_users_screen.dart';
 import 'package:qulo_v2/features/settings/screens/my_tickets_screen.dart';
 import 'package:qulo_v2/features/auth/screens/banned_screen.dart';
+import 'package:qulo_v2/features/auth/screens/profile_completion_screen.dart';
 import 'package:qulo_v2/core/config/env.dart';
 
 part 'app_routes.dart';
@@ -125,6 +125,23 @@ final routerProvider = Provider<GoRouter>((ref) {
         ref.read(pendingDeepLinkProvider.notifier).state = null;
         ref.read(analyticsManagerProvider).logDeepLinkReplayed(pendingLink);
         return pendingLink;
+      }
+
+      // 6. Profile completion check — age null means social login user hasn't completed profile
+      if (isAuth && state.matchedLocation != '/profile-completion') {
+        final user = ref.read(userProvider).value;
+        if (user != null && user.age == null) {
+          return '/profile-completion';
+        }
+      }
+
+      // Already on profile-completion but profile is done → go to discover
+      if (isAuth && state.matchedLocation == '/profile-completion') {
+        final user = ref.read(userProvider).value;
+        if (user != null && user.age != null) {
+          return '/discover';
+        }
+        return null;
       }
 
       // 6. Auth + auth route veya splash → discover'a yonlendir

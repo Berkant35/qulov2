@@ -18,6 +18,7 @@ import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/core/widgets/app_text_field.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
+import 'package:qulo_v2/features/auth/widgets/social_login_buttons.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -68,6 +69,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with FormMixin, Loadi
           _ => 'UNKNOWN',
         };
         setState(() => _loginError = context.l10n.errorMessage(errorCode));
+      },
+    );
+  });
+
+  Future<void> _socialLogin(String provider) => withLoading(() async {
+    setState(() => _loginError = null);
+    final result = await ref.read(authProvider.notifier).socialLogin(provider);
+    if (!mounted) return;
+    result.when(
+      success: (_) {},
+      failure: (f) {
+        // Don't show error if user cancelled
+        if (f.message?.contains('cancelled') != true) {
+          final errorCode = switch (f) {
+            ServerFailure(:final code) => code,
+            NetworkFailure() => 'NETWORK_ERROR',
+            TimeoutFailure() => 'TIMEOUT',
+            _ => null,
+          };
+          if (errorCode != null) {
+            setState(() => _loginError = context.l10n.errorMessage(errorCode));
+          }
+        }
       },
     );
   });
@@ -138,6 +162,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with FormMixin, Loadi
               ),
               const SizedBox(height: AppSpacing.lg),
               AppButton(label: context.tr('login'), isLoading: isLoading, onPressed: isLoading ? null : _login),
+              const SizedBox(height: AppSpacing.lg),
+              SocialLoginButtons(
+                isLoading: isLoading,
+                onGooglePressed: () => _socialLogin('google'),
+                onApplePressed: () => _socialLogin('apple'),
+              ),
               const SizedBox(height: AppSpacing.xxl),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

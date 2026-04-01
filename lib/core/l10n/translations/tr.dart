@@ -993,4 +993,12 @@ const trTranslations = <String, String>{
   'profile_details_subtitle': 'Profilini zenginleştir, daha fazla eşleşme al',
   'profile_bio_subtitle': 'Kendini kısaca tanıt',
   'profile_no_data': 'Kullanıcı verisi bulunamadı',
+
+  // Social login
+  'or': 'veya',
+  'sign_in_with_google': 'Google ile Giriş Yap',
+  'sign_in_with_apple': 'Apple ile Giriş Yap',
+
+  // Profile completion (social login)
+  'profile_completion_title': 'Profilini Tamamla',
 };

@@ -993,4 +993,12 @@ const enTranslations = <String, String>{
   'profile_details_subtitle': 'Enrich your profile, get more matches',
   'profile_bio_subtitle': 'Briefly introduce yourself',
   'profile_no_data': 'No user data',
+
+  // Social login
+  'or': 'or',
+  'sign_in_with_google': 'Sign in with Google',
+  'sign_in_with_apple': 'Sign in with Apple',
+
+  // Profile completion (social login)
+  'profile_completion_title': 'Complete Your Profile',
 };
