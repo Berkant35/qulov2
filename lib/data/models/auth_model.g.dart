@@ -39,3 +39,20 @@ Map<String, dynamic> _$RefreshResponseToJson(RefreshResponse instance) =>
       'accessToken': instance.accessToken,
       'refreshToken': instance.refreshToken,
     };
+
+SocialLoginResponse _$SocialLoginResponseFromJson(Map<String, dynamic> json) =>
+    SocialLoginResponse(
+      accessToken: json['accessToken'] as String,
+      refreshToken: json['refreshToken'] as String,
+      userId: json['userId'] as String,
+      profileIncomplete: json['profileIncomplete'] as bool,
+    );
+
+Map<String, dynamic> _$SocialLoginResponseToJson(
+  SocialLoginResponse instance,
+) => <String, dynamic>{
+  'accessToken': instance.accessToken,
+  'refreshToken': instance.refreshToken,
+  'userId': instance.userId,
+  'profileIncomplete': instance.profileIncomplete,
+};

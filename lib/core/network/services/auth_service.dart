@@ -28,4 +28,10 @@ abstract class AuthService {
 
   @POST('/auth/reset-password')
   Future<void> resetPassword(@Body() Map<String, dynamic> body);
+
+  @POST('/auth/social-login')
+  Future<SocialLoginResponse> socialLogin(@Body() Map<String, dynamic> body);
+
+  @POST('/users/me/complete-profile')
+  Future<void> completeProfile(@Body() Map<String, dynamic> body);
 }
