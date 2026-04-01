@@ -134,7 +134,7 @@ mixin SolveChatQuestionScreenMixin
         timerKey.currentState?.resume();
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Bir hata oluştu, tekrar deneyin')),
+            SnackBar(content: Text(context.tr('error_chat_generic'))),
           );
         }
       },
@@ -229,6 +229,13 @@ mixin SolveChatQuestionScreenMixin
           await PaywallBottomSheetContent.show(ref,
               trigger: 'chat_question_power');
           if (mounted) timerKey.currentState?.resume();
+        } else if (f is ServerFailure && f.code == 'RATE_LIMITED') {
+          timerKey.currentState?.resume();
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(context.tr('error_rate_limit'))),
+            );
+          }
         } else {
           timerKey.currentState?.resume();
           ScaffoldMessenger.of(context).showSnackBar(
@@ -376,7 +383,7 @@ mixin SolveChatQuestionScreenMixin
           return;
         }
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(f.message ?? 'Kurtarma başarısız')),
+          SnackBar(content: Text(f.message ?? context.tr('error_rescue_failed'))),
         );
       },
     );

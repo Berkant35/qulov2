@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
@@ -28,7 +29,7 @@ class ChatQuestionResultScreen extends ConsumerWidget {
     final isCorrect = result.isCorrect;
 
     return AppScaffold(
-      title: isCorrect ? 'Doğru!' : 'Yanlış',
+      title: isCorrect ? context.tr('result_correct') : context.tr('result_wrong'),
       showBackButton: false,
       body: SingleChildScrollView(
         child: Padding(
@@ -40,7 +41,7 @@ class ChatQuestionResultScreen extends ConsumerWidget {
               const SizedBox(height: AppSpacing.xl),
               // Title
               Text(
-                isCorrect ? 'Tebrikler!' : 'Yanlış Cevap',
+                isCorrect ? context.tr('result_congrats') : context.tr('result_wrong'),
                 style: theme.textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: isCorrect ? context.appColors.success : context.appColors.error,
@@ -52,7 +53,7 @@ class ChatQuestionResultScreen extends ConsumerWidget {
                 _UnmatchWarning()
               else if (isCorrect)
                 Text(
-                  'Soruyu doğru cevapladın!',
+                  context.tr('result_correct_subtitle'),
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: context.appColors.textSecondary,
                   ),
@@ -60,7 +61,7 @@ class ChatQuestionResultScreen extends ConsumerWidget {
                 )
               else ...[
                 Text(
-                  'Bir dahaki sefere daha şanslı olursun.',
+                  context.tr('result_wrong_subtitle'),
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: context.appColors.textSecondary,
                   ),
@@ -72,7 +73,7 @@ class ChatQuestionResultScreen extends ConsumerWidget {
                     onPressed: onRescue,
                     icon: Icon(Icons.skip_next, color: context.appColors.warning),
                     label: Text(
-                      'Kurtarma Hakkı (Skip)',
+                      context.tr('result_rescue'),
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: context.appColors.warning,
                         fontWeight: FontWeight.w600,
@@ -155,7 +156,7 @@ class ChatQuestionResultScreen extends ConsumerWidget {
                       ),
                     ),
                     child: Text(
-                      'Geri Dön',
+                      context.tr('result_go_back'),
                       style: theme.textTheme.titleMedium?.copyWith(
                         color: AppColors.textPrimary,
                         fontWeight: FontWeight.w600,
@@ -264,7 +265,7 @@ class _UnmatchWarning extends StatelessWidget {
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
-              'Eşleşme sona erdi',
+              context.tr('result_unmatch_ended'),
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: context.appColors.error,
                     fontWeight: FontWeight.w600,
@@ -333,14 +334,14 @@ class _GreenRewardDetailCardState extends State<_GreenRewardDetailCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '+${widget.totalGreen} Yeşil Elmas',
+                        context.tr('result_green_earned').replaceAll('@count', '${widget.totalGreen}'),
                         style: theme.textTheme.titleSmall?.copyWith(
                           color: successColor,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
-                        'Soru sahibine kazandırdın',
+                        context.tr('result_green_subtitle'),
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: context.appColors.textSecondary,
                         ),
@@ -369,7 +370,7 @@ class _GreenRewardDetailCardState extends State<_GreenRewardDetailCard> {
             const SizedBox(height: AppSpacing.sm),
             ...grouped.entries.map((entry) {
               final label = entry.key == 'ANSWER'
-                  ? 'Doğru cevap'
+                  ? context.tr('result_correct_answer')
                   : entry.key;
               return Padding(
                 padding: const EdgeInsets.only(bottom: 4),
@@ -454,7 +455,7 @@ class _PurpleSpentCardState extends State<_PurpleSpentCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '-${widget.totalPurple} Mor Elmas',
+                        context.tr('result_purple_spent').replaceAll('@count', '${widget.totalPurple}'),
                         style: theme.textTheme.titleSmall?.copyWith(
                           color: purpleColor,
                           fontWeight: FontWeight.bold,
@@ -462,8 +463,8 @@ class _PurpleSpentCardState extends State<_PurpleSpentCard> {
                       ),
                       Text(
                         grouped.length == 1
-                            ? '${grouped.keys.first} için harcandı'
-                            : 'Güç kullanımı için harcandı',
+                            ? context.tr('result_power_spent_single').replaceAll('@power', grouped.keys.first)
+                            : context.tr('result_power_spent_multi'),
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: context.appColors.textSecondary,
                         ),
@@ -535,7 +536,7 @@ class _PowersUsedCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Kullanılan Güçler',
+            context.tr('result_powers_used'),
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: context.appColors.textSecondary,
               fontWeight: FontWeight.w600,
@@ -610,7 +611,7 @@ class _AnswerDetailsCard extends StatelessWidget {
         children: [
           Expanded(
             child: _OptionBadge(
-              label: 'Cevabın',
+              label: context.tr('result_your_answer'),
               option: answeredOption,
               color: isCorrect ? correctColor : wrongColor,
             ),
@@ -618,7 +619,7 @@ class _AnswerDetailsCard extends StatelessWidget {
           Container(width: 1, height: 36, color: theme.dividerColor),
           Expanded(
             child: _OptionBadge(
-              label: 'Doğru',
+              label: context.tr('result_correct_label'),
               option: correctOption,
               color: correctColor,
             ),
@@ -629,7 +630,7 @@ class _AnswerDetailsCard extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    'Süre',
+                    context.tr('result_time'),
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: context.appColors.textSecondary,
                       fontSize: 10,

@@ -16,7 +16,7 @@ class EditProfileBioSection extends StatelessWidget {
     return ProfileSectionCard(
       icon: Icons.edit_note,
       title: context.tr('about'),
-      subtitle: 'Kendini kisaca tanit',
+      subtitle: context.tr('profile_bio_subtitle'),
       completionText: bioController.text.trim().isEmpty ? '0/1' : '1/1',
       isComplete: bioController.text.trim().isNotEmpty,
       child: Column(

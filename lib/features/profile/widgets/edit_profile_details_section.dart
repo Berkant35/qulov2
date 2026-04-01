@@ -41,7 +41,7 @@ class EditProfileDetailsSection extends ConsumerWidget {
     return ProfileSectionCard(
       icon: Icons.interests,
       title: context.tr('details'),
-      subtitle: 'Profilini zenginlestir, daha fazla eslesme al',
+      subtitle: context.tr('profile_details_subtitle'),
       completionText: completionText,
       isComplete: completionText == '8/8',
       child: Column(

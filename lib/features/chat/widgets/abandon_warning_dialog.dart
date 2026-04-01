@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/data/models/chat_question_model.dart';
 
 /// Shows a warning dialog when the user tries to leave the solve screen
@@ -26,21 +27,21 @@ class _AbandonWarningDialog extends StatelessWidget {
     final features = <_FeatureItem>[];
 
     if (question.hasChatLock) {
-      features.add(const _FeatureItem(
+      features.add(_FeatureItem(
         icon: Icons.lock_outline,
-        label: 'Soru Kilidi',
+        label: context.tr('abandon_question_lock'),
       ));
     }
     if (question.hasPowerBlock) {
-      features.add(const _FeatureItem(
+      features.add(_FeatureItem(
         icon: Icons.flash_on,
-        label: 'Güç Engeli',
+        label: context.tr('abandon_power_block'),
       ));
     }
     if (question.hasUnmatchRisk) {
-      features.add(const _FeatureItem(
+      features.add(_FeatureItem(
         icon: Icons.heart_broken,
-        label: 'Unmatch Riski',
+        label: context.tr('abandon_unmatch_risk'),
         isDestructive: true,
       ));
     }
@@ -48,26 +49,26 @@ class _AbandonWarningDialog extends StatelessWidget {
     return AlertDialog(
       backgroundColor: Theme.of(context).colorScheme.surface,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      title: const Text(
-        'Sorudan Kaçıyorsun!',
+      title: Text(
+        context.tr('abandon_title'),
         textAlign: TextAlign.center,
-        style: TextStyle(fontWeight: FontWeight.bold),
+        style: const TextStyle(fontWeight: FontWeight.bold),
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (features.isNotEmpty) ...[
-            const Text('Karşı taraf bu soruya şu özellikleri eklemiş:'),
+            Text(context.tr('abandon_features_added')),
             const SizedBox(height: 12),
             ...features,
             const SizedBox(height: 16),
           ],
-          const Text('Cevap vermeden çıkarsan sorudan kaçmış sayılırsın.'),
+          Text(context.tr('abandon_flee_warning')),
           if (question.hasUnmatchRisk) ...[
             const SizedBox(height: 8),
             Text(
-              'Eşleşmen sona erecek!',
+              context.tr('abandon_unmatch_warning'),
               style: TextStyle(
                 color: Colors.red.shade400,
                 fontWeight: FontWeight.bold,
@@ -80,13 +81,13 @@ class _AbandonWarningDialog extends StatelessWidget {
         TextButton(
           onPressed: () => Navigator.of(context).pop(true),
           child: Text(
-            'Vazgeç ve Çık',
+            context.tr('abandon_leave'),
             style: TextStyle(color: Colors.red.shade400),
           ),
         ),
         FilledButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('Geri Dön'),
+          child: Text(context.tr('abandon_stay')),
         ),
       ],
     );

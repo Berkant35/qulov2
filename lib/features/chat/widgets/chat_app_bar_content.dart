@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:qulo_v2/core/l10n/app_localizations.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/data/models/media_request_model.dart';
@@ -118,7 +118,7 @@ class ChatAppBarActions extends StatelessWidget {
                   Icon(Icons.no_photography,
                       color: context.appColors.textSecondary, size: 20),
                   const SizedBox(width: 8),
-                  Text(AppLocalizations.of(ctx).get('chat_disable_media')),
+                  Text(ctx.tr('chat_disable_media')),
                 ],
               ),
             ),
@@ -128,7 +128,7 @@ class ChatAppBarActions extends StatelessWidget {
               children: [
                 Icon(Icons.heart_broken, color: context.appColors.error, size: 20),
                 const SizedBox(width: 8),
-                const Text('Unmatch'),
+                Text(ctx.tr('unmatch')),
               ],
             ),
           ),
@@ -252,7 +252,7 @@ class _ReceiverContent extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
               ),
             ),
-            child: const Text('Kabul Et', style: TextStyle(fontSize: 13)),
+            child: Text(context.tr('media_accept'), style: const TextStyle(fontSize: 13)),
           ),
         ),
       ],

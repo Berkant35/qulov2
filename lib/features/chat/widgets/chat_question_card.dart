@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:qulo_v2/core/l10n/app_localizations.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/power_icon.dart';
@@ -99,7 +99,7 @@ class _BadgesRow extends StatelessWidget {
     if (question.hasUnmatchRisk) {
       badges.add(_Badge(
         icon: '\u26a0\ufe0f',
-        label: 'Bu soru riskli!',
+        label: context.tr('question_risky'),
         color: context.appColors.error,
       ));
     }
@@ -107,7 +107,7 @@ class _BadgesRow extends StatelessWidget {
     if (question.isPowerBlocked) {
       badges.add(_Badge(
         icon: '\u26a1',
-        label: 'Güç Engeli',
+        label: context.tr('question_power_block'),
         color: context.appColors.warning,
       ));
     }
@@ -115,7 +115,7 @@ class _BadgesRow extends StatelessWidget {
     if (question.hasChatLock) {
       badges.add(_Badge(
         icon: '\ud83d\udd12',
-        label: 'Sohbet Kilitli',
+        label: context.tr('question_chat_locked'),
         color: context.appColors.warning,
       ));
     }
@@ -131,7 +131,7 @@ class _BadgesRow extends StatelessWidget {
     if (question.isAbandoned) {
       badges.add(_Badge(
         icon: '\ud83c\udfc3',
-        label: 'Kaçtı',
+        label: context.tr('question_fled'),
         color: Colors.grey,
       ));
     }

@@ -80,7 +80,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
             ProfileSectionCard(
               icon: Icons.photo_library,
               title: context.tr('photos'),
-              subtitle: 'Ilk fotografin profil fotografin olur',
+              subtitle: context.tr('profile_photo_hint'),
               completionText: photoCompletionText(epState.photos),
               isComplete: epState.photos.where((p) => p != null).length >= 2,
               child: PhotoGridFull(
