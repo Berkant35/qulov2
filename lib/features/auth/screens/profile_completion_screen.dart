@@ -8,6 +8,7 @@ import 'package:qulo_v2/features/auth/mixins/profile_completion_mixin.dart';
 import 'package:qulo_v2/features/auth/widgets/register_step_birthday.dart';
 import 'package:qulo_v2/features/auth/widgets/register_step_gender.dart';
 import 'package:qulo_v2/features/auth/widgets/register_step_location.dart';
+import 'package:qulo_v2/features/auth/widgets/register_step_name.dart';
 
 class ProfileCompletionScreen extends ConsumerStatefulWidget {
   const ProfileCompletionScreen({super.key});
@@ -52,7 +53,7 @@ class _ProfileCompletionScreenState extends ConsumerState<ProfileCompletionScree
           children: [
             AppProgressBar(
               currentStep: currentStep + 1,
-              totalSteps: ProfileCompletionMixin.totalSteps,
+              totalSteps: totalSteps,
             ),
             const SizedBox(height: AppSpacing.sm),
             Expanded(
@@ -63,6 +64,14 @@ class _ProfileCompletionScreenState extends ConsumerState<ProfileCompletionScree
                   setState(() => currentStep = index);
                 },
                 children: [
+                  if (needsName)
+                    RegisterStepName(
+                      nameCtrl: nameCtrl,
+                      surnameCtrl: surnameCtrl,
+                      nameError: nameError,
+                      surnameError: surnameError,
+                      onContinue: nextStep,
+                    ),
                   RegisterStepBirthday(
                     selectedDate: birthday,
                     onDateSelected: (date) {

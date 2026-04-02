@@ -43,9 +43,9 @@ class NotificationNotifier extends Notifier<NotificationState> {
 
       // Set callbacks BEFORE init so we don't miss token refresh events
       manager.setCallbacks(
-        onTokenRefresh: (newToken) {
+        onTokenRefresh: (newToken) async {
           dev.log('[NotificationNotifier] Token refreshed, sending to backend', name: 'Notification');
-          ref.read(userProvider.notifier).updatePushToken(newToken);
+          await ref.read(userProvider.notifier).updatePushToken(newToken);
         },
         onForegroundMessage: _handleForegroundMessage,
         onMessageOpenedApp: _handleMessageTap,

@@ -281,9 +281,13 @@ class AuthNotifier extends Notifier<AuthState> {
     ref.read(presenceManagerProvider).start();
   }
 
-  /// Called after social login profile completion
+  /// Called after social login profile completion.
+  /// Re-emits auth state to trigger GoRouter redirect (profile-completion → discover).
   Future<void> onProfileCompleted() async {
     await _postLoginInit();
+    // Re-emit authenticated state so GoRouter re-evaluates redirect
+    // (user.age is now non-null → profile-completion guard passes)
+    state = state.copyWith(status: AuthStatus.authenticated);
   }
 
   Future<Result<SocialLoginResponse>> socialLogin(String provider) async {
@@ -377,16 +381,7 @@ class AuthNotifier extends Notifier<AuthState> {
     // Clean up notification listeners before invalidation
     ref.read(notificationManagerProvider).dispose();
 
-    // Invalidate all auth-dependent providers to prevent stale data crashes
-    ref.invalidate(userProvider);
-    ref.invalidate(discoverProvider);
-    ref.invalidate(matchListProvider);
-    ref.invalidate(diamondProvider);
-    ref.invalidate(powerProvider);
-    ref.invalidate(questionProvider);
-    ref.invalidate(subscriptionProvider);
-    ref.invalidate(notificationProvider);
-    ref.invalidate(userLanguagesProvider);
+    _invalidateAllProviders();
 
     state = const AuthState(status: AuthStatus.unauthenticated);
   }
@@ -460,6 +455,13 @@ class AuthNotifier extends Notifier<AuthState> {
 
     ref.read(notificationManagerProvider).dispose();
 
+    _invalidateAllProviders();
+
+    state = const AuthState(status: AuthStatus.unauthenticated);
+  }
+
+  /// Invalidate all auth-dependent providers to prevent stale data crashes
+  void _invalidateAllProviders() {
     ref.invalidate(userProvider);
     ref.invalidate(discoverProvider);
     ref.invalidate(matchListProvider);
@@ -469,8 +471,6 @@ class AuthNotifier extends Notifier<AuthState> {
     ref.invalidate(subscriptionProvider);
     ref.invalidate(notificationProvider);
     ref.invalidate(userLanguagesProvider);
-
-    state = const AuthState(status: AuthStatus.unauthenticated);
   }
 
   Future<void> _saveTokens(AuthTokens tokens) async {

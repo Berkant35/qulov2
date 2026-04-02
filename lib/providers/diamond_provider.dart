@@ -35,7 +35,9 @@ class DiamondNotifier extends AsyncNotifier<DiamondBalance> {
 
   Future<Result<void>> purchase(String productId) async {
     final result = await ref.read(diamondRepositoryProvider).purchase(productId);
-    result.when(success: (_) => fetchBalance(), failure: (_) {});
+    if (result is Success) {
+      await fetchBalance();
+    }
     return result;
   }
 

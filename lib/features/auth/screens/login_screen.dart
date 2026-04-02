@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,17 +27,15 @@ class LoginScreen extends ConsumerStatefulWidget {
 
 class _LoginScreenState extends ConsumerState<LoginScreen> with FormMixin, LoadingMixin {
   final _emailCtrl = TextEditingController(
+    // Debug: pass --dart-define=DEBUG_EMAIL=tester_001@qulo.test to pre-fill
     text: kDebugMode
-        ? Platform.isAndroid
-              ? 'tester_001@qulo.test'
-              : 'berkantC93@gmail.com'
+        ? const String.fromEnvironment('DEBUG_EMAIL', defaultValue: '')
         : null,
   );
   final _passwordCtrl = TextEditingController(
+    // Debug: pass --dart-define=DEBUG_PASSWORD=Test1234! to pre-fill
     text: kDebugMode
-        ? Platform.isAndroid
-              ? 'Test1234!'
-              : 'dad.153hb'
+        ? const String.fromEnvironment('DEBUG_PASSWORD', defaultValue: '')
         : null,
   );
   bool _obscure = true;

@@ -32,7 +32,10 @@ class ChatMessageList extends StatelessWidget {
     return chatState.when(
       loading: () => const Center(child: AppLoadingWidget.large()),
       error: (e, _) => Center(
-        child: Text('Error: $e', style: TextStyle(color: context.appColors.error)),
+        child: Text(
+          context.tr('chat_messages_error'),
+          style: TextStyle(color: context.appColors.error),
+        ),
       ),
       data: (state) {
         if (state.messages.isEmpty) {

@@ -32,7 +32,7 @@ class PowerGridItem extends StatelessWidget {
       builder: (context, child) {
         final value = staggered.value;
         return Opacity(
-          opacity: value,
+          opacity: value.clamp(0.0, 1.0),
           child: Transform.scale(
             scale: value,
             child: child,

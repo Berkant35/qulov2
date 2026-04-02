@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qulo_v2/core/l10n/app_localizations.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
@@ -134,9 +134,9 @@ class _DraftHistorySheetState extends ConsumerState<DraftHistorySheet>
             labelColor: context.appColors.primary,
             unselectedLabelColor: context.appColors.textSecondary,
             indicatorColor: context.appColors.primary,
-            tabs: const [
-              Tab(text: 'Taslaklar'),
-              Tab(text: 'Gecmis'),
+            tabs: [
+              Tab(text: context.tr('chat_drafts_tab')),
+              Tab(text: context.tr('chat_history_tab')),
             ],
           ),
           // Tab content
@@ -194,7 +194,7 @@ class _DraftsTab extends StatelessWidget {
     if (error != null) {
       return Center(
         child: Text(
-          'Taslaklar yuklenemedi',
+          context.tr('chat_drafts_load_failed'),
           style: theme.textTheme.bodyMedium?.copyWith(
             color: context.appColors.textHint,
           ),
@@ -204,7 +204,7 @@ class _DraftsTab extends StatelessWidget {
     if (drafts == null || drafts!.isEmpty) {
       return Center(
         child: Text(
-          'Henuz taslak yok',
+          context.tr('chat_no_drafts'),
           style: theme.textTheme.bodyMedium?.copyWith(
             color: context.appColors.textHint,
           ),
@@ -262,7 +262,7 @@ class _HistoryTab extends StatelessWidget {
     if (error != null) {
       return Center(
         child: Text(
-          'Gecmis yuklenemedi',
+          context.tr('chat_history_load_failed'),
           style: theme.textTheme.bodyMedium?.copyWith(
             color: context.appColors.textHint,
           ),
@@ -272,7 +272,7 @@ class _HistoryTab extends StatelessWidget {
     if (history == null || history!.isEmpty) {
       return Center(
         child: Text(
-          'Henuz soru gecmisi yok',
+          context.tr('chat_no_history'),
           style: theme.textTheme.bodyMedium?.copyWith(
             color: context.appColors.textHint,
           ),

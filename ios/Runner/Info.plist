@@ -92,5 +92,9 @@
 		<false/>
 		<key>FlutterDeepLinkingEnabled</key>
 		<false/>
+		<key>GIDClientID</key>
+		<string>1036336261876-uok6oi06rgvmr4tb2p8gved5kc7hfk4s.apps.googleusercontent.com</string>
+		<key>GIDServerClientID</key>
+		<string>1036336261876-gjgamt1c9q1g5h1qc45mmek30l1o2op8.apps.googleusercontent.com</string>
 	</dict>
 </plist>

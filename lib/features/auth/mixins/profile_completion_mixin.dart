@@ -4,11 +4,10 @@ import 'package:qulo_v2/core/l10n/app_localizations.dart';
 import 'package:qulo_v2/core/services/location_manager.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
+import 'package:qulo_v2/providers/user_provider.dart';
 import 'package:qulo_v2/features/auth/screens/profile_completion_screen.dart';
 
 mixin ProfileCompletionMixin on ConsumerState<ProfileCompletionScreen> {
-  static const totalSteps = 3;
-
   final pageController = PageController();
   int currentStep = 0;
   DateTime? birthday;
@@ -25,10 +24,28 @@ mixin ProfileCompletionMixin on ConsumerState<ProfileCompletionScreen> {
   String? locationError;
   String? submitError;
 
-  void initMixin() {}
+  final nameCtrl = TextEditingController();
+  final surnameCtrl = TextEditingController();
+  String? nameError;
+  String? surnameError;
+  bool _needsName = false;
+
+  int get totalSteps => _needsName ? 4 : 3;
+  bool get needsName => _needsName;
+
+  void initMixin() {
+    _checkNameNeeded();
+  }
+
+  void _checkNameNeeded() {
+    final user = ref.read(userProvider).valueOrNull;
+    _needsName = user == null || (user.name ?? '').isEmpty;
+  }
 
   void disposeMixin() {
     pageController.dispose();
+    nameCtrl.dispose();
+    surnameCtrl.dispose();
   }
 
   void goToStep(int step) {
@@ -49,6 +66,23 @@ mixin ProfileCompletionMixin on ConsumerState<ProfileCompletionScreen> {
       age--;
     }
     return age;
+  }
+
+  bool validateName() {
+    final l10n = AppLocalizations.of(context);
+    String? nErr;
+    String? sErr;
+    if (nameCtrl.text.trim().isEmpty) {
+      nErr = l10n.get('field_required');
+    }
+    if (surnameCtrl.text.trim().isEmpty) {
+      sErr = l10n.get('field_required');
+    }
+    setState(() {
+      nameError = nErr;
+      surnameError = sErr;
+    });
+    return nErr == null && sErr == null;
   }
 
   bool validateBirthday() {
@@ -72,13 +106,26 @@ mixin ProfileCompletionMixin on ConsumerState<ProfileCompletionScreen> {
 
   void nextStep() {
     bool valid;
-    switch (currentStep) {
-      case 0:
-        valid = validateBirthday();
-      case 1:
-        valid = validateGender();
-      default:
-        valid = true;
+    if (_needsName) {
+      switch (currentStep) {
+        case 0:
+          valid = validateName();
+        case 1:
+          valid = validateBirthday();
+        case 2:
+          valid = validateGender();
+        default:
+          valid = true;
+      }
+    } else {
+      switch (currentStep) {
+        case 0:
+          valid = validateBirthday();
+        case 1:
+          valid = validateGender();
+        default:
+          valid = true;
+      }
     }
     if (valid) goToStep(currentStep + 1);
   }
@@ -154,10 +201,17 @@ mixin ProfileCompletionMixin on ConsumerState<ProfileCompletionScreen> {
         'gender': gender!,
         if (lat != null) 'lat': lat,
         if (lng != null) 'lng': lng,
+        if (_needsName) 'name': nameCtrl.text.trim(),
+        if (_needsName) 'surname': surnameCtrl.text.trim(),
       });
 
       if (!mounted) return;
+      // This re-emits auth state → GoRouter redirect fires → navigates to discover
       await ref.read(authProvider.notifier).onProfileCompleted();
+      // Safety net: if GoRouter didn't navigate away, stop spinner
+      if (mounted) {
+        setState(() => isSubmitting = false);
+      }
     } catch (e) {
       if (!mounted) return;
       setState(() {
