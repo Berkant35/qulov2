@@ -94,6 +94,6 @@ mixin DiamondsScreenMixin on ConsumerState<DiamondsScreen> {
   }
 
   void onSeeAllHistory() {
-    // TODO: Navigate to full transaction history screen
+    // Deferred: Transaction history screen not yet implemented
   }
 }
