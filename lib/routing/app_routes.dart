@@ -160,7 +160,7 @@ final _routes = <RouteBase>[
       final locale = AppLocalizations.of(context).locale.languageCode;
       final url = state.extra is String
           ? state.extra as String
-          : '${Env.legalBaseUrl}/$locale/help';
+          : '${Env.legalBaseUrl}/$locale/help/';
       return LegalWebViewScreen(
         title: AppLocalizations.of(context).get('help_support'),
         url: url,

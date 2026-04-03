@@ -913,4 +913,104 @@ const ruTranslations = <String, String>{
   'profile_details_subtitle': 'Enrich your profile, get more matches',
   'profile_bio_subtitle': 'Briefly introduce yourself',
   'profile_no_data': 'No user data',
+
+  // Paywall (missing)
+  'paywall_onboarding_title': 'Откройте больше',
+  'paywall_maybe_later': 'Может быть позже',
+
+  // Preferences (missing)
+  'gender_pref_locked_info': 'Свяжитесь с поддержкой, чтобы изменить предпочтение пола.',
+
+  // Chat tabs (missing)
+  'chat_drafts_tab': 'Черновики',
+  'chat_history_tab': 'История',
+  'chat_drafts_load_failed': 'Не удалось загрузить черновики',
+  'chat_no_drafts': 'Пока нет черновиков',
+  'chat_history_load_failed': 'Не удалось загрузить историю',
+  'chat_no_history': 'Пока нет истории вопросов',
+  'chat_messages_error': 'Не удалось загрузить сообщения',
+
+  // Onboarding V2 (missing)
+  'onboarding_v2_page1_title': 'Совпадения на Qulo — это другое',
+  'onboarding_v2_page1_desc': 'Здесь вы знакомитесь через вопросы. Если кто-то правильно ответит на все ваши вопросы — это совпадение!',
+  'onboarding_v2_page2_title': 'Подготовьте свои вопросы',
+  'onboarding_v2_page2_desc': 'Создайте 2-10 вопросов. Личные, весёлые, которые нельзя нагуглить. Если кто-то ответит на все правильно — это совпадение!',
+  'onboarding_v2_page3_title': '6 Суперсил',
+  'onboarding_v2_page3_desc': 'Решающие могут использовать эти силы на ваших вопросах. Каждая сила стоит фиолетовые бриллианты — а это ваш заработок!',
+  'onboarding_v2_page4_title': 'Зарабатывайте зелёные бриллианты!',
+  'onboarding_v2_page4_desc': 'Каждый, кто использует силу на ваших вопросах, приносит вам зелёные бриллианты. Больше вопросов — больше заработок!',
+  'onboarding_v2_page5_title': 'Какие языки вы хотите видеть?',
+  'onboarding_v2_page5_desc': 'Мы покажем вам профили с вопросами на ваших языках. Можете выбрать несколько.',
+  'onboarding_v2_skip': 'Пропустить',
+  'onboarding_v2_next': 'Далее',
+  'onboarding_v2_start': 'Начать',
+  'onboarding_v2_premium_title': 'Больше с Premium',
+  'onboarding_v2_premium_cta': 'Перейти на Premium',
+  'onboarding_v2_premium_benefit_1': 'Безлимитное обнаружение',
+  'onboarding_v2_premium_benefit_2': 'Ежемесячный бонус фиолетовых бриллиантов',
+  'onboarding_v2_premium_benefit_3': 'Без рекламы',
+
+  // Report categories (missing)
+  'report_select_category': 'Выберите причину жалобы',
+  'report_cat_inappropriate': 'Неприемлемый контент',
+  'report_cat_fake': 'Фейковый профиль',
+  'report_cat_spam': 'Спам',
+  'report_cat_harassment': 'Домогательства',
+  'report_cat_underage': 'Несовершеннолетний',
+  'report_cat_scam': 'Мошенничество',
+  'report_cat_offensive_photos': 'Оскорбительные фото',
+  'report_cat_threatening': 'Угрозы',
+  'report_cat_impersonation': 'Выдача себя за другого',
+  'report_cat_other': 'Другое',
+  'report_reason_title': 'Описание',
+  'report_reason_optional': 'Добавьте необязательное описание...',
+  'report_reason_required': 'Пожалуйста, напишите подробное описание...',
+
+  // Block (missing)
+  'blocked_users': 'Заблокированные пользователи',
+  'no_blocked_users': 'Нет заблокированных пользователей',
+  'unblock': 'Разблокировать',
+  'unblock_confirm_title': 'Разблокировать',
+  'unblock_confirm_message': 'Вы уверены, что хотите разблокировать этого пользователя?',
+
+  // Support tickets (missing)
+  'my_tickets': 'Мои обращения в поддержку',
+  'no_tickets': 'Пока нет обращений',
+  'create_ticket': 'Создать обращение',
+  'ticket_created_success': 'Ваше обращение создано',
+  'ticket_replied': 'Отвечено',
+  'ticket_category': 'Категория',
+  'ticket_subject': 'Тема',
+  'ticket_subject_hint': 'Кратко опишите проблему',
+  'ticket_subject_error': 'Тема должна содержать не менее 5 символов',
+  'ticket_message': 'Сообщение',
+  'ticket_message_hint': 'Опишите проблему подробно',
+  'ticket_message_error': 'Сообщение должно содержать не менее 10 символов',
+  'ticket_cat_account': 'Аккаунт',
+  'ticket_cat_technical': 'Технический',
+  'ticket_cat_billing': 'Оплата',
+  'ticket_cat_match': 'Совпадение',
+  'ticket_cat_other': 'Другое',
+  'ticket_status_open': 'Открыто',
+  'ticket_status_in_progress': 'В обработке',
+  'ticket_status_resolved': 'Решено',
+  'ticket_status_closed': 'Закрыто',
+
+  // Help (missing)
+  'help_support': 'Помощь и поддержка',
+
+  // Ban (missing)
+  'account_banned_title': 'Аккаунт заблокирован',
+  'account_banned_message': 'Ваш аккаунт заблокирован за нарушение правил сообщества. Свяжитесь с нами для подробностей.',
+
+  // Submit (missing)
+  'submit': 'Отправить',
+
+  // Social login (missing)
+  'or': 'или',
+  'sign_in_with_google': 'Войти через Google',
+  'sign_in_with_apple': 'Войти через Apple',
+
+  // Profile completion (missing)
+  'profile_completion_title': 'Заполните профиль',
 };

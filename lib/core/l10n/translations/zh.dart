@@ -913,4 +913,104 @@ const zhTranslations = <String, String>{
   'profile_details_subtitle': 'Enrich your profile, get more matches',
   'profile_bio_subtitle': 'Briefly introduce yourself',
   'profile_no_data': 'No user data',
+
+  // Paywall (missing)
+  'paywall_onboarding_title': '发现更多',
+  'paywall_maybe_later': '以后再说',
+
+  // Preferences (missing)
+  'gender_pref_locked_info': '请联系客服更改您的性别偏好。',
+
+  // Chat tabs (missing)
+  'chat_drafts_tab': '草稿',
+  'chat_history_tab': '历史',
+  'chat_drafts_load_failed': '加载草稿失败',
+  'chat_no_drafts': '暂无草稿',
+  'chat_history_load_failed': '加载历史失败',
+  'chat_no_history': '暂无问题历史',
+  'chat_messages_error': '加载消息失败',
+
+  // Onboarding V2 (missing)
+  'onboarding_v2_page1_title': 'Qulo的匹配方式不同',
+  'onboarding_v2_page1_desc': '在这里，你通过问题认识他人。如果有人正确回答了你的所有问题——就是匹配！',
+  'onboarding_v2_page2_title': '准备你的问题',
+  'onboarding_v2_page2_desc': '创建2-10个问题。个人的、有趣的、搜索不到的。如果有人全部答对——就是匹配！',
+  'onboarding_v2_page3_title': '6种超级能力',
+  'onboarding_v2_page3_desc': '答题者可以在你的问题上使用这些能力。每个能力需要紫色钻石——这就是你的收入！',
+  'onboarding_v2_page4_title': '赚取绿色钻石！',
+  'onboarding_v2_page4_desc': '每个在你的问题上使用能力的人都会为你带来绿色钻石。问题越多，收入越多！',
+  'onboarding_v2_page5_title': '你想看哪些语言？',
+  'onboarding_v2_page5_desc': '我们会向你展示包含你所选语言问题的个人资料。你可以选择多种语言。',
+  'onboarding_v2_skip': '跳过',
+  'onboarding_v2_next': '下一步',
+  'onboarding_v2_start': '开始',
+  'onboarding_v2_premium_title': 'Premium更多功能',
+  'onboarding_v2_premium_cta': '升级Premium',
+  'onboarding_v2_premium_benefit_1': '无限发现',
+  'onboarding_v2_premium_benefit_2': '每月紫色钻石奖励',
+  'onboarding_v2_premium_benefit_3': '无广告体验',
+
+  // Report categories (missing)
+  'report_select_category': '选择举报原因',
+  'report_cat_inappropriate': '不当内容',
+  'report_cat_fake': '虚假资料',
+  'report_cat_spam': '垃圾信息',
+  'report_cat_harassment': '骚扰',
+  'report_cat_underage': '未成年人',
+  'report_cat_scam': '诈骗',
+  'report_cat_offensive_photos': '冒犯性照片',
+  'report_cat_threatening': '威胁',
+  'report_cat_impersonation': '冒充他人',
+  'report_cat_other': '其他',
+  'report_reason_title': '描述',
+  'report_reason_optional': '添加可选描述...',
+  'report_reason_required': '请写详细描述...',
+
+  // Block (missing)
+  'blocked_users': '已屏蔽用户',
+  'no_blocked_users': '没有已屏蔽的用户',
+  'unblock': '取消屏蔽',
+  'unblock_confirm_title': '取消屏蔽',
+  'unblock_confirm_message': '确定要取消屏蔽此用户吗？',
+
+  // Support tickets (missing)
+  'my_tickets': '我的工单',
+  'no_tickets': '暂无工单',
+  'create_ticket': '创建工单',
+  'ticket_created_success': '您的工单已创建',
+  'ticket_replied': '已回复',
+  'ticket_category': '类别',
+  'ticket_subject': '主题',
+  'ticket_subject_hint': '简要描述您的问题',
+  'ticket_subject_error': '主题至少需要5个字符',
+  'ticket_message': '消息',
+  'ticket_message_hint': '详细描述您的问题',
+  'ticket_message_error': '消息至少需要10个字符',
+  'ticket_cat_account': '账户',
+  'ticket_cat_technical': '技术',
+  'ticket_cat_billing': '账单',
+  'ticket_cat_match': '匹配',
+  'ticket_cat_other': '其他',
+  'ticket_status_open': '开放',
+  'ticket_status_in_progress': '处理中',
+  'ticket_status_resolved': '已解决',
+  'ticket_status_closed': '已关闭',
+
+  // Help (missing)
+  'help_support': '帮助与支持',
+
+  // Ban (missing)
+  'account_banned_title': '账户已暂停',
+  'account_banned_message': '您的账户因违反社区准则而被暂停。请联系我们了解详情。',
+
+  // Submit (missing)
+  'submit': '提交',
+
+  // Social login (missing)
+  'or': '或',
+  'sign_in_with_google': '使用Google登录',
+  'sign_in_with_apple': '使用Apple登录',
+
+  // Profile completion (missing)
+  'profile_completion_title': '完善您的个人资料',
 };

@@ -10,6 +10,7 @@ import 'package:qulo_v2/features/chat/screens/solve_chat_question_screen.dart';
 import 'package:qulo_v2/features/chat/widgets/abandon_warning_dialog.dart';
 import 'package:qulo_v2/features/chat/widgets/chat_question_rescue.dart';
 import 'package:qulo_v2/features/diamonds/widgets/paywall_bottom_sheet.dart';
+import 'package:qulo_v2/features/quiz/widgets/power_purchase_sheet.dart';
 import 'package:qulo_v2/features/quiz/widgets/quiz_timer.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
@@ -165,6 +166,28 @@ mixin SolveChatQuestionScreenMixin
   Future<void> usePower(String powerName) async {
     timerKey.currentState?.pause();
 
+    // Envanter kontrolü — yoksa PowerPurchaseSheet aç
+    final exchange = ref.read(exchangeProvider);
+    final inventoryCount = exchange.inventory
+        .where((e) => e.powerName == powerName)
+        .fold<int>(0, (sum, e) => sum + e.count);
+
+    if (inventoryCount <= 0) {
+      await showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(24),
+          ),
+        ),
+        builder: (_) => const PowerPurchaseSheet(),
+      );
+      if (mounted) timerKey.currentState?.resume();
+      return;
+    }
+
     final apiResult = await ref.read(chatRepositoryProvider).usePower(
       widget.question.id,
       powerName,
@@ -225,7 +248,8 @@ mixin SolveChatQuestionScreenMixin
         timerKey.currentState?.resume();
       },
       failure: (f) async {
-        if (f is ServerFailure && f.code == 'INSUFFICIENT_DIAMONDS') {
+        if (f is ServerFailure &&
+            (f.code == 'INSUFFICIENT_DIAMONDS' || f.code == 'DIAMOND_COOLDOWN')) {
           await PaywallBottomSheetContent.show(ref,
               trigger: 'chat_question_power');
           if (mounted) timerKey.currentState?.resume();
@@ -266,7 +290,8 @@ mixin SolveChatQuestionScreenMixin
       },
       failure: (f) {
         setState(() => isSubmitting = false);
-        if (f is ServerFailure && f.code == 'INSUFFICIENT_DIAMONDS') {
+        if (f is ServerFailure &&
+            (f.code == 'INSUFFICIENT_DIAMONDS' || f.code == 'DIAMOND_COOLDOWN')) {
           PaywallBottomSheetContent.show(ref, trigger: 'chat_question_skip');
           return;
         }
@@ -377,7 +402,8 @@ mixin SolveChatQuestionScreenMixin
         });
       },
       failure: (f) {
-        if (f is ServerFailure && f.code == 'INSUFFICIENT_DIAMONDS') {
+        if (f is ServerFailure &&
+            (f.code == 'INSUFFICIENT_DIAMONDS' || f.code == 'DIAMOND_COOLDOWN')) {
           PaywallBottomSheetContent.show(ref,
               trigger: 'chat_question_rescue');
           return;

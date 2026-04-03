@@ -1,7 +1,7 @@
 abstract final class Env {
   static const apiBaseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'https://qulo-server-production.up.railway.app/api/v1',
+    defaultValue: 'http://192.168.1.166:3001/api/v1',
   );
   static const supabaseUrl = String.fromEnvironment(
     'SUPABASE_URL',

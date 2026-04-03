@@ -211,6 +211,7 @@ mixin RegisterScreenMixin on ConsumerState<RegisterScreen> {
           gender: gender!,
           lat: lat,
           lng: lng,
+          locale: Localizations.localeOf(context).languageCode,
         );
 
     if (!mounted) return;

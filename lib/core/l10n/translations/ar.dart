@@ -913,4 +913,104 @@ const arTranslations = <String, String>{
   'profile_details_subtitle': 'Enrich your profile, get more matches',
   'profile_bio_subtitle': 'Briefly introduce yourself',
   'profile_no_data': 'No user data',
+
+  // Paywall (missing)
+  'paywall_onboarding_title': 'اكتشف المزيد',
+  'paywall_maybe_later': 'ربما لاحقاً',
+
+  // Preferences (missing)
+  'gender_pref_locked_info': 'تواصل مع الدعم لتغيير تفضيل الجنس.',
+
+  // Chat tabs (missing)
+  'chat_drafts_tab': 'المسودات',
+  'chat_history_tab': 'السجل',
+  'chat_drafts_load_failed': 'فشل تحميل المسودات',
+  'chat_no_drafts': 'لا توجد مسودات بعد',
+  'chat_history_load_failed': 'فشل تحميل السجل',
+  'chat_no_history': 'لا يوجد سجل أسئلة بعد',
+  'chat_messages_error': 'فشل تحميل الرسائل',
+
+  // Onboarding V2 (missing)
+  'onboarding_v2_page1_title': 'التوافق على Qulo مختلف',
+  'onboarding_v2_page1_desc': 'هنا تتعرف على الآخرين من خلال الأسئلة. إذا أجاب شخص على جميع أسئلتك بشكل صحيح — تتوافقان!',
+  'onboarding_v2_page2_title': 'حضّر أسئلتك',
+  'onboarding_v2_page2_desc': 'أنشئ ٢-١٠ أسئلة. شخصية، ممتعة، لا يمكن البحث عنها. إذا أجاب شخص على الكل بشكل صحيح — تتوافقان!',
+  'onboarding_v2_page3_title': '٦ قوى خارقة',
+  'onboarding_v2_page3_desc': 'يمكن للحلّالين استخدام هذه القوى على أسئلتك. كل قوة تكلف ماسات بنفسجية — وهذا هو ربحك!',
+  'onboarding_v2_page4_title': 'اكسب ماسات خضراء!',
+  'onboarding_v2_page4_desc': 'كل شخص يستخدم قوة على أسئلتك يكسبك ماسات خضراء. أسئلة أكثر، أرباح أكثر!',
+  'onboarding_v2_page5_title': 'أي لغات تريد رؤيتها؟',
+  'onboarding_v2_page5_desc': 'سنعرض لك ملفات شخصية بأسئلة بلغاتك. يمكنك اختيار أكثر من لغة.',
+  'onboarding_v2_skip': 'تخطي',
+  'onboarding_v2_next': 'التالي',
+  'onboarding_v2_start': 'ابدأ الآن',
+  'onboarding_v2_premium_title': 'المزيد مع Premium',
+  'onboarding_v2_premium_cta': 'انتقل إلى Premium',
+  'onboarding_v2_premium_benefit_1': 'اكتشاف غير محدود',
+  'onboarding_v2_premium_benefit_2': 'مكافأة ماسات بنفسجية شهرية',
+  'onboarding_v2_premium_benefit_3': 'تجربة بدون إعلانات',
+
+  // Report categories (missing)
+  'report_select_category': 'اختر سبب الإبلاغ',
+  'report_cat_inappropriate': 'محتوى غير لائق',
+  'report_cat_fake': 'ملف شخصي مزيف',
+  'report_cat_spam': 'رسائل مزعجة',
+  'report_cat_harassment': 'تحرش',
+  'report_cat_underage': 'قاصر',
+  'report_cat_scam': 'احتيال',
+  'report_cat_offensive_photos': 'صور مسيئة',
+  'report_cat_threatening': 'تهديد',
+  'report_cat_impersonation': 'انتحال شخصية',
+  'report_cat_other': 'أخرى',
+  'report_reason_title': 'الوصف',
+  'report_reason_optional': 'أضف وصفاً اختيارياً...',
+  'report_reason_required': 'يرجى كتابة وصف مفصل...',
+
+  // Block (missing)
+  'blocked_users': 'المستخدمون المحظورون',
+  'no_blocked_users': 'لا يوجد مستخدمون محظورون',
+  'unblock': 'إلغاء الحظر',
+  'unblock_confirm_title': 'إلغاء الحظر',
+  'unblock_confirm_message': 'هل أنت متأكد أنك تريد إلغاء حظر هذا المستخدم؟',
+
+  // Support tickets (missing)
+  'my_tickets': 'تذاكر الدعم الخاصة بي',
+  'no_tickets': 'لا توجد تذاكر دعم بعد',
+  'create_ticket': 'إنشاء تذكرة دعم',
+  'ticket_created_success': 'تم إنشاء تذكرة الدعم الخاصة بك',
+  'ticket_replied': 'تم الرد',
+  'ticket_category': 'الفئة',
+  'ticket_subject': 'الموضوع',
+  'ticket_subject_hint': 'صف مشكلتك باختصار',
+  'ticket_subject_error': 'يجب أن يكون الموضوع ٥ أحرف على الأقل',
+  'ticket_message': 'الرسالة',
+  'ticket_message_hint': 'صف مشكلتك بالتفصيل',
+  'ticket_message_error': 'يجب أن تكون الرسالة ١٠ أحرف على الأقل',
+  'ticket_cat_account': 'الحساب',
+  'ticket_cat_technical': 'تقني',
+  'ticket_cat_billing': 'الفوترة',
+  'ticket_cat_match': 'التوافق',
+  'ticket_cat_other': 'أخرى',
+  'ticket_status_open': 'مفتوحة',
+  'ticket_status_in_progress': 'قيد المعالجة',
+  'ticket_status_resolved': 'تم الحل',
+  'ticket_status_closed': 'مغلقة',
+
+  // Help (missing)
+  'help_support': 'المساعدة والدعم',
+
+  // Ban (missing)
+  'account_banned_title': 'الحساب موقوف',
+  'account_banned_message': 'تم إيقاف حسابك لمخالفة إرشادات المجتمع. تواصل معنا للتفاصيل.',
+
+  // Submit (missing)
+  'submit': 'إرسال',
+
+  // Social login (missing)
+  'or': 'أو',
+  'sign_in_with_google': 'تسجيل الدخول بحساب Google',
+  'sign_in_with_apple': 'تسجيل الدخول بحساب Apple',
+
+  // Profile completion (missing)
+  'profile_completion_title': 'أكمل ملفك الشخصي',
 };

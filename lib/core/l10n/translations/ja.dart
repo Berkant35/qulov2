@@ -915,4 +915,104 @@ const jaTranslations = <String, String>{
   'profile_details_subtitle': 'Enrich your profile, get more matches',
   'profile_bio_subtitle': 'Briefly introduce yourself',
   'profile_no_data': 'No user data',
+
+  // Paywall (missing)
+  'paywall_onboarding_title': 'もっと発見する',
+  'paywall_maybe_later': 'また後で',
+
+  // Preferences (missing)
+  'gender_pref_locked_info': '性別の設定を変更するにはサポートにお問い合わせください。',
+
+  // Chat tabs (missing)
+  'chat_drafts_tab': '下書き',
+  'chat_history_tab': '履歴',
+  'chat_drafts_load_failed': '下書きの読み込みに失敗しました',
+  'chat_no_drafts': 'まだ下書きはありません',
+  'chat_history_load_failed': '履歴の読み込みに失敗しました',
+  'chat_no_history': 'まだ質問履歴はありません',
+  'chat_messages_error': 'メッセージの読み込みに失敗しました',
+
+  // Onboarding V2 (missing)
+  'onboarding_v2_page1_title': 'Quloのマッチングは違います',
+  'onboarding_v2_page1_desc': 'ここでは質問を通じて出会います。誰かがあなたの質問に全問正解したら — マッチ！',
+  'onboarding_v2_page2_title': '質問を準備しよう',
+  'onboarding_v2_page2_desc': '2〜10問の質問を作成。個人的で面白い、検索できない質問を。全問正解されたら — マッチ！',
+  'onboarding_v2_page3_title': '6つのスーパーパワー',
+  'onboarding_v2_page3_desc': '回答者はあなたの質問にパワーを使えます。各パワーは紫ダイヤモンドがかかります — それがあなたの収入です！',
+  'onboarding_v2_page4_title': 'グリーンダイヤモンドを稼ごう！',
+  'onboarding_v2_page4_desc': 'あなたの質問にパワーを使う人がいるたびにグリーンダイヤモンドが貰えます。質問が多いほど、収入も多い！',
+  'onboarding_v2_page5_title': 'どの言語を表示しますか？',
+  'onboarding_v2_page5_desc': 'あなたの言語で質問があるプロフィールを表示します。複数選択できます。',
+  'onboarding_v2_skip': 'スキップ',
+  'onboarding_v2_next': '次へ',
+  'onboarding_v2_start': '始める',
+  'onboarding_v2_premium_title': 'Premiumでもっと',
+  'onboarding_v2_premium_cta': 'Premiumにする',
+  'onboarding_v2_premium_benefit_1': '無制限の発見',
+  'onboarding_v2_premium_benefit_2': '毎月の紫ダイヤモンドボーナス',
+  'onboarding_v2_premium_benefit_3': '広告なしの体験',
+
+  // Report categories (missing)
+  'report_select_category': '通報理由を選択',
+  'report_cat_inappropriate': '不適切なコンテンツ',
+  'report_cat_fake': '偽プロフィール',
+  'report_cat_spam': 'スパム',
+  'report_cat_harassment': '嫌がらせ',
+  'report_cat_underage': '未成年',
+  'report_cat_scam': '詐欺',
+  'report_cat_offensive_photos': '不快な写真',
+  'report_cat_threatening': '脅迫',
+  'report_cat_impersonation': 'なりすまし',
+  'report_cat_other': 'その他',
+  'report_reason_title': '説明',
+  'report_reason_optional': '任意の説明を追加...',
+  'report_reason_required': '詳しい説明を書いてください...',
+
+  // Block (missing)
+  'blocked_users': 'ブロックしたユーザー',
+  'no_blocked_users': 'ブロックしたユーザーはいません',
+  'unblock': 'ブロック解除',
+  'unblock_confirm_title': 'ブロック解除',
+  'unblock_confirm_message': 'このユーザーのブロックを解除しますか？',
+
+  // Support tickets (missing)
+  'my_tickets': 'マイサポートチケット',
+  'no_tickets': 'サポートチケットはまだありません',
+  'create_ticket': 'サポートチケットを作成',
+  'ticket_created_success': 'サポートチケットが作成されました',
+  'ticket_replied': '返信済み',
+  'ticket_category': 'カテゴリ',
+  'ticket_subject': '件名',
+  'ticket_subject_hint': '問題を簡潔に説明してください',
+  'ticket_subject_error': '件名は5文字以上必要です',
+  'ticket_message': 'メッセージ',
+  'ticket_message_hint': '問題を詳しく説明してください',
+  'ticket_message_error': 'メッセージは10文字以上必要です',
+  'ticket_cat_account': 'アカウント',
+  'ticket_cat_technical': '技術的',
+  'ticket_cat_billing': '請求',
+  'ticket_cat_match': 'マッチ',
+  'ticket_cat_other': 'その他',
+  'ticket_status_open': 'オープン',
+  'ticket_status_in_progress': '対応中',
+  'ticket_status_resolved': '解決済み',
+  'ticket_status_closed': 'クローズ',
+
+  // Help (missing)
+  'help_support': 'ヘルプとサポート',
+
+  // Ban (missing)
+  'account_banned_title': 'アカウント停止',
+  'account_banned_message': 'コミュニティガイドライン違反のため、アカウントが停止されました。詳細はお問い合わせください。',
+
+  // Submit (missing)
+  'submit': '送信',
+
+  // Social login (missing)
+  'or': 'または',
+  'sign_in_with_google': 'Googleでサインイン',
+  'sign_in_with_apple': 'Appleでサインイン',
+
+  // Profile completion (missing)
+  'profile_completion_title': 'プロフィールを完成させる',
 };

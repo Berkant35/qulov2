@@ -913,4 +913,104 @@ const koTranslations = <String, String>{
   'profile_details_subtitle': 'Enrich your profile, get more matches',
   'profile_bio_subtitle': 'Briefly introduce yourself',
   'profile_no_data': 'No user data',
+
+  // Paywall (missing)
+  'paywall_onboarding_title': '더 많이 발견하기',
+  'paywall_maybe_later': '나중에',
+
+  // Preferences (missing)
+  'gender_pref_locked_info': '성별 선호도를 변경하려면 지원팀에 문의하세요.',
+
+  // Chat tabs (missing)
+  'chat_drafts_tab': '임시저장',
+  'chat_history_tab': '기록',
+  'chat_drafts_load_failed': '임시저장 불러오기 실패',
+  'chat_no_drafts': '아직 임시저장이 없습니다',
+  'chat_history_load_failed': '기록 불러오기 실패',
+  'chat_no_history': '아직 질문 기록이 없습니다',
+  'chat_messages_error': '메시지 불러오기 실패',
+
+  // Onboarding V2 (missing)
+  'onboarding_v2_page1_title': 'Qulo에서의 매칭은 다릅니다',
+  'onboarding_v2_page1_desc': '여기서는 질문을 통해 만납니다. 누군가 당신의 모든 질문에 정답을 맞추면 — 매치!',
+  'onboarding_v2_page2_title': '질문을 준비하세요',
+  'onboarding_v2_page2_desc': '2-10개의 질문을 만드세요. 개인적이고, 재미있고, 검색할 수 없는 질문을. 모두 맞추면 — 매치!',
+  'onboarding_v2_page3_title': '6가지 슈퍼 파워',
+  'onboarding_v2_page3_desc': '풀이자는 당신의 질문에 파워를 사용할 수 있습니다. 각 파워는 보라 다이아몬드가 필요합니다 — 그게 당신의 수입입니다!',
+  'onboarding_v2_page4_title': '초록 다이아몬드를 벌어보세요!',
+  'onboarding_v2_page4_desc': '당신의 질문에 파워를 사용하는 사람마다 초록 다이아몬드를 벌 수 있습니다. 질문이 많을수록 수입도 많아집니다!',
+  'onboarding_v2_page5_title': '어떤 언어를 보고 싶으세요?',
+  'onboarding_v2_page5_desc': '당신의 언어로 된 질문이 있는 프로필을 보여드립니다. 여러 언어를 선택할 수 있습니다.',
+  'onboarding_v2_skip': '건너뛰기',
+  'onboarding_v2_next': '다음',
+  'onboarding_v2_start': '시작하기',
+  'onboarding_v2_premium_title': 'Premium으로 더 많이',
+  'onboarding_v2_premium_cta': 'Premium 시작',
+  'onboarding_v2_premium_benefit_1': '무제한 발견',
+  'onboarding_v2_premium_benefit_2': '월간 보라 다이아몬드 보너스',
+  'onboarding_v2_premium_benefit_3': '광고 없는 경험',
+
+  // Report categories (missing)
+  'report_select_category': '신고 사유 선택',
+  'report_cat_inappropriate': '부적절한 콘텐츠',
+  'report_cat_fake': '가짜 프로필',
+  'report_cat_spam': '스팸',
+  'report_cat_harassment': '괴롭힘',
+  'report_cat_underage': '미성년자',
+  'report_cat_scam': '사기',
+  'report_cat_offensive_photos': '불쾌한 사진',
+  'report_cat_threatening': '위협',
+  'report_cat_impersonation': '사칭',
+  'report_cat_other': '기타',
+  'report_reason_title': '설명',
+  'report_reason_optional': '선택적 설명 추가...',
+  'report_reason_required': '자세한 설명을 작성해주세요...',
+
+  // Block (missing)
+  'blocked_users': '차단된 사용자',
+  'no_blocked_users': '차단된 사용자 없음',
+  'unblock': '차단 해제',
+  'unblock_confirm_title': '차단 해제',
+  'unblock_confirm_message': '이 사용자의 차단을 해제하시겠습니까?',
+
+  // Support tickets (missing)
+  'my_tickets': '내 지원 티켓',
+  'no_tickets': '아직 지원 티켓이 없습니다',
+  'create_ticket': '지원 티켓 생성',
+  'ticket_created_success': '지원 티켓이 생성되었습니다',
+  'ticket_replied': '답변됨',
+  'ticket_category': '카테고리',
+  'ticket_subject': '제목',
+  'ticket_subject_hint': '문제를 간략하게 설명하세요',
+  'ticket_subject_error': '제목은 최소 5자 이상이어야 합니다',
+  'ticket_message': '메시지',
+  'ticket_message_hint': '문제를 자세히 설명하세요',
+  'ticket_message_error': '메시지는 최소 10자 이상이어야 합니다',
+  'ticket_cat_account': '계정',
+  'ticket_cat_technical': '기술',
+  'ticket_cat_billing': '결제',
+  'ticket_cat_match': '매치',
+  'ticket_cat_other': '기타',
+  'ticket_status_open': '열림',
+  'ticket_status_in_progress': '처리 중',
+  'ticket_status_resolved': '해결됨',
+  'ticket_status_closed': '닫힘',
+
+  // Help (missing)
+  'help_support': '도움말 및 지원',
+
+  // Ban (missing)
+  'account_banned_title': '계정 정지',
+  'account_banned_message': '커뮤니티 가이드라인 위반으로 계정이 정지되었습니다. 자세한 내용은 문의해주세요.',
+
+  // Submit (missing)
+  'submit': '제출',
+
+  // Social login (missing)
+  'or': '또는',
+  'sign_in_with_google': 'Google로 로그인',
+  'sign_in_with_apple': 'Apple로 로그인',
+
+  // Profile completion (missing)
+  'profile_completion_title': '프로필 완성하기',
 };

@@ -25,12 +25,21 @@ class SocialAuthService {
   SocialAuthService._();
   static final instance = SocialAuthService._();
 
+  final _googleSignIn = GoogleSignIn(
+    serverClientId:
+        '1036336261876-gjgamt1c9q1g5h1qc45mmek30l1o2op8.apps.googleusercontent.com',
+  );
+
   Future<SocialSignInResult> signInWithGoogle() async {
-    await GoogleSignIn.instance.signOut();
+    await _googleSignIn.signOut();
 
-    final account = await GoogleSignIn.instance.authenticate();
+    final account = await _googleSignIn.signIn();
+    if (account == null) {
+      throw Exception('Google sign-in cancelled');
+    }
 
-    final idToken = account.authentication.idToken;
+    final auth = await account.authentication;
+    final idToken = auth.idToken;
     if (idToken == null) {
       throw Exception('Google sign-in: no ID token');
     }

@@ -915,4 +915,104 @@ const svTranslations = <String, String>{
   'profile_details_subtitle': 'Enrich your profile, get more matches',
   'profile_bio_subtitle': 'Briefly introduce yourself',
   'profile_no_data': 'No user data',
+
+  // Paywall (missing)
+  'paywall_onboarding_title': 'Upptäck mer',
+  'paywall_maybe_later': 'Kanske senare',
+
+  // Preferences (missing)
+  'gender_pref_locked_info': 'Kontakta supporten för att ändra din könspreferens.',
+
+  // Chat tabs (missing)
+  'chat_drafts_tab': 'Utkast',
+  'chat_history_tab': 'Historik',
+  'chat_drafts_load_failed': 'Kunde inte ladda utkast',
+  'chat_no_drafts': 'Inga utkast ännu',
+  'chat_history_load_failed': 'Kunde inte ladda historik',
+  'chat_no_history': 'Ingen frågehistorik ännu',
+  'chat_messages_error': 'Kunde inte ladda meddelanden',
+
+  // Onboarding V2 (missing)
+  'onboarding_v2_page1_title': 'Matchning på Qulo är annorlunda',
+  'onboarding_v2_page1_desc': 'Här möter du människor genom frågor. Om någon svarar rätt på alla dina frågor — det är en match!',
+  'onboarding_v2_page2_title': 'Förbered dina frågor',
+  'onboarding_v2_page2_desc': 'Skapa 2-10 frågor. Personliga, roliga, som inte kan googlas. Om någon klarar alla — det är en match!',
+  'onboarding_v2_page3_title': '6 Superkrafter',
+  'onboarding_v2_page3_desc': 'Lösare kan använda dessa krafter på dina frågor. Varje kraft kostar lila diamanter — och det är din inkomst!',
+  'onboarding_v2_page4_title': 'Tjäna gröna diamanter!',
+  'onboarding_v2_page4_desc': 'Varje person som använder en kraft på dina frågor ger dig gröna diamanter. Fler frågor, mer inkomst!',
+  'onboarding_v2_page5_title': 'Vilka språk vill du se?',
+  'onboarding_v2_page5_desc': 'Vi visar dig profiler med frågor på dina språk. Du kan välja flera.',
+  'onboarding_v2_skip': 'Hoppa över',
+  'onboarding_v2_next': 'Nästa',
+  'onboarding_v2_start': 'Kom igång',
+  'onboarding_v2_premium_title': 'Mer med Premium',
+  'onboarding_v2_premium_cta': 'Skaffa Premium',
+  'onboarding_v2_premium_benefit_1': 'Obegränsat upptäckande',
+  'onboarding_v2_premium_benefit_2': 'Månatlig lila diamantbonus',
+  'onboarding_v2_premium_benefit_3': 'Reklamfri upplevelse',
+
+  // Report categories (missing)
+  'report_select_category': 'Välj anledning till anmälan',
+  'report_cat_inappropriate': 'Olämpligt innehåll',
+  'report_cat_fake': 'Falsk profil',
+  'report_cat_spam': 'Skräppost',
+  'report_cat_harassment': 'Trakasserier',
+  'report_cat_underage': 'Minderårig',
+  'report_cat_scam': 'Bedrägeri',
+  'report_cat_offensive_photos': 'Stötande foton',
+  'report_cat_threatening': 'Hotfullt',
+  'report_cat_impersonation': 'Identitetsstöld',
+  'report_cat_other': 'Övrigt',
+  'report_reason_title': 'Beskrivning',
+  'report_reason_optional': 'Lägg till en valfri beskrivning...',
+  'report_reason_required': 'Skriv en detaljerad beskrivning...',
+
+  // Block (missing)
+  'blocked_users': 'Blockerade användare',
+  'no_blocked_users': 'Inga blockerade användare',
+  'unblock': 'Avblockera',
+  'unblock_confirm_title': 'Avblockera',
+  'unblock_confirm_message': 'Är du säker på att du vill avblockera den här användaren?',
+
+  // Support tickets (missing)
+  'my_tickets': 'Mina supportärenden',
+  'no_tickets': 'Inga supportärenden ännu',
+  'create_ticket': 'Skapa supportärende',
+  'ticket_created_success': 'Ditt supportärende har skapats',
+  'ticket_replied': 'Besvarad',
+  'ticket_category': 'Kategori',
+  'ticket_subject': 'Ämne',
+  'ticket_subject_hint': 'Beskriv kort ditt problem',
+  'ticket_subject_error': 'Ämnet måste vara minst 5 tecken',
+  'ticket_message': 'Meddelande',
+  'ticket_message_hint': 'Beskriv ditt problem i detalj',
+  'ticket_message_error': 'Meddelandet måste vara minst 10 tecken',
+  'ticket_cat_account': 'Konto',
+  'ticket_cat_technical': 'Tekniskt',
+  'ticket_cat_billing': 'Fakturering',
+  'ticket_cat_match': 'Match',
+  'ticket_cat_other': 'Övrigt',
+  'ticket_status_open': 'Öppet',
+  'ticket_status_in_progress': 'Pågående',
+  'ticket_status_resolved': 'Löst',
+  'ticket_status_closed': 'Stängt',
+
+  // Help (missing)
+  'help_support': 'Hjälp och support',
+
+  // Ban (missing)
+  'account_banned_title': 'Konto avstängt',
+  'account_banned_message': 'Ditt konto har stängts av för brott mot communityreglerna. Kontakta oss för detaljer.',
+
+  // Submit (missing)
+  'submit': 'Skicka',
+
+  // Social login (missing)
+  'or': 'eller',
+  'sign_in_with_google': 'Logga in med Google',
+  'sign_in_with_apple': 'Logga in med Apple',
+
+  // Profile completion (missing)
+  'profile_completion_title': 'Fyll i din profil',
 };

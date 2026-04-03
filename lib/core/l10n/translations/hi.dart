@@ -915,4 +915,104 @@ const hiTranslations = <String, String>{
   'profile_details_subtitle': 'Enrich your profile, get more matches',
   'profile_bio_subtitle': 'Briefly introduce yourself',
   'profile_no_data': 'No user data',
+
+  // Paywall (missing)
+  'paywall_onboarding_title': 'और खोजें',
+  'paywall_maybe_later': 'शायद बाद में',
+
+  // Preferences (missing)
+  'gender_pref_locked_info': 'अपनी लिंग प्राथमिकता बदलने के लिए सहायता से संपर्क करें।',
+
+  // Chat tabs (missing)
+  'chat_drafts_tab': 'ड्राफ्ट',
+  'chat_history_tab': 'इतिहास',
+  'chat_drafts_load_failed': 'ड्राफ्ट लोड करने में विफल',
+  'chat_no_drafts': 'अभी तक कोई ड्राफ्ट नहीं',
+  'chat_history_load_failed': 'इतिहास लोड करने में विफल',
+  'chat_no_history': 'अभी तक कोई प्रश्न इतिहास नहीं',
+  'chat_messages_error': 'संदेश लोड करने में विफल',
+
+  // Onboarding V2 (missing)
+  'onboarding_v2_page1_title': 'Qulo पर मैचिंग अलग है',
+  'onboarding_v2_page1_desc': 'यहाँ आप सवालों के ज़रिए लोगों से मिलते हैं। अगर कोई आपके सभी सवालों का सही जवाब दे दे — तो मैच!',
+  'onboarding_v2_page2_title': 'अपने सवाल तैयार करें',
+  'onboarding_v2_page2_desc': '2-10 सवाल बनाएँ। निजी, मज़ेदार, जो Google पर न मिलें। अगर कोई सब सही करे — तो मैच!',
+  'onboarding_v2_page3_title': '6 सुपर पावर',
+  'onboarding_v2_page3_desc': 'हल करने वाले आपके सवालों पर ये पावर इस्तेमाल कर सकते हैं। हर पावर की कीमत बैंगनी हीरे हैं — और वो आपकी कमाई है!',
+  'onboarding_v2_page4_title': 'हरे हीरे कमाएँ!',
+  'onboarding_v2_page4_desc': 'हर व्यक्ति जो आपके सवालों पर पावर इस्तेमाल करता है, आपको हरे हीरे देता है। ज़्यादा सवाल, ज़्यादा कमाई!',
+  'onboarding_v2_page5_title': 'कौन सी भाषाएँ देखना चाहते हैं?',
+  'onboarding_v2_page5_desc': 'हम आपको आपकी भाषाओं में सवालों वाली प्रोफ़ाइल दिखाएँगे। आप कई चुन सकते हैं।',
+  'onboarding_v2_skip': 'छोड़ें',
+  'onboarding_v2_next': 'अगला',
+  'onboarding_v2_start': 'शुरू करें',
+  'onboarding_v2_premium_title': 'Premium के साथ और भी',
+  'onboarding_v2_premium_cta': 'Premium लें',
+  'onboarding_v2_premium_benefit_1': 'असीमित खोज',
+  'onboarding_v2_premium_benefit_2': 'मासिक बैंगनी हीरा बोनस',
+  'onboarding_v2_premium_benefit_3': 'विज्ञापन-मुक्त अनुभव',
+
+  // Report categories (missing)
+  'report_select_category': 'रिपोर्ट का कारण चुनें',
+  'report_cat_inappropriate': 'अनुचित सामग्री',
+  'report_cat_fake': 'फ़र्ज़ी प्रोफ़ाइल',
+  'report_cat_spam': 'स्पैम',
+  'report_cat_harassment': 'उत्पीड़न',
+  'report_cat_underage': 'नाबालिग',
+  'report_cat_scam': 'धोखाधड़ी',
+  'report_cat_offensive_photos': 'आपत्तिजनक फ़ोटो',
+  'report_cat_threatening': 'धमकी',
+  'report_cat_impersonation': 'प्रतिरूपण',
+  'report_cat_other': 'अन्य',
+  'report_reason_title': 'विवरण',
+  'report_reason_optional': 'वैकल्पिक विवरण जोड़ें...',
+  'report_reason_required': 'कृपया विस्तृत विवरण लिखें...',
+
+  // Block (missing)
+  'blocked_users': 'ब्लॉक किए गए उपयोगकर्ता',
+  'no_blocked_users': 'कोई ब्लॉक किया गया उपयोगकर्ता नहीं',
+  'unblock': 'अनब्लॉक',
+  'unblock_confirm_title': 'अनब्लॉक',
+  'unblock_confirm_message': 'क्या आप वाकई इस उपयोगकर्ता को अनब्लॉक करना चाहते हैं?',
+
+  // Support tickets (missing)
+  'my_tickets': 'मेरे सहायता टिकट',
+  'no_tickets': 'अभी तक कोई सहायता टिकट नहीं',
+  'create_ticket': 'सहायता टिकट बनाएँ',
+  'ticket_created_success': 'आपका सहायता टिकट बन गया है',
+  'ticket_replied': 'जवाब दिया गया',
+  'ticket_category': 'श्रेणी',
+  'ticket_subject': 'विषय',
+  'ticket_subject_hint': 'अपनी समस्या का संक्षेप में वर्णन करें',
+  'ticket_subject_error': 'विषय कम से कम 5 अक्षर का होना चाहिए',
+  'ticket_message': 'संदेश',
+  'ticket_message_hint': 'अपनी समस्या का विस्तार से वर्णन करें',
+  'ticket_message_error': 'संदेश कम से कम 10 अक्षर का होना चाहिए',
+  'ticket_cat_account': 'खाता',
+  'ticket_cat_technical': 'तकनीकी',
+  'ticket_cat_billing': 'बिलिंग',
+  'ticket_cat_match': 'मैच',
+  'ticket_cat_other': 'अन्य',
+  'ticket_status_open': 'खुला',
+  'ticket_status_in_progress': 'प्रगति में',
+  'ticket_status_resolved': 'हल किया गया',
+  'ticket_status_closed': 'बंद',
+
+  // Help (missing)
+  'help_support': 'सहायता और समर्थन',
+
+  // Ban (missing)
+  'account_banned_title': 'खाता निलंबित',
+  'account_banned_message': 'सामुदायिक दिशानिर्देशों का उल्लंघन करने के कारण आपका खाता निलंबित कर दिया गया है। विवरण के लिए हमसे संपर्क करें।',
+
+  // Submit (missing)
+  'submit': 'सबमिट करें',
+
+  // Social login (missing)
+  'or': 'या',
+  'sign_in_with_google': 'Google से साइन इन करें',
+  'sign_in_with_apple': 'Apple से साइन इन करें',
+
+  // Profile completion (missing)
+  'profile_completion_title': 'अपनी प्रोफ़ाइल पूरी करें',
 };

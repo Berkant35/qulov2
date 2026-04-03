@@ -915,4 +915,104 @@ const itTranslations = <String, String>{
   'profile_details_subtitle': 'Enrich your profile, get more matches',
   'profile_bio_subtitle': 'Briefly introduce yourself',
   'profile_no_data': 'No user data',
+
+  // Paywall (missing)
+  'paywall_onboarding_title': 'Scopri di più',
+  'paywall_maybe_later': 'Forse dopo',
+
+  // Preferences (missing)
+  'gender_pref_locked_info': 'Contatta il supporto per cambiare la tua preferenza di genere.',
+
+  // Chat tabs (missing)
+  'chat_drafts_tab': 'Bozze',
+  'chat_history_tab': 'Cronologia',
+  'chat_drafts_load_failed': 'Impossibile caricare le bozze',
+  'chat_no_drafts': 'Nessuna bozza ancora',
+  'chat_history_load_failed': 'Impossibile caricare la cronologia',
+  'chat_no_history': 'Nessuna cronologia domande ancora',
+  'chat_messages_error': 'Impossibile caricare i messaggi',
+
+  // Onboarding V2 (missing)
+  'onboarding_v2_page1_title': 'Il matching su Qulo è diverso',
+  'onboarding_v2_page1_desc': 'Qui incontri persone attraverso le domande. Se qualcuno risponde correttamente a tutte le tue domande — è un match!',
+  'onboarding_v2_page2_title': 'Prepara le tue domande',
+  'onboarding_v2_page2_desc': 'Crea 2-10 domande. Personali, divertenti, non cercabili su Google. Se qualcuno le indovina tutte — è un match!',
+  'onboarding_v2_page3_title': '6 Super Poteri',
+  'onboarding_v2_page3_desc': 'I giocatori possono usare questi poteri sulle tue domande. Ogni potere costa diamanti viola — e quello è il tuo guadagno!',
+  'onboarding_v2_page4_title': 'Guadagna diamanti verdi!',
+  'onboarding_v2_page4_desc': 'Ogni persona che usa un potere sulle tue domande ti fa guadagnare diamanti verdi. Più domande, più guadagni!',
+  'onboarding_v2_page5_title': 'Quali lingue vuoi vedere?',
+  'onboarding_v2_page5_desc': 'Ti mostreremo profili con domande nelle tue lingue. Puoi selezionarne diverse.',
+  'onboarding_v2_skip': 'Salta',
+  'onboarding_v2_next': 'Avanti',
+  'onboarding_v2_start': 'Inizia',
+  'onboarding_v2_premium_title': 'Di più con Premium',
+  'onboarding_v2_premium_cta': 'Passa a Premium',
+  'onboarding_v2_premium_benefit_1': 'Scoperta illimitata',
+  'onboarding_v2_premium_benefit_2': 'Bonus mensile di diamanti viola',
+  'onboarding_v2_premium_benefit_3': 'Esperienza senza pubblicità',
+
+  // Report categories (missing)
+  'report_select_category': 'Seleziona il motivo della segnalazione',
+  'report_cat_inappropriate': 'Contenuto inappropriato',
+  'report_cat_fake': 'Profilo falso',
+  'report_cat_spam': 'Spam',
+  'report_cat_harassment': 'Molestie',
+  'report_cat_underage': 'Minorenne',
+  'report_cat_scam': 'Truffa',
+  'report_cat_offensive_photos': 'Foto offensive',
+  'report_cat_threatening': 'Minacce',
+  'report_cat_impersonation': 'Furto d\'identità',
+  'report_cat_other': 'Altro',
+  'report_reason_title': 'Descrizione',
+  'report_reason_optional': 'Aggiungi una descrizione opzionale...',
+  'report_reason_required': 'Scrivi una descrizione dettagliata...',
+
+  // Block (missing)
+  'blocked_users': 'Utenti bloccati',
+  'no_blocked_users': 'Nessun utente bloccato',
+  'unblock': 'Sblocca',
+  'unblock_confirm_title': 'Sblocca',
+  'unblock_confirm_message': 'Sei sicuro di voler sbloccare questo utente?',
+
+  // Support tickets (missing)
+  'my_tickets': 'I miei ticket di supporto',
+  'no_tickets': 'Nessun ticket di supporto ancora',
+  'create_ticket': 'Crea ticket di supporto',
+  'ticket_created_success': 'Il tuo ticket di supporto è stato creato',
+  'ticket_replied': 'Risposto',
+  'ticket_category': 'Categoria',
+  'ticket_subject': 'Oggetto',
+  'ticket_subject_hint': 'Descrivi brevemente il tuo problema',
+  'ticket_subject_error': 'L\'oggetto deve contenere almeno 5 caratteri',
+  'ticket_message': 'Messaggio',
+  'ticket_message_hint': 'Descrivi il tuo problema in dettaglio',
+  'ticket_message_error': 'Il messaggio deve contenere almeno 10 caratteri',
+  'ticket_cat_account': 'Account',
+  'ticket_cat_technical': 'Tecnico',
+  'ticket_cat_billing': 'Fatturazione',
+  'ticket_cat_match': 'Match',
+  'ticket_cat_other': 'Altro',
+  'ticket_status_open': 'Aperto',
+  'ticket_status_in_progress': 'In corso',
+  'ticket_status_resolved': 'Risolto',
+  'ticket_status_closed': 'Chiuso',
+
+  // Help (missing)
+  'help_support': 'Aiuto e supporto',
+
+  // Ban (missing)
+  'account_banned_title': 'Account sospeso',
+  'account_banned_message': 'Il tuo account è stato sospeso per violazione delle linee guida della community. Contattaci per dettagli.',
+
+  // Submit (missing)
+  'submit': 'Invia',
+
+  // Social login (missing)
+  'or': 'o',
+  'sign_in_with_google': 'Accedi con Google',
+  'sign_in_with_apple': 'Accedi con Apple',
+
+  // Profile completion (missing)
+  'profile_completion_title': 'Completa il tuo profilo',
 };

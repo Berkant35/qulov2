@@ -913,4 +913,104 @@ const nlTranslations = <String, String>{
   'profile_details_subtitle': 'Enrich your profile, get more matches',
   'profile_bio_subtitle': 'Briefly introduce yourself',
   'profile_no_data': 'No user data',
+
+  // Paywall (missing)
+  'paywall_onboarding_title': 'Ontdek meer',
+  'paywall_maybe_later': 'Misschien later',
+
+  // Preferences (missing)
+  'gender_pref_locked_info': 'Neem contact op met support om je geslachtsvoorkeur te wijzigen.',
+
+  // Chat tabs (missing)
+  'chat_drafts_tab': 'Concepten',
+  'chat_history_tab': 'Geschiedenis',
+  'chat_drafts_load_failed': 'Concepten laden mislukt',
+  'chat_no_drafts': 'Nog geen concepten',
+  'chat_history_load_failed': 'Geschiedenis laden mislukt',
+  'chat_no_history': 'Nog geen vragengeschiedenis',
+  'chat_messages_error': 'Berichten laden mislukt',
+
+  // Onboarding V2 (missing)
+  'onboarding_v2_page1_title': 'Matchen op Qulo is anders',
+  'onboarding_v2_page1_desc': 'Hier ontmoet je mensen via vragen. Als iemand al jouw vragen goed beantwoordt — het is een match!',
+  'onboarding_v2_page2_title': 'Bereid je vragen voor',
+  'onboarding_v2_page2_desc': 'Maak 2-10 vragen. Persoonlijk, leuk, niet te googelen. Als iemand alles goed heeft — het is een match!',
+  'onboarding_v2_page3_title': '6 Superkrachten',
+  'onboarding_v2_page3_desc': 'Oplossers kunnen deze krachten gebruiken bij jouw vragen. Elke kracht kost paarse diamanten — en dat is jouw verdienste!',
+  'onboarding_v2_page4_title': 'Verdien groene diamanten!',
+  'onboarding_v2_page4_desc': 'Elke persoon die een kracht gebruikt bij jouw vragen levert je groene diamanten op. Meer vragen, meer verdiensten!',
+  'onboarding_v2_page5_title': 'Welke talen wil je zien?',
+  'onboarding_v2_page5_desc': 'We tonen je profielen met vragen in jouw talen. Je kunt er meerdere selecteren.',
+  'onboarding_v2_skip': 'Overslaan',
+  'onboarding_v2_next': 'Volgende',
+  'onboarding_v2_start': 'Aan de slag',
+  'onboarding_v2_premium_title': 'Meer met Premium',
+  'onboarding_v2_premium_cta': 'Ga Premium',
+  'onboarding_v2_premium_benefit_1': 'Onbeperkt ontdekken',
+  'onboarding_v2_premium_benefit_2': 'Maandelijkse paarse diamanten bonus',
+  'onboarding_v2_premium_benefit_3': 'Advertentievrije ervaring',
+
+  // Report categories (missing)
+  'report_select_category': 'Selecteer reden voor melding',
+  'report_cat_inappropriate': 'Ongepaste inhoud',
+  'report_cat_fake': 'Nepprofiel',
+  'report_cat_spam': 'Spam',
+  'report_cat_harassment': 'Intimidatie',
+  'report_cat_underage': 'Minderjarig',
+  'report_cat_scam': 'Oplichting',
+  'report_cat_offensive_photos': 'Aanstootgevende foto\'s',
+  'report_cat_threatening': 'Bedreigend',
+  'report_cat_impersonation': 'Identiteitsfraude',
+  'report_cat_other': 'Overig',
+  'report_reason_title': 'Beschrijving',
+  'report_reason_optional': 'Voeg een optionele beschrijving toe...',
+  'report_reason_required': 'Schrijf een gedetailleerde beschrijving...',
+
+  // Block (missing)
+  'blocked_users': 'Geblokkeerde gebruikers',
+  'no_blocked_users': 'Geen geblokkeerde gebruikers',
+  'unblock': 'Deblokkeren',
+  'unblock_confirm_title': 'Deblokkeren',
+  'unblock_confirm_message': 'Weet je zeker dat je deze gebruiker wilt deblokkeren?',
+
+  // Support tickets (missing)
+  'my_tickets': 'Mijn supporttickets',
+  'no_tickets': 'Nog geen supporttickets',
+  'create_ticket': 'Supportticket aanmaken',
+  'ticket_created_success': 'Je supportticket is aangemaakt',
+  'ticket_replied': 'Beantwoord',
+  'ticket_category': 'Categorie',
+  'ticket_subject': 'Onderwerp',
+  'ticket_subject_hint': 'Beschrijf je probleem kort',
+  'ticket_subject_error': 'Onderwerp moet minimaal 5 tekens bevatten',
+  'ticket_message': 'Bericht',
+  'ticket_message_hint': 'Beschrijf je probleem in detail',
+  'ticket_message_error': 'Bericht moet minimaal 10 tekens bevatten',
+  'ticket_cat_account': 'Account',
+  'ticket_cat_technical': 'Technisch',
+  'ticket_cat_billing': 'Facturering',
+  'ticket_cat_match': 'Match',
+  'ticket_cat_other': 'Overig',
+  'ticket_status_open': 'Open',
+  'ticket_status_in_progress': 'In behandeling',
+  'ticket_status_resolved': 'Opgelost',
+  'ticket_status_closed': 'Gesloten',
+
+  // Help (missing)
+  'help_support': 'Help & ondersteuning',
+
+  // Ban (missing)
+  'account_banned_title': 'Account opgeschort',
+  'account_banned_message': 'Je account is opgeschort wegens schending van de communityrichtlijnen. Neem contact met ons op voor details.',
+
+  // Submit (missing)
+  'submit': 'Versturen',
+
+  // Social login (missing)
+  'or': 'of',
+  'sign_in_with_google': 'Inloggen met Google',
+  'sign_in_with_apple': 'Inloggen met Apple',
+
+  // Profile completion (missing)
+  'profile_completion_title': 'Maak je profiel af',
 };

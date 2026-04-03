@@ -915,4 +915,104 @@ const deTranslations = <String, String>{
   'profile_details_subtitle': 'Enrich your profile, get more matches',
   'profile_bio_subtitle': 'Briefly introduce yourself',
   'profile_no_data': 'No user data',
+
+  // Paywall (missing)
+  'paywall_onboarding_title': 'Mehr entdecken',
+  'paywall_maybe_later': 'Vielleicht sp\u00e4ter',
+
+  // Preferences (missing)
+  'gender_pref_locked_info': 'Kontaktiere den Support, um deine Geschlechtspräferenz zu ändern.',
+
+  // Chat tabs (missing)
+  'chat_drafts_tab': 'Entwürfe',
+  'chat_history_tab': 'Verlauf',
+  'chat_drafts_load_failed': 'Entwürfe konnten nicht geladen werden',
+  'chat_no_drafts': 'Noch keine Entwürfe',
+  'chat_history_load_failed': 'Verlauf konnte nicht geladen werden',
+  'chat_no_history': 'Noch kein Fragenverlauf',
+  'chat_messages_error': 'Nachrichten konnten nicht geladen werden',
+
+  // Onboarding V2 (missing)
+  'onboarding_v2_page1_title': 'Matching auf Qulo ist anders',
+  'onboarding_v2_page1_desc': 'Hier triffst du Leute durch Fragen. Wenn jemand alle deine Fragen richtig beantwortet — habt ihr ein Match!',
+  'onboarding_v2_page2_title': 'Bereite deine Fragen vor',
+  'onboarding_v2_page2_desc': 'Erstelle 2-10 Fragen. Persönlich, lustig, nicht googelbar. Wenn jemand alle richtig beantwortet — habt ihr ein Match!',
+  'onboarding_v2_page3_title': '6 Superkräfte',
+  'onboarding_v2_page3_desc': 'Löser können diese Kräfte bei deinen Fragen einsetzen. Jede Kraft kostet lila Diamanten — und das ist dein Verdienst!',
+  'onboarding_v2_page4_title': 'Verdiene grüne Diamanten!',
+  'onboarding_v2_page4_desc': 'Jeder, der eine Kraft bei deinen Fragen einsetzt, bringt dir grüne Diamanten. Mehr Fragen, mehr Verdienst!',
+  'onboarding_v2_page5_title': 'Welche Sprachen möchtest du sehen?',
+  'onboarding_v2_page5_desc': 'Wir zeigen dir Profile mit Fragen in deinen Sprachen. Du kannst mehrere auswählen.',
+  'onboarding_v2_skip': 'Überspringen',
+  'onboarding_v2_next': 'Weiter',
+  'onboarding_v2_start': 'Los geht\'s',
+  'onboarding_v2_premium_title': 'Mehr mit Premium',
+  'onboarding_v2_premium_cta': 'Premium holen',
+  'onboarding_v2_premium_benefit_1': 'Unbegrenztes Entdecken',
+  'onboarding_v2_premium_benefit_2': 'Monatlicher lila Diamanten-Bonus',
+  'onboarding_v2_premium_benefit_3': 'Werbefreies Erlebnis',
+
+  // Report categories (missing)
+  'report_select_category': 'Meldegrund auswählen',
+  'report_cat_inappropriate': 'Unangemessener Inhalt',
+  'report_cat_fake': 'Fake-Profil',
+  'report_cat_spam': 'Spam',
+  'report_cat_harassment': 'Belästigung',
+  'report_cat_underage': 'Minderjährig',
+  'report_cat_scam': 'Betrug',
+  'report_cat_offensive_photos': 'Anstößige Fotos',
+  'report_cat_threatening': 'Bedrohung',
+  'report_cat_impersonation': 'Identitätsdiebstahl',
+  'report_cat_other': 'Sonstiges',
+  'report_reason_title': 'Beschreibung',
+  'report_reason_optional': 'Optionale Beschreibung hinzufügen...',
+  'report_reason_required': 'Bitte schreibe eine ausführliche Beschreibung...',
+
+  // Block (missing)
+  'blocked_users': 'Blockierte Benutzer',
+  'no_blocked_users': 'Keine blockierten Benutzer',
+  'unblock': 'Entblocken',
+  'unblock_confirm_title': 'Entblocken',
+  'unblock_confirm_message': 'Bist du sicher, dass du diesen Benutzer entblocken möchtest?',
+
+  // Support tickets (missing)
+  'my_tickets': 'Meine Support-Tickets',
+  'no_tickets': 'Noch keine Support-Tickets',
+  'create_ticket': 'Support-Ticket erstellen',
+  'ticket_created_success': 'Dein Support-Ticket wurde erstellt',
+  'ticket_replied': 'Beantwortet',
+  'ticket_category': 'Kategorie',
+  'ticket_subject': 'Betreff',
+  'ticket_subject_hint': 'Beschreibe dein Problem kurz',
+  'ticket_subject_error': 'Der Betreff muss mindestens 5 Zeichen lang sein',
+  'ticket_message': 'Nachricht',
+  'ticket_message_hint': 'Beschreibe dein Problem ausführlich',
+  'ticket_message_error': 'Die Nachricht muss mindestens 10 Zeichen lang sein',
+  'ticket_cat_account': 'Konto',
+  'ticket_cat_technical': 'Technisch',
+  'ticket_cat_billing': 'Abrechnung',
+  'ticket_cat_match': 'Match',
+  'ticket_cat_other': 'Sonstiges',
+  'ticket_status_open': 'Offen',
+  'ticket_status_in_progress': 'In Bearbeitung',
+  'ticket_status_resolved': 'Gelöst',
+  'ticket_status_closed': 'Geschlossen',
+
+  // Help (missing)
+  'help_support': 'Hilfe & Support',
+
+  // Ban (missing)
+  'account_banned_title': 'Konto gesperrt',
+  'account_banned_message': 'Dein Konto wurde wegen Verstoßes gegen die Community-Richtlinien gesperrt. Kontaktiere uns für Details.',
+
+  // Submit (missing)
+  'submit': 'Absenden',
+
+  // Social login (missing)
+  'or': 'oder',
+  'sign_in_with_google': 'Mit Google anmelden',
+  'sign_in_with_apple': 'Mit Apple anmelden',
+
+  // Profile completion (missing)
+  'profile_completion_title': 'Profil vervollständigen',
 };

@@ -913,4 +913,104 @@ const plTranslations = <String, String>{
   'profile_details_subtitle': 'Enrich your profile, get more matches',
   'profile_bio_subtitle': 'Briefly introduce yourself',
   'profile_no_data': 'No user data',
+
+  // Paywall (missing)
+  'paywall_onboarding_title': 'Odkryj więcej',
+  'paywall_maybe_later': 'Może później',
+
+  // Preferences (missing)
+  'gender_pref_locked_info': 'Skontaktuj się z pomocą techniczną, aby zmienić preferencje płci.',
+
+  // Chat tabs (missing)
+  'chat_drafts_tab': 'Szkice',
+  'chat_history_tab': 'Historia',
+  'chat_drafts_load_failed': 'Nie udało się załadować szkiców',
+  'chat_no_drafts': 'Brak szkiców',
+  'chat_history_load_failed': 'Nie udało się załadować historii',
+  'chat_no_history': 'Brak historii pytań',
+  'chat_messages_error': 'Nie udało się załadować wiadomości',
+
+  // Onboarding V2 (missing)
+  'onboarding_v2_page1_title': 'Dopasowywanie na Qulo jest inne',
+  'onboarding_v2_page1_desc': 'Tutaj poznajesz ludzi przez pytania. Jeśli ktoś odpowie poprawnie na wszystkie Twoje pytania — macie dopasowanie!',
+  'onboarding_v2_page2_title': 'Przygotuj swoje pytania',
+  'onboarding_v2_page2_desc': 'Utwórz 2-10 pytań. Osobiste, zabawne, nie do wyszukania w Google. Jeśli ktoś odpowie na wszystkie poprawnie — macie dopasowanie!',
+  'onboarding_v2_page3_title': '6 Super Mocy',
+  'onboarding_v2_page3_desc': 'Rozwiązujący mogą używać tych mocy na Twoich pytaniach. Każda moc kosztuje fioletowe diamenty — a to Twój zarobek!',
+  'onboarding_v2_page4_title': 'Zdobywaj zielone diamenty!',
+  'onboarding_v2_page4_desc': 'Każda osoba, która użyje mocy na Twoich pytaniach, przynosi Ci zielone diamenty. Więcej pytań, więcej zarobków!',
+  'onboarding_v2_page5_title': 'Jakie języki chcesz widzieć?',
+  'onboarding_v2_page5_desc': 'Pokażemy Ci profile z pytaniami w Twoich językach. Możesz wybrać kilka.',
+  'onboarding_v2_skip': 'Pomiń',
+  'onboarding_v2_next': 'Dalej',
+  'onboarding_v2_start': 'Zaczynajmy',
+  'onboarding_v2_premium_title': 'Więcej z Premium',
+  'onboarding_v2_premium_cta': 'Przejdź na Premium',
+  'onboarding_v2_premium_benefit_1': 'Nieograniczone odkrywanie',
+  'onboarding_v2_premium_benefit_2': 'Miesięczny bonus fioletowych diamentów',
+  'onboarding_v2_premium_benefit_3': 'Brak reklam',
+
+  // Report categories (missing)
+  'report_select_category': 'Wybierz powód zgłoszenia',
+  'report_cat_inappropriate': 'Nieodpowiednia treść',
+  'report_cat_fake': 'Fałszywy profil',
+  'report_cat_spam': 'Spam',
+  'report_cat_harassment': 'Nękanie',
+  'report_cat_underage': 'Osoba nieletnia',
+  'report_cat_scam': 'Oszustwo',
+  'report_cat_offensive_photos': 'Obraźliwe zdjęcia',
+  'report_cat_threatening': 'Groźby',
+  'report_cat_impersonation': 'Podszywanie się',
+  'report_cat_other': 'Inne',
+  'report_reason_title': 'Opis',
+  'report_reason_optional': 'Dodaj opcjonalny opis...',
+  'report_reason_required': 'Napisz szczegółowy opis...',
+
+  // Block (missing)
+  'blocked_users': 'Zablokowani użytkownicy',
+  'no_blocked_users': 'Brak zablokowanych użytkowników',
+  'unblock': 'Odblokuj',
+  'unblock_confirm_title': 'Odblokuj',
+  'unblock_confirm_message': 'Czy na pewno chcesz odblokować tego użytkownika?',
+
+  // Support tickets (missing)
+  'my_tickets': 'Moje zgłoszenia',
+  'no_tickets': 'Brak zgłoszeń',
+  'create_ticket': 'Utwórz zgłoszenie',
+  'ticket_created_success': 'Twoje zgłoszenie zostało utworzone',
+  'ticket_replied': 'Odpowiedziano',
+  'ticket_category': 'Kategoria',
+  'ticket_subject': 'Temat',
+  'ticket_subject_hint': 'Krótko opisz swój problem',
+  'ticket_subject_error': 'Temat musi mieć co najmniej 5 znaków',
+  'ticket_message': 'Wiadomość',
+  'ticket_message_hint': 'Opisz szczegółowo swój problem',
+  'ticket_message_error': 'Wiadomość musi mieć co najmniej 10 znaków',
+  'ticket_cat_account': 'Konto',
+  'ticket_cat_technical': 'Techniczny',
+  'ticket_cat_billing': 'Płatności',
+  'ticket_cat_match': 'Dopasowanie',
+  'ticket_cat_other': 'Inne',
+  'ticket_status_open': 'Otwarty',
+  'ticket_status_in_progress': 'W trakcie',
+  'ticket_status_resolved': 'Rozwiązany',
+  'ticket_status_closed': 'Zamknięty',
+
+  // Help (missing)
+  'help_support': 'Pomoc i wsparcie',
+
+  // Ban (missing)
+  'account_banned_title': 'Konto zawieszone',
+  'account_banned_message': 'Twoje konto zostało zawieszone za naruszenie wytycznych społeczności. Skontaktuj się z nami po szczegóły.',
+
+  // Submit (missing)
+  'submit': 'Wyślij',
+
+  // Social login (missing)
+  'or': 'lub',
+  'sign_in_with_google': 'Zaloguj się przez Google',
+  'sign_in_with_apple': 'Zaloguj się przez Apple',
+
+  // Profile completion (missing)
+  'profile_completion_title': 'Uzupełnij swój profil',
 };
