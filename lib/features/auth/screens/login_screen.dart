@@ -46,7 +46,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   String? _loginError;
 
   final _staggeredKey = GlobalKey<StaggeredColumnState>();
-  bool _videoReady = false;
 
   @override
   void dispose() {
@@ -56,8 +55,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   }
 
   void _onVideoInitialized() {
-    if (_videoReady) return;
-    _videoReady = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _staggeredKey.currentState?.forward();
     });

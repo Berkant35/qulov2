@@ -60,18 +60,18 @@ class _BackgroundVideoState extends State<BackgroundVideo> {
     }
   }
 
-  Widget _buildOverlay() => ColoredBox(
-        color: Colors.black.withValues(alpha: widget.overlayOpacity),
-      );
-
   @override
   Widget build(BuildContext context) {
+    final overlay = ColoredBox(
+      color: Theme.of(context).colorScheme.surface.withValues(alpha: widget.overlayOpacity),
+    );
+
     if (_controller == null) {
       return Stack(
         fit: StackFit.expand,
         children: [
-          const ColoredBox(color: Colors.black),
-          _buildOverlay(),
+          ColoredBox(color: Theme.of(context).colorScheme.surface),
+          overlay,
         ],
       );
     }
@@ -90,8 +90,7 @@ class _BackgroundVideoState extends State<BackgroundVideo> {
               child: VideoPlayer(_controller!),
             ),
           ),
-          // Koyu overlay — form okunurluğu için
-          _buildOverlay(),
+          overlay,
         ],
       ),
     );
