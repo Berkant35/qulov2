@@ -25,7 +25,6 @@ class BackgroundVideo extends StatefulWidget {
 
 class _BackgroundVideoState extends State<BackgroundVideo> {
   VideoPlayerController? _controller;
-  bool _isInitialized = false;
 
   @override
   void initState() {
@@ -41,9 +40,8 @@ class _BackgroundVideoState extends State<BackgroundVideo> {
     }
     setState(() {
       _controller = controller;
-      _isInitialized = controller.value.isInitialized;
     });
-    if (_isInitialized) {
+    if (_controller != null) {
       widget.onInitialized?.call();
     }
   }
@@ -55,7 +53,6 @@ class _BackgroundVideoState extends State<BackgroundVideo> {
   }
 
   void _onVisibilityChanged(VisibilityInfo info) {
-    if (!_isInitialized) return;
     if (info.visibleFraction == 0) {
       VideoManager.instance.pause(widget.assetPath);
     } else {
@@ -63,31 +60,38 @@ class _BackgroundVideoState extends State<BackgroundVideo> {
     }
   }
 
+  Widget _buildOverlay() => ColoredBox(
+        color: Colors.black.withValues(alpha: widget.overlayOpacity),
+      );
+
   @override
   Widget build(BuildContext context) {
+    if (_controller == null) {
+      return Stack(
+        fit: StackFit.expand,
+        children: [
+          const ColoredBox(color: Colors.black),
+          _buildOverlay(),
+        ],
+      );
+    }
+
     return VisibilityDetector(
       key: Key('bg_video_${widget.assetPath}'),
       onVisibilityChanged: _onVisibilityChanged,
       child: Stack(
         fit: StackFit.expand,
         children: [
-          // Video veya placeholder
-          if (_isInitialized && _controller != null)
-            FittedBox(
-              fit: BoxFit.cover,
-              child: SizedBox(
-                width: _controller!.value.size.width,
-                height: _controller!.value.size.height,
-                child: VideoPlayer(_controller!),
-              ),
-            )
-          else
-            const ColoredBox(color: Colors.black),
-
-          // Koyu overlay — form okunurluğu için
-          ColoredBox(
-            color: Colors.black.withValues(alpha: widget.overlayOpacity),
+          FittedBox(
+            fit: BoxFit.cover,
+            child: SizedBox(
+              width: _controller!.value.size.width,
+              height: _controller!.value.size.height,
+              child: VideoPlayer(_controller!),
+            ),
           ),
+          // Koyu overlay — form okunurluğu için
+          _buildOverlay(),
         ],
       ),
     );

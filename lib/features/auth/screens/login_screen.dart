@@ -1,5 +1,3 @@
-import 'dart:ui' as ui;
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,6 +13,7 @@ import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_button.dart';
 import 'package:qulo_v2/core/widgets/app_text_field.dart';
+import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/features/auth/widgets/background_video.dart';
 import 'package:qulo_v2/features/auth/widgets/staggered_column.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
@@ -31,6 +30,7 @@ class LoginScreen extends ConsumerStatefulWidget {
 class _LoginScreenState extends ConsumerState<LoginScreen>
     with FormMixin, LoadingMixin {
   static const _videoAsset = 'assets/videos/mock.mp4';
+  static final _gradientPainter = AppBackgroundPainter();
 
   final _emailCtrl = TextEditingController(
     text: kDebugMode
@@ -122,14 +122,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             // 1) Arka plan video + overlay
             BackgroundVideo(
               assetPath: _videoAsset,
-              overlayOpacity: 0.3,
               onInitialized: _onVideoInitialized,
             ),
 
-            // 2) Gradient daireler (AppScaffold'dan aynı)
+            // 2) Gradient daireler (AppScaffold ile paylaşımlı)
             Positioned.fill(
               child: CustomPaint(
-                painter: _BackgroundGradientPainter(),
+                painter: _gradientPainter,
               ),
             ),
 
@@ -247,41 +246,4 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
       ),
     );
   }
-}
-
-/// Gradient daireler — AppScaffold'daki _BackgroundPainter ile aynı.
-class _BackgroundGradientPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    // Sağ üst — mor gradient daire
-    final purpleCenter = Offset(size.width * 1.1, size.height * -0.1);
-    final purpleRadius = size.width * 0.5;
-    final purplePaint = Paint()
-      ..shader = ui.Gradient.radial(
-        purpleCenter,
-        purpleRadius,
-        [
-          AppColors.primary.withValues(alpha: 0.06),
-          AppColors.primary.withValues(alpha: 0.0),
-        ],
-      );
-    canvas.drawCircle(purpleCenter, purpleRadius, purplePaint);
-
-    // Sol alt — yeşil gradient daire
-    final greenCenter = Offset(size.width * -0.1, size.height * 1.1);
-    final greenRadius = size.width * 0.45;
-    final greenPaint = Paint()
-      ..shader = ui.Gradient.radial(
-        greenCenter,
-        greenRadius,
-        [
-          AppColors.secondary.withValues(alpha: 0.04),
-          AppColors.secondary.withValues(alpha: 0.0),
-        ],
-      );
-    canvas.drawCircle(greenCenter, greenRadius, greenPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

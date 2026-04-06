@@ -62,7 +62,7 @@ class AppScaffold extends StatelessWidget {
             if (showBackground)
               Positioned.fill(
                 child: CustomPaint(
-                  painter: _BackgroundPainter(),
+                  painter: AppBackgroundPainter(),
                 ),
               ),
             Center(
@@ -83,7 +83,7 @@ class AppScaffold extends StatelessWidget {
   }
 }
 
-class _BackgroundPainter extends CustomPainter {
+class AppBackgroundPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     // Sağ üst — mor gradient daire

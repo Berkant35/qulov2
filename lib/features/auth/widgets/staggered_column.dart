@@ -38,10 +38,10 @@ class StaggeredColumnState extends State<StaggeredColumn>
       vsync: this,
       duration: widget.totalDuration,
     );
-    _buildAnimations();
+    _initAnimations();
   }
 
-  void _buildAnimations() {
+  void _initAnimations() {
     final count = widget.children.length;
     final totalMs = widget.totalDuration.inMilliseconds;
     final staggerMs = widget.staggerDelay.inMilliseconds;
@@ -79,6 +79,11 @@ class StaggeredColumnState extends State<StaggeredColumn>
 
   @override
   void dispose() {
+    for (final anim in _fadeAnimations) {
+      if (anim is CurvedAnimation) {
+        anim.dispose();
+      }
+    }
     _controller.dispose();
     super.dispose();
   }
