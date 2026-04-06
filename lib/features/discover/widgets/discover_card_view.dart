@@ -260,7 +260,7 @@ class _DiscoverCardViewState extends ConsumerState<DiscoverCardView>
       },
       failure: (f) {
         _resetState();
-        if (f is ServerFailure && f.code == 'DAILY_LIMIT_REACHED') {
+        if (f is ServerFailure && f.code == 'DAILY_LIMIT_EXCEEDED') {
           PaywallBottomSheetContent.show(ref, trigger: 'swipe_limit');
         }
       },
