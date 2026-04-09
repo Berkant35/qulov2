@@ -121,12 +121,14 @@ class AnalyticsManager {
   // ─── App Lifecycle ───
 
   void logAppOpen() {
+    if (!_initialized) return;
     _sessionStart = DateTime.now();
     logEvent('app_open');
     _crashlytics.setCustomKey('app_state', 'foreground');
   }
 
   void logAppForeground() {
+    if (!_initialized) return;
     final backgroundDuration = _backgroundStart != null
         ? DateTime.now().difference(_backgroundStart!).inMilliseconds
         : 0;
@@ -138,6 +140,7 @@ class AnalyticsManager {
   }
 
   void logAppBackground() {
+    if (!_initialized) return;
     _backgroundStart = DateTime.now();
     final sessionDuration = _sessionStart != null
         ? DateTime.now().difference(_sessionStart!).inMilliseconds
@@ -251,6 +254,27 @@ class AnalyticsManager {
     logEvent(AnalyticsEvents.deepLinkInvalid, params: {
       AnalyticsEvents.paramUri: uri,
       AnalyticsEvents.paramReason: reason,
+    });
+  }
+
+  // ── App Review Analytics ──────────────────────────────────────────
+
+  void logAppReviewPrompted(String trigger, int shownCount) {
+    logEvent(AnalyticsEvents.appReviewPrompted, params: {
+      AnalyticsEvents.paramTrigger: trigger,
+      AnalyticsEvents.paramShownCount: shownCount,
+    });
+  }
+
+  void logAppReviewDismissed(String trigger) {
+    logEvent(AnalyticsEvents.appReviewDismissed, params: {
+      AnalyticsEvents.paramTrigger: trigger,
+    });
+  }
+
+  void logAppReviewCompleted(String trigger) {
+    logEvent(AnalyticsEvents.appReviewCompleted, params: {
+      AnalyticsEvents.paramTrigger: trigger,
     });
   }
 }

@@ -227,6 +227,11 @@ abstract class AnalyticsEvents {
   static const String performanceViewAllDiamonds = 'performance_view_all_diamonds';
   static const String performanceBestQuestionTapped = 'performance_best_question_tapped';
 
+  // ─── App Review (3) ──────────────────────────────────────────────
+  static const String appReviewPrompted = 'app_review_prompted';
+  static const String appReviewDismissed = 'app_review_dismissed';
+  static const String appReviewCompleted = 'app_review_completed';
+
   // ─── Settings (8) ──────────────────────────────────────────────────
   static const String settingsScreenView = 'settings_screen_view';
   static const String settingsChange = 'settings_change';
@@ -364,6 +369,7 @@ abstract class AnalyticsEvents {
   static const String paramFromPage = 'from_page';
   static const String paramLanguages = 'languages';
   static const String paramLanguageCount = 'language_count';
+  static const String paramShownCount = 'shown_count';
 
   // ─── Deep Link (5) ──────────────────────────────────────────────────
   static const String deepLinkReceived = 'deep_link_received';
