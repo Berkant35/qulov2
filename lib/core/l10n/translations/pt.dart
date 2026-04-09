@@ -1015,4 +1015,8 @@ const ptTranslations = <String, String>{
 
   // Profile completion (missing)
   'profile_completion_title': 'Complete o seu perfil',
+
+  // App Review
+  'rate_us': 'Avalie-nos',
+  'rate_us_subtitle': 'Gosta do Qulo? Deixe-nos uma avaliação!',
 };

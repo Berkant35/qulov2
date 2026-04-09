@@ -1013,4 +1013,8 @@ const zhTranslations = <String, String>{
 
   // Profile completion (missing)
   'profile_completion_title': '完善您的个人资料',
+
+  // App Review
+  'rate_us': '评价我们',
+  'rate_us_subtitle': '喜欢Qulo吗？给我们留下评价吧！',
 };

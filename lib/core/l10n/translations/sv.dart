@@ -1015,4 +1015,8 @@ const svTranslations = <String, String>{
 
   // Profile completion (missing)
   'profile_completion_title': 'Fyll i din profil',
+
+  // App Review
+  'rate_us': 'Betygsätt oss',
+  'rate_us_subtitle': 'Gillar du Qulo? Lämna en recension!',
 };

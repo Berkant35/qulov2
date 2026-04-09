@@ -1013,4 +1013,8 @@ const arTranslations = <String, String>{
 
   // Profile completion (missing)
   'profile_completion_title': 'أكمل ملفك الشخصي',
+
+  // App Review
+  'rate_us': 'قيّمنا',
+  'rate_us_subtitle': 'هل تحب Qulo؟ اترك لنا تقييمًا!',
 };

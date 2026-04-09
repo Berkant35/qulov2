@@ -1013,4 +1013,8 @@ const nlTranslations = <String, String>{
 
   // Profile completion (missing)
   'profile_completion_title': 'Maak je profiel af',
+
+  // App Review
+  'rate_us': 'Beoordeel ons',
+  'rate_us_subtitle': 'Vind je Qulo leuk? Laat een review achter!',
 };

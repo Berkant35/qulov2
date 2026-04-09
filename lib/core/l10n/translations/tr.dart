@@ -1010,4 +1010,8 @@ const trTranslations = <String, String>{
 
   // Profile completion (social login)
   'profile_completion_title': 'Profilini Tamamla',
+
+  // App Review
+  'rate_us': 'Bizi Değerlendir',
+  'rate_us_subtitle': 'Qulo\'yu seviyor musun? Bize yorum bırak!',
 };

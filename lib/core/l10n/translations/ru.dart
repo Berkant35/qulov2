@@ -1013,4 +1013,8 @@ const ruTranslations = <String, String>{
 
   // Profile completion (missing)
   'profile_completion_title': 'Заполните профиль',
+
+  // App Review
+  'rate_us': 'Оцените нас',
+  'rate_us_subtitle': 'Нравится Qulo? Оставьте отзыв!',
 };

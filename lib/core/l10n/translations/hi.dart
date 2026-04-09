@@ -1015,4 +1015,8 @@ const hiTranslations = <String, String>{
 
   // Profile completion (missing)
   'profile_completion_title': 'अपनी प्रोफ़ाइल पूरी करें',
+
+  // App Review
+  'rate_us': 'हमें रेट करें',
+  'rate_us_subtitle': 'क्या आपको Qulo पसंद है? हमें रिव्यू दें!',
 };

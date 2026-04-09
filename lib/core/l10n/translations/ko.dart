@@ -1013,4 +1013,8 @@ const koTranslations = <String, String>{
 
   // Profile completion (missing)
   'profile_completion_title': '프로필 완성하기',
+
+  // App Review
+  'rate_us': '평가하기',
+  'rate_us_subtitle': 'Qulo가 마음에 드시나요? 리뷰를 남겨주세요!',
 };

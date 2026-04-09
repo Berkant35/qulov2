@@ -1010,4 +1010,8 @@ const enTranslations = <String, String>{
 
   // Profile completion (social login)
   'profile_completion_title': 'Complete Your Profile',
+
+  // App Review
+  'rate_us': 'Rate Us',
+  'rate_us_subtitle': 'Love Qulo? Leave us a review!',
 };

@@ -1015,4 +1015,8 @@ const jaTranslations = <String, String>{
 
   // Profile completion (missing)
   'profile_completion_title': 'プロフィールを完成させる',
+
+  // App Review
+  'rate_us': '評価する',
+  'rate_us_subtitle': 'Quloが気に入りましたか？レビューを書いてください！',
 };
