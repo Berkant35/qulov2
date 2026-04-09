@@ -469,6 +469,8 @@ const enTranslations = <String, String>{
   'question_category_lifestyle': 'Lifestyle',
   'question_category_humor': 'Humor',
   'question_category_hobby': 'Hobby',
+  'question_category_relationship': 'Relationship',
+  'question_category_entertainment': 'Entertainment',
 
   // Time Presets
   'question_time_fast': 'Fast',

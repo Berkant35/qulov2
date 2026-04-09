@@ -464,6 +464,8 @@ const plTranslations = <String, String>{
   'question_category_lifestyle': 'Styl \u017cycia',
   'question_category_humor': 'Humor',
   'question_category_hobby': 'Hobby',
+  'question_category_relationship': 'Związek',
+  'question_category_entertainment': 'Rozrywka',
 
   // Time Presets
   'question_time_fast': 'Szybko',

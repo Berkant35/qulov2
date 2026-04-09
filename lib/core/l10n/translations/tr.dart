@@ -469,6 +469,8 @@ const trTranslations = <String, String>{
   'question_category_lifestyle': 'Yaşam Tarzı',
   'question_category_humor': 'Mizah',
   'question_category_hobby': 'Hobi',
+  'question_category_relationship': 'İlişki',
+  'question_category_entertainment': 'Eğlence',
 
   // Time Presets
   'question_time_fast': 'Hızlı',

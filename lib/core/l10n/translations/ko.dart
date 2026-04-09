@@ -464,6 +464,8 @@ const koTranslations = <String, String>{
   'question_category_lifestyle': '라이프스타일',
   'question_category_humor': '유머',
   'question_category_hobby': '취미',
+  'question_category_relationship': '연애',
+  'question_category_entertainment': '엔터테인먼트',
 
   // Time Presets
   'question_time_fast': '빠름',

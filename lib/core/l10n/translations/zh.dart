@@ -464,6 +464,8 @@ const zhTranslations = <String, String>{
   'question_category_lifestyle': '生活',
   'question_category_humor': '幽默',
   'question_category_hobby': '爱好',
+  'question_category_relationship': '恋爱',
+  'question_category_entertainment': '娱乐',
 
   // Time Presets
   'question_time_fast': '快速',

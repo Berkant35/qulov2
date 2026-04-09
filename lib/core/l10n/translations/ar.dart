@@ -464,6 +464,8 @@ const arTranslations = <String, String>{
   'question_category_lifestyle': 'أسلوب الحياة',
   'question_category_humor': 'الفكاهة',
   'question_category_hobby': 'الهوايات',
+  'question_category_relationship': 'علاقات',
+  'question_category_entertainment': 'ترفيه',
 
   // Time Presets
   'question_time_fast': 'سريع',

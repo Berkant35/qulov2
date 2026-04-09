@@ -466,6 +466,8 @@ const itTranslations = <String, String>{
   'question_category_lifestyle': 'Stile di vita',
   'question_category_humor': 'Umorismo',
   'question_category_hobby': 'Hobby',
+  'question_category_relationship': 'Relazione',
+  'question_category_entertainment': 'Intrattenimento',
 
   // Time Presets
   'question_time_fast': 'Veloce',

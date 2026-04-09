@@ -464,6 +464,8 @@ const ruTranslations = <String, String>{
   'question_category_lifestyle': 'Образ жизни',
   'question_category_humor': 'Юмор',
   'question_category_hobby': 'Хобби',
+  'question_category_relationship': 'Отношения',
+  'question_category_entertainment': 'Развлечения',
 
   // Time Presets
   'question_time_fast': 'Быстро',

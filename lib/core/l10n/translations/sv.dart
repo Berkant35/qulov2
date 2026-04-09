@@ -466,6 +466,8 @@ const svTranslations = <String, String>{
   'question_category_lifestyle': 'Livsstil',
   'question_category_humor': 'Humor',
   'question_category_hobby': 'Hobby',
+  'question_category_relationship': 'Relation',
+  'question_category_entertainment': 'Underhållning',
 
   // Time Presets
   'question_time_fast': 'Snabbt',

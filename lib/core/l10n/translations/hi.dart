@@ -466,6 +466,8 @@ const hiTranslations = <String, String>{
   'question_category_lifestyle': 'जीवनशैली',
   'question_category_humor': 'हास्य',
   'question_category_hobby': 'शौक़',
+  'question_category_relationship': 'रिश्ते',
+  'question_category_entertainment': 'मनोरंजन',
 
   // Time Presets
   'question_time_fast': 'तेज़',

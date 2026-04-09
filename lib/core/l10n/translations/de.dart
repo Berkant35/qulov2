@@ -466,6 +466,8 @@ const deTranslations = <String, String>{
   'question_category_lifestyle': 'Lifestyle',
   'question_category_humor': 'Humor',
   'question_category_hobby': 'Hobby',
+  'question_category_relationship': 'Beziehung',
+  'question_category_entertainment': 'Unterhaltung',
 
   // Time Presets
   'question_time_fast': 'Schnell',

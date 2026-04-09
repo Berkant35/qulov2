@@ -466,6 +466,8 @@ const ptTranslations = <String, String>{
   'question_category_lifestyle': 'Estilo de Vida',
   'question_category_humor': 'Humor',
   'question_category_hobby': 'Hobby',
+  'question_category_relationship': 'Relacionamento',
+  'question_category_entertainment': 'Entretenimento',
 
   // Time Presets
   'question_time_fast': 'Rápido',
