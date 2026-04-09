@@ -5,6 +5,7 @@ import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/core/services/app_review_manager.dart';
 import 'package:qulo_v2/features/settings/mixins/settings_screen_mixin.dart';
 import 'package:qulo_v2/features/settings/widgets/settings_action_tile.dart';
 import 'package:qulo_v2/features/settings/widgets/settings_legal_section.dart';
@@ -54,6 +55,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
           SettingsLegalSection(
             onTerms: onOpenTerms,
             onPrivacy: onOpenPrivacy,
+          ),
+          SettingsActionTile(
+            icon: Icons.star_rate_rounded,
+            title: context.tr('rate_us'),
+            onTap: () async {
+              await AppReviewManager.instance.requestReviewFromSettings();
+            },
           ),
           const SizedBox(height: AppSpacing.sm),
           SettingsActionTile(
