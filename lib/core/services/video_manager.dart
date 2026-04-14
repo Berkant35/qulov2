@@ -1,3 +1,4 @@
+import 'dart:async' show unawaited;
 import 'dart:developer' as dev;
 
 import 'package:flutter/widgets.dart';
@@ -46,10 +47,20 @@ class VideoManager with WidgetsBindingObserver {
     final controller = VideoPlayerController.asset(assetPath);
     _controllers[assetPath] = controller;
 
-    await controller.initialize();
-    await controller.setLooping(true);
-    await controller.setVolume(0.0);
-    await controller.play();
+    try {
+      await controller.initialize();
+      await controller.setLooping(true);
+      await controller.setVolume(0.0);
+      await controller.play();
+    } catch (e) {
+      dev.log(
+        '[VideoManager] Failed to initialize: $assetPath — $e',
+        name: 'VideoManager',
+      );
+      _controllers.remove(assetPath);
+      controller.dispose();
+      rethrow;
+    }
 
     dev.log('[VideoManager] Playing: $assetPath', name: 'VideoManager');
     return controller;
@@ -98,33 +109,39 @@ class VideoManager with WidgetsBindingObserver {
     switch (state) {
       case AppLifecycleState.paused:
       case AppLifecycleState.inactive:
-        _pauseAll();
+        unawaited(_pauseAll());
       case AppLifecycleState.resumed:
-        _resumeAll();
+        unawaited(_resumeAll());
       default:
         break;
     }
   }
 
-  void _pauseAll() {
+  Future<void> _pauseAll() async {
     _wasPlaying.clear();
     for (final entry in _controllers.entries) {
       if (entry.value.value.isPlaying) {
         _wasPlaying.add(entry.key);
-        entry.value.pause();
+        await entry.value.pause();
       }
     }
     if (_wasPlaying.isNotEmpty) {
-      dev.log('[VideoManager] Paused ${_wasPlaying.length} video(s)', name: 'VideoManager');
+      dev.log(
+        '[VideoManager] Paused ${_wasPlaying.length} video(s)',
+        name: 'VideoManager',
+      );
     }
   }
 
-  void _resumeAll() {
+  Future<void> _resumeAll() async {
     for (final path in _wasPlaying) {
-      _controllers[path]?.play();
+      await _controllers[path]?.play();
     }
     if (_wasPlaying.isNotEmpty) {
-      dev.log('[VideoManager] Resumed ${_wasPlaying.length} video(s)', name: 'VideoManager');
+      dev.log(
+        '[VideoManager] Resumed ${_wasPlaying.length} video(s)',
+        name: 'VideoManager',
+      );
     }
     _wasPlaying.clear();
   }

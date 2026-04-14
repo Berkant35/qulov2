@@ -5,6 +5,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qulo_v2/core/constants/app_assets.dart';
 import 'package:qulo_v2/core/constants/app_sizes.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/core/navigation/models/app_bottom_sheet.dart';
+import 'package:qulo_v2/core/widgets/language_picker_sheet.dart';
+import 'package:qulo_v2/providers/locale_provider.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:qulo_v2/core/mixins/form_mixin.dart';
 import 'package:qulo_v2/core/mixins/loading_mixin.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
@@ -29,7 +33,7 @@ class LoginScreen extends ConsumerStatefulWidget {
 
 class _LoginScreenState extends ConsumerState<LoginScreen>
     with FormMixin, LoadingMixin {
-  static const _videoAsset = 'assets/videos/mock.mp4';
+  static const _videoAsset = 'assets/videos/login_bg.mp4';
   static final _gradientPainter = AppBackgroundPainter();
 
   final _emailCtrl = TextEditingController(
@@ -44,14 +48,41 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   );
   bool _obscure = true;
   String? _loginError;
+  String _appVersion = '';
 
   final _staggeredKey = GlobalKey<StaggeredColumnState>();
+
+  @override
+  void initState() {
+    super.initState();
+    PackageInfo.fromPlatform().then((info) {
+      if (mounted) setState(() => _appVersion = info.version);
+    });
+  }
 
   @override
   void dispose() {
     _emailCtrl.dispose();
     _passwordCtrl.dispose();
     super.dispose();
+  }
+
+  Future<void> _showLanguagePicker() async {
+    final currentLocale = ref.read(localeProvider).languageCode;
+    final result = await ref
+        .read(navigationServiceProvider)
+        .showAppBottomSheet<List<String>>(
+          CustomBottomSheet(
+            name: 'language_picker',
+            builder: (_) => LanguagePickerSheet(
+              selectedLanguages: [currentLocale],
+              multiSelect: false,
+            ),
+          ),
+        );
+    if (result != null && result.isNotEmpty) {
+      ref.read(localeProvider.notifier).setLocale(Locale(result.first));
+    }
   }
 
   void _onVideoInitialized() {
@@ -116,9 +147,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         child: Stack(
           fit: StackFit.expand,
           children: [
-            // 1) Arka plan video + overlay
+            // 1) Arka plan video + koyu overlay
             BackgroundVideo(
               assetPath: _videoAsset,
+              overlayOpacity: 0.75,
               onInitialized: _onVideoInitialized,
             ),
 
@@ -131,111 +163,140 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
             // 3) Form içeriği
             SafeArea(
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                      maxWidth: AppSpacing.maxContentWidth),
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(AppSpacing.pagePadding),
-                    child: Form(
-                      key: formKey,
-                      child: StaggeredColumn(
-                        key: _staggeredKey,
-                        children: [
-                          const SizedBox(height: AppSpacing.xxxl),
-                          Center(
-                            child: SvgPicture.asset(
-                              AppAssets.logoSvg,
-                              width: AppSizes.logoMd,
-                              height: AppSizes.logoMd,
-                              colorFilter: ColorFilter.mode(
-                                  context.appColors.primary, BlendMode.srcIn),
-                            ),
-                          ),
-                          const SizedBox(height: AppSpacing.md),
-                          Text(
-                            context.tr('app_name'),
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.displaySmall?.copyWith(
-                              color: context.appColors.primary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: AppSpacing.sm),
-                          Text(
-                            context.tr('welcome_back'),
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.bodyLarge?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                          const SizedBox(height: AppSpacing.xxxl),
-                          AppTextField(
-                            controller: _emailCtrl,
-                            label: context.tr('email'),
-                            keyboardType: TextInputType.emailAddress,
-                            textInputAction: TextInputAction.next,
-                            validator: emailValidator,
-                            prefixIcon: const Icon(Icons.email_outlined),
-                          ),
-                          const SizedBox(height: AppSpacing.lg),
-                          AppTextField(
-                            controller: _passwordCtrl,
-                            label: context.tr('password'),
-                            obscureText: _obscure,
-                            textInputAction: TextInputAction.done,
-                            validator: passwordValidator,
-                            onFieldSubmitted: (_) => _login(),
-                            errorText: _loginError,
-                            prefixIcon: const Icon(Icons.lock_outlined),
-                            suffixIcon: IconButton(
-                              icon: Icon(_obscure
-                                  ? Icons.visibility_off
-                                  : Icons.visibility),
-                              onPressed: () =>
-                                  setState(() => _obscure = !_obscure),
-                            ),
-                          ),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: TextButton(
-                              onPressed: () => ref
-                                  .read(navigationServiceProvider)
-                                  .push(RouteNames.forgotPassword),
-                              child: Text(context.tr('forgot_password')),
-                            ),
-                          ),
-                          const SizedBox(height: AppSpacing.lg),
-                          AppButton(
-                            label: context.tr('login'),
-                            isLoading: isLoading,
-                            onPressed: isLoading ? null : _login,
-                          ),
-                          const SizedBox(height: AppSpacing.lg),
-                          SocialLoginButtons(
-                            isLoading: isLoading,
-                            onGooglePressed: () => _socialLogin('google'),
-                            onApplePressed: () => _socialLogin('apple'),
-                          ),
-                          const SizedBox(height: AppSpacing.xxl),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+              child: Stack(
+                children: [
+                  Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(
+                          maxWidth: AppSpacing.maxContentWidth),
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.all(AppSpacing.pagePadding),
+                        child: Form(
+                          key: formKey,
+                          child: StaggeredColumn(
+                            key: _staggeredKey,
                             children: [
-                              Text(context.tr('no_account'),
-                                  style: theme.textTheme.bodyMedium),
-                              TextButton(
-                                onPressed: () => ref
-                                    .read(navigationServiceProvider)
-                                    .push(RouteNames.register),
-                                child: Text(context.tr('register')),
+                              const SizedBox(height: AppSpacing.xxxl),
+                              Center(
+                                child: SvgPicture.asset(
+                                  AppAssets.logoSvg,
+                                  width: AppSizes.logoMd,
+                                  height: AppSizes.logoMd,
+                                  colorFilter: ColorFilter.mode(
+                                      context.appColors.primary,
+                                      BlendMode.srcIn),
+                                ),
+                              ),
+                              const SizedBox(height: AppSpacing.md),
+                              Text(
+                                context.tr('app_name'),
+                                textAlign: TextAlign.center,
+                                style: theme.textTheme.displaySmall?.copyWith(
+                                  color: context.appColors.primary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: AppSpacing.sm),
+                              Text(
+                                context.tr('welcome_back'),
+                                textAlign: TextAlign.center,
+                                style: theme.textTheme.bodyLarge?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                              const SizedBox(height: AppSpacing.xxxl),
+                              AppTextField(
+                                controller: _emailCtrl,
+                                label: context.tr('email'),
+                                keyboardType: TextInputType.emailAddress,
+                                textInputAction: TextInputAction.next,
+                                validator: emailValidator,
+                                prefixIcon: const Icon(Icons.email_outlined),
+                              ),
+                              const SizedBox(height: AppSpacing.lg),
+                              AppTextField(
+                                controller: _passwordCtrl,
+                                label: context.tr('password'),
+                                obscureText: _obscure,
+                                textInputAction: TextInputAction.done,
+                                validator: passwordValidator,
+                                onFieldSubmitted: (_) => _login(),
+                                errorText: _loginError,
+                                prefixIcon: const Icon(Icons.lock_outlined),
+                                suffixIcon: IconButton(
+                                  icon: Icon(_obscure
+                                      ? Icons.visibility_off
+                                      : Icons.visibility),
+                                  onPressed: () =>
+                                      setState(() => _obscure = !_obscure),
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: TextButton(
+                                  onPressed: () => ref
+                                      .read(navigationServiceProvider)
+                                      .push(RouteNames.forgotPassword),
+                                  child: Text(context.tr('forgot_password')),
+                                ),
+                              ),
+                              const SizedBox(height: AppSpacing.lg),
+                              AppButton(
+                                label: context.tr('login'),
+                                isLoading: isLoading,
+                                onPressed: isLoading ? null : _login,
+                              ),
+                              const SizedBox(height: AppSpacing.lg),
+                              SocialLoginButtons(
+                                isLoading: isLoading,
+                                onGooglePressed: () => _socialLogin('google'),
+                                onApplePressed: () => _socialLogin('apple'),
+                              ),
+                              const SizedBox(height: AppSpacing.xxl),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(context.tr('no_account'),
+                                      style: theme.textTheme.bodyMedium),
+                                  TextButton(
+                                    onPressed: () => ref
+                                        .read(navigationServiceProvider)
+                                        .push(RouteNames.register),
+                                    child: Text(context.tr('register')),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
-                ),
+                  // Dil değiştirme butonu — sağ üst köşe
+                  Positioned(
+                    top: AppSpacing.sm,
+                    right: AppSpacing.sm,
+                    child: IconButton(
+                      icon: const Icon(Icons.language),
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                      tooltip: context.tr('language'),
+                      onPressed: _showLanguagePicker,
+                    ),
+                  ),
+                  // Powered by + sürüm — alt orta
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: AppSpacing.sm,
+                    child: Text(
+                      'Powered by Socrepho${_appVersion.isNotEmpty ? ' • v$_appVersion' : ''}',
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.38),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

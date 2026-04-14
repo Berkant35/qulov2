@@ -15,7 +15,7 @@ class BackgroundVideo extends StatefulWidget {
   const BackgroundVideo({
     super.key,
     required this.assetPath,
-    this.overlayOpacity = 0.3,
+    this.overlayOpacity = 0.5,
     this.onInitialized,
   });
 
@@ -25,6 +25,7 @@ class BackgroundVideo extends StatefulWidget {
 
 class _BackgroundVideoState extends State<BackgroundVideo> {
   VideoPlayerController? _controller;
+  bool _isInitialized = false;
 
   @override
   void initState() {
@@ -33,16 +34,23 @@ class _BackgroundVideoState extends State<BackgroundVideo> {
   }
 
   Future<void> _initVideo() async {
-    final controller = await VideoManager.instance.acquire(widget.assetPath);
-    if (!mounted) {
-      VideoManager.instance.release(widget.assetPath);
-      return;
-    }
-    setState(() {
-      _controller = controller;
-    });
-    if (_controller != null) {
-      widget.onInitialized?.call();
+    try {
+      final controller =
+          await VideoManager.instance.acquire(widget.assetPath);
+      if (!mounted) {
+        VideoManager.instance.release(widget.assetPath);
+        return;
+      }
+      setState(() {
+        _controller = controller;
+        _isInitialized = controller.value.isInitialized;
+      });
+      if (_isInitialized) {
+        widget.onInitialized?.call();
+      }
+    } catch (e) {
+      // Video yüklenemezse siyah arka plan kalır
+      debugPrint('[BackgroundVideo] Failed to load ${widget.assetPath}: $e');
     }
   }
 
@@ -53,6 +61,7 @@ class _BackgroundVideoState extends State<BackgroundVideo> {
   }
 
   void _onVisibilityChanged(VisibilityInfo info) {
+    if (!_isInitialized) return;
     if (info.visibleFraction == 0) {
       VideoManager.instance.pause(widget.assetPath);
     } else {
@@ -62,35 +71,29 @@ class _BackgroundVideoState extends State<BackgroundVideo> {
 
   @override
   Widget build(BuildContext context) {
-    final overlay = ColoredBox(
-      color: Theme.of(context).colorScheme.surface.withValues(alpha: widget.overlayOpacity),
-    );
-
-    if (_controller == null) {
-      return Stack(
-        fit: StackFit.expand,
-        children: [
-          ColoredBox(color: Theme.of(context).colorScheme.surface),
-          overlay,
-        ],
-      );
-    }
-
     return VisibilityDetector(
       key: Key('bg_video_${widget.assetPath}'),
       onVisibilityChanged: _onVisibilityChanged,
       child: Stack(
         fit: StackFit.expand,
         children: [
-          FittedBox(
-            fit: BoxFit.cover,
-            child: SizedBox(
-              width: _controller!.value.size.width,
-              height: _controller!.value.size.height,
-              child: VideoPlayer(_controller!),
-            ),
+          // Video veya siyah placeholder
+          if (_isInitialized && _controller != null)
+            FittedBox(
+              fit: BoxFit.cover,
+              child: SizedBox(
+                width: _controller!.value.size.width,
+                height: _controller!.value.size.height,
+                child: VideoPlayer(_controller!),
+              ),
+            )
+          else
+            const ColoredBox(color: Colors.black),
+
+          // Koyu overlay — form okunurluğu için
+          ColoredBox(
+            color: Colors.black.withValues(alpha: widget.overlayOpacity),
           ),
-          overlay,
         ],
       ),
     );

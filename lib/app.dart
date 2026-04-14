@@ -17,6 +17,7 @@ import 'package:qulo_v2/providers/deep_link_provider.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/network/network_manager.dart';
 import 'package:qulo_v2/routing/app_router.dart';
 
 class QuloApp extends ConsumerStatefulWidget {
@@ -34,6 +35,11 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+
+    // Force logout callback — refresh token expire olduğunda tetiklenir
+    NetworkManager.instance.onForceLogout =
+        () => ref.read(authProvider.notifier).forceLogout();
+
     ref.read(analyticsManagerProvider).logAppOpen();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _setupNotificationCallbacks();

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 /// Çocuk widget'ları staggered fade-in + slide-up animasyonuyla gösterir.
 ///
-/// Her çocuk sırayla 100ms arayla belirir.
-/// İlk eleman scale animasyonu alır (logo için), diğerleri slide-up.
+/// Her çocuk sırayla belirir. İlk eleman scale animasyonu alır (logo için),
+/// diğerleri slide-up. Interval hesaplaması child sayısından bağımsız olarak
+/// güvenli aralıklar üretir (begin < end her zaman).
 class StaggeredColumn extends StatefulWidget {
   final List<Widget> children;
   final CrossAxisAlignment crossAxisAlignment;
   final Duration totalDuration;
-  final Duration staggerDelay;
   final double slideOffset;
 
   const StaggeredColumn({
@@ -16,7 +16,6 @@ class StaggeredColumn extends StatefulWidget {
     required this.children,
     this.crossAxisAlignment = CrossAxisAlignment.stretch,
     this.totalDuration = const Duration(milliseconds: 1200),
-    this.staggerDelay = const Duration(milliseconds: 100),
     this.slideOffset = 20.0,
   });
 
@@ -27,9 +26,9 @@ class StaggeredColumn extends StatefulWidget {
 class StaggeredColumnState extends State<StaggeredColumn>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
-  late final List<Animation<double>> _fadeAnimations;
-  late final List<Animation<Offset>> _slideAnimations;
-  late final Animation<double> _scaleAnimation;
+  late List<Animation<double>> _fadeAnimations;
+  late List<Animation<Offset>> _slideAnimations;
+  late Animation<double> _scaleAnimation;
 
   @override
   void initState() {
@@ -38,25 +37,32 @@ class StaggeredColumnState extends State<StaggeredColumn>
       vsync: this,
       duration: widget.totalDuration,
     );
-    _initAnimations();
+    _buildAnimations();
   }
 
-  void _initAnimations() {
+  void _buildAnimations() {
     final count = widget.children.length;
-    final totalMs = widget.totalDuration.inMilliseconds;
-    final staggerMs = widget.staggerDelay.inMilliseconds;
-    final itemDurationMs = totalMs - (count - 1) * staggerMs;
+    if (count == 0) {
+      _fadeAnimations = [];
+      _slideAnimations = [];
+      _scaleAnimation = _controller;
+      return;
+    }
+
+    // Stagger dağılımı: başlangıçlar ilk %60'a yayılır,
+    // her öğe %40 süre boyunca animasyon yapar.
+    // Bu hesaplama child sayısından bağımsız olarak begin < end garanti eder.
+    const staggerRange = 0.6;
+    const itemDuration = 0.4;
+    final staggerStep =
+        count > 1 ? staggerRange / (count - 1) : 0.0;
 
     _fadeAnimations = List.generate(count, (i) {
-      final startMs = i * staggerMs;
-      final endMs = startMs + itemDurationMs;
+      final begin = (i * staggerStep).clamp(0.0, 1.0);
+      final end = (begin + itemDuration).clamp(0.0, 1.0);
       return CurvedAnimation(
         parent: _controller,
-        curve: Interval(
-          startMs / totalMs,
-          (endMs / totalMs).clamp(0.0, 1.0),
-          curve: Curves.easeOutCubic,
-        ),
+        curve: Interval(begin, end, curve: Curves.easeOutCubic),
       );
     });
 
@@ -67,8 +73,9 @@ class StaggeredColumnState extends State<StaggeredColumn>
       ).animate(_fadeAnimations[i]);
     });
 
+    // İlk eleman (logo) için scale animasyonu
     _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
-      _fadeAnimations.isNotEmpty ? _fadeAnimations[0] : _controller,
+      _fadeAnimations[0],
     );
   }
 
@@ -79,11 +86,6 @@ class StaggeredColumnState extends State<StaggeredColumn>
 
   @override
   void dispose() {
-    for (final anim in _fadeAnimations) {
-      if (anim is CurvedAnimation) {
-        anim.dispose();
-      }
-    }
     _controller.dispose();
     super.dispose();
   }

@@ -20,6 +20,10 @@ class NetworkManager {
   late final Dio _dio;
   Dio get dio => _dio;
 
+  /// Settable force-logout callback.
+  /// Set from app.dart after ProviderScope is available.
+  VoidCallback? onForceLogout;
+
   void init({VoidCallback? onForceLogout}) {
     if (_initialized) return;
     _initialized = true;
@@ -34,9 +38,14 @@ class NetworkManager {
       },
     ));
 
+    // Store callback if provided at init time
+    if (onForceLogout != null) {
+      this.onForceLogout = onForceLogout;
+    }
+
     _dio.interceptors.addAll([
       IdempotencyInterceptor(),
-      AuthInterceptor(_dio, onForceLogout: onForceLogout),
+      AuthInterceptor(_dio, onForceLogout: () => this.onForceLogout?.call()),
       AppLogInterceptor(),
       ErrorInterceptor(),
     ]);

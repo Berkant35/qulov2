@@ -146,26 +146,11 @@ export class MatchingService {
       filtered.push({ ...c, distance_km: Math.round(dist * 10) / 10 });
     }
 
-    // 5. Batch fetch question counts for candidates
+    // 5. Single batch query for all question data (count + category + difficulty + locale)
     const candidateIds = filtered.map((c) => c.id);
     const questionCountMap = new Map<string, number>();
-
-    if (candidateIds.length > 0) {
-      const { data: qCounts } = await supabase
-        .from("questions")
-        .select("user_id")
-        .in("user_id", candidateIds);
-
-      if (qCounts) {
-        for (const row of qCounts) {
-          const uid = row.user_id as string;
-          questionCountMap.set(uid, (questionCountMap.get(uid) ?? 0) + 1);
-        }
-      }
-    }
-
-    // 5.2 — Enrich candidates with question info (category + difficulty)
     const questionInfoMap = new Map<string, QuestionInfo>();
+    const questionsByUser = new Map<string, Array<{ category: string; stats_correct: number; stats_wrong: number; locale: string }>>();
 
     if (candidateIds.length > 0) {
       const { data: questionStats } = await supabase
@@ -173,29 +158,18 @@ export class MatchingService {
         .select('user_id, category, stats_correct, stats_wrong, locale')
         .in('user_id', candidateIds);
 
+      // Group questions by user in a single pass
+      for (const row of questionStats ?? []) {
+        const uid = row.user_id as string;
+        questionCountMap.set(uid, (questionCountMap.get(uid) ?? 0) + 1);
+        if (!questionsByUser.has(uid)) questionsByUser.set(uid, []);
+        questionsByUser.get(uid)!.push(row as any);
+      }
+
+      // Build question info map using shared helper
       for (const cId of candidateIds) {
-        const userQuestions = (questionStats ?? []).filter((q: any) => q.user_id === cId);
-        const totalAttempts = userQuestions.reduce((s: number, q: any) => s + q.stats_correct + q.stats_wrong, 0);
-        const totalCorrect = userQuestions.reduce((s: number, q: any) => s + q.stats_correct, 0);
-        const successRate = totalAttempts > 0 ? (totalCorrect / totalAttempts) * 100 : 50;
-
-        let difficulty = 'unranked';
-        if (totalAttempts >= 10) {
-          if (successRate > 70) difficulty = 'easy';
-          else if (successRate > 40) difficulty = 'medium';
-          else if (successRate > 20) difficulty = 'hard';
-          else difficulty = 'legendary';
-        }
-
-        const categories = [...new Set(userQuestions.map((q: any) => q.category).filter(Boolean))] as string[];
-        const languages = [...new Set(userQuestions.map((q: any) => q.locale || 'tr'))] as string[];
-
-        questionInfoMap.set(cId, {
-          count: userQuestions.length,
-          categories,
-          avg_difficulty: difficulty,
-          languages,
-        });
+        const userQuestions = questionsByUser.get(cId) ?? [];
+        questionInfoMap.set(cId, this.computeQuestionInfo(userQuestions));
       }
     }
 
@@ -212,26 +186,11 @@ export class MatchingService {
       : userLanguages;
 
     if (langPrefs.length > 0) {
-      const langCandidateIds = discoverableFiltered.map((c) => c.id);
-      if (langCandidateIds.length > 0) {
-        const { data: candidateQuestionData } = await supabase
-          .from('questions')
-          .select('user_id, locale')
-          .in('user_id', langCandidateIds);
-
-        const questionLocalesByUser = new Map<string, string[]>();
-        for (const q of candidateQuestionData || []) {
-          const locales = questionLocalesByUser.get(q.user_id as string) || [];
-          locales.push((q.locale as string) || 'tr');
-          questionLocalesByUser.set(q.user_id as string, locales);
-        }
-
-        discoverableFiltered = discoverableFiltered.filter((c) => {
-          const qLocales = questionLocalesByUser.get(c.id) || [];
-          const matchingCount = qLocales.filter((l: string) => langPrefs.includes(l)).length;
-          return matchingCount >= 2;
-        });
-      }
+      discoverableFiltered = discoverableFiltered.filter((c) => {
+        const questions = questionsByUser.get(c.id) ?? [];
+        const matchingCount = questions.filter((q) => langPrefs.includes(q.locale || 'tr')).length;
+        return matchingCount >= 2;
+      });
     }
 
     // 6. Score each candidate
@@ -509,6 +468,36 @@ export class MatchingService {
     }
 
     return { message: "Unmatched successfully" };
+  }
+
+  /**
+   * Compute question info (categories, difficulty, languages) from raw question rows.
+   * Shared between discover() and future undoSwipe() to avoid duplication.
+   */
+  private computeQuestionInfo(
+    questions: Array<{ category: string; stats_correct: number; stats_wrong: number; locale: string }>,
+  ): QuestionInfo {
+    const totalAttempts = questions.reduce((s, q) => s + q.stats_correct + q.stats_wrong, 0);
+    const totalCorrect = questions.reduce((s, q) => s + q.stats_correct, 0);
+    const successRate = totalAttempts > 0 ? (totalCorrect / totalAttempts) * 100 : 50;
+
+    let difficulty = 'unranked';
+    if (totalAttempts >= 10) {
+      if (successRate > 70) difficulty = 'easy';
+      else if (successRate > 40) difficulty = 'medium';
+      else if (successRate > 20) difficulty = 'hard';
+      else difficulty = 'legendary';
+    }
+
+    const categories = [...new Set(questions.map((q) => q.category).filter(Boolean))] as string[];
+    const languages = [...new Set(questions.map((q) => q.locale || 'tr'))] as string[];
+
+    return {
+      count: questions.length,
+      categories,
+      avg_difficulty: difficulty,
+      languages,
+    };
   }
 }
 

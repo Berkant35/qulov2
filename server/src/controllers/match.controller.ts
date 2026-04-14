@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { matchingService } from "../services/matching.service.js";
+import { assertUuid } from "../utils/validation.js";
 import type { SwipeInput, DiscoverQuery } from "../validators/match.validator.js";
 
 export async function discoverHandler(req: Request, res: Response, next: NextFunction) {
@@ -17,6 +18,7 @@ export async function swipeHandler(req: Request, res: Response, next: NextFuncti
   try {
     const userId = req.user!.userId;
     const { target_id, action } = req.body as SwipeInput;
+    assertUuid(target_id, "target_id");
     const data = await matchingService.swipe(userId, target_id, action);
     res.json(data);
   } catch (err) {
@@ -38,6 +40,7 @@ export async function unmatchHandler(req: Request, res: Response, next: NextFunc
   try {
     const userId = req.user!.userId;
     const matchId = req.params.match_id as string;
+    assertUuid(matchId, "match_id");
     const data = await matchingService.unmatch(userId, matchId);
     res.json(data);
   } catch (err) {

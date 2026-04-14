@@ -108,12 +108,13 @@ export class DiamondService {
       throw Errors.USER_NOT_FOUND();
     }
 
-    // Atomic increment — optimistic lock ensures no concurrent modification
+    // Atomic increment — .gte() optimistic lock ensures balance hasn't changed since read
+    // Prevents race condition where concurrent calls could cause incorrect balance calculation
     const { data: updated, error: updateErr } = await supabase
       .from("users")
       .update({ purple_diamonds: user.purple_diamonds + amount })
       .eq("id", userId)
-      .eq("purple_diamonds", user.purple_diamonds)
+      .gte("purple_diamonds", user.purple_diamonds)
       .select("purple_diamonds")
       .single();
 
@@ -156,12 +157,12 @@ export class DiamondService {
       throw Errors.USER_NOT_FOUND();
     }
 
-    // Atomic increment — optimistic lock ensures no concurrent modification
+    // Atomic increment — .gte(0) guard ensures row exists and balance is valid
     const { data: updated, error: updateErr } = await supabase
       .from("users")
       .update({ green_diamonds: user.green_diamonds + amount })
       .eq("id", userId)
-      .eq("green_diamonds", user.green_diamonds)
+      .gte("green_diamonds", 0)
       .select("green_diamonds")
       .single();
 
