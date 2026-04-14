@@ -67,7 +67,7 @@ class ChatInputBar extends StatelessWidget {
                 ),
                 decoration: InputDecoration(
                   hintText: isLocked
-                      ? 'Soruyu cevaplayın...'
+                      ? context.tr('chat_answer_question_hint')
                       : context.tr('message_hint'),
                   hintStyle: TextStyle(color: theme.hintColor),
                   filled: true,

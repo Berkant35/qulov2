@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
@@ -172,7 +173,7 @@ class _ChatPowerButton extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
-                  _powerLabel(type),
+                  _powerLabel(context, type),
                   style: TextStyle(
                     fontSize: 9,
                     fontWeight: FontWeight.w500,
@@ -216,15 +217,15 @@ class _ChatPowerButton extends StatelessWidget {
     );
   }
 
-  static String _powerLabel(PowerType type) => switch (type) {
+  String _powerLabel(BuildContext context, PowerType type) => switch (type) {
         PowerType.oracle => 'Oracle',
-        PowerType.half => 'Yarıla',
-        PowerType.skip => 'Geç',
-        PowerType.hint => 'İpucu',
+        PowerType.half => context.tr('power_bar_half'),
+        PowerType.skip => context.tr('power_bar_skip'),
+        PowerType.hint => context.tr('power_bar_hint'),
         PowerType.timeExtend => '+15s',
-        PowerType.skipAll => 'Hepsini Geç',
-        PowerType.powerBlock => 'Engel',
-        PowerType.powerUnblock => 'Kilidi Aç',
+        PowerType.skipAll => context.tr('power_bar_skip_all'),
+        PowerType.powerBlock => context.tr('power_bar_block'),
+        PowerType.powerUnblock => context.tr('power_bar_unlock'),
       };
 }
 
@@ -267,7 +268,7 @@ class _UnlockButton extends StatelessWidget {
                     Icon(Icons.lock_open, size: 16, color: colors.warning),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
-                      'Kilidi Aç',
+                      context.tr('power_bar_unlock'),
                       style: TextStyle(
                         color: colors.warning,
                         fontSize: 13,

@@ -304,8 +304,8 @@ class AuthNotifier extends Notifier<AuthState> {
           signInResult = await socialService.signInWithApple();
         }
       } catch (e, st) {
-        print('[SocialAuth] Sign-in error: $e');
-        print('[SocialAuth] Stack: $st');
+        debugPrint('[SocialAuth] Sign-in error: $e');
+        debugPrint('[SocialAuth] Stack: $st');
         state = state.copyWith(isLoading: false);
         return Failure(UnknownFailure(message: e.toString()));
       }

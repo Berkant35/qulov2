@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:qulo_v2/core/l10n/app_localizations.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
@@ -65,14 +65,14 @@ class ChatQuestionRescue extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.lg),
             Text(
-              'Süre Doldu!',
+              context.tr('chat_time_up'),
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'Cevap vermek için süren bitti. Güç kullanarak kurtulabilirsin.',
+              context.tr('chat_time_up_desc'),
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: context.appColors.textSecondary,
               ),
@@ -97,7 +97,7 @@ class ChatQuestionRescue extends StatelessWidget {
                     const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: Text(
-                        'Güçler engellenmiş. Kilidi aç ve Geç gücünü kullan.',
+                        context.tr('chat_powers_blocked'),
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: context.appColors.warning,
                         ),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/widgets/fullscreen_photo_viewer.dart';
 
 class RewardMediaReveal extends StatefulWidget {
@@ -154,7 +155,7 @@ class _AudioReveal extends StatelessWidget {
               ),
               SizedBox(height: AppSpacing.sm),
               Text(
-                'Ses Ödülü Açıldı!',
+                context.tr('chat_audio_reward_revealed'),
                 style: TextStyle(
                   color: context.appColors.primary,
                   fontWeight: FontWeight.w600,

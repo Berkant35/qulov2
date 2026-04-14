@@ -1016,4 +1016,33 @@ const trTranslations = <String, String>{
   // App Review
   'rate_us': 'Bizi Değerlendir',
   'rate_us_subtitle': 'Qulo\'yu seviyor musun? Bize yorum bırak!',
+
+  // Chat — Hardcoded fixes
+  'chat_question_load_failed': 'Soru yüklenemedi',
+  'chat_answer_question_hint': 'Soruyu cevaplayın...',
+  'chat_audio_reward_revealed': 'Ses Ödülü Açıldı!',
+  'chat_lock_answer_required': 'Mesaj göndermek için soruyu cevaplamanız gerekiyor.',
+  'chat_time_up': 'Süre Doldu!',
+  'chat_time_up_desc': 'Cevap vermek için süren bitti. Güç kullanarak kurtulabilirsin.',
+  'chat_powers_blocked': 'Güçler engellenmiş. Kilidi aç ve Geç gücünü kullan.',
+  'chat_audio_reward': 'Ses Ödülü',
+  'chat_audio_locked': 'Kilitli Ses',
+  'chat_unmatch_confirm': 'Bu kişiyle eşleşmeni kaldırmak istediğine emin misin? Bu işlem geri alınamaz.',
+
+  // Power bar labels (short display names)
+  'power_bar_half': 'Yarıla',
+  'power_bar_skip': 'Geç',
+  'power_bar_hint': 'İpucu',
+  'power_bar_skip_all': 'Hepsini Geç',
+  'power_bar_block': 'Engel',
+  'power_bar_unlock': 'Kilidi Aç',
+
+  // Milestone celebration
+  'milestone_congrats': 'Tebrikler!',
+  'milestone_profile_completed': 'Profilini %@milestone tamamladın!',
+  'milestone_diamond_earned': 'Mor elmas kazandın!',
+  'milestone_boost_earned': '24 saatlik ücretsiz boost kazandın!',
+
+  // Referral share
+  'referral_share_message': 'Qulo\'ya katıl! Davet kodumu kullan, ikimize de @reward mor elmas hediye: @code\nhttps://quloapp.com/invite/@code',
 };

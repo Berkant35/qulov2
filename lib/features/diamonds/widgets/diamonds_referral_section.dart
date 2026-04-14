@@ -87,8 +87,10 @@ class _DiamondsReferralSectionState
             final code = referralState.code!;
             final reward =
                 ref.read(economyConfigProvider).rewards.referralPurple;
-            final message =
-                "Qulo'ya katıl! Davet kodumu kullan, ikimize de $reward mor elmas hediye: $code\nhttps://quloapp.com/invite/$code";
+            final message = context
+                .tr('referral_share_message')
+                .replaceAll('@reward', '$reward')
+                .replaceAll('@code', code);
             ref.read(shareManagerProvider).share(message);
           }
         },

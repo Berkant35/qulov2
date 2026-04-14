@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qulo_v2/core/l10n/app_localizations.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:qulo_v2/core/network/result.dart';
@@ -325,11 +325,10 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
   Future<void> confirmUnmatch() async {
     final nav = ref.read(navigationServiceProvider);
     final confirm = await nav.showAppDialog<bool>(
-      const ConfirmDialog(
+      ConfirmDialog(
         name: 'unmatch',
         title: 'Unmatch',
-        message:
-            'Bu kisiyle eslesmeni kaldirmak istedigine emin misin? Bu islem geri alinamaz.',
+        message: context.tr('chat_unmatch_confirm'),
         confirmText: 'Unmatch',
         isDestructive: true,
       ),

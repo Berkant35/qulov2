@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/widgets/fullscreen_photo_viewer.dart';
 
 class BlurredMediaPreview extends StatelessWidget {
@@ -152,7 +153,7 @@ class _AudioPreview extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.xs),
             Text(
-              isRevealed ? 'Ses Ödülü' : 'Kilitli Ses',
+              isRevealed ? context.tr('chat_audio_reward') : context.tr('chat_audio_locked'),
               style: TextStyle(
                 color: isRevealed
                     ? context.appColors.primary
