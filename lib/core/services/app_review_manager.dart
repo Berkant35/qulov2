@@ -17,10 +17,9 @@ class AppReviewManager {
   static const _maxShownCount = 3;
   static const _cooldownDays = 14;
 
-  static const _iosAppStoreUrl =
-      'https://apps.apple.com/app/id<APP_STORE_ID>';
-  static const _androidPlayStoreUrl =
-      'https://play.google.com/store/apps/details?id=com.wordpress.calikusuberkant.qulo';
+  static const _iosAppStoreId = '1626734572';
+  static const _androidPackageName =
+      'com.wordpress.calikusuberkant.qulo';
 
   final InAppReview _inAppReview = InAppReview.instance;
 
@@ -38,18 +37,20 @@ class AppReviewManager {
     }
   }
 
-  /// Settings tap — no cooldown check, with store URL fallback.
+  /// Settings tap — opens store listing directly for explicit user action.
   Future<void> requestReviewFromSettings() async {
     try {
-      final available = await _inAppReview.isAvailable();
-      if (available) {
-        await _inAppReview.requestReview();
-        AnalyticsManager.instance.logAppReviewPrompted('settings', 0);
-      } else {
-        await _openStoreUrl();
-      }
+      await _inAppReview.openStoreListing(
+        appStoreId: _iosAppStoreId,
+      );
+      AnalyticsManager.instance.logAppReviewPrompted('settings', 0);
     } catch (e, stack) {
-      await _openStoreUrl();
+      // Fallback: Android Play Store URL
+      if (Platform.isAndroid) {
+        await UrlLauncherManager.instance.launch(
+          'https://play.google.com/store/apps/details?id=$_androidPackageName',
+        );
+      }
       AnalyticsManager.instance.logNonFatalError(
         e,
         stack,
@@ -106,7 +107,16 @@ class AppReviewManager {
   }
 
   Future<void> _openStoreUrl() async {
-    final url = Platform.isIOS ? _iosAppStoreUrl : _androidPlayStoreUrl;
-    await UrlLauncherManager.instance.launch(url);
+    try {
+      await _inAppReview.openStoreListing(
+        appStoreId: _iosAppStoreId,
+      );
+    } catch (_) {
+      if (Platform.isAndroid) {
+        await UrlLauncherManager.instance.launch(
+          'https://play.google.com/store/apps/details?id=$_androidPackageName',
+        );
+      }
+    }
   }
 }
