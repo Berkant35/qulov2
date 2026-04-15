@@ -125,6 +125,38 @@ class _QuestionService implements QuestionService {
   }
 
   @override
+  Future<List<QuestionModel>> reorderQuestions(
+    Map<String, dynamic> data,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(data);
+    final _options = _setStreamType<List<QuestionModel>>(
+      Options(method: 'PATCH', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/questions/me/reorder',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<List<dynamic>>(_options);
+    late List<QuestionModel> _value;
+    try {
+      _value = _result.data!
+          .map((dynamic i) => QuestionModel.fromJson(i as Map<String, dynamic>))
+          .toList();
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
   Future<QuestionAnalyticsResponse> getAnalytics() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};

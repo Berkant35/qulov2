@@ -129,6 +129,8 @@ abstract class IQuestionRepository {
   Future<Result<void>> deleteQuestion(int orderNum);
 
   Future<Result<int>> getQuestionCount();
+
+  Future<Result<List<QuestionModel>>> reorderQuestions(List<String> orderedIds);
 }
 
 // ─── Quiz ───

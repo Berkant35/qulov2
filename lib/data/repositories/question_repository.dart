@@ -53,6 +53,16 @@ class QuestionRepository implements IQuestionRepository {
   }
 
   @override
+  Future<Result<List<QuestionModel>>> reorderQuestions(List<String> orderedIds) async {
+    try {
+      final response = await _service.reorderQuestions({'order': orderedIds});
+      return Success(response);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
+
+  @override
   Future<Result<int>> getQuestionCount() async {
     return _network.get<int>(
       '/questions/count/me',
