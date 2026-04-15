@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
@@ -55,19 +56,36 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen>
             return const QuestionsEmptyState();
           }
 
-          return ListView(
+          return ReorderableListView.builder(
             padding: const EdgeInsets.all(AppSpacing.pagePadding),
-            children: [
-              ...questions.map(
-                (q) => QuestionsListCard(
+            itemCount: questions.length,
+            onReorder: (oldIndex, newIndex) {
+              HapticFeedback.mediumImpact();
+              ref.read(questionProvider.notifier).reorderQuestions(oldIndex, newIndex);
+            },
+            proxyDecorator: (child, index, animation) {
+              return Material(
+                elevation: 4,
+                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                color: Colors.transparent,
+                child: child,
+              );
+            },
+            itemBuilder: (context, index) {
+              final q = questions[index];
+              return Padding(
+                key: ValueKey(q.id),
+                padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                child: QuestionsListCard(
+                  index: index,
                   question: q,
                   difficultyLabel: difficultyLabel(q),
                   difficultyColor: difficultyColor(q),
                   onTap: () => editQuestion(q),
                   onDelete: () => deleteQuestion(q),
                 ),
-              ),
-            ],
+              );
+            },
           );
         },
       ),

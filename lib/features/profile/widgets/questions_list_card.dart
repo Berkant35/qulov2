@@ -13,6 +13,7 @@ class QuestionsListCard extends StatelessWidget {
   final Color difficultyColor;
   final VoidCallback onTap;
   final VoidCallback onDelete;
+  final int index;
 
   const QuestionsListCard({
     super.key,
@@ -21,31 +22,14 @@ class QuestionsListCard extends StatelessWidget {
     required this.difficultyColor,
     required this.onTap,
     required this.onDelete,
+    required this.index,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.md),
-      child: Dismissible(
-        key: ValueKey(question.id),
-        direction: DismissDirection.endToStart,
-        background: Container(
-          alignment: Alignment.centerRight,
-          padding: const EdgeInsets.only(right: AppSpacing.xl),
-          decoration: BoxDecoration(
-            color: context.appColors.error.withValues(alpha: 0.15),
-            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          ),
-          child: Icon(Icons.delete_outline, color: context.appColors.error),
-        ),
-        confirmDismiss: (_) async {
-          onDelete();
-          return false;
-        },
-        child: GestureDetector(
+    return GestureDetector(
           onTap: onTap,
           child: Container(
             decoration: BoxDecoration(
@@ -146,6 +130,15 @@ class QuestionsListCard extends StatelessWidget {
                       ),
                     ),
                     const Spacer(),
+                    ReorderableDragStartListener(
+                      index: index,
+                      child: Icon(
+                        Icons.drag_handle,
+                        color: context.appColors.textHint,
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
                     IconButton(
                       icon: Icon(Icons.delete_outline,
                           color: context.appColors.error, size: 18),
@@ -208,8 +201,6 @@ class QuestionsListCard extends StatelessWidget {
               ],
             ),
           ),
-        ),
-      ),
-    );
+        );
   }
 }
