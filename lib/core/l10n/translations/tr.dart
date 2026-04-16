@@ -568,6 +568,7 @@ const trTranslations = <String, String>{
   'error_general': 'Bir şeyler ters gitti',
   'error_try_again': 'Bir şeyler ters gitti. Lütfen tekrar deneyin.',
   'question_save_failed': 'Soru kaydedilemedi',
+  'max_questions_reached': 'Soru limitine ulaştınız. Yeni soru eklemek için mevcut bir soruyu silin.',
   'badge_claim_failed': 'Ödül alınamadı',
 
   // Chat Question
@@ -1045,4 +1046,10 @@ const trTranslations = <String, String>{
 
   // Referral share
   'referral_share_message': 'Qulo\'ya katıl! Davet kodumu kullan, ikimize de @reward mor elmas hediye: @code\nhttps://quloapp.com/invite/@code',
+
+  // Permission denied (image picker)
+  'camera_permission_denied_title': 'Kamera izni gerekli',
+  'camera_permission_denied_message': 'Fotoğraf çekebilmek için Ayarlar > Qulo bölümünden kamera iznini açman gerekiyor.',
+  'photo_permission_denied_title': 'Fotoğraf izni gerekli',
+  'photo_permission_denied_message': 'Galeriden fotoğraf seçebilmek için Ayarlar > Qulo bölümünden fotoğraf iznini açman gerekiyor.',
 };

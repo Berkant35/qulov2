@@ -568,6 +568,7 @@ const enTranslations = <String, String>{
   'error_general': 'Something went wrong',
   'error_try_again': 'Something went wrong. Please try again.',
   'question_save_failed': 'Question could not be saved',
+  'max_questions_reached': 'You\'ve reached your question limit. Delete an existing question to add a new one.',
   'badge_claim_failed': 'Reward could not be claimed',
 
   // Chat Question
@@ -1045,4 +1046,10 @@ const enTranslations = <String, String>{
 
   // Referral share
   'referral_share_message': 'Join Qulo! Use my invite code, we both get @reward purple diamonds: @code\nhttps://quloapp.com/invite/@code',
+
+  // Permission denied (image picker)
+  'camera_permission_denied_title': 'Camera permission required',
+  'camera_permission_denied_message': 'To take a photo, enable camera access in Settings > Qulo.',
+  'photo_permission_denied_title': 'Photo permission required',
+  'photo_permission_denied_message': 'To pick a photo from your library, enable photo access in Settings > Qulo.',
 };

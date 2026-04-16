@@ -52,7 +52,8 @@ class _LegalWebViewScreenState extends State<LegalWebViewScreen> {
           _hasError = true;
         }),
         onNavigationRequest: (request) {
-          if (request.url.contains(host)) {
+          final requestHost = Uri.tryParse(request.url)?.host ?? '';
+          if (requestHost == host || requestHost.endsWith('.$host')) {
             return NavigationDecision.navigate;
           }
           return NavigationDecision.prevent;

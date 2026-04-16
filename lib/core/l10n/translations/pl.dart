@@ -563,6 +563,7 @@ const plTranslations = <String, String>{
   'error_general': 'Co\u015b posz\u0142o nie tak',
   'error_try_again': 'Co\u015b posz\u0142o nie tak. Spr\u00f3buj ponownie.',
   'question_save_failed': 'Nie uda\u0142o si\u0119 zapisa\u0107 pytania',
+  'max_questions_reached': 'Osiągnięto limit pytań. Usuń istniejące pytanie, aby dodać nowe.',
   'badge_claim_failed': 'Nie uda\u0142o si\u0119 odebra\u0107 nagrody',
 
   // Chat Question

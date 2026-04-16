@@ -208,6 +208,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                               AppTextField(
                                 controller: _emailCtrl,
                                 label: context.tr('email'),
+                                maxLength: 254,
                                 keyboardType: TextInputType.emailAddress,
                                 textInputAction: TextInputAction.next,
                                 validator: emailValidator,
@@ -217,6 +218,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                               AppTextField(
                                 controller: _passwordCtrl,
                                 label: context.tr('password'),
+                                maxLength: 128,
                                 obscureText: _obscure,
                                 textInputAction: TextInputAction.done,
                                 validator: passwordValidator,

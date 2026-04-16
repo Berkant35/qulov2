@@ -563,6 +563,7 @@ const koTranslations = <String, String>{
   'error_general': '문제가 발생했어요',
   'error_try_again': '문제가 발생했어요. 다시 시도해주세요.',
   'question_save_failed': '질문을 저장할 수 없었어요',
+  'max_questions_reached': '질문 한도에 도달했어요. 새 질문을 추가하려면 기존 질문을 삭제하세요.',
   'badge_claim_failed': '보상을 받을 수 없었어요',
 
   // Chat Question

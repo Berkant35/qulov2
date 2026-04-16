@@ -565,6 +565,7 @@ const svTranslations = <String, String>{
   'error_general': 'Något gick fel',
   'error_try_again': 'Något gick fel. Försök igen.',
   'question_save_failed': 'Frågan kunde inte sparas',
+  'max_questions_reached': 'Frågegränsen nådd. Ta bort en befintlig fråga för att lägga till en ny.',
   'badge_claim_failed': 'Belöningen kunde inte hämtas',
 
   // Chat Question

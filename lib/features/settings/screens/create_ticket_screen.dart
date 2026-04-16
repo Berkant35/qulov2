@@ -97,6 +97,7 @@ class _CreateTicketScreenState extends ConsumerState<CreateTicketScreen> {
             // Subject
             TextFormField(
               controller: _subjectCtrl,
+              maxLength: 200,
               decoration: InputDecoration(
                 labelText: context.tr('ticket_subject'),
                 border: const OutlineInputBorder(),
@@ -113,6 +114,7 @@ class _CreateTicketScreenState extends ConsumerState<CreateTicketScreen> {
             // Message
             TextFormField(
               controller: _messageCtrl,
+              maxLength: 2000,
               decoration: InputDecoration(
                 labelText: context.tr('ticket_message'),
                 border: const OutlineInputBorder(),

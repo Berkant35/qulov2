@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,6 +19,8 @@ import 'package:qulo_v2/providers/auth_provider.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/network/network_manager.dart';
+import 'package:qulo_v2/core/network/interceptors/session_interceptor.dart';
+import 'package:qulo_v2/core/services/analytics_forwarder.dart';
 import 'package:qulo_v2/routing/app_router.dart';
 
 class QuloApp extends ConsumerStatefulWidget {
@@ -60,12 +63,16 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
     switch (state) {
       case AppLifecycleState.resumed:
         analytics.logAppForeground();
+        // Start new analytics session on resume
+        SessionInterceptor.resetSession();
         // Permission-dependent provider'ları tekrar kontrol et
         ref.read(locationProvider.notifier).onAppResumed();
         // Restart presence heartbeat
         ref.read(presenceManagerProvider).start();
       case AppLifecycleState.paused:
         analytics.logAppBackground();
+        // Flush any buffered analytics events before backgrounding
+        unawaited(AnalyticsForwarder.instance.flush());
         // Send offline + stop heartbeat
         ref.read(presenceManagerProvider).stop();
       case AppLifecycleState.detached:

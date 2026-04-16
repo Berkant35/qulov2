@@ -64,11 +64,18 @@ class AuthInterceptor extends Interceptor {
       return _refreshCompleter!.future;
     }
 
-    _refreshCompleter = Completer<String?>();
-    final result = await _refreshWithRetry();
-    _refreshCompleter!.complete(result);
-    _refreshCompleter = null;
-    return result;
+    final completer = Completer<String?>();
+    _refreshCompleter = completer;
+    try {
+      final result = await _refreshWithRetry();
+      completer.complete(result);
+      return result;
+    } catch (e, st) {
+      completer.completeError(e, st);
+      rethrow;
+    } finally {
+      _refreshCompleter = null;
+    }
   }
 
   Future<String?> _refreshWithRetry() async {

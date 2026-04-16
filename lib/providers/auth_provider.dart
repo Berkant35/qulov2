@@ -23,6 +23,11 @@ import 'package:qulo_v2/providers/subscription_provider.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
 import 'package:qulo_v2/providers/passport_provider.dart';
 import 'package:qulo_v2/providers/user_languages_provider.dart';
+import 'package:qulo_v2/providers/exchange_provider.dart';
+import 'package:qulo_v2/providers/referral_provider.dart';
+import 'package:qulo_v2/providers/quiz_provider.dart';
+import 'package:qulo_v2/providers/deep_link_provider.dart';
+import 'package:qulo_v2/providers/notification_preferences_provider.dart';
 
 enum AuthStatus { initial, authenticated, unauthenticated, banned }
 
@@ -473,6 +478,13 @@ class AuthNotifier extends Notifier<AuthState> {
     ref.invalidate(subscriptionProvider);
     ref.invalidate(notificationProvider);
     ref.invalidate(userLanguagesProvider);
+    ref.invalidate(passportProvider);
+    ref.invalidate(locationProvider);
+    ref.invalidate(exchangeProvider);
+    ref.invalidate(referralProvider);
+    ref.invalidate(quizProvider);
+    ref.invalidate(notificationPreferencesProvider);
+    ref.read(pendingDeepLinkProvider.notifier).state = null;
   }
 
   Future<void> _saveTokens(AuthTokens tokens) async {
@@ -484,7 +496,11 @@ class AuthNotifier extends Notifier<AuthState> {
   }
 
   Future<void> _clearTokens() async {
-    await _storage.deleteAll();
+    await Future.wait([
+      _storage.delete(key: 'access_token'),
+      _storage.delete(key: 'refresh_token'),
+      _storage.delete(key: 'user_id'),
+    ]);
   }
 }
 

@@ -563,6 +563,7 @@ const arTranslations = <String, String>{
   'error_general': 'حدث خطأ ما',
   'error_try_again': 'حدث خطأ ما. يرجى المحاولة مرة أخرى.',
   'question_save_failed': 'تعذر حفظ السؤال',
+  'max_questions_reached': 'تم الوصول لحد الأسئلة. احذف سؤالاً موجوداً لإضافة سؤال جديد.',
   'badge_claim_failed': 'تعذر استلام المكافأة',
 
   // Chat Question

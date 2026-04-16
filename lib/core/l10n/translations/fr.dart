@@ -565,6 +565,7 @@ const frTranslations = <String, String>{
   'error_general': 'Quelque chose s\'est mal passé',
   'error_try_again': 'Quelque chose s\'est mal passé. Réessaye.',
   'question_save_failed': 'La question n\'a pas pu être enregistrée',
+  'max_questions_reached': 'Limite de questions atteinte. Supprimez une question existante pour en ajouter une nouvelle.',
   'badge_claim_failed': 'La récompense n\'a pas pu être réclamée',
 
   // Chat Question

@@ -565,6 +565,7 @@ const hiTranslations = <String, String>{
   'error_general': 'कुछ ग़लत हो गया',
   'error_try_again': 'कुछ ग़लत हो गया। कृपया फिर से कोशिश करें।',
   'question_save_failed': 'सवाल सेव नहीं हो सका',
+  'max_questions_reached': 'सवालों की सीमा पूरी हो गई। नया सवाल जोड़ने के लिए कोई मौजूदा सवाल हटाएं।',
   'badge_claim_failed': 'इनाम नहीं मिल सका',
 
   // Chat Question

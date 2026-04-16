@@ -563,6 +563,7 @@ const nlTranslations = <String, String>{
   'error_general': 'Er ging iets mis',
   'error_try_again': 'Er ging iets mis. Probeer het opnieuw.',
   'question_save_failed': 'Vraag kon niet worden opgeslagen',
+  'max_questions_reached': 'Vragenlimiet bereikt. Verwijder een bestaande vraag om een nieuwe toe te voegen.',
   'badge_claim_failed': 'Beloning kon niet worden geclaimed',
 
   // Chat Question

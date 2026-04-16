@@ -20,6 +20,7 @@ class DeepLinkResult {
 
 abstract class DeepLinkParser {
   static const _validHosts = {'quloapp.com', 'www.quloapp.com'};
+  static final _safeSegmentPattern = RegExp(r'^[a-zA-Z0-9_-]+$');
 
   /// URI'yi parse eder, desteklenen bir deep link ise DeepLinkResult doner.
   /// Desteklenmiyorsa veya gecersizse null doner.
@@ -31,7 +32,8 @@ abstract class DeepLinkParser {
     }
 
     final segments = uri.pathSegments;
-    if (segments.isEmpty || segments.any((s) => s == '..' || s == '.')) {
+    if (segments.isEmpty ||
+        segments.any((s) => s == '..' || s == '.' || !_safeSegmentPattern.hasMatch(s))) {
       return null;
     }
 

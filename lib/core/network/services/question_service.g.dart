@@ -85,7 +85,7 @@ class _QuestionService implements QuestionService {
     final _data = <String, dynamic>{};
     _data.addAll(data);
     final _options = _setStreamType<QuestionModel>(
-      Options(method: 'PUT', headers: _headers, extra: _extra)
+      Options(method: 'PATCH', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
             '/questions/me/${orderNum}',

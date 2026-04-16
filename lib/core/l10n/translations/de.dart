@@ -565,6 +565,7 @@ const deTranslations = <String, String>{
   'error_general': 'Etwas ist schiefgelaufen',
   'error_try_again': 'Etwas ist schiefgelaufen. Bitte versuche es erneut.',
   'question_save_failed': 'Frage konnte nicht gespeichert werden',
+  'max_questions_reached': 'Fragenlimit erreicht. Lösche eine bestehende Frage, um eine neue hinzuzufügen.',
   'badge_claim_failed': 'Belohnung konnte nicht eingefordert werden',
 
   // Chat Question

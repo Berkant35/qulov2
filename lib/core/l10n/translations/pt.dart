@@ -565,6 +565,7 @@ const ptTranslations = <String, String>{
   'error_general': 'Algo deu errado',
   'error_try_again': 'Algo deu errado. Tente novamente.',
   'question_save_failed': 'A pergunta não pôde ser salva',
+  'max_questions_reached': 'Limite de perguntas atingido. Exclua uma pergunta existente para adicionar uma nova.',
   'badge_claim_failed': 'A recompensa não pôde ser resgatada',
 
   // Chat Question

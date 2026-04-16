@@ -61,6 +61,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
               AppTextField(
                 controller: _emailCtrl,
                 label: context.tr('email'),
+                maxLength: 254,
                 keyboardType: TextInputType.emailAddress,
                 validator: emailValidator,
                 prefixIcon: const Icon(Icons.email_outlined),

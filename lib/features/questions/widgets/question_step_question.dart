@@ -76,6 +76,7 @@ class QuestionStepQuestion extends StatelessWidget {
             controller: questionTextController,
             label: context.tr('question'),
             maxLines: 3,
+            maxLength: 500,
             textCapitalization: TextCapitalization.sentences,
             textInputAction: TextInputAction.done,
           ),

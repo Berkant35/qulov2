@@ -42,6 +42,7 @@ class RegisterStepEmail extends StatelessWidget {
             controller: emailCtrl,
             label: l10n.get('email'),
             errorText: emailError,
+            maxLength: 254,
             prefixIcon: const Icon(Icons.email_outlined),
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
@@ -50,6 +51,7 @@ class RegisterStepEmail extends StatelessWidget {
           AppTextField(
             controller: passwordCtrl,
             label: l10n.get('password'),
+            maxLength: 128,
             errorText: passwordError,
             prefixIcon: const Icon(Icons.lock_outline),
             suffixIcon: IconButton(

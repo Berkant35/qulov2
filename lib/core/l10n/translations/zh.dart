@@ -563,6 +563,7 @@ const zhTranslations = <String, String>{
   'error_general': '出了点问题',
   'error_try_again': '出了点问题，请重试。',
   'question_save_failed': '问题保存失败',
+  'max_questions_reached': '已达到问题上限。请删除一个现有问题后再添加新问题。',
   'badge_claim_failed': '奖励领取失败',
 
   // Chat Question

@@ -21,7 +21,7 @@ class SupportTicketRepository implements ISupportTicketRepository {
         'message': message,
         'category': category,
       });
-      return Success(SupportTicketModel.fromJson(response as Map<String, dynamic>));
+      return Success(SupportTicketModel.fromJson(response));
     } on DioException catch (e) {
       return Failure(e.toAppFailure());
     }
@@ -31,9 +31,7 @@ class SupportTicketRepository implements ISupportTicketRepository {
   Future<Result<List<SupportTicketModel>>> getMyTickets() async {
     try {
       final response = await _service.getMyTickets();
-      final tickets = response
-          .map((e) => SupportTicketModel.fromJson(e as Map<String, dynamic>))
-          .toList();
+      final tickets = response.map(SupportTicketModel.fromJson).toList();
       return Success(tickets);
     } on DioException catch (e) {
       return Failure(e.toAppFailure());
@@ -44,7 +42,7 @@ class SupportTicketRepository implements ISupportTicketRepository {
   Future<Result<SupportTicketModel>> getTicket(String id) async {
     try {
       final response = await _service.getTicket(id);
-      return Success(SupportTicketModel.fromJson(response as Map<String, dynamic>));
+      return Success(SupportTicketModel.fromJson(response));
     } on DioException catch (e) {
       return Failure(e.toAppFailure());
     }

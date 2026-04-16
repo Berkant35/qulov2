@@ -32,7 +32,7 @@ class BlockRepository implements IBlockRepository {
   Future<Result<List<Map<String, dynamic>>>> getBlockedUsers() async {
     try {
       final response = await _service.getBlockedUsers();
-      return Success(response.cast<Map<String, dynamic>>());
+      return Success(response);
     } on DioException catch (e) {
       return Failure(e.toAppFailure());
     }

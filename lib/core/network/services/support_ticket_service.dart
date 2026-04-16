@@ -1,18 +1,29 @@
 import 'package:dio/dio.dart';
-import 'package:retrofit/retrofit.dart';
 
-part 'support_ticket_service.g.dart';
+class SupportTicketService {
+  final Dio _dio;
 
-@RestApi()
-abstract class SupportTicketService {
-  factory SupportTicketService(Dio dio) = _SupportTicketService;
+  SupportTicketService(this._dio);
 
-  @POST('/support-tickets')
-  Future<dynamic> createTicket(@Body() Map<String, dynamic> data);
+  Future<Map<String, dynamic>> createTicket(Map<String, dynamic> data) async {
+    final response = await _dio.post<Map<String, dynamic>>(
+      '/support-tickets',
+      data: data,
+    );
+    return response.data ?? const <String, dynamic>{};
+  }
 
-  @GET('/support-tickets')
-  Future<List<dynamic>> getMyTickets();
+  Future<List<Map<String, dynamic>>> getMyTickets() async {
+    final response = await _dio.get<List<dynamic>>('/support-tickets');
+    return (response.data ?? const [])
+        .map((e) => Map<String, dynamic>.from(e as Map))
+        .toList();
+  }
 
-  @GET('/support-tickets/{id}')
-  Future<dynamic> getTicket(@Path('id') String id);
+  Future<Map<String, dynamic>> getTicket(String id) async {
+    final response = await _dio.get<Map<String, dynamic>>(
+      '/support-tickets/$id',
+    );
+    return response.data ?? const <String, dynamic>{};
+  }
 }

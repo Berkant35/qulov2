@@ -563,6 +563,7 @@ const ruTranslations = <String, String>{
   'error_general': 'Что-то пошло не так',
   'error_try_again': 'Что-то пошло не так. Попробуйте снова.',
   'question_save_failed': 'Не удалось сохранить вопрос',
+  'max_questions_reached': 'Достигнут лимит вопросов. Удалите существующий вопрос, чтобы добавить новый.',
   'badge_claim_failed': 'Не удалось получить награду',
 
   // Chat Question

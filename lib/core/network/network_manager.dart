@@ -7,6 +7,7 @@ import 'package:qulo_v2/core/network/interceptors/auth_interceptor.dart';
 import 'package:qulo_v2/core/network/interceptors/error_interceptor.dart';
 import 'package:qulo_v2/core/network/interceptors/idempotency_interceptor.dart';
 import 'package:qulo_v2/core/network/interceptors/log_interceptor.dart';
+import 'package:qulo_v2/core/network/interceptors/session_interceptor.dart';
 import 'package:qulo_v2/core/network/result.dart';
 
 class NetworkManager {
@@ -32,6 +33,7 @@ class NetworkManager {
       baseUrl: Env.apiBaseUrl,
       connectTimeout: const Duration(seconds: 15),
       receiveTimeout: const Duration(seconds: 15),
+      maxRedirects: 3,
       headers: {
         'Content-Type': 'application/json',
         'x-app-platform': Platform.isIOS ? 'ios' : 'android',
@@ -44,6 +46,7 @@ class NetworkManager {
     }
 
     _dio.interceptors.addAll([
+      SessionInterceptor(),
       IdempotencyInterceptor(),
       AuthInterceptor(_dio, onForceLogout: () => this.onForceLogout?.call()),
       AppLogInterceptor(),

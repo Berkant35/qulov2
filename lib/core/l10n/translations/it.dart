@@ -565,6 +565,7 @@ const itTranslations = <String, String>{
   'error_general': 'Qualcosa è andato storto',
   'error_try_again': 'Qualcosa è andato storto. Riprova.',
   'question_save_failed': 'Impossibile salvare la domanda',
+  'max_questions_reached': 'Limite di domande raggiunto. Elimina una domanda esistente per aggiungerne una nuova.',
   'badge_claim_failed': 'Impossibile riscuotere il premio',
 
   // Chat Question

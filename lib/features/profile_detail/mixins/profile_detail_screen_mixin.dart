@@ -129,6 +129,7 @@ mixin ProfileDetailScreenMixin on ConsumerState<ProfileDetailScreen> {
               hintText: ctx.tr('report_reason_hint'),
             ),
             maxLines: 3,
+            maxLength: 500,
           ),
           actions: [
             TextButton(

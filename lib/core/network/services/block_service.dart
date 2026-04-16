@@ -1,18 +1,22 @@
 import 'package:dio/dio.dart';
-import 'package:retrofit/retrofit.dart';
 
-part 'block_service.g.dart';
+class BlockService {
+  final Dio _dio;
 
-@RestApi()
-abstract class BlockService {
-  factory BlockService(Dio dio) = _BlockService;
+  BlockService(this._dio);
 
-  @POST('/blocks')
-  Future<void> blockUser(@Body() Map<String, dynamic> data);
+  Future<void> blockUser(Map<String, dynamic> data) async {
+    await _dio.post<void>('/blocks', data: data);
+  }
 
-  @DELETE('/blocks/{userId}')
-  Future<void> unblockUser(@Path('userId') String userId);
+  Future<void> unblockUser(String userId) async {
+    await _dio.delete<void>('/blocks/$userId');
+  }
 
-  @GET('/blocks')
-  Future<List<dynamic>> getBlockedUsers();
+  Future<List<Map<String, dynamic>>> getBlockedUsers() async {
+    final response = await _dio.get<List<dynamic>>('/blocks');
+    return (response.data ?? const [])
+        .map((e) => Map<String, dynamic>.from(e as Map))
+        .toList();
+  }
 }

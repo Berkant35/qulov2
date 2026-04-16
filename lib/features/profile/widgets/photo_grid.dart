@@ -169,6 +169,7 @@ class _PhotoSlot extends StatelessWidget {
         CachedNetworkImage(
           imageUrl: photoUrl!,
           fit: BoxFit.cover,
+          memCacheWidth: 400,
           placeholder: (context, url) => Container(
             color: Theme.of(context).colorScheme.surfaceContainerHigh,
             child: const Center(

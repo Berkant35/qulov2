@@ -565,6 +565,7 @@ const jaTranslations = <String, String>{
   'error_general': '問題が発生しました',
   'error_try_again': '問題が発生しました。もう一度お試しください。',
   'question_save_failed': '質問を保存できませんでした',
+  'max_questions_reached': '質問の上限に達しました。新しい質問を追加するには、既存の質問を削除してください。',
   'badge_claim_failed': '報酬を受け取れませんでした',
 
   // Chat Question

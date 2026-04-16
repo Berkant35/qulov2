@@ -565,6 +565,7 @@ const esTranslations = <String, String>{
   'error_general': 'Algo salió mal',
   'error_try_again': 'Algo salió mal. Inténtalo de nuevo.',
   'question_save_failed': 'No se pudo guardar la pregunta',
+  'max_questions_reached': 'Has alcanzado el límite de preguntas. Elimina una pregunta existente para añadir una nueva.',
   'badge_claim_failed': 'No se pudo reclamar la recompensa',
 
   // Chat Question

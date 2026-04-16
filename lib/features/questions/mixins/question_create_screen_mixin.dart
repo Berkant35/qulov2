@@ -4,6 +4,7 @@ import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/features/questions/screens/question_create_screen.dart';
 import 'package:qulo_v2/providers/question_provider.dart';
@@ -174,10 +175,17 @@ mixin QuestionCreateScreenMixin on ConsumerState<QuestionCreateScreen> {
   }
 
   void _onSaveFailure(dynamic f) {
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.tr('question_save_failed'))),
-      );
+    if (!mounted) return;
+
+    final String messageKey;
+    if (f is ServerFailure && f.code == 'MAX_QUESTIONS_REACHED') {
+      messageKey = 'max_questions_reached';
+    } else {
+      messageKey = 'question_save_failed';
     }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(context.tr(messageKey))),
+    );
   }
 }

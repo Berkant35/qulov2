@@ -134,12 +134,13 @@ mixin RegisterScreenMixin on ConsumerState<RegisterScreen> {
   int calculateAge() {
     if (birthday == null) return 0;
     final now = DateTime.now();
+    if (birthday!.isAfter(now)) return 0;
     int age = now.year - birthday!.year;
     if (now.month < birthday!.month ||
         (now.month == birthday!.month && now.day < birthday!.day)) {
       age--;
     }
-    return age;
+    return age < 0 ? 0 : age;
   }
 
   Future<void> requestLocation() async {

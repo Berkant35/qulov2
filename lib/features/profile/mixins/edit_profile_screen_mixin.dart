@@ -4,6 +4,7 @@ import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/services/image_picker_manager.dart';
+import 'package:qulo_v2/core/widgets/image_picker_permission_dialog.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/core/widgets/milestone_celebration_sheet.dart';
@@ -166,8 +167,21 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
   }
 
   Future<void> _pickCropAndUpload(ImageSource source) async {
-    final picked =
-        await ref.read(imagePickerManagerProvider).pickAndCrop(context, source);
+    final PickedImage? picked;
+    try {
+      picked = await ref
+          .read(imagePickerManagerProvider)
+          .pickAndCrop(context, source);
+    } on ImagePickerPermissionException catch (e) {
+      if (mounted) {
+        await showImagePickerPermissionDialog(
+          ref,
+          context,
+          isCamera: e.isCamera,
+        );
+      }
+      return;
+    }
     if (picked == null) return;
 
     final result = await ref

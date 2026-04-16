@@ -57,6 +57,7 @@ class ChatInputBar extends StatelessWidget {
                 enabled: !isLocked,
                 minLines: 1,
                 maxLines: 5,
+                maxLength: 2000,
                 textInputAction: TextInputAction.send,
                 onSubmitted: (_) => onSend(),
                 onChanged: onChanged,

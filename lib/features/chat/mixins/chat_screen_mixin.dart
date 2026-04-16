@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/services/image_picker_manager.dart';
+import 'package:qulo_v2/core/widgets/image_picker_permission_dialog.dart';
 import 'package:qulo_v2/core/navigation/navigation_provider.dart';
 import 'package:qulo_v2/core/navigation/models/app_dialog.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
@@ -433,9 +434,21 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
 
   Future<void> _pickAndSendPhoto(ImageSource source) async {
     final picker = ref.read(imagePickerManagerProvider);
-    final picked = source == ImageSource.gallery
-        ? await picker.pickFromGallery()
-        : await picker.pickFromCamera();
+    final PickedImage? picked;
+    try {
+      picked = source == ImageSource.gallery
+          ? await picker.pickFromGallery()
+          : await picker.pickFromCamera();
+    } on ImagePickerPermissionException catch (e) {
+      if (mounted) {
+        await showImagePickerPermissionDialog(
+          ref,
+          context,
+          isCamera: e.isCamera,
+        );
+      }
+      return;
+    }
     if (picked == null) return;
 
     try {

@@ -106,6 +106,7 @@ class _ProfileCardState extends State<ProfileCard> {
                       child: CachedNetworkImage(
                         imageUrl: _photos[index],
                         fit: BoxFit.cover,
+                        memCacheWidth: 1080,
                         placeholder: (_, __) => _photoPlaceholder(theme),
                         errorWidget: (_, __, ___) => _photoPlaceholder(theme),
                       ),

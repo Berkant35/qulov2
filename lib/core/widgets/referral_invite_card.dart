@@ -467,12 +467,14 @@ class _ApplyCodeSectionState extends State<_ApplyCodeSection> {
               child: TextField(
                 controller: _controller,
                 textCapitalization: TextCapitalization.characters,
+                maxLength: 10,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: Colors.white,
                   letterSpacing: 2,
                 ),
                 decoration: InputDecoration(
                   hintText: context.tr('referral_code_hint'),
+                  counterText: "",
                   hintStyle: theme.textTheme.bodyMedium?.copyWith(
                     color: Colors.white.withValues(alpha: 0.4),
                   ),
