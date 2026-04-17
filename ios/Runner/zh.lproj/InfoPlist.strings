@@ -1,0 +1,6 @@
+"CFBundleDisplayName" = "Qulo";
+"CAMERA_USAGE_DESCRIPTION" = "需要访问相机以拍摄个人资料照片。";
+"PHOTO_LIBRARY_DESCRIPTION" = "需要访问相册以选择个人资料照片。";
+"LOCATION_WHEN_IN_USE_DESCRIPTION" = "Qulo使用您的位置来发现附近的人并在您的个人资料中显示您的城市。例如，您的位置有助于在您偏好的距离范围内找到潜在匹配，并在发现卡片上显示大致距离。";
+"MICROPHONE_USAGE_DESCRIPTION" = "需要访问麦克风以发送语音消息。";
+"TRACKING_USAGE_DESCRIPTION" = "Qulo使用此标识符来提供个性化内容并改善您的体验。您的数据不会与第三方共享用于广告目的。";

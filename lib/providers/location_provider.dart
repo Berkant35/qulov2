@@ -90,11 +90,16 @@ class LocationNotifier extends Notifier<LocationState> {
 
       _lastUpdateTime = DateTime.now();
 
-      await ref.read(userRepositoryProvider).updateLocation(
-        lat: result.lat,
-        lng: result.lng,
-        city: result.city,
-      );
+      // Sunucu güncellemesi başarısız olsa bile lokal konum korunur
+      try {
+        await ref.read(userRepositoryProvider).updateLocation(
+          lat: result.lat,
+          lng: result.lng,
+          city: result.city,
+        );
+      } catch (_) {
+        // 401 veya network hatası lokal GPS state'ini bozmamalı
+      }
     } on MockLocationException {
       state = state.copyWith(isLoading: false, error: 'LOCATION_MOCK_DETECTED');
     } catch (e) {

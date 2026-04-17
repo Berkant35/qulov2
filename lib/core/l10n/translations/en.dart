@@ -347,6 +347,8 @@ const enTranslations = <String, String>{
   'sub_restore_purchases': 'Restore Purchases',
   'sub_purchase_coming_soon': 'Purchase coming soon',
   'sub_restore_done': 'Purchases restored',
+  'sub_terms_of_use': 'Terms of Use (EULA)',
+  'sub_privacy_policy': 'Privacy Policy',
   'sub_free_discovers': '50 discovers/day',
   'sub_free_questions': '4 question slots',
   'sub_free_ads': 'Contains ads',

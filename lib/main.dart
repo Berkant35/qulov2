@@ -8,6 +8,7 @@ import 'package:qulo_v2/core/error/error_manager.dart';
 import 'package:qulo_v2/core/network/network_manager.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/video_manager.dart';
+import 'package:qulo_v2/core/services/att_manager.dart';
 import 'package:qulo_v2/app.dart';
 
 Future<void> main() async {
@@ -23,6 +24,9 @@ Future<void> main() async {
   NetworkManager.instance.init();
   await AnalyticsManager.instance.init();
   VideoManager.instance.init();
+
+  // ATT izni — splash bitmeden iOS tracking dialog göster
+  await AttManager.instance.requestPermission();
 
   runApp(const ProviderScope(child: QuloApp()));
 }

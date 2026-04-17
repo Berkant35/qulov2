@@ -16,6 +16,7 @@ import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/features/diamonds/models/plan_feature.dart';
 import 'package:qulo_v2/features/diamonds/widgets/compact_plan_row.dart';
 import 'package:qulo_v2/features/diamonds/widgets/subscription_plan_card.dart';
+import 'package:qulo_v2/features/diamonds/widgets/subscription_legal_links.dart';
 
 class SubscriptionComparisonScreen extends ConsumerStatefulWidget {
   const SubscriptionComparisonScreen({super.key});
@@ -100,6 +101,10 @@ class _SubscriptionComparisonScreenState
                 ),
               ),
             ),
+            const SizedBox(height: AppSpacing.sm),
+
+            // Terms of Use & Privacy Policy
+            const SubscriptionLegalLinks(),
             const SizedBox(height: AppSpacing.lg),
           ],
         ),

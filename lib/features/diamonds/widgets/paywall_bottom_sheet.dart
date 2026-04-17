@@ -14,6 +14,7 @@ import 'package:qulo_v2/providers/daily_stats_provider.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
 import 'package:qulo_v2/providers/economy_config_provider.dart';
 import 'package:qulo_v2/providers/subscription_provider.dart';
+import 'package:qulo_v2/features/diamonds/widgets/subscription_legal_links.dart';
 
 class PaywallBottomSheetContent extends ConsumerStatefulWidget {
   final String trigger;
@@ -305,6 +306,10 @@ class _PaywallBottomSheetContentState
                 ),
               ),
             ),
+            const SizedBox(height: AppSpacing.sm),
+
+            // Terms of Use & Privacy Policy
+            const SubscriptionLegalLinks(),
           ],
         ),
       ),

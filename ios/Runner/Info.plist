@@ -58,6 +58,8 @@
 		<string>$(PHOTO_LIBRARY_DESCRIPTION)</string>
 		<key>NSMicrophoneUsageDescription</key>
 		<string>$(MICROPHONE_USAGE_DESCRIPTION)</string>
+		<key>NSUserTrackingUsageDescription</key>
+		<string>$(TRACKING_USAGE_DESCRIPTION)</string>
 		<key>UIBackgroundModes</key>
 		<array>
 			<string>fetch</string>

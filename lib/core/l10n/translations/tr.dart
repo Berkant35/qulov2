@@ -347,6 +347,8 @@ const trTranslations = <String, String>{
   'sub_restore_purchases': 'Satın Almaları Geri Yükle',
   'sub_purchase_coming_soon': 'Satın alma yakında aktif olacak',
   'sub_restore_done': 'Satın almalar geri yüklendi',
+  'sub_terms_of_use': 'Kullanım Koşulları (EULA)',
+  'sub_privacy_policy': 'Gizlilik Politikası',
   'sub_free_discovers': '50 keşif/gün',
   'sub_free_questions': '4 soru slotu',
   'sub_free_ads': 'Reklam var',
