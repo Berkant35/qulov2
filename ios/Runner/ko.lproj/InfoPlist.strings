@@ -1,6 +1,6 @@
 "CFBundleDisplayName" = "Qulo";
 "CAMERA_USAGE_DESCRIPTION" = "프로필 사진을 촬영하려면 카메라 접근 권한이 필요합니다.";
 "PHOTO_LIBRARY_DESCRIPTION" = "프로필 사진을 선택하려면 사진 라이브러리 접근 권한이 필요합니다.";
-"LOCATION_WHEN_IN_USE_DESCRIPTION" = "Qulo는 주변 사람들을 발견하고 프로필에 도시를 표시하기 위해 위치 정보를 사용합니다. 예를 들어, 위치 정보는 선호하는 거리 범위 내에서 잠재적 매치를 찾고 디스커버리 카드에 대략적인 거리를 표시하는 데 도움이 됩니다.";
+"LOCATION_WHEN_IN_USE_DESCRIPTION" = "Qulo는 선호하는 거리 범위 내의 사용자를 표시하기 위해 위치 정보를 사용합니다. 예를 들어, 50km 이내의 사용자를 디스커버리 화면에 표시하고 프로필에 도시를 표시합니다.";
 "MICROPHONE_USAGE_DESCRIPTION" = "음성 메시지를 보내려면 마이크 접근 권한이 필요합니다.";
 "TRACKING_USAGE_DESCRIPTION" = "Qulo는 맞춤형 콘텐츠를 제공하고 경험을 개선하기 위해 이 식별자를 사용합니다. 귀하의 데이터는 광고 목적으로 제3자와 공유되지 않습니다.";

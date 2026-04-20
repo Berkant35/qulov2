@@ -1,6 +1,6 @@
 "CFBundleDisplayName" = "Qulo";
 "CAMERA_USAGE_DESCRIPTION" = "L'accesso alla fotocamera è necessario per scattare foto del profilo.";
 "PHOTO_LIBRARY_DESCRIPTION" = "L'accesso alla galleria è necessario per selezionare le foto del profilo.";
-"LOCATION_WHEN_IN_USE_DESCRIPTION" = "Qulo utilizza la tua posizione per scoprire persone vicine a te e mostrare la tua città nel tuo profilo. Ad esempio, la tua posizione aiuta a trovare potenziali corrispondenze nel raggio di distanza preferito e a visualizzare la distanza approssimativa nelle schede di scoperta.";
+"LOCATION_WHEN_IN_USE_DESCRIPTION" = "Qulo utilizza la tua posizione per mostrarti persone nel raggio di distanza preferito. Ad esempio, gli utenti entro 50 km vengono mostrati nella schermata di scoperta e la tua città viene visualizzata nel tuo profilo.";
 "MICROPHONE_USAGE_DESCRIPTION" = "L'accesso al microfono è necessario per inviare messaggi vocali.";
 "TRACKING_USAGE_DESCRIPTION" = "Qulo utilizza questo identificatore per fornire contenuti personalizzati e migliorare la tua esperienza. I tuoi dati non vengono condivisi con terze parti a scopi pubblicitari.";

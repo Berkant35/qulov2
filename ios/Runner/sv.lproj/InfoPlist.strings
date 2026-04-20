@@ -1,6 +1,6 @@
 "CFBundleDisplayName" = "Qulo";
 "CAMERA_USAGE_DESCRIPTION" = "Kameraåtkomst krävs för att ta profilfoton.";
 "PHOTO_LIBRARY_DESCRIPTION" = "Åtkomst till fotobiblioteket krävs för att välja profilfoton.";
-"LOCATION_WHEN_IN_USE_DESCRIPTION" = "Qulo använder din plats för att upptäcka personer nära dig och visa din stad på din profil. Till exempel hjälper din plats att hitta potentiella matchningar inom ditt föredragna avstånd och visa ungefärligt avstånd på upptäcktskorten.";
+"LOCATION_WHEN_IN_USE_DESCRIPTION" = "Qulo använder din plats för att visa personer inom ditt föredragna avstånd. Till exempel visas användare inom 50 km på upptäcktsskärmen och din stad visas på din profil.";
 "MICROPHONE_USAGE_DESCRIPTION" = "Mikrofonåtkomst krävs för att skicka röstmeddelanden.";
 "TRACKING_USAGE_DESCRIPTION" = "Qulo använder denna identifierare för att leverera personligt innehåll och förbättra din upplevelse. Dina data delas inte med tredje part i reklamsyfte.";
