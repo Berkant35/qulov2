@@ -1,6 +1,6 @@
 "CFBundleDisplayName" = "Qulo";
 "CAMERA_USAGE_DESCRIPTION" = "Profil fotoğraflarınızı çekmek için kamera erişimi gereklidir.";
 "PHOTO_LIBRARY_DESCRIPTION" = "Profil fotoğraflarınızı seçmek için galeri erişimi gereklidir.";
-"LOCATION_WHEN_IN_USE_DESCRIPTION" = "Qulo, tercih ettiğin mesafe aralığındaki kişileri sana göstermek için konumunu kullanır. Örneğin, 50 km içindeki kullanıcıları keşif ekranında listelemek ve profilinde şehrini görüntülemek için kullanılır.";
+"LOCATION_WHEN_IN_USE_DESCRIPTION" = "Qulo, Keşfet ekranında seçtiğin mesafedeki kişileri bulmak ve profilinde şehrini göstermek için konumunu kullanır. Örneğin mesafeyi 50 km olarak ayarladığında, Keşfet bu yarıçaptaki kullanıcıları listeler ve her kartta şehir ile mesafe görünür; örnek: \"İstanbul · 2,5 km\".";
 "MICROPHONE_USAGE_DESCRIPTION" = "Sesli mesaj göndermek için mikrofon erişimi gereklidir.";
 "TRACKING_USAGE_DESCRIPTION" = "Qulo, kişiselleştirilmiş içerik sunmak ve deneyimini iyileştirmek için bu tanımlayıcıyı kullanır. Verilerin reklam amacıyla üçüncü taraflarla paylaşılmaz.";

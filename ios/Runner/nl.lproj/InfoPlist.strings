@@ -1,6 +1,6 @@
 "CFBundleDisplayName" = "Qulo";
 "CAMERA_USAGE_DESCRIPTION" = "Cameratoegang is vereist om profielfoto's te maken.";
 "PHOTO_LIBRARY_DESCRIPTION" = "Toegang tot de fotobibliotheek is vereist om profielfoto's te selecteren.";
-"LOCATION_WHEN_IN_USE_DESCRIPTION" = "Qulo gebruikt je locatie om je mensen te tonen binnen je voorkeursafstand. Bijvoorbeeld, gebruikers binnen 50 km worden getoond op het ontdekkingsscherm en je stad wordt weergegeven op je profiel.";
+"LOCATION_WHEN_IN_USE_DESCRIPTION" = "Qulo gebruikt je locatie om mensen binnen je gekozen afstand te vinden op het Discover-scherm en je stad op je profiel te tonen. Stel je bijvoorbeeld 50 km in, dan toont Discover gebruikers binnen die straal en elke kaart laat stad en afstand zien, zoals \"Amsterdam · 2,5 km\".";
 "MICROPHONE_USAGE_DESCRIPTION" = "Microfoontoegang is vereist om spraakberichten te verzenden.";
 "TRACKING_USAGE_DESCRIPTION" = "Qulo gebruikt deze identificatie om gepersonaliseerde inhoud te leveren en je ervaring te verbeteren. Je gegevens worden niet gedeeld met derden voor reclamedoeleinden.";

@@ -121,7 +121,7 @@ class _SubscriptionComparisonScreenState
       params: {AnalyticsEvents.paramTier: plan},
     );
 
-    final productId = plan == 'premium' ? 'qulopremiummonthly' : 'quloplusmonthly2';
+    final productId = plan == 'premium' ? 'qulopremiummonthly2' : 'quloplusmonthly2';
     final success = await ref
         .read(subscriptionProvider.notifier)
         .purchaseByProductId(productId);

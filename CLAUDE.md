@@ -117,7 +117,7 @@ Video üretim görevleri için: HTML→Puppeteer→ffmpeg pipeline'ını kullan.
 - **IAP**: RevenueCat entegrasyonu (purchases_flutter ^8.5.0)
 - **API key güvenliği**: `--dart-define` env vars ile, hardcoded değil (`lib/core/config/env.dart`)
 - **Consumable ürünler** (6 adet): qulopurple50/150/400/1000/2500/6000
-- **Subscription** (2 tier): Qulo Plus ($4.99/ay, quloplusmonthly2), Qulo Premium ($9.99/ay, qulopremiummonthly)
+- **Subscription** (2 tier): Qulo Plus ($4.99/ay, quloplusmonthly2), Qulo Premium ($9.99/ay, qulopremiummonthly2)
 - **Plus özellikleri**: 500 mor elmas/ay, sınırsız keşif, 6 soru slotu, 3 undo/gün, reklam yok
 - **Premium özellikleri**: 1500 mor elmas/ay, sınırsız keşif, 10 soru slotu, sınırsız undo, pasaport modu, reklam yok
 - **Free limitler**: 50 keşif/gün, 4 soru slotu, undo yok, reklam var

@@ -69,7 +69,7 @@ class _PaywallBottomSheetContentState
     );
 
     final productId =
-        plan == 'premium' ? 'qulopremiummonthly' : 'quloplusmonthly2';
+        plan == 'premium' ? 'qulopremiummonthly2' : 'quloplusmonthly2';
     final success = await ref
         .read(subscriptionProvider.notifier)
         .purchaseByProductId(productId);

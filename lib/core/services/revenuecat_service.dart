@@ -56,7 +56,7 @@ class RevenueCatService {
     }
   }
 
-  static const _subscriptionIds = {'quloplusmonthly2', 'qulopremiummonthly'};
+  static const _subscriptionIds = {'quloplusmonthly2', 'qulopremiummonthly2'};
 
   static Future<CustomerInfo> purchaseByProductId(String productId) async {
     _ensureConfigured();
