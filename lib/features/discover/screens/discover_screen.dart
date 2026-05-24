@@ -51,7 +51,9 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen>
       actions: const [PassportBadge()],
       body: (locationState.isLoading || isInitialLoad)
           ? const SizedBox.shrink()
-          : discoverState.when(
+          : locationState.error != null
+              ? DiscoverLocationError(error: locationState.error!)
+              : discoverState.when(
               loading: () => const SizedBox.shrink(),
               error: (e, _) => ErrorRetryWidget(
                 onRetry: () => ref.read(discoverProvider.notifier).loadCards(),

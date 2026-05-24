@@ -53,7 +53,7 @@
 		<key>NSCameraUsageDescription</key>
 		<string>Qulo uses your camera to take photos and videos for your profile. For example, you can capture a new profile picture directly from the camera when editing your profile.</string>
 		<key>NSLocationWhenInUseUsageDescription</key>
-		<string>Qulo uses your location to show you other users nearby. For example, when you open the Discover screen, your location helps us find profiles within your selected distance range so you can connect with people around you.</string>
+		<string>Qulo uses your location to: (1) find people within your selected distance on the Discover screen, (2) detect and show your city on your profile, and (3) display each profile's city and distance to you on their card. For example, when you set distance to 50 km, Discover lists users within that radius and each card shows "Berlin · 2.5 km".</string>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>Qulo uses your photo library so you can select existing photos to upload as your profile picture or share in your profile gallery.</string>
 		<key>NSMicrophoneUsageDescription</key>

@@ -84,6 +84,10 @@ mixin DiscoverScreenMixin on ConsumerState<DiscoverScreen> {
       ref.read(locationProvider.notifier).getCurrentLocation();
     } else {
       await ref.read(locationProvider.notifier).getCurrentLocation();
+      // Skip loadCards when location failed — backend throws PROFILE_INCOMPLETE without lat/lng.
+      final updatedLocation = ref.read(locationProvider);
+      if (updatedLocation.lat == null) return;
+
       final isAlreadyLoading = ref.read(discoverProvider) is AsyncLoading;
       final updatedState = ref.read(discoverProvider).valueOrNull;
       if (!isAlreadyLoading && (updatedState == null || !updatedState.initialized)) {

@@ -1,6 +1,6 @@
 "CFBundleDisplayName" = "Qulo";
-"CAMERA_USAGE_DESCRIPTION" = "需要访问相机以拍摄个人资料照片。";
-"PHOTO_LIBRARY_DESCRIPTION" = "需要访问相册以选择个人资料照片。";
-"LOCATION_WHEN_IN_USE_DESCRIPTION" = "Qulo 使用你的位置，在 Discover 页面查找你所选距离内的用户，并在个人资料中显示你的城市。例如，将距离设为 50 公里时，Discover 会列出该范围内的用户，并在每张卡片上显示城市和距离，如\"上海 · 2.5 公里\"。";
-"MICROPHONE_USAGE_DESCRIPTION" = "需要访问麦克风以发送语音消息。";
-"TRACKING_USAGE_DESCRIPTION" = "Qulo使用此标识符来提供个性化内容并改善您的体验。您的数据不会与第三方共享用于广告目的。";
+"NSCameraUsageDescription" = "需要访问相机以拍摄个人资料照片。";
+"NSPhotoLibraryUsageDescription" = "需要访问相册以选择个人资料照片。";
+"NSLocationWhenInUseUsageDescription" = "Qulo 使用你的位置，在 Discover 页面查找你所选距离内的用户，并在个人资料中显示你的城市。例如，将距离设为 50 公里时，Discover 会列出该范围内的用户，并在每张卡片上显示城市和距离，如\"上海 · 2.5 公里\"。";
+"NSMicrophoneUsageDescription" = "需要访问麦克风以发送语音消息。";
+"NSUserTrackingUsageDescription" = "Qulo使用此标识符来提供个性化内容并改善您的体验。您的数据不会与第三方共享用于广告目的。";

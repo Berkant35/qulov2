@@ -1,6 +1,6 @@
 "CFBundleDisplayName" = "Qulo";
-"CAMERA_USAGE_DESCRIPTION" = "Dostęp do aparatu jest wymagany do robienia zdjęć profilowych.";
-"PHOTO_LIBRARY_DESCRIPTION" = "Dostęp do galerii jest wymagany do wybierania zdjęć profilowych.";
-"LOCATION_WHEN_IN_USE_DESCRIPTION" = "Qulo używa Twojej lokalizacji, aby znaleźć osoby w wybranej odległości na ekranie Discover i pokazać Twoje miasto w profilu. Na przykład gdy ustawisz odległość na 50 km, Discover wyświetla użytkowników w tym promieniu, a każda karta pokazuje miasto i odległość, np. \"Warszawa · 2,5 km\".";
-"MICROPHONE_USAGE_DESCRIPTION" = "Dostęp do mikrofonu jest wymagany do wysyłania wiadomości głosowych.";
-"TRACKING_USAGE_DESCRIPTION" = "Qulo używa tego identyfikatora, aby dostarczać spersonalizowane treści i ulepszać Twoje doświadczenie. Twoje dane nie są udostępniane stronom trzecim w celach reklamowych.";
+"NSCameraUsageDescription" = "Dostęp do aparatu jest wymagany do robienia zdjęć profilowych.";
+"NSPhotoLibraryUsageDescription" = "Dostęp do galerii jest wymagany do wybierania zdjęć profilowych.";
+"NSLocationWhenInUseUsageDescription" = "Qulo używa Twojej lokalizacji, aby znaleźć osoby w wybranej odległości na ekranie Discover i pokazać Twoje miasto w profilu. Na przykład gdy ustawisz odległość na 50 km, Discover wyświetla użytkowników w tym promieniu, a każda karta pokazuje miasto i odległość, np. \"Warszawa · 2,5 km\".";
+"NSMicrophoneUsageDescription" = "Dostęp do mikrofonu jest wymagany do wysyłania wiadomości głosowych.";
+"NSUserTrackingUsageDescription" = "Qulo używa tego identyfikatora, aby dostarczać spersonalizowane treści i ulepszać Twoje doświadczenie. Twoje dane nie są udostępniane stronom trzecim w celach reklamowych.";

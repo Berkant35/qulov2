@@ -341,6 +341,11 @@ class AuthNotifier extends Notifier<AuthState> {
         await RevenueCatService.logIn(response.userId);
       } catch (_) {}
 
+      // Load user BEFORE flipping auth state — router only listens to authProvider, so the
+      // refresh fires once when status becomes authenticated. If user is still null at that
+      // moment, the redirect skips /profile-completion and lands on /discover (App Store Guideline 4).
+      await ref.read(userProvider.notifier).fetchMe();
+
       state = state.copyWith(
         status: AuthStatus.authenticated,
         userId: response.userId,
