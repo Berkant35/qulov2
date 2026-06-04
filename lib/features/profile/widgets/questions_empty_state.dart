@@ -4,7 +4,7 @@ import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
-import 'package:qulo_v2/core/widgets/q_icon.dart';
+import 'package:qulo_v2/core/widgets/app_icon.dart';
 
 class QuestionsEmptyState extends StatelessWidget {
   const QuestionsEmptyState({super.key});
@@ -19,7 +19,7 @@ class QuestionsEmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            QIcon(QIcons.icWand, size: 56, color: context.appColors.textHint),
+            AppIcon(QIcons.wand, size: 56, color: context.appColors.textHint),
             const SizedBox(height: AppSpacing.lg),
             Text(
               context.tr('min_questions').replaceAll(

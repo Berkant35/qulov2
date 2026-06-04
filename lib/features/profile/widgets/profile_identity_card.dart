@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
-import 'package:qulo_v2/core/widgets/q_icon.dart';
+import 'package:qulo_v2/core/widgets/app_icon.dart';
 import 'package:qulo_v2/data/models/user_model.dart';
 import 'package:qulo_v2/providers/subscription_provider.dart';
 
@@ -46,7 +46,7 @@ class ProfileIdentityCard extends ConsumerWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        QIcon(QIcons.icMapPin, color: theme.colorScheme.onSurfaceVariant, size: 16),
+                        AppIcon(QIcons.mapPin, color: theme.colorScheme.onSurfaceVariant, size: 16),
                         const SizedBox(width: AppSpacing.xs),
                         Text(
                           user.city!,

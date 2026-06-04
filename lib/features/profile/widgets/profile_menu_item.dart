@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/icons/icon_ref.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/widgets/app_icon.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 
 class ProfileMenuItem extends StatelessWidget {
-  final String? iconPath;
+  final dynamic iconPath; // String (old icons) or IconRef (new icons)
   final Widget? iconWidget;
   final String title;
   final String? subtitle;
@@ -35,7 +37,12 @@ class ProfileMenuItem extends StatelessWidget {
         leading: Stack(
           clipBehavior: Clip.none,
           children: [
-            iconWidget ?? QIcon(iconPath!, color: context.appColors.primary, size: 24),
+            if (iconWidget != null)
+              iconWidget!
+            else if (iconPath is IconRef)
+              AppIcon(iconPath, color: context.appColors.primary, size: 24)
+            else
+              QIcon(iconPath, color: context.appColors.primary, size: 24),
             if (showBadge)
               Positioned(
                 right: -4,

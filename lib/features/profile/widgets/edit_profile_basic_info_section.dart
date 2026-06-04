@@ -4,10 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/widgets/app_icon.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/app_text_field.dart';
 import 'package:qulo_v2/core/widgets/profile_section_card.dart';
-import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
 
@@ -125,7 +125,7 @@ class _LocationButton extends StatelessWidget {
                 height: 20,
                 child: AppLoadingWidget.small(),
               )
-            : QIcon(QIcons.icMapPin, color: context.appColors.primary, size: 20),
+            : AppIcon(QIcons.mapPin, color: context.appColors.primary, size: 20),
       ),
     );
   }

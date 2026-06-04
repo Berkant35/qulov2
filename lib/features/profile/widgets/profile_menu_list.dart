@@ -42,7 +42,7 @@ class ProfileMenuList extends ConsumerWidget {
           onTap: onEditProfile,
         ),
         ProfileMenuItem(
-          iconPath: QIcons.icHelpCircle,
+          iconPath: QIcons.helpCircle,
           title: context.tr('my_questions'),
           subtitle: questionCount < AppConstants.minQuestions
               ? context.tr('question_nudge_menu_required')
@@ -61,7 +61,7 @@ class ProfileMenuList extends ConsumerWidget {
           onTap: onDiamonds,
         ),
         ProfileMenuItem(
-          iconPath: QIcons.icCrown,
+          iconPath: QIcons.crown,
           title: context.tr('sub_my_subscription'),
           subtitle: _subscriptionSubtitle(context, ref),
           onTap: onSubscription,
