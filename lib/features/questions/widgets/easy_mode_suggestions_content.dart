@@ -4,8 +4,8 @@ import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/widgets/app_icon.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
-import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/data/models/ai_suggestion_model.dart';
 import 'package:qulo_v2/features/questions/widgets/ai_suggestion_card.dart';
 
@@ -54,8 +54,8 @@ class EasyModeSuggestionsContent extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  QIcon(
-                    QIcons.icWand,
+                  AppIcon(
+                    QIcons.wand,
                     size: 48,
                     color: context.appColors.textHint,
                   ),

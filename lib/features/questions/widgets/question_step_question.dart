@@ -4,8 +4,8 @@ import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/widgets/app_icon.dart';
 import 'package:qulo_v2/core/widgets/app_text_field.dart';
-import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/core/widgets/language_picker_sheet.dart';
 
 class QuestionStepQuestion extends StatelessWidget {
@@ -48,7 +48,7 @@ class QuestionStepQuestion extends StatelessWidget {
             ),
             child: Column(
               children: [
-                QIcon(QIcons.icWand, size: 28, color: context.appColors.primary),
+                AppIcon(QIcons.wand, size: 28, color: context.appColors.primary),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
                   context.tr('question_create_motto'),
