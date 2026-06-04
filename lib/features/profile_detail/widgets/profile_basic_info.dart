@@ -3,7 +3,7 @@ import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
-import 'package:qulo_v2/core/widgets/q_icon.dart';
+import 'package:qulo_v2/core/widgets/app_icon.dart';
 import 'package:qulo_v2/data/models/public_profile_model.dart';
 
 class ProfileBasicInfo extends StatelessWidget {
@@ -46,8 +46,8 @@ class ProfileBasicInfo extends StatelessWidget {
                     color: context.appColors.warning.withValues(alpha: 0.2),
                     shape: BoxShape.circle,
                   ),
-                  child: QIcon(
-                    QIcons.icZap,
+                  child: AppIcon(
+                    QIcons.bolt,
                     color: context.appColors.warning,
                     size: 16,
                   ),
@@ -61,8 +61,8 @@ class ProfileBasicInfo extends StatelessWidget {
           if (profile.city != null)
             Row(
               children: [
-                QIcon(
-                  QIcons.icMapPin,
+                AppIcon(
+                  QIcons.mapPin,
                   size: 16,
                   color: context.appColors.textSecondary,
                 ),
