@@ -1,3 +1,5 @@
+import 'package:qulo_v2/core/icons/icon_ref.dart';
+
 abstract final class QIcons {
   // ─── Navigation ───
   static const icCompass = 'assets/icons/ic_compass.svg';
@@ -101,4 +103,62 @@ abstract final class QIcons {
   static const String icFire = 'assets/icons/ic_fire.svg';
   static const String icTarget = 'assets/icons/ic_target.svg';
   static const String icQueue = 'assets/icons/ic_queue.svg';
+
+  // ─── Solar Bold Duotone / Linear (14 IconRef) ───
+  static const IconRef heart = IconRef(
+    filled:   'assets/icons/ic_heart_filled.svg',
+    outlined: 'assets/icons/ic_heart.svg',
+  );
+  static const IconRef bell = IconRef(
+    filled:   'assets/icons/ic_bell_filled.svg',
+    outlined: 'assets/icons/ic_bell.svg',
+  );
+  static const IconRef lock = IconRef(
+    filled:   'assets/icons/ic_lock_filled.svg',
+    outlined: 'assets/icons/ic_lock.svg',
+  );
+  static const IconRef camera = IconRef(
+    filled:   'assets/icons/ic_camera_filled.svg',
+    outlined: 'assets/icons/ic_camera.svg',
+  );
+  static const IconRef mapPin = IconRef(
+    filled:   'assets/icons/ic_map_pin_filled.svg',
+    outlined: 'assets/icons/ic_map_pin.svg',
+  );
+  static const IconRef globe = IconRef(
+    filled:   'assets/icons/ic_globe_filled.svg',
+    outlined: 'assets/icons/ic_globe.svg',
+  );
+  static const IconRef gift = IconRef(
+    filled:   'assets/icons/ic_gift_filled.svg',
+    outlined: 'assets/icons/ic_gift.svg',
+  );
+  static const IconRef crown = IconRef(
+    filled:   'assets/icons/ic_crown_filled.svg',
+    outlined: 'assets/icons/ic_crown.svg',
+  );
+  static const IconRef eye = IconRef(
+    filled:   'assets/icons/ic_eye_filled.svg',
+    outlined: 'assets/icons/ic_eye.svg',
+  );
+  static const IconRef wand = IconRef(
+    filled:   'assets/icons/ic_wand_filled.svg',
+    outlined: 'assets/icons/ic_wand.svg',
+  );
+  static const IconRef chat = IconRef(
+    filled:   'assets/icons/ic_chat_filled.svg',
+    outlined: 'assets/icons/ic_chat.svg',
+  );
+  static const IconRef bolt = IconRef(
+    filled:   'assets/icons/ic_bolt_filled.svg',
+    outlined: 'assets/icons/ic_bolt.svg',
+  );
+  static const IconRef helpCircle = IconRef(
+    filled:   'assets/icons/ic_help_circle_filled.svg',
+    outlined: 'assets/icons/ic_help_circle.svg',
+  );
+  static const IconRef userRounded = IconRef(
+    filled:   'assets/icons/ic_user_rounded_filled.svg',
+    outlined: 'assets/icons/ic_user_rounded.svg',
+  );
 }
