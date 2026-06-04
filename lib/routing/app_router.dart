@@ -37,6 +37,7 @@ import 'package:qulo_v2/features/chat/screens/solve_chat_question_screen.dart';
 import 'package:qulo_v2/data/models/chat_question_model.dart';
 import 'package:qulo_v2/features/performance/screens/performance_dashboard_screen.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
+import 'package:qulo_v2/core/widgets/app_icon.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';

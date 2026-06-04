@@ -429,8 +429,8 @@ class _MainShellState extends ConsumerState<_MainShell> {
                 label: context.tr('discover'),
               ),
               NavigationDestination(
-                icon: QIcon(QIcons.icHeart, size: 24),
-                selectedIcon: QIcon(QIcons.icHeartFilled, size: 24),
+                icon: AppIcon(QIcons.heart, filled: false, size: 24),
+                selectedIcon: AppIcon(QIcons.heart, filled: true, size: 24),
                 label: context.tr('matches'),
               ),
               NavigationDestination(
@@ -438,13 +438,13 @@ class _MainShellState extends ConsumerState<_MainShell> {
                   isLabelVisible: showProfileBadge,
                   smallSize: 10,
                   backgroundColor: AppColors.error,
-                  child: QIcon(QIcons.icUser, size: 24),
+                  child: AppIcon(QIcons.userRounded, filled: false, size: 24),
                 ),
                 selectedIcon: Badge(
                   isLabelVisible: showProfileBadge,
                   smallSize: 10,
                   backgroundColor: AppColors.error,
-                  child: QIcon(QIcons.icUserFilled, size: 24),
+                  child: AppIcon(QIcons.userRounded, filled: true, size: 24),
                 ),
                 label: context.tr('profile'),
               ),
