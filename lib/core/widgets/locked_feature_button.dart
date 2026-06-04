@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
-import 'package:qulo_v2/core/widgets/q_icon.dart';
+import 'package:qulo_v2/core/widgets/app_icon.dart';
 import 'package:qulo_v2/features/diamonds/widgets/paywall_bottom_sheet.dart';
 
 class LockedFeatureButton extends ConsumerWidget {
@@ -44,7 +44,7 @@ class LockedFeatureButton extends ConsumerWidget {
                   ],
                 ),
                 child: Center(
-                  child: QIcon(QIcons.icLock, size: 14, color: context.appColors.primary),
+                  child: AppIcon(QIcons.lock, size: 14, color: context.appColors.primary),
                 ),
               ),
             ],
