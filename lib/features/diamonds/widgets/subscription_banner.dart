@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/widgets/app_icon.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/data/models/subscription_model.dart';
@@ -73,8 +74,8 @@ class _UpgradeBanner extends StatelessWidget {
                 ),
               ),
               child: Center(
-                child: QIcon(
-                  QIcons.icCrown,
+                child: AppIcon(
+                  QIcons.crown,
                   color: AppColors.gold,
                   size: 22,
                 ),

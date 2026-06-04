@@ -61,7 +61,7 @@ class _SubscriptionComparisonScreenState
               price: context.tr('sub_price_plus'),
               features: [
                 PlanFeature(QIcons.icCompass, context.tr('sub_plus_discovers')),
-                PlanFeature(QIcons.icHelpCircle, context.tr('sub_plus_questions')),
+                PlanFeature(QIcons.helpCircle.outlined, context.tr('sub_plus_questions')),
                 PlanFeature.widget(const DiamondIcon.purple(size: 16), context.tr('sub_plus_diamonds')),
                 PlanFeature(QIcons.icSkipForward, context.tr('sub_plus_undos')),
                 PlanFeature(QIcons.icEyeOff, context.tr('sub_plus_no_ads')),
@@ -78,10 +78,10 @@ class _SubscriptionComparisonScreenState
               price: context.tr('sub_price_premium'),
               features: [
                 PlanFeature(QIcons.icCompass, context.tr('sub_premium_discovers')),
-                PlanFeature(QIcons.icHelpCircle, context.tr('sub_premium_questions')),
+                PlanFeature(QIcons.helpCircle.outlined, context.tr('sub_premium_questions')),
                 PlanFeature.widget(const DiamondIcon.purple(size: 16), context.tr('sub_premium_diamonds')),
                 PlanFeature(QIcons.icSkipForward, context.tr('sub_premium_undos')),
-                PlanFeature(QIcons.icGlobe, context.tr('sub_premium_passport')),
+                PlanFeature(QIcons.globe.outlined, context.tr('sub_premium_passport')),
                 PlanFeature(QIcons.icEyeOff, context.tr('sub_premium_no_ads')),
               ],
               isRecommended: true,

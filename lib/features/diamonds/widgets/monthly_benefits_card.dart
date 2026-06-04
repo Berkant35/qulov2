@@ -62,7 +62,7 @@ class MonthlyBenefitsCard extends StatelessWidget {
 
           // Question Slots
           _BenefitRow(
-            icon: QIcons.icHelpCircle,
+            icon: QIcons.helpCircle.outlined,
             label: context.tr('benefit_question_slots'),
             value: '${stats.questionsCreated}/${stats.questionsLimit}',
             progress: stats.questionsLimit > 0
@@ -102,7 +102,7 @@ class MonthlyBenefitsCard extends StatelessWidget {
 
           // Passport Mode
           _BenefitRow(
-            icon: QIcons.icGlobe,
+            icon: QIcons.globe.outlined,
             label: context.tr('benefit_passport'),
             value: stats.passportMode
                 ? context.tr('benefit_active')
