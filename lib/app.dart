@@ -65,10 +65,14 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
         analytics.logAppForeground();
         // Start new analytics session on resume
         SessionInterceptor.resetSession();
-        // Permission-dependent provider'ları tekrar kontrol et
-        ref.read(locationProvider.notifier).onAppResumed();
-        // Restart presence heartbeat
-        ref.read(presenceManagerProvider).start();
+        // Auth-required side effects yalnızca authenticated iken. Aksi halde
+        // ATT modal / OS resume cycle'ları force-logout fırtınası tetikliyor.
+        if (ref.read(authProvider).status == AuthStatus.authenticated) {
+          // Permission-dependent provider'ları tekrar kontrol et
+          ref.read(locationProvider.notifier).onAppResumed();
+          // Restart presence heartbeat
+          ref.read(presenceManagerProvider).start();
+        }
       case AppLifecycleState.paused:
         analytics.logAppBackground();
         // Flush any buffered analytics events before backgrounding

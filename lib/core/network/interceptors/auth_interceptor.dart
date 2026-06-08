@@ -81,7 +81,10 @@ class AuthInterceptor extends Interceptor {
   Future<String?> _refreshWithRetry() async {
     final refreshToken = await _storage.read(key: 'refresh_token');
     if (refreshToken == null) {
-      _forceLogout();
+      // Önceki force-logout sonrası storage boş — log gürültüsünü azalt,
+      // idempotent forceLogout cascade'i zaten engelliyor.
+      LogManager.instance.logInfo('AUTH', 'No refresh token, skip refresh');
+      onForceLogout?.call();
       return null;
     }
 

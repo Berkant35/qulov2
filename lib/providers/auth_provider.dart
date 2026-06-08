@@ -455,6 +455,13 @@ class AuthNotifier extends Notifier<AuthState> {
   }
 
   Future<void> forceLogout() async {
+    // Idempotent: ilk force-logout sonrası storage boş kalan in-flight 401'ler
+    // bizi tekrar tetikliyor — cascade'i kırmak için zaten unauthenticated ise çık.
+    if (state.status == AuthStatus.unauthenticated) {
+      debugPrint('[auth] forceLogout: already unauthenticated, skip');
+      return;
+    }
+
     try {
       await RevenueCatService.logOut();
     } catch (e) {
