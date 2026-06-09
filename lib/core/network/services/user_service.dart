@@ -25,6 +25,9 @@ abstract class UserService {
   @PATCH('/users/me/push-token')
   Future<void> updatePushToken(@Body() Map<String, dynamic> data);
 
+  @POST('/users/me/heartbeat')
+  Future<void> heartbeat();
+
   @DELETE('/users/me')
   Future<void> deleteAccount();
 

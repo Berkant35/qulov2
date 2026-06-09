@@ -54,6 +54,8 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
       json['completion_rewards_claimed'] as Map<String, dynamic>? ?? {},
   strictLanguageMode: json['strict_language_mode'] as bool? ?? false,
   referralCode: json['referral_code'] as String?,
+  emailNotificationsEnabled:
+      json['email_notifications_enabled'] as bool? ?? true,
   details: json['details'] == null
       ? null
       : UserDetailsModel.fromJson(json['details'] as Map<String, dynamic>),
@@ -98,5 +100,6 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
   'completion_rewards_claimed': instance.completionRewardsClaimed,
   'strict_language_mode': instance.strictLanguageMode,
   'referral_code': instance.referralCode,
+  'email_notifications_enabled': instance.emailNotificationsEnabled,
   'details': instance.details,
 };

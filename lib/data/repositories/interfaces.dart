@@ -194,6 +194,8 @@ abstract class IUserRepository {
 
   Future<Result<void>> updatePushToken(String token);
 
+  Future<Result<void>> heartbeat();
+
   Future<Result<Map<String, dynamic>>> uploadPhoto(Uint8List bytes, String mimeType);
 
   Future<Result<Map<String, dynamic>>> deletePhoto(int index);

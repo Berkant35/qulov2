@@ -67,6 +67,24 @@ class UserRepository implements IUserRepository {
     }
   }
 
+  DateTime? _lastHeartbeat;
+  static const Duration _heartbeatDebounce = Duration(minutes: 5);
+
+  @override
+  Future<Result<void>> heartbeat() async {
+    if (_lastHeartbeat != null &&
+        DateTime.now().difference(_lastHeartbeat!) < _heartbeatDebounce) {
+      return const Success(null);
+    }
+    _lastHeartbeat = DateTime.now();
+    try {
+      await _service.heartbeat();
+      return const Success(null);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
+
   @override
   Future<Result<Map<String, dynamic>>> uploadPhoto(Uint8List bytes, String mimeType) async {
     final ext = mimeType == 'image/png' ? 'png' : 'jpg';
