@@ -1054,4 +1054,8 @@ const trTranslations = <String, String>{
   'camera_permission_denied_message': 'Fotoğraf çekebilmek için Ayarlar > Qulo bölümünden kamera iznini açman gerekiyor.',
   'photo_permission_denied_title': 'Fotoğraf izni gerekli',
   'photo_permission_denied_message': 'Galeriden fotoğraf seçebilmek için Ayarlar > Qulo bölümünden fotoğraf iznini açman gerekiyor.',
+
+  // Email notifications (added 2026-06-09)
+  'email_notifications': 'E-posta Bildirimleri',
+  'email_notifications_desc': 'Yeni eşleşme olduğunda e-posta al',
 };

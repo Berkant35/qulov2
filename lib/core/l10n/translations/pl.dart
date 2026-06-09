@@ -1049,4 +1049,8 @@ const plTranslations = <String, String>{
 
   // Referral share
   'referral_share_message': 'Join Qulo! Use my invite code, we both get @reward purple diamonds: @code\nhttps://quloapp.com/invite/@code',
+
+  // Email notifications (added 2026-06-09)
+  'email_notifications': 'Powiadomienia e-mail',
+  'email_notifications_desc': 'Otrzymuj e-mail przy nowym dopasowaniu',
 };

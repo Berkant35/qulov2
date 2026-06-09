@@ -1049,4 +1049,8 @@ const koTranslations = <String, String>{
 
   // Referral share
   'referral_share_message': 'Join Qulo! Use my invite code, we both get @reward purple diamonds: @code\nhttps://quloapp.com/invite/@code',
+
+  // Email notifications (added 2026-06-09)
+  'email_notifications': '이메일 알림',
+  'email_notifications_desc': '새로운 매치가 있을 때 이메일 받기',
 };

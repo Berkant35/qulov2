@@ -12,6 +12,8 @@ import 'package:qulo_v2/features/settings/widgets/settings_legal_section.dart';
 import 'package:qulo_v2/features/settings/widgets/settings_language_tile.dart';
 import 'package:qulo_v2/features/settings/widgets/settings_theme_tile.dart';
 import 'package:qulo_v2/providers/haptic_provider.dart';
+import 'package:qulo_v2/providers/api_provider.dart';
+import 'package:qulo_v2/providers/user_provider.dart';
 
 final _packageInfoProvider = FutureProvider<PackageInfo>(
   (_) => PackageInfo.fromPlatform(),
@@ -51,6 +53,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
           SettingsLanguageTile(onTap: onLanguageTap),
           SettingsThemeTile(onChanged: onThemeChanged),
           _HapticTile(),
+          _EmailNotificationsTile(),
           const SizedBox(height: AppSpacing.sm),
           SettingsLegalSection(
             onTerms: onOpenTerms,
@@ -137,6 +140,43 @@ class _HapticTile extends ConsumerWidget {
         ),
         value: ref.watch(hapticProvider),
         onChanged: (_) => ref.read(hapticProvider.notifier).toggle(),
+      ),
+    );
+  }
+}
+
+class _EmailNotificationsTile extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final user = ref.watch(userProvider).valueOrNull;
+    final value = user?.emailNotificationsEnabled ?? true;
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+      ),
+      child: SwitchListTile(
+        secondary: Icon(Icons.email_outlined, color: theme.colorScheme.onSurfaceVariant),
+        title: Text(
+          context.tr('email_notifications'),
+          style: TextStyle(color: theme.colorScheme.onSurface),
+        ),
+        subtitle: Text(
+          context.tr('email_notifications_desc'),
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+        value: value,
+        onChanged: (v) async {
+          await ref.read(userRepositoryProvider).updateNotificationPreferences({
+            'email_matches': v,
+          });
+          await ref.read(userProvider.notifier).fetchMe();
+        },
       ),
     );
   }

@@ -1054,4 +1054,8 @@ const enTranslations = <String, String>{
   'camera_permission_denied_message': 'To take a photo, enable camera access in Settings > Qulo.',
   'photo_permission_denied_title': 'Photo permission required',
   'photo_permission_denied_message': 'To pick a photo from your library, enable photo access in Settings > Qulo.',
+
+  // Email notifications (added 2026-06-09)
+  'email_notifications': 'Email Notifications',
+  'email_notifications_desc': 'Get an email when you have a new match',
 };

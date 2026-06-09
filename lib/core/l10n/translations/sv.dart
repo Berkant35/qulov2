@@ -1051,4 +1051,8 @@ const svTranslations = <String, String>{
 
   // Referral share
   'referral_share_message': 'Join Qulo! Use my invite code, we both get @reward purple diamonds: @code\nhttps://quloapp.com/invite/@code',
+
+  // Email notifications (added 2026-06-09)
+  'email_notifications': 'E-postmeddelanden',
+  'email_notifications_desc': 'Få ett e-postmeddelande vid en ny matchning',
 };
