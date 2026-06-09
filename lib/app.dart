@@ -43,6 +43,15 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
     NetworkManager.instance.onForceLogout =
         () => ref.read(authProvider.notifier).forceLogout();
 
+    // Login transition (unauth → auth) — current UI locale'i backend'e sync et
+    ref.listenManual<AuthState>(authProvider, (prev, next) {
+      final wasAuthenticated = prev?.status == AuthStatus.authenticated;
+      if (next.status == AuthStatus.authenticated && !wasAuthenticated) {
+        final code = ref.read(localeProvider).languageCode;
+        unawaited(ref.read(userRepositoryProvider).updateProfile({'locale': code}));
+      }
+    });
+
     ref.read(analyticsManagerProvider).logAppOpen();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _setupNotificationCallbacks();
@@ -72,6 +81,8 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
           ref.read(locationProvider.notifier).onAppResumed();
           // Restart presence heartbeat
           ref.read(presenceManagerProvider).start();
+          // Backend activity heartbeat (debounce in repository)
+          unawaited(ref.read(userRepositoryProvider).heartbeat());
         }
       case AppLifecycleState.paused:
         analytics.logAppBackground();
