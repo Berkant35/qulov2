@@ -100,7 +100,13 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       // 6. Setup gate: photo + 2 questions required
       // (age != null already implies registration complete)
-      if (isAuth && state.matchedLocation != '/profile-setup') {
+      // Allow /questions/* (Kendim Olustur path) and /profile/* (foto, edit)
+      // so the user can actually complete the gate.
+      final isSetupSubflow = state.matchedLocation.startsWith('/questions') ||
+          state.matchedLocation.startsWith('/profile');
+      if (isAuth &&
+          state.matchedLocation != '/profile-setup' &&
+          !isSetupSubflow) {
         final user = ref.read(userProvider).value;
         if (user != null && user.age != null && !user.setupComplete) {
           return '/profile-setup';

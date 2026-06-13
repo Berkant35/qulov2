@@ -202,7 +202,8 @@ mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
         final s = _previewSuggestions[i];
         final answers = (s['answers'] as List?) ?? const [];
         if (answers.length < 4) continue;
-        await notifier.createQuestion({
+        // Server validator rejects explicit null on optional fields — omit if null
+        final body = <String, dynamic>{
           'order_num': start + i,
           'question_text': s['question_text'],
           'answer_1': answers[0],
@@ -210,11 +211,12 @@ mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
           'answer_3': answers[2],
           'answer_4': answers[3],
           'correct_answer': s['correct_answer'],
-          'hint_text': s['hint'],
-          'category': s['category'],
           'locale': locale,
           'time_limit': 30,
-        });
+        };
+        if (s['hint'] != null) body['hint_text'] = s['hint'];
+        if (s['category'] != null) body['category'] = s['category'];
+        await notifier.createQuestion(body);
       }
       AnalyticsManager.instance.logEvent(AnalyticsEvents.setupMagicFillAssign);
       _maybeCompleteSetup();
