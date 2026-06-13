@@ -841,7 +841,7 @@ const arTranslations = <String, String>{
   'setup_completing': 'تقريباً جاهز...',
   'brief_sheet_title': 'سأنشئ لك سؤالين',
   'brief_sheet_hint': 'اختر بعض الاهتمامات (الحد الأدنى 1، يُفضّل 3)',
-  'brief_sheet_generate_cta': 'أنشئ أسئلتي →',
+  'brief_sheet_generate_cta': 'أنشئ أسئلتي ←',
   'brief_sheet_skip_link': 'اختر أنت، لن أتدخل',
   'interest_music': 'موسيقى',
   'interest_movies': 'أفلام',
