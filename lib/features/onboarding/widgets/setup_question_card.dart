@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_button.dart';
+import 'package:qulo_v2/core/widgets/q_icon.dart';
 
 /// Loader policy: only Quick Assign shows `isLoading` because it performs a
 /// network call inline. Magic Fill opens a bottom sheet immediately (no
@@ -93,6 +95,7 @@ class SetupQuestionCard extends StatelessWidget {
               label: context.tr('setup_question_magic_cta'),
               onPressed: isProcessing ? null : onMagicFill,
               fullWidth: true,
+              leadingWidget: const QIcon(QIcons.icOracle, size: 18),
             ),
             const SizedBox(height: AppSpacing.sm),
             AppButton(
@@ -101,6 +104,11 @@ class SetupQuestionCard extends StatelessWidget {
               variant: AppButtonVariant.secondary,
               fullWidth: true,
               isLoading: isProcessing,
+              leadingWidget: QIcon(
+                QIcons.icZap,
+                size: 18,
+                color: context.appColors.primary,
+              ),
             ),
             const SizedBox(height: AppSpacing.sm),
             Center(

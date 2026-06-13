@@ -141,11 +141,15 @@ mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
     setState(() => isProcessing = true);
     late final List<Map<String, dynamic>> suggestions;
     try {
+      // Prefer the app's active UI locale over user.locale (DB column) — user
+      // may have signed up in EN but switched UI to TR; question content should
+      // follow what they actually see in the app.
+      final appLocale = Localizations.localeOf(context).languageCode;
       final repoResult =
           await ref.read(questionRepositoryProvider).getAiSuggestions({
         'profile_based': true,
         'count': 2,
-        'locale': user.locale ?? 'tr',
+        'locale': appLocale,
       });
       if (!mounted) return;
       suggestions = repoResult.when<List<Map<String, dynamic>>>(
@@ -204,7 +208,8 @@ mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
       final notifier = ref.read(questionProvider.notifier);
       final user = ref.read(userProvider).valueOrNull;
       final start = (user?.questionCount ?? 0) + 1;
-      final locale = user?.locale ?? 'tr';
+      // Match the locale used at suggestion fetch time (app UI locale).
+      final locale = Localizations.localeOf(context).languageCode;
 
       for (int i = 0; i < edited.length; i++) {
         final s = edited[i];

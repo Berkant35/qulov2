@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation_provider.dart';
+import 'package:qulo_v2/core/constants/q_icons.dart';
+import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_button.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
+import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/features/onboarding/mixins/profile_setup_mixin.dart';
 import 'package:qulo_v2/features/onboarding/widgets/setup_photo_card.dart';
 import 'package:qulo_v2/features/onboarding/widgets/setup_question_card.dart';
@@ -86,17 +89,66 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen>
                 onPressed: handleFinish,
                 fullWidth: true,
               )
-            else
-              Center(
-                child: Text(
-                  context.tr('setup_hint'),
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
+            else if (!questionsReady)
+              _HurryHintCard(
+                onTap: isProcessing ? null : handleQuickAssign,
               ),
             const SizedBox(height: AppSpacing.md),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _HurryHintCard extends StatelessWidget {
+  final VoidCallback? onTap;
+
+  const _HurryHintCard({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    final theme = Theme.of(context);
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg,
+            vertical: AppSpacing.md,
+          ),
+          decoration: BoxDecoration(
+            color: colors.primarySurface,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            border: Border.all(
+              color: colors.primary.withValues(alpha: 0.4),
+              width: 1,
+            ),
+          ),
+          child: Row(
+            children: [
+              QIcon(QIcons.icZap, size: 22, color: colors.primary),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Text(
+                  context.tr('setup_hint'),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: colors.primary,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              QIcon(
+                QIcons.icChevronRight,
+                size: 18,
+                color: colors.primary,
+              ),
+            ],
+          ),
         ),
       ),
     );

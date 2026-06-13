@@ -11,6 +11,7 @@ class AppButton extends StatelessWidget {
   final bool isLoading;
   final bool fullWidth;
   final IconData? icon;
+  final Widget? leadingWidget;
 
   const AppButton({
     super.key,
@@ -20,6 +21,7 @@ class AppButton extends StatelessWidget {
     this.isLoading = false,
     this.fullWidth = true,
     this.icon,
+    this.leadingWidget,
   });
 
   @override
@@ -30,11 +32,11 @@ class AppButton extends StatelessWidget {
             width: 20,
             child: AppLoadingWidget.small(),
           )
-        : icon != null
+        : (icon != null || leadingWidget != null)
             ? Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(icon, size: 18),
+                  leadingWidget ?? Icon(icon, size: 18),
                   const SizedBox(width: 8),
                   Text(label),
                 ],
