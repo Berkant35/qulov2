@@ -12,20 +12,9 @@ import 'package:qulo_v2/providers/question_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 
-/// ProfileSetupMixin — orchestrates the gate screen state and async operations.
-///
-/// Owns:
-/// - UI flags (`isProcessing`, `isUploadingPhoto`)
-/// - Photo upload flow (action sheet -> ImagePickerManager -> upload -> fetchMe)
-/// - Magic Fill flow (brief sheet -> setInterests -> AI suggestions -> preview -> batch create)
-/// - Quick Assign flow (single tap -> server quick-assign endpoint)
-/// - Manual Create flow (push question_create route)
-/// - Back-button confirmation dialog (logout path)
-/// - Analytics breadcrumbs for every step
-///
-/// Setup completion is auto-detected via the router guard observing
-/// `userProvider`'s `setupComplete` getter — this mixin only needs to ensure
-/// fresh user state after each successful action (handled by provider methods).
+/// Orchestrates gate screen state + photo/magic-fill/quick-assign/manual flows.
+/// Setup completion is auto-detected via the router guard reading
+/// `userProvider.setupComplete`; provider methods refresh user state on success.
 mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
   bool isProcessing = false;
   bool isUploadingPhoto = false;
