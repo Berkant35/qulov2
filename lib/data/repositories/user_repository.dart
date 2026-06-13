@@ -105,6 +105,16 @@ class UserRepository implements IUserRepository {
   }
 
   @override
+  Future<Result<Map<String, dynamic>>> setInterests(List<String> interests) async {
+    return _network.post('/users/me/interests', data: {'interests': interests});
+  }
+
+  @override
+  Future<Result<Map<String, dynamic>>> quickAssignQuestions() async {
+    return _network.post('/users/me/quick-assign-questions', data: {});
+  }
+
+  @override
   Future<Result<UserModel>> reorderPhotos(List<String> photos) async {
     try {
       final response = await _service.updateProfile({'photos': photos});

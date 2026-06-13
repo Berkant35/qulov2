@@ -198,6 +198,10 @@ abstract class IUserRepository {
 
   Future<Result<Map<String, dynamic>>> claimBadgeReward(String level);
 
+  Future<Result<Map<String, dynamic>>> setInterests(List<String> interests);
+
+  Future<Result<Map<String, dynamic>>> quickAssignQuestions();
+
   Future<Result<UserModel>> reorderPhotos(List<String> photos);
 
   Future<Result<PublicProfileModel>> getPublicProfile(String userId);
