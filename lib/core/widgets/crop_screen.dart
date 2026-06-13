@@ -54,8 +54,9 @@ class _CropScreenState extends State<CropScreen> {
 
   void _confirm() {
     setState(() => _isCropping = true);
-    // Use crop() instead of cropCircle() to get a square output.
-    // withCircleUi on the Crop widget is visual-only (circle overlay guide).
+    // crop() outputs a rectangle with the configured aspectRatio (3:4 portrait).
+    // Profile avatars are circular at render time via ClipOval, but card /
+    // discover / detail views show the full portrait rectangle.
     _cropController.crop();
   }
 
@@ -102,16 +103,19 @@ class _CropScreenState extends State<CropScreen> {
           ),
         ],
       ),
+      // 3:4 portrait crop (dating-app standard). The avatar widgets clip
+      // the rectangle into a circle at render time (ClipOval), so the user
+      // still sees a circular profile photo — but the stored image keeps
+      // more vertical context (hair, shoulders) for card / detail views.
       body: Crop(
         controller: _cropController,
         image: _currentImageBytes,
-        aspectRatio: 1,
-        withCircleUi: true,
+        aspectRatio: 3 / 4,
         baseColor: context.appColors.background,
         maskColor: context.appColors.background.withValues(alpha: 0.78),
         cornerDotBuilder: (size, edgeAlignment) => const SizedBox.shrink(),
         onCropped: _onCropped,
-        initialSize: 0.8,
+        initialSize: 0.85,
         interactive: true,
       ),
     );
