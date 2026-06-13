@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
+import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/features/diamonds/widgets/paywall_bottom_sheet.dart';
 import 'package:qulo_v2/features/profile_detail/models/profile_detail_args.dart';
 import 'package:qulo_v2/features/profile_detail/screens/profile_detail_screen.dart';
 import 'package:qulo_v2/features/profile_detail/widgets/report_category_sheet.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
+import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 
 mixin ProfileDetailScreenMixin on ConsumerState<ProfileDetailScreen> {
@@ -40,7 +43,35 @@ mixin ProfileDetailScreenMixin on ConsumerState<ProfileDetailScreen> {
 
   void onSolveQuestions() {
     _logAction('solve');
+    _solveQuestionsFlow();
+  }
+
+  // Discover'dan gelindiğinde LIKE swipe kaydet — discover_card_view._navigateToQuiz simetrisi.
+  // Match/chat/quizResult context'lerinde swipe yok; sadece quiz'e push.
+  Future<void> _solveQuestionsFlow() async {
     final nav = ref.read(navigationServiceProvider);
+
+    if (widget.args?.context == ProfileDetailContext.discover) {
+      final result = await ref.read(discoverProvider.notifier).swipe(
+        targetId: widget.userId,
+        action: 'LIKE',
+      );
+      if (!mounted) return;
+
+      var aborted = false;
+      result.when(
+        success: (_) {},
+        failure: (f) {
+          if (f is ServerFailure && f.code == 'DAILY_LIMIT_EXCEEDED') {
+            PaywallBottomSheetContent.show(ref, trigger: 'swipe_limit');
+            aborted = true;
+          }
+        },
+      );
+      if (aborted) return;
+    }
+
+    if (!mounted) return;
     nav.pop();
     nav.push(
       RouteNames.quiz,
