@@ -8,6 +8,7 @@ import 'package:qulo_v2/features/auth/screens/login_screen.dart';
 import 'package:qulo_v2/features/auth/screens/register_screen.dart';
 import 'package:qulo_v2/features/auth/screens/forgot_password_screen.dart';
 import 'package:qulo_v2/features/onboarding/screens/onboarding_screen.dart';
+import 'package:qulo_v2/features/onboarding/screens/profile_setup_screen.dart';
 import 'package:qulo_v2/features/discover/screens/discover_screen.dart';
 import 'package:qulo_v2/features/quiz/screens/quiz_screen.dart';
 import 'package:qulo_v2/features/chat/screens/matches_screen.dart';

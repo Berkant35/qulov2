@@ -71,6 +71,14 @@ final _routes = <RouteBase>[
     builder: (context, state) => const OnboardingScreen(),
   ),
 
+  // Profile Setup Gate (root navigator — full screen, no bottom nav)
+  GoRoute(
+    parentNavigatorKey: rootNavigatorKey,
+    path: '/profile-setup',
+    name: RouteNames.profileSetup,
+    builder: (context, state) => const ProfileSetupScreen(),
+  ),
+
   // Question Onboarding (root navigator — full screen over bottom nav)
   GoRoute(
     parentNavigatorKey: rootNavigatorKey,
