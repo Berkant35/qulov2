@@ -66,19 +66,33 @@ mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
         return;
       }
 
+      // Setup gate uses replace semantics: capture how many photos existed
+      // BEFORE the upload so we can drop them after the new one lands.
+      // Backend POST /photos appends, so without this every tap added a new
+      // photo instead of replacing — confusing the "change photo" intent.
+      final preCount =
+          ref.read(userProvider).valueOrNull?.photos?.length ?? 0;
+
       final result = await ref
           .read(userProvider.notifier)
           .uploadPhoto(picked.bytes, picked.mimeType);
 
       if (!mounted) return;
-      result.when(
-        success: (_) {
+      await result.when(
+        success: (_) async {
+          // Delete the previous photos in reverse so indices stay valid.
+          // The freshly-uploaded photo sits at index `preCount` and is not
+          // touched.
+          for (int i = preCount - 1; i >= 0; i--) {
+            await ref.read(userProvider.notifier).deletePhoto(i);
+          }
+          if (!mounted) return;
           AnalyticsManager.instance.logEvent(AnalyticsEvents.setupPhotoSuccess);
           _maybeCompleteSetup();
         },
-        failure: (_) {
+        failure: (_) async {
           AnalyticsManager.instance.logEvent(AnalyticsEvents.setupPhotoFail);
-          _showSnack(context.tr('setup_photo_upload_error'));
+          if (mounted) _showSnack(context.tr('setup_photo_upload_error'));
         },
       );
     } catch (_) {
