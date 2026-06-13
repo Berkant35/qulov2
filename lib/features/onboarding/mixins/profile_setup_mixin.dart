@@ -128,38 +128,42 @@ mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
           return;
         }
       }
-      await _showPreviewSheet();
     } finally {
       if (mounted) setState(() => isProcessing = false);
     }
+    await _showPreviewSheet();
   }
 
   Future<void> _showPreviewSheet() async {
     final user = ref.read(userProvider).valueOrNull;
     if (user == null || !mounted) return;
 
-    final repoResult =
-        await ref.read(questionRepositoryProvider).getAiSuggestions({
-      'profile_based': true,
-      'count': 2,
-      'locale': user.locale ?? 'tr',
-    });
-
-    if (!mounted) return;
-
-    final suggestions = repoResult.when<List<Map<String, dynamic>>>(
-      success: (data) {
-        final list = data['suggestions'];
-        if (list is List) {
-          return list
-              .whereType<Map>()
-              .map((e) => Map<String, dynamic>.from(e))
-              .toList();
-        }
-        return const [];
-      },
-      failure: (_) => const [],
-    );
+    setState(() => isProcessing = true);
+    late final List<Map<String, dynamic>> suggestions;
+    try {
+      final repoResult =
+          await ref.read(questionRepositoryProvider).getAiSuggestions({
+        'profile_based': true,
+        'count': 2,
+        'locale': user.locale ?? 'tr',
+      });
+      if (!mounted) return;
+      suggestions = repoResult.when<List<Map<String, dynamic>>>(
+        success: (data) {
+          final list = data['suggestions'];
+          if (list is List) {
+            return list
+                .whereType<Map>()
+                .map((e) => Map<String, dynamic>.from(e))
+                .toList();
+          }
+          return const [];
+        },
+        failure: (_) => const [],
+      );
+    } finally {
+      if (mounted) setState(() => isProcessing = false);
+    }
 
     if (suggestions.isEmpty) {
       _showSnack(context.tr('preview_sheet_error'));
@@ -174,9 +178,9 @@ mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
         maxHeightFactor: 0.85,
         builder: (ctx) => SetupAiPreviewSheet(
           suggestions: _previewSuggestions,
-          onAssign: () async {
+          onAssign: (edited) async {
             Navigator.of(ctx).pop();
-            await _assignSuggestions();
+            await _assignSuggestions(edited);
           },
           onRegenerate: () async {
             Navigator.of(ctx).pop();
@@ -193,8 +197,8 @@ mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
     );
   }
 
-  Future<void> _assignSuggestions() async {
-    if (_previewSuggestions.isEmpty || !mounted) return;
+  Future<void> _assignSuggestions(List<Map<String, dynamic>> edited) async {
+    if (edited.isEmpty || !mounted) return;
     setState(() => isProcessing = true);
     try {
       final notifier = ref.read(questionProvider.notifier);
@@ -202,8 +206,8 @@ mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
       final start = (user?.questionCount ?? 0) + 1;
       final locale = user?.locale ?? 'tr';
 
-      for (int i = 0; i < _previewSuggestions.length; i++) {
-        final s = _previewSuggestions[i];
+      for (int i = 0; i < edited.length; i++) {
+        final s = edited[i];
         final answers = (s['answers'] as List?) ?? const [];
         if (answers.length < 4) continue;
         // Server validator rejects explicit null on optional fields — omit if null

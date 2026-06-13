@@ -46,6 +46,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen>
         await handleBackAttempt();
       },
       child: AppScaffold(
+        isLoading: isProcessing,
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
