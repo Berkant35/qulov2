@@ -98,7 +98,25 @@ final routerProvider = Provider<GoRouter>((ref) {
         return pendingLink;
       }
 
-      // 6. Auth + auth route veya splash → discover'a yonlendir
+      // 6. Setup gate: photo + 2 questions required
+      // (age != null already implies registration complete)
+      if (isAuth && state.matchedLocation != '/profile-setup') {
+        final user = ref.read(userProvider).value;
+        if (user != null && user.age != null && !user.setupComplete) {
+          return '/profile-setup';
+        }
+      }
+
+      // 7. On /profile-setup but already complete → discover
+      if (isAuth && state.matchedLocation == '/profile-setup') {
+        final user = ref.read(userProvider).value;
+        if (user != null && user.setupComplete) {
+          return '/discover';
+        }
+        return null;
+      }
+
+      // 8. Auth + auth route veya splash → discover'a yonlendir
       if (isAuth && (isAuthRoute || isSplash)) return '/discover';
 
       return null;
