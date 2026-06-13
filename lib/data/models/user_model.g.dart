@@ -15,6 +15,9 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
   age: (json['age'] as num?)?.toInt(),
   gender: json['gender'] as String?,
   genderPref: json['gender_pref'] as String?,
+  genderPrefSetAt: json['gender_pref_set_at'] == null
+      ? null
+      : DateTime.parse(json['gender_pref_set_at'] as String),
   matchRadiusKm: (json['match_radius_km'] as num?)?.toInt() ?? 50,
   agePrefMin: (json['age_pref_min'] as num?)?.toInt(),
   agePrefMax: (json['age_pref_max'] as num?)?.toInt(),
@@ -73,6 +76,7 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
   'age': instance.age,
   'gender': instance.gender,
   'gender_pref': instance.genderPref,
+  'gender_pref_set_at': instance.genderPrefSetAt?.toIso8601String(),
   'match_radius_km': instance.matchRadiusKm,
   'age_pref_min': instance.agePrefMin,
   'age_pref_max': instance.agePrefMax,

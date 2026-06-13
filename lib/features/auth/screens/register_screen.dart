@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/navigation/navigation_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_progress_bar.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
@@ -10,6 +12,7 @@ import 'package:qulo_v2/features/auth/mixins/register_screen_mixin.dart';
 import 'package:qulo_v2/features/auth/widgets/register_step_birthday.dart';
 import 'package:qulo_v2/features/auth/widgets/register_step_email.dart';
 import 'package:qulo_v2/features/auth/widgets/register_step_gender.dart';
+import 'package:qulo_v2/features/auth/widgets/register_step_gender_pref.dart';
 import 'package:qulo_v2/features/auth/widgets/register_step_location.dart';
 import 'package:qulo_v2/features/auth/widgets/register_step_name.dart';
 import 'package:qulo_v2/features/auth/widgets/register_step_terms.dart';
@@ -93,6 +96,21 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                       });
                     },
                     errorText: genderError,
+                    onContinue: nextStep,
+                  ),
+                  RegisterStepGenderPref(
+                    selectedValue: genderPref,
+                    errorText: genderPrefError,
+                    onSelected: (v) {
+                      setState(() {
+                        genderPref = v;
+                        genderPrefError = null;
+                      });
+                      AnalyticsManager.instance.logEvent(
+                        AnalyticsEvents.signupGenderPrefSelected,
+                        params: {'value': v, 'entry_point': 'signup'},
+                      );
+                    },
                     onContinue: nextStep,
                   ),
                   RegisterStepLocation(

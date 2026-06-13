@@ -18,6 +18,8 @@ import 'package:qulo_v2/routing/route_names.dart';
 mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
   bool isProcessing = false;
   bool isUploadingPhoto = false;
+  bool isSubmittingGenderPref = false;
+  String? selectedGenderPref;
   List<Map<String, dynamic>> _previewSuggestions = const [];
 
   void initMixin() {
@@ -250,6 +252,38 @@ mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
     } finally {
       if (mounted) setState(() => isProcessing = false);
     }
+  }
+
+  // ─── Gender Preference Flow ───────────────────────────────────────
+
+  Future<void> handleGenderPrefSelect(String value) async {
+    if (isSubmittingGenderPref) return;
+    setState(() {
+      selectedGenderPref = value;
+      isSubmittingGenderPref = true;
+    });
+
+    final result = await ref
+        .read(userProvider.notifier)
+        .updateProfile({'gender_pref': value});
+
+    if (!mounted) return;
+
+    result.when(
+      success: (_) {
+        AnalyticsManager.instance.logEvent(
+          AnalyticsEvents.setupGenderPrefSelected,
+          params: {'value': value, 'entry_point': 'gate'},
+        );
+        _maybeCompleteSetup();
+      },
+      failure: (_) {
+        setState(() => selectedGenderPref = null);
+        _showSnack(context.tr('setup_gender_pref_error'));
+      },
+    );
+
+    if (mounted) setState(() => isSubmittingGenderPref = false);
   }
 
   // ─── Quick Assign Flow ────────────────────────────────────────────

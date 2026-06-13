@@ -10,7 +10,7 @@ import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/features/auth/screens/register_screen.dart';
 
 mixin RegisterScreenMixin on ConsumerState<RegisterScreen> {
-  static const totalSteps = 6;
+  static const totalSteps = 7;
 
   final pageController = PageController();
   final nameCtrl = TextEditingController();
@@ -20,6 +20,7 @@ mixin RegisterScreenMixin on ConsumerState<RegisterScreen> {
   int currentStep = 0;
   DateTime? birthday;
   String? gender;
+  String? genderPref;
   double? lat;
   double? lng;
   bool locationGranted = false;
@@ -35,6 +36,7 @@ mixin RegisterScreenMixin on ConsumerState<RegisterScreen> {
   String? passwordError;
   String? birthdayError;
   String? genderError;
+  String? genderPrefError;
   String? locationError;
   String? termsError;
 
@@ -94,9 +96,14 @@ mixin RegisterScreenMixin on ConsumerState<RegisterScreen> {
         return err == null;
 
       case 3:
-        return true;
+        final err = genderPref == null ? l10n.get('field_required') : null;
+        setState(() => genderPrefError = err);
+        return err == null;
 
       case 4:
+        return true;
+
+      case 5:
         final emailErr = _emailValidator(emailCtrl.text.trim());
         final passErr = _passwordValidator(passwordCtrl.text);
         setState(() {
@@ -105,7 +112,7 @@ mixin RegisterScreenMixin on ConsumerState<RegisterScreen> {
         });
         return emailErr == null && passErr == null;
 
-      case 5:
+      case 6:
         final err = !termsAccepted ? l10n.get('must_accept_terms') : null;
         setState(() => termsError = err);
         return err == null;
@@ -210,6 +217,7 @@ mixin RegisterScreenMixin on ConsumerState<RegisterScreen> {
           surname: surnameCtrl.text.trim(),
           age: calculateAge(),
           gender: gender!,
+          genderPref: genderPref!,
           lat: lat,
           lng: lng,
           locale: Localizations.localeOf(context).languageCode,
@@ -233,7 +241,7 @@ mixin RegisterScreenMixin on ConsumerState<RegisterScreen> {
         };
         if (errorCode == 'EMAIL_ALREADY_EXISTS') {
           setState(() => emailError = l10n.errorMessage(errorCode));
-          goToStep(4);
+          goToStep(5);
         } else {
           setState(() => termsError = l10n.errorMessage(errorCode));
         }
