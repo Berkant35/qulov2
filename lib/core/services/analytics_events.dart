@@ -350,7 +350,7 @@ abstract class AnalyticsEvents {
   static const String paramToCity = 'to_city';
   static const String paramSearchQuery = 'search_query';
 
-  // ─── Profile Setup Gate (13) ─ T20 finalizes ───────────────────────
+  // ─── Profile Setup Gate (13) ───────────────────────────────────────
   static const String setupGateView = 'setup_gate_view';
   static const String setupPhotoStart = 'setup_photo_start';
   static const String setupPhotoSuccess = 'setup_photo_success';

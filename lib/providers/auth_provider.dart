@@ -107,6 +107,7 @@ class AuthNotifier extends Notifier<AuthState> {
             ageRange: AnalyticsManager.ageRange(user.age ?? 0),
             city: user.city ?? '',
             photoCount: (user.photos?.length ?? 0).toString(),
+            questionsCount: user.questionCount.toString(),
           );
         }
         // Seed location from user profile so discover works immediately
@@ -230,6 +231,7 @@ class AuthNotifier extends Notifier<AuthState> {
             ageRange: AnalyticsManager.ageRange(user.age ?? 0),
             city: user.city ?? '',
             photoCount: (user.photos?.length ?? 0).toString(),
+            questionsCount: user.questionCount.toString(),
           );
           if (user.lat != null && user.lng != null) {
             ref.read(locationProvider.notifier).seedFromProfile(
