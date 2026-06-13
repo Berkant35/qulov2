@@ -72,6 +72,8 @@ class UserModel extends Equatable {
   final bool strictLanguageMode;
   @JsonKey(name: 'referral_code')
   final String? referralCode;
+  @JsonKey(defaultValue: <String>[])
+  final List<String> interests;
   final UserDetailsModel? details;
 
   const UserModel({
@@ -113,12 +115,16 @@ class UserModel extends Equatable {
     this.completionRewardsClaimed = const {},
     this.strictLanguageMode = false,
     this.referralCode,
+    this.interests = const [],
     this.details,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
+
+  bool get setupComplete =>
+      (photos?.isNotEmpty ?? false) && questionCount >= 2;
 
   @override
   List<Object?> get props => [
@@ -128,6 +134,7 @@ class UserModel extends Equatable {
     isOnline, lastSeenAt, emailVerified, passportCity, boostUntil,
     likeReceivedCount, timesShownCount, badgeRewardsClaimed, questionCount,
     relationshipGoal, preferredLanguages, completionRewardsClaimed, strictLanguageMode, referralCode,
+    interests,
   ];
 }
 
