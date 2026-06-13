@@ -11,9 +11,17 @@ class QuizRepository implements IQuizRepository {
   QuizRepository(this._service);
 
   @override
-  Future<Result<QuizStartResponse>> startSession(String targetId) async {
+  Future<Result<QuizStartResponse>> startSession(
+    String targetId, {
+    double? lat,
+    double? lng,
+  }) async {
     try {
-      final response = await _service.startSession({'target_id': targetId});
+      final body = <String, dynamic>{'target_id': targetId};
+      if (lat != null && lng != null) {
+        body['location'] = {'lat': lat, 'lng': lng};
+      }
+      final response = await _service.startSession(body);
       return Success(response);
     } on DioException catch (e) {
       return Failure(e.toAppFailure());

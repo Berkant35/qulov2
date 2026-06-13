@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/network/result.dart';
+import 'package:qulo_v2/core/services/location_manager.dart';
 import 'package:qulo_v2/data/models/quiz_model.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 
@@ -45,7 +46,22 @@ class QuizNotifier extends Notifier<QuizState> {
 
   Future<Result<QuizStartResponse>> startSession(String targetId) async {
     state = state.copyWith(isLoading: true, failure: null);
-    final result = await ref.read(quizRepositoryProvider).startSession(targetId);
+
+    // Best-effort attach current location for L1 anti-cheat proximity check.
+    // Silent fail — quiz must work even when location unavailable (server tolerates null).
+    double? lat;
+    double? lng;
+    try {
+      final pos = await LocationManager.instance.getCurrentPosition();
+      lat = pos.lat;
+      lng = pos.lng;
+    } catch (_) {
+      // ignore — anti-cheat config can require_location=false
+    }
+
+    final result = await ref
+        .read(quizRepositoryProvider)
+        .startSession(targetId, lat: lat, lng: lng);
     switch (result) {
       case Success(:final data):
         state = state.copyWith(

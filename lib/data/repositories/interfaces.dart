@@ -135,7 +135,11 @@ abstract class IQuestionRepository {
 
 // ─── Quiz ───
 abstract class IQuizRepository {
-  Future<Result<QuizStartResponse>> startSession(String targetId);
+  Future<Result<QuizStartResponse>> startSession(
+    String targetId, {
+    double? lat,
+    double? lng,
+  });
 
   Future<Result<QuizQuestionModel>> getCurrentQuestion(String sessionId);
 
