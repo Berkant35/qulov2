@@ -177,6 +177,16 @@ const esTranslations = <String, String>{
   'delete_account': 'Eliminar cuenta',
   'delete_account_desc': 'Esta acción es irreversible. Todos tus datos serán eliminados.',
 
+  // Notification Preferences
+  'notification_settings': 'Notification Settings',
+  'notification_settings_desc': 'Disabled notifications will still appear in your inbox',
+  'notif_messages': 'Messages',
+  'notif_messages_desc': 'New message notifications',
+  'notif_matches': 'Matches',
+  'notif_matches_desc': 'Match and question answer notifications',
+  'notif_campaigns': 'Campaigns',
+  'notif_campaigns_desc': 'Promotional and campaign notifications',
+
   // Powers
   'my_powers': 'Mis poderes',
   'power_copy': 'Copiar',
@@ -211,6 +221,7 @@ const esTranslations = <String, String>{
   'accept_terms': 'Acepto los',
   'terms_of_service': 'Términos de servicio',
   'privacy_policy': 'Política de privacidad',
+  'legal': 'Legal',
   'and_word': 'y',
   'must_accept_terms': 'Debes aceptar los términos para continuar',
 
@@ -407,6 +418,10 @@ const esTranslations = <String, String>{
   'mark_all_read': 'Marcar todo como leído',
   'no_notifications': 'Aún no hay notificaciones',
   'no_notifications_desc': 'Aquí verás tus matches y mensajes',
+  'time_just_now': 'Justo ahora',
+  'time_minutes_ago': 'Hace {n} min',
+  'time_hours_ago': 'Hace {n}h',
+  'time_days_ago': 'Hace {n}d',
   'just_now': 'Ahora mismo',
   'minutes_ago': 'hace {} min',
   'hours_ago': 'hace {} horas',
@@ -431,7 +446,7 @@ const esTranslations = <String, String>{
   'question_create_step_answers': 'Añadir respuestas',
   'question_create_step_settings': 'Ajustes',
   'question_create_motto': 'Haz preguntas sobre ti \u2014 ¡que no se puedan buscar en Google!',
-  'question_create_motto_tip': 'Consejo: Preguntas personales como "¿Mi estación favorita?" se resuelven más',
+  'question_create_motto_tip': 'Consejo: Las preguntas personales te ayudan a encontrar personas que coincidan con tus criterios',
   'question_create_select_category': 'Seleccionar categoría',
   'question_create_select_time': 'Seleccionar tiempo',
   'question_create_hint_label': 'Pista (opcional)',
@@ -451,6 +466,8 @@ const esTranslations = <String, String>{
   'question_category_lifestyle': 'Estilo de vida',
   'question_category_humor': 'Humor',
   'question_category_hobby': 'Hobby',
+  'question_category_relationship': 'Relación',
+  'question_category_entertainment': 'Entretenimiento',
 
   // Time Presets
   'question_time_fast': 'Rápido',
@@ -548,6 +565,7 @@ const esTranslations = <String, String>{
   'error_general': 'Algo salió mal',
   'error_try_again': 'Algo salió mal. Inténtalo de nuevo.',
   'question_save_failed': 'No se pudo guardar la pregunta',
+  'max_questions_reached': 'Has alcanzado el límite de preguntas. Elimina una pregunta existente para añadir una nueva.',
   'badge_claim_failed': 'No se pudo reclamar la recompensa',
 
   // Chat Question
@@ -702,6 +720,7 @@ const esTranslations = <String, String>{
 
   // Exchange center
   'exchange_title': 'Centro de intercambio',
+  'exchange_subtitle': 'Convierte diamantes en poderes',
   'exchange_convert_title': 'Conversión de diamantes',
   'exchange_convert_button': 'Convertir',
   'exchange_powers_title': 'Derechos de poderes',
@@ -721,6 +740,7 @@ const esTranslations = <String, String>{
   'referral_title': 'Invitar a un amigo/a',
   'referral_description': '¡Invita a un amigo/a y ambos reciben 25 diamantes morados!',
   'referral_compact_cta': 'Invita a un amigo/a, gana diamantes',
+  'referral_compact_subtitle': 'Cada invitación = recompensa de diamante morado',
   'referral_copy': 'Copiar',
   'referral_share': 'Compartir',
   'referral_progress': 'Invitaciones usadas',
@@ -730,6 +750,13 @@ const esTranslations = <String, String>{
   'referral_code_valid': 'Referido por: ',
   'referral_code_invalid': 'Código de referido inválido',
   'referral_already_logged_in': 'Los códigos de referido solo se pueden usar durante el registro',
+  'referral_enter_code': 'Have an invite code? Enter it here:',
+  'referral_apply': 'Apply',
+  'referral_invited_by': 'Invited by: ',
+  'referral_reward_earned': 'You earned 25 purple diamonds!',
+  'referral_complete_profile': 'Complete your profile to 60% to claim your reward!',
+  'referral_self_error': 'You cannot use your own code',
+  'referral_already_error': 'You have already used an invite code',
 
   // Paywall
   'paywall_title_undo': 'Desbloquear Deshacer',
@@ -863,4 +890,215 @@ const esTranslations = <String, String>{
   'preview_sheet_regen_cta': 'Regenerar',
   'preview_sheet_skip_link': 'Elige tú, yo no me meto',
   'preview_sheet_error': 'No se pudo generar, inténtalo de nuevo',
+
+  // Splash
+  'splash_flow_ask': 'Pregunta',
+  'splash_flow_answer': 'Responde',
+  'splash_flow_match': 'Match',
+
+  // Chat — Abandon Warning
+  'abandon_title': 'You\'re Fleeing!',
+  'abandon_question_lock': 'Question Lock',
+  'abandon_power_block': 'Power Block',
+  'abandon_unmatch_risk': 'Unmatch Risk',
+  'abandon_features_added': 'The other person added these features to the question:',
+  'abandon_flee_warning': 'If you leave without answering, you\'ll be marked as fled.',
+  'abandon_unmatch_warning': 'Your match will end!',
+  'abandon_leave': 'Leave',
+  'abandon_stay': 'Go Back',
+
+  // Chat — Question Card
+  'question_risky': 'This question is risky!',
+  'question_power_block': 'Power Block',
+  'question_chat_locked': 'Chat Locked',
+  'question_fled': 'Fled',
+
+  // Chat — Question Result
+  'result_correct': 'Correct!',
+  'result_congrats': 'Congratulations!',
+  'result_wrong': 'Wrong Answer',
+  'result_correct_subtitle': 'You answered the question correctly!',
+  'result_wrong_subtitle': 'Better luck next time.',
+  'result_rescue': 'Rescue (Skip)',
+  'result_go_back': 'Go Back',
+  'result_unmatch_ended': 'Match ended',
+  'result_green_earned': '+{count} Green Diamonds',
+  'result_green_subtitle': 'Earned for the question owner',
+  'result_correct_answer': 'Correct answer',
+  'result_purple_spent': '-{count} Purple Diamonds',
+  'result_power_spent_single': 'Spent for {power}',
+  'result_power_spent_multi': 'Spent for power usage',
+  'result_powers_used': 'Powers Used',
+  'result_your_answer': 'Your Answer',
+  'result_correct_label': 'Correct',
+  'result_time': 'Time',
+
+  // Chat — Media Request
+  'media_active': 'Media sharing active',
+  'media_rejected': 'Media request rejected',
+  'media_sent': 'Media request sent',
+  'media_waiting': 'Waiting for response...',
+  'media_wants_share': '\u{1F4F7} Wants to share media',
+  'media_reject': 'Reject',
+  'media_accept': 'Accept',
+
+  // Chat — App Bar
+  'unmatch': 'Unmatch',
+
+  // Chat — Create Question
+  'create_question': 'Create Question',
+  'drafts_history': 'Drafts & History',
+
+  // Chat — Error Messages
+  'error_chat_generic': 'Something went wrong, please try again',
+  'error_rescue_failed': 'Rescue failed',
+
+  // Profile — Edit
+  'profile_photo_hint': 'Your first photo will be your profile photo',
+  'profile_relationship_title': 'Relationship Goal',
+  'profile_relationship_subtitle': 'Let the other person see what you\'re looking for',
+  'profile_relationship_serious': 'Serious Relationship',
+  'profile_relationship_friendship': 'Friendship',
+  'profile_relationship_not_sure': 'Not Sure',
+  'profile_basic_info_subtitle': 'Help us get to know you',
+  'profile_details_subtitle': 'Enrich your profile, get more matches',
+  'profile_bio_subtitle': 'Briefly introduce yourself',
+  'profile_no_data': 'No user data',
+
+  // Paywall (missing)
+  'paywall_onboarding_title': 'Descubre m\u00e1s',
+  'paywall_maybe_later': 'Quizás más tarde',
+
+  // Preferences (missing)
+  'gender_pref_locked_info': 'Contacta con soporte para cambiar tu preferencia de género.',
+
+  // Chat tabs (missing)
+  'chat_drafts_tab': 'Borradores',
+  'chat_history_tab': 'Historial',
+  'chat_drafts_load_failed': 'Error al cargar borradores',
+  'chat_no_drafts': 'Aún no hay borradores',
+  'chat_history_load_failed': 'Error al cargar el historial',
+  'chat_no_history': 'Aún no hay historial de preguntas',
+  'chat_messages_error': 'Error al cargar mensajes',
+
+  // Onboarding V2 (missing)
+  'onboarding_v2_page1_title': 'Hacer match en Qulo es diferente',
+  'onboarding_v2_page1_desc': 'Aquí conoces personas respondiendo preguntas. Si alguien responde todas tus preguntas correctamente, ¡hacéis match!',
+  'onboarding_v2_page2_title': 'Prepara tus preguntas',
+  'onboarding_v2_page2_desc': 'Crea 2-10 preguntas. Personales, divertidas, que no se puedan buscar en Google. Si alguien las acierta todas, ¡hacéis match!',
+  'onboarding_v2_page3_title': '6 Superpoderes',
+  'onboarding_v2_page3_desc': 'Los jugadores pueden usar estos poderes en tus preguntas. Cada poder cuesta diamantes morados, ¡y esas son tus ganancias!',
+  'onboarding_v2_page4_title': '¡Gana diamantes verdes!',
+  'onboarding_v2_page4_desc': 'Cada persona que use un poder en tus preguntas te da diamantes verdes. ¡Más preguntas, más ganancias!',
+  'onboarding_v2_page5_title': '¿Qué idiomas quieres ver?',
+  'onboarding_v2_page5_desc': 'Te mostraremos perfiles con preguntas en tus idiomas. Puedes seleccionar varios.',
+  'onboarding_v2_skip': 'Saltar',
+  'onboarding_v2_next': 'Siguiente',
+  'onboarding_v2_start': 'Empezar',
+  'onboarding_v2_premium_title': 'Más con Premium',
+  'onboarding_v2_premium_cta': 'Hazte Premium',
+  'onboarding_v2_premium_benefit_1': 'Descubrimiento ilimitado',
+  'onboarding_v2_premium_benefit_2': 'Bonus mensual de diamantes morados',
+  'onboarding_v2_premium_benefit_3': 'Experiencia sin anuncios',
+
+  // Report categories (missing)
+  'report_select_category': 'Selecciona el motivo del reporte',
+  'report_cat_inappropriate': 'Contenido inapropiado',
+  'report_cat_fake': 'Perfil falso',
+  'report_cat_spam': 'Spam',
+  'report_cat_harassment': 'Acoso',
+  'report_cat_underage': 'Menor de edad',
+  'report_cat_scam': 'Estafa',
+  'report_cat_offensive_photos': 'Fotos ofensivas',
+  'report_cat_threatening': 'Amenazas',
+  'report_cat_impersonation': 'Suplantación de identidad',
+  'report_cat_other': 'Otro',
+  'report_reason_title': 'Descripción',
+  'report_reason_optional': 'Añade una descripción opcional...',
+  'report_reason_required': 'Por favor escribe una descripción detallada...',
+
+  // Block (missing)
+  'blocked_users': 'Usuarios bloqueados',
+  'no_blocked_users': 'No hay usuarios bloqueados',
+  'unblock': 'Desbloquear',
+  'unblock_confirm_title': 'Desbloquear',
+  'unblock_confirm_message': '¿Estás seguro de que quieres desbloquear a este usuario?',
+
+  // Support tickets (missing)
+  'my_tickets': 'Mis tickets de soporte',
+  'no_tickets': 'Aún no hay tickets de soporte',
+  'create_ticket': 'Crear ticket de soporte',
+  'ticket_created_success': 'Tu ticket de soporte ha sido creado',
+  'ticket_replied': 'Respondido',
+  'ticket_category': 'Categoría',
+  'ticket_subject': 'Asunto',
+  'ticket_subject_hint': 'Describe brevemente tu problema',
+  'ticket_subject_error': 'El asunto debe tener al menos 5 caracteres',
+  'ticket_message': 'Mensaje',
+  'ticket_message_hint': 'Describe tu problema en detalle',
+  'ticket_message_error': 'El mensaje debe tener al menos 10 caracteres',
+  'ticket_cat_account': 'Cuenta',
+  'ticket_cat_technical': 'Técnico',
+  'ticket_cat_billing': 'Facturación',
+  'ticket_cat_match': 'Match',
+  'ticket_cat_other': 'Otro',
+  'ticket_status_open': 'Abierto',
+  'ticket_status_in_progress': 'En progreso',
+  'ticket_status_resolved': 'Resuelto',
+  'ticket_status_closed': 'Cerrado',
+
+  // Help (missing)
+  'help_support': 'Ayuda y soporte',
+
+  // Ban (missing)
+  'account_banned_title': 'Cuenta suspendida',
+  'account_banned_message': 'Tu cuenta ha sido suspendida por violar las normas de la comunidad. Contáctanos para más detalles.',
+
+  // Submit (missing)
+  'submit': 'Enviar',
+
+  // Social login (missing)
+  'or': 'o',
+  'sign_in_with_google': 'Iniciar sesión con Google',
+  'sign_in_with_apple': 'Iniciar sesión con Apple',
+
+  // Profile completion (missing)
+  'profile_completion_title': 'Completa tu perfil',
+
+  // App Review
+  'rate_us': 'Califícanos',
+  'rate_us_subtitle': '¿Te gusta Qulo? ¡Déjanos una reseña!',
+
+  // Chat — Hardcoded fixes
+  'chat_question_load_failed': 'Question could not be loaded',
+  'chat_answer_question_hint': 'Answer the question...',
+  'chat_audio_reward_revealed': 'Audio Reward Unlocked!',
+  'chat_lock_answer_required': 'You need to answer the question to send messages.',
+  'chat_time_up': 'Time\'s Up!',
+  'chat_time_up_desc': 'Your time to answer has run out. Use a power to rescue yourself.',
+  'chat_powers_blocked': 'Powers are blocked. Unlock and use Skip power.',
+  'chat_audio_reward': 'Audio Reward',
+  'chat_audio_locked': 'Locked Audio',
+  'chat_unmatch_confirm': 'Are you sure you want to unmatch? This action cannot be undone.',
+
+  // Power bar labels (short display names)
+  'power_bar_half': 'Half',
+  'power_bar_skip': 'Skip',
+  'power_bar_hint': 'Hint',
+  'power_bar_skip_all': 'Skip All',
+  'power_bar_block': 'Block',
+  'power_bar_unlock': 'Unlock',
+
+  // Milestone celebration
+  'milestone_congrats': 'Congratulations!',
+  'milestone_profile_completed': 'You completed @milestone% of your profile!',
+  'milestone_diamond_earned': 'You earned purple diamonds!',
+  'milestone_boost_earned': 'You earned a free 24-hour boost!',
+
+  // Referral share
+  'referral_share_message': 'Join Qulo! Use my invite code, we both get @reward purple diamonds: @code\nhttps://quloapp.com/invite/@code',
+
+  // Email notifications (added 2026-06-09)
+  'email_notifications': 'Notificaciones por correo',
+  'email_notifications_desc': 'Recibe un correo cuando tengas una nueva coincidencia',
 };

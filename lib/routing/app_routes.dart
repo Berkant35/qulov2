@@ -13,6 +13,13 @@ final _routes = <RouteBase>[
     ),
   ),
 
+  // Auth states
+  GoRoute(
+    path: '/banned',
+    name: RouteNames.banned,
+    builder: (context, state) => const BannedScreen(),
+  ),
+
   // Update
   GoRoute(
     path: '/force-update',
@@ -31,7 +38,7 @@ final _routes = <RouteBase>[
     name: RouteNames.invite,
     redirect: (context, state) {
       final code = state.pathParameters['code'] ?? '';
-      return '/auth/login/register?referralCode=$code';
+      return '/profile/diamonds?referralCode=$code';
     },
   ),
 
@@ -51,10 +58,7 @@ final _routes = <RouteBase>[
       GoRoute(
         path: 'register',
         name: RouteNames.register,
-        builder: (context, state) {
-          final referralCode = state.uri.queryParameters['referralCode'];
-          return RegisterScreen(referralCode: referralCode);
-        },
+        builder: (context, state) => const RegisterScreen(),
       ),
       GoRoute(
         path: 'forgot-password',
@@ -64,8 +68,17 @@ final _routes = <RouteBase>[
     ],
   ),
 
-  // Onboarding
+  // Profile Completion (root navigator — social login users without age)
   GoRoute(
+    parentNavigatorKey: rootNavigatorKey,
+    path: '/profile-completion',
+    name: RouteNames.profileCompletion,
+    builder: (context, state) => const ProfileCompletionScreen(),
+  ),
+
+  // Onboarding (root navigator — full screen over bottom nav)
+  GoRoute(
+    parentNavigatorKey: rootNavigatorKey,
     path: '/onboarding',
     name: RouteNames.onboarding,
     builder: (context, state) => const OnboardingScreen(),
@@ -77,14 +90,6 @@ final _routes = <RouteBase>[
     path: '/profile-setup',
     name: RouteNames.profileSetup,
     builder: (context, state) => const ProfileSetupScreen(),
-  ),
-
-  // Question Onboarding (root navigator — full screen over bottom nav)
-  GoRoute(
-    parentNavigatorKey: rootNavigatorKey,
-    path: '/questions/onboarding',
-    name: RouteNames.questionOnboarding,
-    builder: (context, state) => const QuestionOnboardingScreen(),
   ),
 
   // Map Confirm (root navigator — full screen over bottom nav)
@@ -130,6 +135,47 @@ final _routes = <RouteBase>[
     ),
   ),
 
+  // Legal (root navigator — full screen, no bottom nav)
+  GoRoute(
+    parentNavigatorKey: rootNavigatorKey,
+    path: '/terms',
+    name: RouteNames.terms,
+    builder: (context, state) {
+      final locale = AppLocalizations.of(context).locale.languageCode;
+      return LegalWebViewScreen(
+        title: AppLocalizations.of(context).get('terms_of_service'),
+        url: '${Env.legalBaseUrl}/$locale/terms/',
+      );
+    },
+  ),
+  GoRoute(
+    parentNavigatorKey: rootNavigatorKey,
+    path: '/privacy-policy',
+    name: RouteNames.privacyPolicy,
+    builder: (context, state) {
+      final locale = AppLocalizations.of(context).locale.languageCode;
+      return LegalWebViewScreen(
+        title: AppLocalizations.of(context).get('privacy_policy'),
+        url: '${Env.legalBaseUrl}/$locale/privacy-policy/',
+      );
+    },
+  ),
+  GoRoute(
+    parentNavigatorKey: rootNavigatorKey,
+    path: '/help',
+    name: RouteNames.help,
+    builder: (context, state) {
+      final locale = AppLocalizations.of(context).locale.languageCode;
+      final url = state.extra is String
+          ? state.extra as String
+          : '${Env.legalBaseUrl}/$locale/help/';
+      return LegalWebViewScreen(
+        title: AppLocalizations.of(context).get('help_support'),
+        url: url,
+      );
+    },
+  ),
+
   // Chat (root navigator — full screen, no bottom nav)
   GoRoute(
     parentNavigatorKey: rootNavigatorKey,
@@ -155,24 +201,32 @@ final _routes = <RouteBase>[
     parentNavigatorKey: rootNavigatorKey,
     path: '/chat-question/:questionId/solve',
     name: RouteNames.solveChatQuestion,
-    pageBuilder: (context, state) => CustomTransitionPage(
-      key: state.pageKey,
-      child: SolveChatQuestionScreen(
-        question: state.extra as ChatQuestionModel,
-      ),
-      transitionDuration: const Duration(milliseconds: 500),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        return FadeTransition(
-          opacity: animation,
-          child: ScaleTransition(
-            scale: Tween<double>(begin: 0.85, end: 1.0).animate(
-              CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
-            ),
-            child: child,
-          ),
-        );
-      },
-    ),
+    pageBuilder: (context, state) {
+      final extra = state.extra as Map<String, dynamic>;
+      return CustomTransitionPage(
+        key: state.pageKey,
+        child: SolveChatQuestionScreen(
+          question: extra['question'] as ChatQuestionModel,
+          matchId: extra['matchId'] as String,
+        ),
+        transitionDuration: const Duration(milliseconds: 500),
+        transitionsBuilder:
+            (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: ScaleTransition(
+                  scale: Tween<double>(begin: 0.85, end: 1.0).animate(
+                    CurvedAnimation(
+                      parent: animation,
+                      curve: Curves.easeOutCubic,
+                    ),
+                  ),
+                  child: child,
+                ),
+              );
+            },
+      );
+    },
   ),
 
   // Profile Detail (root navigator — full screen over bottom nav)
@@ -265,7 +319,10 @@ final _routes = <RouteBase>[
             GoRoute(
               path: 'diamonds',
               name: RouteNames.diamonds,
-              builder: (context, state) => const DiamondsScreen(),
+              builder: (context, state) {
+                final referralCode = state.uri.queryParameters['referralCode'];
+                return DiamondsScreen(referralCode: referralCode);
+              },
             ),
             GoRoute(
               path: 'passport',
@@ -298,6 +355,18 @@ final _routes = <RouteBase>[
               path: 'settings',
               name: RouteNames.settings,
               builder: (context, state) => const SettingsScreen(),
+              routes: [
+                GoRoute(
+                  path: 'blocked-users',
+                  name: RouteNames.blockedUsers,
+                  builder: (context, state) => const BlockedUsersScreen(),
+                ),
+                GoRoute(
+                  path: 'my-tickets',
+                  name: RouteNames.myTickets,
+                  builder: (context, state) => const MyTicketsScreen(),
+                ),
+              ],
             ),
             GoRoute(
               path: 'notifications',
@@ -323,16 +392,17 @@ class _MainShellState extends ConsumerState<_MainShell> {
   @override
   void initState() {
     super.initState();
-    _checkQuestionOnboarding();
+    _checkOnboarding();
   }
 
-  Future<void> _checkQuestionOnboarding() async {
+  Future<void> _checkOnboarding() async {
     final prefs = await SharedPreferences.getInstance();
-    final seen = prefs.getBool('onboarding_questions_seen') ?? false;
-    if (!seen && mounted) {
+    final seen = prefs.getBool('onboarding_v2_seen') ?? false;
+    final oldSeen = prefs.getBool('onboarding_questions_seen') ?? false;
+    if (!seen && !oldSeen && mounted) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
-          ref.read(navigationServiceProvider).push(RouteNames.questionOnboarding);
+          ref.read(navigationServiceProvider).push(RouteNames.onboarding);
         }
       });
     }
@@ -367,8 +437,8 @@ class _MainShellState extends ConsumerState<_MainShell> {
                 label: context.tr('discover'),
               ),
               NavigationDestination(
-                icon: QIcon(QIcons.icHeart, size: 24),
-                selectedIcon: QIcon(QIcons.icHeartFilled, size: 24),
+                icon: AppIcon(QIcons.heart, filled: false, size: 24),
+                selectedIcon: AppIcon(QIcons.heart, filled: true, size: 24),
                 label: context.tr('matches'),
               ),
               NavigationDestination(
@@ -376,13 +446,13 @@ class _MainShellState extends ConsumerState<_MainShell> {
                   isLabelVisible: showProfileBadge,
                   smallSize: 10,
                   backgroundColor: AppColors.error,
-                  child: QIcon(QIcons.icUser, size: 24),
+                  child: AppIcon(QIcons.userRounded, filled: false, size: 24),
                 ),
                 selectedIcon: Badge(
                   isLabelVisible: showProfileBadge,
                   smallSize: 10,
                   backgroundColor: AppColors.error,
-                  child: QIcon(QIcons.icUserFilled, size: 24),
+                  child: AppIcon(QIcons.userRounded, filled: true, size: 24),
                 ),
                 label: context.tr('profile'),
               ),

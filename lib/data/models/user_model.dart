@@ -74,6 +74,8 @@ class UserModel extends Equatable {
   final String? referralCode;
   @JsonKey(name: 'interests', defaultValue: <String>[])
   final List<String> interests;
+  @JsonKey(name: 'email_notifications_enabled', defaultValue: true)
+  final bool emailNotificationsEnabled;
   final UserDetailsModel? details;
 
   const UserModel({
@@ -116,6 +118,7 @@ class UserModel extends Equatable {
     this.strictLanguageMode = false,
     this.referralCode,
     this.interests = const [],
+    this.emailNotificationsEnabled = true,
     this.details,
   });
 
@@ -135,6 +138,7 @@ class UserModel extends Equatable {
     likeReceivedCount, timesShownCount, badgeRewardsClaimed, questionCount,
     relationshipGoal, preferredLanguages, completionRewardsClaimed, strictLanguageMode, referralCode,
     interests,
+    emailNotificationsEnabled,
   ];
 }
 

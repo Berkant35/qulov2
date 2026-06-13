@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation_provider.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
@@ -28,29 +29,29 @@ class ChatQuestionMessage extends ConsumerWidget {
     WidgetRef ref,
     ChatQuestionModel question,
   ) async {
-    await ref.read(navigationServiceProvider).push(
-      RouteNames.solveChatQuestion,
-      params: {'questionId': question.id},
-      extra: question,
+    // Track as opened immediately (prevents re-showing button)
+    ref.read(openedQuestionIdsProvider.notifier).update(
+      (state) => {...state, question.id},
     );
 
-    // After returning from solve screen, refresh the question from API
-    // (the cache will be stale if the user answered)
-    if (context.mounted) {
-      _refreshQuestion(ref);
-    }
-  }
+    final wasResolved = await ref
+        .read(navigationServiceProvider)
+        .push<bool>(
+          RouteNames.solveChatQuestion,
+          params: {'questionId': question.id},
+          extra: {'question': question, 'matchId': matchId},
+        );
 
-  void _refreshQuestion(WidgetRef ref) {
-    // Cache'den sil + fetch provider'i invalidate et
-    // Cache temizlenince chatQuestionProvider rebuild olur,
-    // fetch provider invalidate edilince API'den taze veri cekilir
-    ref.read(chatQuestionCacheProvider.notifier).update((state) {
-      final updated = Map<String, ChatQuestionModel>.from(state);
-      updated.remove(questionId);
-      return updated;
-    });
-    ref.invalidate(chatQuestionFetchProvider(questionId));
+    if (!context.mounted) return;
+
+    if (wasResolved == true) {
+      ref.read(chatQuestionCacheProvider.notifier).update((state) {
+        final updated = Map<String, ChatQuestionModel>.from(state);
+        updated.remove(questionId);
+        return updated;
+      });
+      ref.invalidate(chatQuestionFetchProvider(questionId));
+    }
   }
 
   @override
@@ -66,10 +67,11 @@ class ChatQuestionMessage extends ConsumerWidget {
         error: (_, __) => const _ErrorPlaceholder(),
         data: (question) {
           if (question == null) return const _ErrorPlaceholder();
+          final openedIds = ref.watch(openedQuestionIdsProvider);
           return ChatQuestionCard(
             question: question,
             isMyQuestion: isMe,
-            onOpen: question.isAnswered || isMe
+            onOpen: question.isAnswered || isMe || openedIds.contains(question.id)
                 ? null
                 : () => _openSolveScreen(context, ref, question),
           );
@@ -115,7 +117,7 @@ class _ErrorPlaceholder extends StatelessWidget {
         ),
       ),
       child: Text(
-        'Soru yüklenemedi',
+        context.tr('chat_question_load_failed'),
         style: theme.textTheme.bodySmall?.copyWith(
           color: theme.colorScheme.onSurfaceVariant,
           fontStyle: FontStyle.italic,

@@ -177,6 +177,16 @@ const arTranslations = <String, String>{
   'delete_account': 'حذف الحساب',
   'delete_account_desc': 'هذا الإجراء لا يمكن التراجع عنه. سيتم حذف جميع بياناتك.',
 
+  // Notification Preferences
+  'notification_settings': 'Notification Settings',
+  'notification_settings_desc': 'Disabled notifications will still appear in your inbox',
+  'notif_messages': 'Messages',
+  'notif_messages_desc': 'New message notifications',
+  'notif_matches': 'Matches',
+  'notif_matches_desc': 'Match and question answer notifications',
+  'notif_campaigns': 'Campaigns',
+  'notif_campaigns_desc': 'Promotional and campaign notifications',
+
   // Powers
   'my_powers': 'قواي',
   'power_copy': 'نسخ',
@@ -211,6 +221,7 @@ const arTranslations = <String, String>{
   'accept_terms': 'أوافق على',
   'terms_of_service': 'شروط الخدمة',
   'privacy_policy': 'سياسة الخصوصية',
+  'legal': 'قانوني',
   'and_word': 'و',
   'must_accept_terms': 'يجب الموافقة على الشروط للمتابعة',
 
@@ -405,6 +416,10 @@ const arTranslations = <String, String>{
   'mark_all_read': 'تعيين الكل كمقروء',
   'no_notifications': 'لا توجد إشعارات بعد',
   'no_notifications_desc': 'ستظهر التوافقات والرسائل هنا',
+  'time_just_now': 'الآن',
+  'time_minutes_ago': 'منذ {n} د',
+  'time_hours_ago': 'منذ {n} س',
+  'time_days_ago': 'منذ {n} ي',
   'just_now': 'الآن',
   'minutes_ago': 'قبل {} دقيقة',
   'hours_ago': 'قبل {} ساعة',
@@ -429,7 +444,7 @@ const arTranslations = <String, String>{
   'question_create_step_answers': 'أضف الإجابات',
   'question_create_step_settings': 'الإعدادات',
   'question_create_motto': 'اسأل أسئلة عن نفسك \u2014 لا يمكن البحث عنها!',
-  'question_create_motto_tip': 'نصيحة: الأسئلة الشخصية مثل "موسمي المفضل؟" تحصل على حلول أكثر',
+  'question_create_motto_tip': 'نصيحة: الأسئلة الشخصية تساعدك في العثور على أشخاص يتوافقون مع معاييرك',
   'question_create_select_category': 'اختر الفئة',
   'question_create_select_time': 'اختر الوقت',
   'question_create_hint_label': 'تلميح (اختياري)',
@@ -449,6 +464,8 @@ const arTranslations = <String, String>{
   'question_category_lifestyle': 'أسلوب الحياة',
   'question_category_humor': 'الفكاهة',
   'question_category_hobby': 'الهوايات',
+  'question_category_relationship': 'علاقات',
+  'question_category_entertainment': 'ترفيه',
 
   // Time Presets
   'question_time_fast': 'سريع',
@@ -546,6 +563,7 @@ const arTranslations = <String, String>{
   'error_general': 'حدث خطأ ما',
   'error_try_again': 'حدث خطأ ما. يرجى المحاولة مرة أخرى.',
   'question_save_failed': 'تعذر حفظ السؤال',
+  'max_questions_reached': 'تم الوصول لحد الأسئلة. احذف سؤالاً موجوداً لإضافة سؤال جديد.',
   'badge_claim_failed': 'تعذر استلام المكافأة',
 
   // Chat Question
@@ -700,6 +718,7 @@ const arTranslations = <String, String>{
 
   // Exchange center
   'exchange_title': 'مركز التبديل',
+  'exchange_subtitle': 'حوّل الماس إلى قوى',
   'exchange_convert_title': 'تحويل الماسات',
   'exchange_convert_button': 'تحويل',
   'exchange_powers_title': 'حقوق القوى',
@@ -719,6 +738,7 @@ const arTranslations = <String, String>{
   'referral_title': 'ادعُ صديقاً',
   'referral_description': 'ادعُ صديقاً، كلاكما يحصل على ٢٥ ماسة بنفسجية!',
   'referral_compact_cta': 'ادعُ صديقاً واكسب ماسات',
+  'referral_compact_subtitle': 'كل دعوة = مكافأة ماسة بنفسجية',
   'referral_copy': 'نسخ',
   'referral_share': 'مشاركة',
   'referral_progress': 'الدعوات المستخدمة',
@@ -728,6 +748,13 @@ const arTranslations = <String, String>{
   'referral_code_valid': 'تمت الدعوة بواسطة: ',
   'referral_code_invalid': 'رمز دعوة غير صالح',
   'referral_already_logged_in': 'يمكن استخدام رموز الدعوة أثناء التسجيل فقط',
+  'referral_enter_code': 'Have an invite code? Enter it here:',
+  'referral_apply': 'Apply',
+  'referral_invited_by': 'Invited by: ',
+  'referral_reward_earned': 'You earned 25 purple diamonds!',
+  'referral_complete_profile': 'Complete your profile to 60% to claim your reward!',
+  'referral_self_error': 'You cannot use your own code',
+  'referral_already_error': 'You have already used an invite code',
 
   // Paywall
   'paywall_title_undo': 'افتح التراجع',
@@ -861,4 +888,215 @@ const arTranslations = <String, String>{
   'preview_sheet_regen_cta': 'إعادة التوليد',
   'preview_sheet_skip_link': 'اختر أنت، لن أتدخل',
   'preview_sheet_error': 'تعذّر التوليد، حاول مرة أخرى',
+
+  // Splash
+  'splash_flow_ask': 'اسأل',
+  'splash_flow_answer': 'أجب',
+  'splash_flow_match': 'تطابق',
+
+  // Chat — Abandon Warning
+  'abandon_title': 'You\'re Fleeing!',
+  'abandon_question_lock': 'Question Lock',
+  'abandon_power_block': 'Power Block',
+  'abandon_unmatch_risk': 'Unmatch Risk',
+  'abandon_features_added': 'The other person added these features to the question:',
+  'abandon_flee_warning': 'If you leave without answering, you\'ll be marked as fled.',
+  'abandon_unmatch_warning': 'Your match will end!',
+  'abandon_leave': 'Leave',
+  'abandon_stay': 'Go Back',
+
+  // Chat — Question Card
+  'question_risky': 'This question is risky!',
+  'question_power_block': 'Power Block',
+  'question_chat_locked': 'Chat Locked',
+  'question_fled': 'Fled',
+
+  // Chat — Question Result
+  'result_correct': 'Correct!',
+  'result_congrats': 'Congratulations!',
+  'result_wrong': 'Wrong Answer',
+  'result_correct_subtitle': 'You answered the question correctly!',
+  'result_wrong_subtitle': 'Better luck next time.',
+  'result_rescue': 'Rescue (Skip)',
+  'result_go_back': 'Go Back',
+  'result_unmatch_ended': 'Match ended',
+  'result_green_earned': '+{count} Green Diamonds',
+  'result_green_subtitle': 'Earned for the question owner',
+  'result_correct_answer': 'Correct answer',
+  'result_purple_spent': '-{count} Purple Diamonds',
+  'result_power_spent_single': 'Spent for {power}',
+  'result_power_spent_multi': 'Spent for power usage',
+  'result_powers_used': 'Powers Used',
+  'result_your_answer': 'Your Answer',
+  'result_correct_label': 'Correct',
+  'result_time': 'Time',
+
+  // Chat — Media Request
+  'media_active': 'Media sharing active',
+  'media_rejected': 'Media request rejected',
+  'media_sent': 'Media request sent',
+  'media_waiting': 'Waiting for response...',
+  'media_wants_share': '\u{1F4F7} Wants to share media',
+  'media_reject': 'Reject',
+  'media_accept': 'Accept',
+
+  // Chat — App Bar
+  'unmatch': 'Unmatch',
+
+  // Chat — Create Question
+  'create_question': 'Create Question',
+  'drafts_history': 'Drafts & History',
+
+  // Chat — Error Messages
+  'error_chat_generic': 'Something went wrong, please try again',
+  'error_rescue_failed': 'Rescue failed',
+
+  // Profile — Edit
+  'profile_photo_hint': 'Your first photo will be your profile photo',
+  'profile_relationship_title': 'Relationship Goal',
+  'profile_relationship_subtitle': 'Let the other person see what you\'re looking for',
+  'profile_relationship_serious': 'Serious Relationship',
+  'profile_relationship_friendship': 'Friendship',
+  'profile_relationship_not_sure': 'Not Sure',
+  'profile_basic_info_subtitle': 'Help us get to know you',
+  'profile_details_subtitle': 'Enrich your profile, get more matches',
+  'profile_bio_subtitle': 'Briefly introduce yourself',
+  'profile_no_data': 'No user data',
+
+  // Paywall (missing)
+  'paywall_onboarding_title': 'اكتشف المزيد',
+  'paywall_maybe_later': 'ربما لاحقاً',
+
+  // Preferences (missing)
+  'gender_pref_locked_info': 'تواصل مع الدعم لتغيير تفضيل الجنس.',
+
+  // Chat tabs (missing)
+  'chat_drafts_tab': 'المسودات',
+  'chat_history_tab': 'السجل',
+  'chat_drafts_load_failed': 'فشل تحميل المسودات',
+  'chat_no_drafts': 'لا توجد مسودات بعد',
+  'chat_history_load_failed': 'فشل تحميل السجل',
+  'chat_no_history': 'لا يوجد سجل أسئلة بعد',
+  'chat_messages_error': 'فشل تحميل الرسائل',
+
+  // Onboarding V2 (missing)
+  'onboarding_v2_page1_title': 'التوافق على Qulo مختلف',
+  'onboarding_v2_page1_desc': 'هنا تتعرف على الآخرين من خلال الأسئلة. إذا أجاب شخص على جميع أسئلتك بشكل صحيح — تتوافقان!',
+  'onboarding_v2_page2_title': 'حضّر أسئلتك',
+  'onboarding_v2_page2_desc': 'أنشئ ٢-١٠ أسئلة. شخصية، ممتعة، لا يمكن البحث عنها. إذا أجاب شخص على الكل بشكل صحيح — تتوافقان!',
+  'onboarding_v2_page3_title': '٦ قوى خارقة',
+  'onboarding_v2_page3_desc': 'يمكن للحلّالين استخدام هذه القوى على أسئلتك. كل قوة تكلف ماسات بنفسجية — وهذا هو ربحك!',
+  'onboarding_v2_page4_title': 'اكسب ماسات خضراء!',
+  'onboarding_v2_page4_desc': 'كل شخص يستخدم قوة على أسئلتك يكسبك ماسات خضراء. أسئلة أكثر، أرباح أكثر!',
+  'onboarding_v2_page5_title': 'أي لغات تريد رؤيتها؟',
+  'onboarding_v2_page5_desc': 'سنعرض لك ملفات شخصية بأسئلة بلغاتك. يمكنك اختيار أكثر من لغة.',
+  'onboarding_v2_skip': 'تخطي',
+  'onboarding_v2_next': 'التالي',
+  'onboarding_v2_start': 'ابدأ الآن',
+  'onboarding_v2_premium_title': 'المزيد مع Premium',
+  'onboarding_v2_premium_cta': 'انتقل إلى Premium',
+  'onboarding_v2_premium_benefit_1': 'اكتشاف غير محدود',
+  'onboarding_v2_premium_benefit_2': 'مكافأة ماسات بنفسجية شهرية',
+  'onboarding_v2_premium_benefit_3': 'تجربة بدون إعلانات',
+
+  // Report categories (missing)
+  'report_select_category': 'اختر سبب الإبلاغ',
+  'report_cat_inappropriate': 'محتوى غير لائق',
+  'report_cat_fake': 'ملف شخصي مزيف',
+  'report_cat_spam': 'رسائل مزعجة',
+  'report_cat_harassment': 'تحرش',
+  'report_cat_underage': 'قاصر',
+  'report_cat_scam': 'احتيال',
+  'report_cat_offensive_photos': 'صور مسيئة',
+  'report_cat_threatening': 'تهديد',
+  'report_cat_impersonation': 'انتحال شخصية',
+  'report_cat_other': 'أخرى',
+  'report_reason_title': 'الوصف',
+  'report_reason_optional': 'أضف وصفاً اختيارياً...',
+  'report_reason_required': 'يرجى كتابة وصف مفصل...',
+
+  // Block (missing)
+  'blocked_users': 'المستخدمون المحظورون',
+  'no_blocked_users': 'لا يوجد مستخدمون محظورون',
+  'unblock': 'إلغاء الحظر',
+  'unblock_confirm_title': 'إلغاء الحظر',
+  'unblock_confirm_message': 'هل أنت متأكد أنك تريد إلغاء حظر هذا المستخدم؟',
+
+  // Support tickets (missing)
+  'my_tickets': 'تذاكر الدعم الخاصة بي',
+  'no_tickets': 'لا توجد تذاكر دعم بعد',
+  'create_ticket': 'إنشاء تذكرة دعم',
+  'ticket_created_success': 'تم إنشاء تذكرة الدعم الخاصة بك',
+  'ticket_replied': 'تم الرد',
+  'ticket_category': 'الفئة',
+  'ticket_subject': 'الموضوع',
+  'ticket_subject_hint': 'صف مشكلتك باختصار',
+  'ticket_subject_error': 'يجب أن يكون الموضوع ٥ أحرف على الأقل',
+  'ticket_message': 'الرسالة',
+  'ticket_message_hint': 'صف مشكلتك بالتفصيل',
+  'ticket_message_error': 'يجب أن تكون الرسالة ١٠ أحرف على الأقل',
+  'ticket_cat_account': 'الحساب',
+  'ticket_cat_technical': 'تقني',
+  'ticket_cat_billing': 'الفوترة',
+  'ticket_cat_match': 'التوافق',
+  'ticket_cat_other': 'أخرى',
+  'ticket_status_open': 'مفتوحة',
+  'ticket_status_in_progress': 'قيد المعالجة',
+  'ticket_status_resolved': 'تم الحل',
+  'ticket_status_closed': 'مغلقة',
+
+  // Help (missing)
+  'help_support': 'المساعدة والدعم',
+
+  // Ban (missing)
+  'account_banned_title': 'الحساب موقوف',
+  'account_banned_message': 'تم إيقاف حسابك لمخالفة إرشادات المجتمع. تواصل معنا للتفاصيل.',
+
+  // Submit (missing)
+  'submit': 'إرسال',
+
+  // Social login (missing)
+  'or': 'أو',
+  'sign_in_with_google': 'تسجيل الدخول بحساب Google',
+  'sign_in_with_apple': 'تسجيل الدخول بحساب Apple',
+
+  // Profile completion (missing)
+  'profile_completion_title': 'أكمل ملفك الشخصي',
+
+  // App Review
+  'rate_us': 'قيّمنا',
+  'rate_us_subtitle': 'هل تحب Qulo؟ اترك لنا تقييمًا!',
+
+  // Chat — Hardcoded fixes
+  'chat_question_load_failed': 'Question could not be loaded',
+  'chat_answer_question_hint': 'Answer the question...',
+  'chat_audio_reward_revealed': 'Audio Reward Unlocked!',
+  'chat_lock_answer_required': 'You need to answer the question to send messages.',
+  'chat_time_up': 'Time\'s Up!',
+  'chat_time_up_desc': 'Your time to answer has run out. Use a power to rescue yourself.',
+  'chat_powers_blocked': 'Powers are blocked. Unlock and use Skip power.',
+  'chat_audio_reward': 'Audio Reward',
+  'chat_audio_locked': 'Locked Audio',
+  'chat_unmatch_confirm': 'Are you sure you want to unmatch? This action cannot be undone.',
+
+  // Power bar labels (short display names)
+  'power_bar_half': 'Half',
+  'power_bar_skip': 'Skip',
+  'power_bar_hint': 'Hint',
+  'power_bar_skip_all': 'Skip All',
+  'power_bar_block': 'Block',
+  'power_bar_unlock': 'Unlock',
+
+  // Milestone celebration
+  'milestone_congrats': 'Congratulations!',
+  'milestone_profile_completed': 'You completed @milestone% of your profile!',
+  'milestone_diamond_earned': 'You earned purple diamonds!',
+  'milestone_boost_earned': 'You earned a free 24-hour boost!',
+
+  // Referral share
+  'referral_share_message': 'Join Qulo! Use my invite code, we both get @reward purple diamonds: @code\nhttps://quloapp.com/invite/@code',
+
+  // Email notifications (added 2026-06-09)
+  'email_notifications': 'إشعارات البريد الإلكتروني',
+  'email_notifications_desc': 'استلم بريدًا إلكترونيًا عند وجود تطابق جديد',
 };

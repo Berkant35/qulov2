@@ -25,7 +25,6 @@ import 'package:qulo_v2/features/notifications/screens/notifications_screen.dart
 import 'package:qulo_v2/features/questions/screens/question_create_screen.dart';
 import 'package:qulo_v2/features/questions/screens/question_easy_mode_screen.dart';
 import 'package:qulo_v2/features/questions/screens/question_analytics_screen.dart';
-import 'package:qulo_v2/features/questions/screens/question_onboarding_screen.dart';
 import 'package:qulo_v2/data/models/question_model.dart';
 import 'package:qulo_v2/data/models/ai_suggestion_model.dart';
 import 'package:qulo_v2/features/exchange/screens/exchange_screen.dart';
@@ -39,6 +38,7 @@ import 'package:qulo_v2/features/chat/screens/solve_chat_question_screen.dart';
 import 'package:qulo_v2/data/models/chat_question_model.dart';
 import 'package:qulo_v2/features/performance/screens/performance_dashboard_screen.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
+import 'package:qulo_v2/core/widgets/app_icon.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
@@ -49,6 +49,12 @@ import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/providers/deep_link_provider.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
+import 'package:qulo_v2/features/legal/screens/legal_web_view_screen.dart';
+import 'package:qulo_v2/features/settings/screens/blocked_users_screen.dart';
+import 'package:qulo_v2/features/settings/screens/my_tickets_screen.dart';
+import 'package:qulo_v2/features/auth/screens/banned_screen.dart';
+import 'package:qulo_v2/features/auth/screens/profile_completion_screen.dart';
+import 'package:qulo_v2/core/config/env.dart';
 
 part 'app_routes.dart';
 
@@ -76,6 +82,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       // 1. Auth yukleniyor — bekle
       if (authState.status == AuthStatus.initial) return null;
 
+      // 1b. Hesap banlı — banned ekranına yönlendir
+      if (authState.status == AuthStatus.banned) {
+        if (state.matchedLocation == '/banned') return null;
+        return '/banned';
+      }
+
       // 2. Update/maintenance route'lari — her zaman izin ver
       final isUpdateRoute = state.matchedLocation == '/force-update' ||
           state.matchedLocation == '/maintenance';
@@ -83,10 +95,29 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       // 3. Invite route — mevcut logic
       final isInviteRoute = state.matchedLocation.startsWith('/invite/');
-      if (isAuth && isInviteRoute) return '/discover';
+      if (isAuth && isInviteRoute) {
+        final code = state.pathParameters['code'] ?? '';
+        return '/profile/diamonds?referralCode=$code';
+      }
 
-      // 4. Auth degil → login'e yonlendir (auth, invite, update haric)
-      if (!isAuth && !isAuthRoute && !isInviteRoute && !isUpdateRoute) {
+      // 4. Legal route'lar — her zaman izin ver (kayit ekranindan erisilebilir)
+      final isLegalRoute = state.matchedLocation == '/terms' ||
+          state.matchedLocation == '/privacy-policy' ||
+          state.matchedLocation == '/help';
+      if (isLegalRoute) return null;
+
+      // Non-auth user clicking invite link → store as pending, redirect to login
+      if (!isAuth && isInviteRoute) {
+        final code = state.pathParameters['code'] ?? '';
+        if (code.isNotEmpty) {
+          ref.read(pendingDeepLinkProvider.notifier).state =
+              '/profile/diamonds?referralCode=$code';
+        }
+        return '/auth/login';
+      }
+
+      // 5. Auth degil → login'e yonlendir (auth, update haric)
+      if (!isAuth && !isAuthRoute && !isUpdateRoute) {
         return '/auth/login';
       }
 
@@ -98,7 +129,24 @@ final routerProvider = Provider<GoRouter>((ref) {
         return pendingLink;
       }
 
-      // 6. Setup gate: photo + 2 questions required
+      // 6. Profile completion check — age null means social login user hasn't completed profile
+      if (isAuth && state.matchedLocation != '/profile-completion') {
+        final user = ref.read(userProvider).value;
+        if (user != null && user.age == null) {
+          return '/profile-completion';
+        }
+      }
+
+      // Already on profile-completion but profile is done → go to discover
+      if (isAuth && state.matchedLocation == '/profile-completion') {
+        final user = ref.read(userProvider).value;
+        if (user != null && user.age != null) {
+          return '/discover';
+        }
+        return null;
+      }
+
+      // 7. Setup gate: photo + 2 questions required
       // (age != null already implies registration complete)
       // Allow /questions/* (Kendim Olustur path) and /profile/* (foto, edit)
       // so the user can actually complete the gate.
@@ -113,7 +161,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         }
       }
 
-      // 7. On /profile-setup but already complete → discover
+      // 8. On /profile-setup but already complete → discover
       if (isAuth && state.matchedLocation == '/profile-setup') {
         final user = ref.read(userProvider).value;
         if (user != null && user.setupComplete) {
@@ -122,7 +170,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         return null;
       }
 
-      // 8. Auth + auth route veya splash → discover'a yonlendir
+      // 9. Auth + auth route veya splash → discover'a yonlendir
       if (isAuth && (isAuthRoute || isSplash)) return '/discover';
 
       return null;

@@ -131,6 +131,24 @@ class ChatRepository implements IChatRepository {
     );
   }
 
+  Future<Result<String>> uploadQuestionMedia(String matchId, {Uint8List? bytes, File? file, required String mimeType}) async {
+    final fileName = mimeType.startsWith('audio/') ? 'audio.m4a' : 'photo.jpg';
+    final MultipartFile multipart;
+    if (bytes != null) {
+      multipart = MultipartFile.fromBytes(bytes, filename: fileName, contentType: DioMediaType.parse(mimeType));
+    } else if (file != null) {
+      multipart = await MultipartFile.fromFile(file.path, filename: fileName, contentType: DioMediaType.parse(mimeType));
+    } else {
+      return const Failure(UnknownFailure());
+    }
+    final formData = FormData.fromMap({'file': multipart});
+    final result = await _network.upload<Map<String, dynamic>>('/chat/$matchId/question-upload', data: formData);
+    return result.when(
+      success: (data) => Success(data['url'] as String),
+      failure: (f) => Failure(f),
+    );
+  }
+
   Future<Result<ChatQuestionModel>> createQuestion(String matchId, Map<String, dynamic> data) async {
     try {
       final response = await _service.createQuestion(matchId, data);

@@ -174,6 +174,7 @@ class EconomyCoreConfig extends Equatable {
   final int boostDurationMinutes;
   final double greenDiamondRewardRatio;
   final int greenToPurpleRatio;
+  final int baseAnswerReward;
   final Map<int, double> questionCountMultipliers;
 
   const EconomyCoreConfig({
@@ -181,6 +182,7 @@ class EconomyCoreConfig extends Equatable {
     required this.boostDurationMinutes,
     required this.greenDiamondRewardRatio,
     required this.greenToPurpleRatio,
+    this.baseAnswerReward = 10,
     required this.questionCountMultipliers,
   });
 
@@ -203,6 +205,7 @@ class EconomyCoreConfig extends Equatable {
       greenDiamondRewardRatio:
           (json['greenDiamondRewardRatio'] as num?)?.toDouble() ?? 0.30,
       greenToPurpleRatio: json['greenToPurpleRatio'] as int? ?? 3,
+      baseAnswerReward: json['baseAnswerReward'] as int? ?? 10,
       questionCountMultipliers: parsedMultipliers.isNotEmpty
           ? parsedMultipliers
           : const {2: 0.5, 3: 0.75, 4: 1.0, 5: 1.25, 6: 1.5},
@@ -215,6 +218,7 @@ class EconomyCoreConfig extends Equatable {
       'boostDurationMinutes': boostDurationMinutes,
       'greenDiamondRewardRatio': greenDiamondRewardRatio,
       'greenToPurpleRatio': greenToPurpleRatio,
+      'baseAnswerReward': baseAnswerReward,
       'questionCountMultipliers': questionCountMultipliers
           .map((key, value) => MapEntry(key.toString(), value)),
     };
@@ -226,6 +230,7 @@ class EconomyCoreConfig extends Equatable {
         boostDurationMinutes,
         greenDiamondRewardRatio,
         greenToPurpleRatio,
+        baseAnswerReward,
         questionCountMultipliers,
       ];
 }

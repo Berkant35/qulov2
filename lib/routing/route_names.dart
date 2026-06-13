@@ -26,7 +26,6 @@ abstract final class RouteNames {
   static const questionCreate = 'question-create';
   static const questionEasyMode = 'question-easy-mode';
   static const questionAnalytics = 'question-analytics';
-  static const questionOnboarding = 'question-onboarding';
   static const exchange = 'exchange';
   static const performance = 'performance';
   static const profileDetail = 'profile-detail';
@@ -36,10 +35,25 @@ abstract final class RouteNames {
   static const createChatQuestion = 'create-chat-question';
   static const solveChatQuestion = 'solve-chat-question';
 
+  // Legal
+  static const terms = 'terms';
+  static const privacyPolicy = 'privacy-policy';
+  static const help = 'help';
+
+  // Settings sub-screens
+  static const blockedUsers = 'blocked-users';
+  static const myTickets = 'my-tickets';
+
   // Referral
   static const invite = 'invite';
 
   // Update
   static const forceUpdate = 'force-update';
   static const maintenance = 'maintenance';
+
+  // Auth states
+  static const banned = 'banned';
+
+  // Social auth profile completion
+  static const profileCompletion = 'profile-completion';
 }

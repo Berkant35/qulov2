@@ -72,7 +72,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         error: (e, _) =>
             ErrorRetryWidget(onRetry: () => ref.invalidate(userProvider)),
         data: (user) {
-          if (user == null) return const Center(child: Text('No user data'));
+          if (user == null) return Center(child: Text(context.tr('profile_no_data')));
           final photos = user.photos ?? [];
 
           return SingleChildScrollView(
@@ -186,6 +186,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                   onDiamonds: () => navigateTo(RouteNames.diamonds),
                   onSubscription: () => navigateTo(RouteNames.subscription),
                   onPassport: () => navigateTo(RouteNames.passport),
+                  onTerms: () => pushTo(RouteNames.terms),
+                  onPrivacy: () => pushTo(RouteNames.privacyPolicy),
                 ),
               ],
             ),

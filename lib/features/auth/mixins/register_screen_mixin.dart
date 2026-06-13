@@ -17,8 +17,6 @@ mixin RegisterScreenMixin on ConsumerState<RegisterScreen> {
   final surnameCtrl = TextEditingController();
   final emailCtrl = TextEditingController();
   final passwordCtrl = TextEditingController();
-  final referralCodeCtrl = TextEditingController();
-
   int currentStep = 0;
   DateTime? birthday;
   String? gender;
@@ -29,9 +27,6 @@ mixin RegisterScreenMixin on ConsumerState<RegisterScreen> {
   bool termsAccepted = false;
   bool obscurePassword = true;
   bool isLoading = false;
-  bool referralExpanded = false;
-  bool validatingReferral = false;
-  String? referralValidName;
 
   // Error state
   String? nameError;
@@ -42,14 +37,8 @@ mixin RegisterScreenMixin on ConsumerState<RegisterScreen> {
   String? genderError;
   String? locationError;
   String? termsError;
-  String? referralError;
 
-  void initMixin() {
-    if (widget.referralCode != null && widget.referralCode!.isNotEmpty) {
-      referralCodeCtrl.text = widget.referralCode!;
-      referralExpanded = true;
-    }
-  }
+  void initMixin() {}
 
   void disposeMixin() {
     pageController.dispose();
@@ -57,7 +46,6 @@ mixin RegisterScreenMixin on ConsumerState<RegisterScreen> {
     surnameCtrl.dispose();
     emailCtrl.dispose();
     passwordCtrl.dispose();
-    referralCodeCtrl.dispose();
   }
 
   void goToStep(int step) {
@@ -146,12 +134,13 @@ mixin RegisterScreenMixin on ConsumerState<RegisterScreen> {
   int calculateAge() {
     if (birthday == null) return 0;
     final now = DateTime.now();
+    if (birthday!.isAfter(now)) return 0;
     int age = now.year - birthday!.year;
     if (now.month < birthday!.month ||
         (now.month == birthday!.month && now.day < birthday!.day)) {
       age--;
     }
-    return age;
+    return age < 0 ? 0 : age;
   }
 
   Future<void> requestLocation() async {
@@ -209,62 +198,11 @@ mixin RegisterScreenMixin on ConsumerState<RegisterScreen> {
     }
   }
 
-  Future<void> validateReferralCode() async {
-    final code = referralCodeCtrl.text.trim();
-    if (code.isEmpty) {
-      setState(() {
-        referralError = null;
-        referralValidName = null;
-      });
-      return;
-    }
-
-    setState(() {
-      validatingReferral = true;
-      referralError = null;
-      referralValidName = null;
-    });
-
-    try {
-      final repo = ref.read(referralRepositoryProvider);
-      final result = await repo.validateCode(code);
-      if (!mounted) return;
-      result.when(
-        success: (response) {
-          setState(() {
-            validatingReferral = false;
-            if (response.valid) {
-              referralValidName = response.referrerName;
-              referralError = null;
-            } else {
-              referralError = context.tr('referral_code_invalid');
-              referralValidName = null;
-            }
-          });
-        },
-        failure: (_) {
-          setState(() {
-            validatingReferral = false;
-            referralError = context.tr('referral_code_invalid');
-          });
-        },
-      );
-    } catch (_) {
-      if (mounted) {
-        setState(() {
-          validatingReferral = false;
-          referralError = context.tr('referral_code_invalid');
-        });
-      }
-    }
-  }
-
   Future<void> register() async {
     if (!validateCurrentStep()) return;
 
     setState(() => isLoading = true);
 
-    final referralCode = referralCodeCtrl.text.trim();
     final result = await ref.read(authProvider.notifier).register(
           email: emailCtrl.text.trim(),
           password: passwordCtrl.text,
@@ -274,7 +212,7 @@ mixin RegisterScreenMixin on ConsumerState<RegisterScreen> {
           gender: gender!,
           lat: lat,
           lng: lng,
-          referralCode: referralCode.isNotEmpty ? referralCode : null,
+          locale: Localizations.localeOf(context).languageCode,
         );
 
     if (!mounted) return;

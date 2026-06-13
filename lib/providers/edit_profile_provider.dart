@@ -94,8 +94,6 @@ class EditProfileNotifier extends Notifier<EditProfileState> {
       state = state.copyWith(selectedSmoking: () => v);
   void setAlcohol(String? v) =>
       state = state.copyWith(selectedAlcohol: () => v);
-  void setGenderPref(String? v) =>
-      state = state.copyWith(selectedGenderPref: () => v);
   void setAgeRange(RangeValues v) => state = state.copyWith(ageRange: v);
   void setDistanceKm(double v) => state = state.copyWith(distanceKm: v);
   void setRelationshipGoal(String? v) =>

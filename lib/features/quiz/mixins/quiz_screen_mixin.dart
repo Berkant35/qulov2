@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/services/app_review_manager.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/services/haptic_manager.dart';
@@ -357,10 +358,12 @@ mixin QuizScreenMixin on ConsumerState<QuizScreen> {
   void onStartChat() {
     ref.invalidate(matchListProvider);
     ref.read(navigationServiceProvider).go(RouteNames.matches);
+    AppReviewManager.instance.tryShowReview(trigger: 'match_celebration');
   }
 
   void onGoBack() {
     ref.read(navigationServiceProvider).go(RouteNames.discover);
+    AppReviewManager.instance.tryShowReview(trigger: 'match_celebration');
   }
 
   void _handleSessionTransition(String? status, String? badge) {

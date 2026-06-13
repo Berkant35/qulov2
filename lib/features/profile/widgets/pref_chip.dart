@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/widgets/app_icon.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 
 class PrefChip extends StatelessWidget {
-  final String iconPath;
+  final dynamic iconPath; // String (old icons) or IconRef (new icons)
   final String label;
 
   const PrefChip({
@@ -29,7 +30,10 @@ class PrefChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          QIcon(iconPath, size: 14, color: context.appColors.secondary),
+          if (iconPath is String)
+            QIcon(iconPath, size: 14, color: context.appColors.secondary)
+          else
+            AppIcon(iconPath, size: 14, color: context.appColors.secondary),
           const SizedBox(width: 4),
           Text(
             label,

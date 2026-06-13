@@ -226,10 +226,19 @@ class SubscriptionService {
     if (stats.dailyDiscoversLimit !== -1 && stats.dailyDiscoversUsed >= stats.dailyDiscoversLimit) {
       throw Errors.DAILY_LIMIT_EXCEEDED('discover');
     }
-    await supabase
+    // Atomic increment with .lt() guard to prevent exceeding limit under concurrency
+    const limitGuard = stats.dailyDiscoversLimit === -1 ? 999999 : stats.dailyDiscoversLimit;
+    const { data: updated, error } = await supabase
       .from('users')
       .update({ daily_swipes_used: stats.dailyDiscoversUsed + 1 })
-      .eq('id', userId);
+      .eq('id', userId)
+      .lt('daily_swipes_used', limitGuard)
+      .select('daily_swipes_used')
+      .maybeSingle();
+
+    if (error || !updated) {
+      throw Errors.DAILY_LIMIT_EXCEEDED('discover');
+    }
   }
 
   async incrementDailyUndos(userId: string): Promise<void> {
@@ -237,10 +246,19 @@ class SubscriptionService {
     if (stats.dailyUndosLimit !== -1 && stats.dailyUndosUsed >= stats.dailyUndosLimit) {
       throw Errors.DAILY_LIMIT_EXCEEDED('undo');
     }
-    await supabase
+    // Atomic increment with .lt() guard to prevent exceeding limit under concurrency
+    const limitGuard = stats.dailyUndosLimit === -1 ? 999999 : stats.dailyUndosLimit;
+    const { data: updated, error } = await supabase
       .from('users')
       .update({ daily_undos_used: stats.dailyUndosUsed + 1 })
-      .eq('id', userId);
+      .eq('id', userId)
+      .lt('daily_undos_used', limitGuard)
+      .select('daily_undos_used')
+      .maybeSingle();
+
+    if (error || !updated) {
+      throw Errors.DAILY_LIMIT_EXCEEDED('undo');
+    }
   }
 
   getLimits(plan: SubscriptionPlan | null) {

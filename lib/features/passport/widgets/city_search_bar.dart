@@ -73,7 +73,9 @@ class _CitySearchBarState extends ConsumerState<CitySearchBar> {
           controller: _controller,
           focusNode: _focusNode,
           onChanged: _onSearchChanged,
+          maxLength: 100,
           decoration: InputDecoration(
+            counterText: "",
             hintText: context.tr('passport_search_placeholder'),
             prefixIcon: Icon(Icons.search, color: context.appColors.textHint),
             suffixIcon: _isSearching

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/widgets/app_icon.dart';
+import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/data/models/subscription_model.dart';
 
@@ -31,54 +34,93 @@ class _UpgradeBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colors = context.appColors;
 
-    return Container(
-      decoration: BoxDecoration(
-        gradient: context.appColors.purpleGradient,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-      ),
-      padding: const EdgeInsets.all(AppSpacing.xl),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            context.tr('premium_cta'),
-            style: theme.textTheme.titleMedium?.copyWith(
-              color: AppColors.textPrimary,
-              fontWeight: FontWeight.bold,
-            ),
+    return GestureDetector(
+      onTap: onViewPlans,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.lg,
+          vertical: AppSpacing.cardPadding,
+        ),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              colors.primaryDark.withValues(alpha: 0.5),
+              colors.primary.withValues(alpha: 0.15),
+            ],
           ),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            context.tr('premium_benefits'),
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: AppColors.textPrimary.withValues(alpha: 0.85),
-            ),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+          border: Border.all(
+            color: colors.primary.withValues(alpha: 0.25),
           ),
-          const SizedBox(height: AppSpacing.lg),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: onViewPlans,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.textPrimary,
-                foregroundColor: context.appColors.primary,
-                padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                ),
-                elevation: 0,
-              ),
-              child: Text(
-                context.tr('view_plans'),
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
+        ),
+        child: Row(
+          children: [
+            // Crown icon with glow
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    colors.primary.withValues(alpha: 0.3),
+                    colors.primary.withValues(alpha: 0.05),
+                  ],
                 ),
               ),
+              child: Center(
+                child: AppIcon(
+                  QIcons.crown,
+                  color: AppColors.gold,
+                  size: 22,
+                ),
+              ),
             ),
-          ),
-        ],
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    context.tr('premium_cta'),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    context.tr('premium_benefits'),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: Colors.white.withValues(alpha: 0.6),
+                      fontSize: 11,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: colors.primary.withValues(alpha: 0.2),
+              ),
+              child: QIcon(
+                QIcons.icChevronRight,
+                color: Colors.white.withValues(alpha: 0.8),
+                size: 16,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

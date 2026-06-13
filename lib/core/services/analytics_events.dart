@@ -28,6 +28,16 @@ abstract class AnalyticsEvents {
   static const String onboardingLocationPermit = 'onboarding_location_permit';
   static const String onboardingComplete = 'onboarding_complete';
 
+  // ─── Onboarding V2 ───
+  static const onboardingV2Start = 'onboarding_v2_start';
+  static const onboardingV2PageView = 'onboarding_v2_page_view';
+  static const onboardingV2Skip = 'onboarding_v2_skip';
+  static const onboardingV2Complete = 'onboarding_v2_complete';
+  static const onboardingV2LanguagesSelected = 'onboarding_v2_languages_selected';
+  static const onboardingV2PremiumShown = 'onboarding_v2_premium_shown';
+  static const onboardingV2PremiumTapped = 'onboarding_v2_premium_tapped';
+  static const onboardingV2PremiumDismissed = 'onboarding_v2_premium_dismissed';
+
   // ─── Discover (15) ─────────────────────────────────────────────────
   static const String discoverScreenView = 'discover_screen_view';
   static const String discoverSwipeRight = 'discover_swipe_right';
@@ -217,6 +227,11 @@ abstract class AnalyticsEvents {
   static const String performanceViewAllDiamonds = 'performance_view_all_diamonds';
   static const String performanceBestQuestionTapped = 'performance_best_question_tapped';
 
+  // ─── App Review (3) ──────────────────────────────────────────────
+  static const String appReviewPrompted = 'app_review_prompted';
+  static const String appReviewDismissed = 'app_review_dismissed';
+  static const String appReviewCompleted = 'app_review_completed';
+
   // ─── Settings (8) ──────────────────────────────────────────────────
   static const String settingsScreenView = 'settings_screen_view';
   static const String settingsChange = 'settings_change';
@@ -349,6 +364,12 @@ abstract class AnalyticsEvents {
   static const String paramFromCity = 'from_city';
   static const String paramToCity = 'to_city';
   static const String paramSearchQuery = 'search_query';
+  static const String paramPageIndex = 'page_index';
+  static const String paramPageName = 'page_name';
+  static const String paramFromPage = 'from_page';
+  static const String paramLanguages = 'languages';
+  static const String paramLanguageCount = 'language_count';
+  static const String paramShownCount = 'shown_count';
 
   // ─── Profile Setup Gate (13) ───────────────────────────────────────
   static const String setupGateView = 'setup_gate_view';

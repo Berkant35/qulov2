@@ -20,7 +20,6 @@ class AuthRepository implements IAuthRepository {
     double? lat,
     double? lng,
     String locale = 'tr',
-    String? referralCode,
   }) async {
     try {
       final response = await _service.register({
@@ -34,7 +33,6 @@ class AuthRepository implements IAuthRepository {
         'tos_accepted': true,
         if (lat != null) 'lat': lat,
         if (lng != null) 'lng': lng,
-        if (referralCode != null) 'referral_code': referralCode,
       });
       return Success(response);
     } on DioException catch (e) {

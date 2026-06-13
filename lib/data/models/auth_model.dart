@@ -61,3 +61,29 @@ class RefreshResponse extends Equatable {
   @override
   List<Object?> get props => [accessToken, refreshToken];
 }
+
+@JsonSerializable()
+class SocialLoginResponse extends Equatable {
+  @JsonKey(name: 'accessToken')
+  final String accessToken;
+  @JsonKey(name: 'refreshToken')
+  final String refreshToken;
+  @JsonKey(name: 'userId')
+  final String userId;
+  @JsonKey(name: 'profileIncomplete')
+  final bool profileIncomplete;
+
+  const SocialLoginResponse({
+    required this.accessToken,
+    required this.refreshToken,
+    required this.userId,
+    required this.profileIncomplete,
+  });
+
+  factory SocialLoginResponse.fromJson(Map<String, dynamic> json) =>
+      _$SocialLoginResponseFromJson(json);
+  Map<String, dynamic> toJson() => _$SocialLoginResponseToJson(this);
+
+  @override
+  List<Object?> get props => [accessToken, refreshToken, userId, profileIncomplete];
+}

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:qulo_v2/core/l10n/app_localizations.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/widgets/power_icon.dart';
 import 'package:qulo_v2/data/models/chat_question_model.dart';
 import 'package:qulo_v2/features/chat/widgets/blurred_media_preview.dart';
 
@@ -57,7 +58,9 @@ class ChatQuestionCard extends StatelessWidget {
               const SizedBox(height: AppSpacing.md),
 
               // Options / action
-              if (!question.isAnswered && !isMyQuestion)
+              if (question.isAbandoned)
+                _AbandonedOptions(question: question)
+              else if (!question.isAnswered && !isMyQuestion)
                 _OpenButton(onOpen: onOpen)
               else if (!question.isAnswered && isMyQuestion)
                 _WaitingOptions(question: question)
@@ -96,7 +99,7 @@ class _BadgesRow extends StatelessWidget {
     if (question.hasUnmatchRisk) {
       badges.add(_Badge(
         icon: '\u26a0\ufe0f',
-        label: 'Bu soru riskli!',
+        label: context.tr('question_risky'),
         color: context.appColors.error,
       ));
     }
@@ -104,7 +107,7 @@ class _BadgesRow extends StatelessWidget {
     if (question.isPowerBlocked) {
       badges.add(_Badge(
         icon: '\u26a1',
-        label: 'Güç Engeli',
+        label: context.tr('question_power_block'),
         color: context.appColors.warning,
       ));
     }
@@ -112,7 +115,7 @@ class _BadgesRow extends StatelessWidget {
     if (question.hasChatLock) {
       badges.add(_Badge(
         icon: '\ud83d\udd12',
-        label: 'Sohbet Kilitli',
+        label: context.tr('question_chat_locked'),
         color: context.appColors.warning,
       ));
     }
@@ -122,6 +125,14 @@ class _BadgesRow extends StatelessWidget {
         icon: '\u23f1',
         label: '${question.timeLimitSeconds}s',
         color: context.appColors.textSecondary,
+      ));
+    }
+
+    if (question.isAbandoned) {
+      badges.add(_Badge(
+        icon: '\ud83c\udfc3',
+        label: context.tr('question_fled'),
+        color: Colors.grey,
       ));
     }
 
@@ -279,6 +290,110 @@ class _AnsweredOptions extends StatelessWidget {
             ),
           ),
         ],
+        // Powers used (grouped: TIME_EXTEND ×6)
+        if (question.powersUsed.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.sm),
+          Builder(builder: (context) {
+            // Group same powers: {ORACLE: 1, TIME_EXTEND: 6}
+            final grouped = <String, int>{};
+            for (final name in question.powersUsed) {
+              final key = name.toString();
+              grouped[key] = (grouped[key] ?? 0) + 1;
+            }
+            return Wrap(
+              spacing: AppSpacing.xs,
+              runSpacing: AppSpacing.xs,
+              children: grouped.entries.map((entry) {
+                final type = PowerType.fromApiName(entry.key);
+                if (type == null) return const SizedBox.shrink();
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: type.color.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                    border: Border.all(color: type.color.withValues(alpha: 0.3)),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      PowerIcon(type: type, size: 12),
+                      if (entry.value > 1) ...[
+                        const SizedBox(width: 2),
+                        Text(
+                          '×${entry.value}',
+                          style: TextStyle(fontSize: 9, color: type.color, fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ],
+                  ),
+                );
+              }).toList(),
+            );
+          }),
+        ],
+      ],
+    );
+  }
+}
+
+// ─── Abandoned Options (question was abandoned by receiver) ───────────────────
+
+class _AbandonedOptions extends StatelessWidget {
+  final ChatQuestionModel question;
+
+  const _AbandonedOptions({required this.question});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final options = _buildOptionLabels(question);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (final opt in options) ...[
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.sm,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.grey.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 24,
+                  height: 24,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.withValues(alpha: 0.2),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Text(
+                    opt.$1,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    opt.$2,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (opt != options.last) const SizedBox(height: AppSpacing.sm),
+        ],
       ],
     );
   }
@@ -393,17 +508,21 @@ class _AnsweredOption extends StatelessWidget {
               color: labelColor.withValues(alpha: 0.2),
               shape: BoxShape.circle,
             ),
-            child: isCorrectChoice
-                ? Icon(Icons.check, size: 14, color: labelColor)
-                : isWrongChoice
-                    ? Icon(Icons.close, size: 14, color: labelColor)
-                    : Text(
-                        label,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: labelColor,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
+            child: () {
+              if (isCorrectChoice) {
+                return Icon(Icons.check, size: 14, color: labelColor);
+              }
+              if (isWrongChoice) {
+                return Icon(Icons.close, size: 14, color: labelColor);
+              }
+              return Text(
+                label,
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: labelColor,
+                  fontWeight: FontWeight.w700,
+                ),
+              );
+            }(),
           ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(

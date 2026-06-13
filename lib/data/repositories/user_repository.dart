@@ -5,6 +5,7 @@ import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/network/services/user_service.dart';
 import 'package:qulo_v2/data/models/public_profile_model.dart';
 import 'package:qulo_v2/data/models/user_model.dart';
+import 'package:qulo_v2/data/models/notification_preferences_model.dart';
 import 'package:qulo_v2/data/models/user_details_model.dart';
 import 'package:qulo_v2/data/repositories/interfaces.dart';
 
@@ -60,6 +61,24 @@ class UserRepository implements IUserRepository {
   Future<Result<void>> updatePushToken(String token) async {
     try {
       await _service.updatePushToken({'push_token': token});
+      return const Success(null);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
+
+  DateTime? _lastHeartbeat;
+  static const Duration _heartbeatDebounce = Duration(minutes: 5);
+
+  @override
+  Future<Result<void>> heartbeat() async {
+    if (_lastHeartbeat != null &&
+        DateTime.now().difference(_lastHeartbeat!) < _heartbeatDebounce) {
+      return const Success(null);
+    }
+    _lastHeartbeat = DateTime.now();
+    try {
+      await _service.heartbeat();
       return const Success(null);
     } on DioException catch (e) {
       return Failure(e.toAppFailure());
@@ -129,6 +148,32 @@ class UserRepository implements IUserRepository {
     try {
       final response = await _service.getPublicProfile(userId);
       return Success(response);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
+
+  Future<Result<NotificationPreferencesModel>> getNotificationPreferences() async {
+    try {
+      final response = await _service.getNotificationPreferences();
+      final model = NotificationPreferencesModel.fromJson(
+        response as Map<String, dynamic>,
+      );
+      return Success(model);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
+
+  Future<Result<NotificationPreferencesModel>> updateNotificationPreferences(
+    Map<String, dynamic> body,
+  ) async {
+    try {
+      final response = await _service.updateNotificationPreferences(body);
+      final model = NotificationPreferencesModel.fromJson(
+        response as Map<String, dynamic>,
+      );
+      return Success(model);
     } on DioException catch (e) {
       return Failure(e.toAppFailure());
     }

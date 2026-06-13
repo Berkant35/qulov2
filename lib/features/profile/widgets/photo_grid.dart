@@ -2,9 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:qulo_v2/core/constants/q_icons.dart';
+import 'package:qulo_v2/core/widgets/app_icon.dart';
+import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
-import 'package:qulo_v2/core/widgets/q_icon.dart';
 
 class PhotoGridFull extends StatelessWidget {
   final List<String?> photos;
@@ -169,6 +170,7 @@ class _PhotoSlot extends StatelessWidget {
         CachedNetworkImage(
           imageUrl: photoUrl!,
           fit: BoxFit.cover,
+          memCacheWidth: 400,
           placeholder: (context, url) => Container(
             color: Theme.of(context).colorScheme.surfaceContainerHigh,
             child: const Center(
@@ -178,8 +180,8 @@ class _PhotoSlot extends StatelessWidget {
           errorWidget: (context, url, error) => Container(
             color: Theme.of(context).colorScheme.surfaceContainerHigh,
             child: Center(
-              child: QIcon(
-                QIcons.icUser,
+              child: AppIcon(
+                QIcons.userRounded,
                 color: Theme.of(context).hintColor,
                 size: 32,
               ),

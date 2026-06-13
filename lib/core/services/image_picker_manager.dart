@@ -1,5 +1,6 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:qulo_v2/core/widgets/crop_screen.dart';
 
@@ -17,6 +18,15 @@ class PickedImage {
   });
 }
 
+/// Thrown when the OS denies camera/photo access so callers can prompt the
+/// user to enable the permission from app settings.
+class ImagePickerPermissionException implements Exception {
+  final ImageSource source;
+  const ImagePickerPermissionException(this.source);
+
+  bool get isCamera => source == ImageSource.camera;
+}
+
 class ImagePickerManager {
   ImagePickerManager._();
   static final ImagePickerManager instance = ImagePickerManager._();
@@ -25,6 +35,10 @@ class ImagePickerManager {
 
   static const double _defaultMaxWidth = 1080;
   static const int _defaultImageQuality = 85;
+
+  /// Opens the OS-level app settings page so the user can grant
+  /// previously-denied permissions (camera, photos, etc.).
+  Future<void> openAppSettings() => Geolocator.openAppSettings();
 
   Future<PickedImage?> pickFromGallery({
     double maxWidth = _defaultMaxWidth,
@@ -45,11 +59,22 @@ class ImagePickerManager {
     required double maxWidth,
     required int imageQuality,
   }) async {
-    final xFile = await _picker.pickImage(
-      source: source,
-      maxWidth: maxWidth,
-      imageQuality: imageQuality,
-    );
+    final XFile? xFile;
+    try {
+      xFile = await _picker.pickImage(
+        source: source,
+        maxWidth: maxWidth,
+        imageQuality: imageQuality,
+      );
+    } on PlatformException catch (e) {
+      // iOS: `camera_access_denied`, `photo_access_denied`.
+      // Android: `camera_access_denied`, `photo_access_denied` (image_picker).
+      if (e.code == 'camera_access_denied' ||
+          e.code == 'photo_access_denied') {
+        throw ImagePickerPermissionException(source);
+      }
+      rethrow;
+    }
     if (xFile == null) return null;
 
     final bytes = await xFile.readAsBytes();

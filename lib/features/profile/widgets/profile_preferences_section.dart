@@ -35,17 +35,17 @@ class ProfilePreferencesSection extends StatelessWidget {
             label: '${user.agePrefMin} - ${user.agePrefMax}',
           ),
         PrefChip(
-          iconPath: QIcons.icMapPin,
+          iconPath: QIcons.mapPin,
           label: '${user.matchRadiusKm} km',
         ),
         if (user.relationshipGoal != null && user.relationshipGoal != 'NOT_SURE')
           PrefChip(
-            iconPath: QIcons.icHeart,
+            iconPath: QIcons.heart,
             label: relationshipGoalLabel,
           ),
         if (user.preferredLanguages.isNotEmpty)
           PrefChip(
-            iconPath: QIcons.icGlobe,
+            iconPath: QIcons.globe,
             label: user.preferredLanguages.map(languageFlag).join(', '),
           ),
       ],

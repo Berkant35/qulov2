@@ -3,7 +3,7 @@ import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/utils/text_utils.dart';
-import 'package:qulo_v2/core/widgets/q_icon.dart';
+import 'package:qulo_v2/core/widgets/app_icon.dart';
 
 class InAppBanner extends StatefulWidget {
   final String title;
@@ -92,7 +92,7 @@ class _InAppBannerState extends State<InAppBanner>
             ),
             child: Row(
               children: [
-                QIcon(QIcons.icBellFilled, size: 24, color: context.appColors.primary),
+                AppIcon(QIcons.bell, filled: true, size: 24, color: context.appColors.primary),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Column(

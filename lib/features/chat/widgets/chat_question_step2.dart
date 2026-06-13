@@ -200,7 +200,7 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
     setState(() => _isUploading = true);
     try {
       final repo = ref.read(chatRepositoryProvider);
-      final result = await repo.uploadMedia(
+      final result = await repo.uploadQuestionMedia(
         widget.matchId,
         bytes: picked.bytes,
         mimeType: picked.mimeType,

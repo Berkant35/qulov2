@@ -55,10 +55,10 @@
               "client_type": 3
             },
             {
-              "client_id": "1036336261876-d5asnaftn21mvke8q407mnsvtvsc7quq.apps.googleusercontent.com",
+              "client_id": "1036336261876-97hbu94lotidbra522tivpdjop8p6vf2.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.wordpress.calikusuberkant.qulo"
+                "bundle_id": "com.quloapp"
               }
             }
           ]

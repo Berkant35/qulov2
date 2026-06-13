@@ -26,8 +26,67 @@ class PowerShopCard extends ConsumerStatefulWidget {
   ConsumerState<PowerShopCard> createState() => _PowerShopCardState();
 }
 
-class _PowerShopCardState extends ConsumerState<PowerShopCard> {
+class _PowerShopCardState extends ConsumerState<PowerShopCard>
+    with SingleTickerProviderStateMixin {
   String? _buyingWith; // 'purple' or 'green' or null
+  int _quantity = 1;
+
+  late final AnimationController _pulseController;
+  late final Animation<double> _scaleAnimation;
+  late final Animation<double> _glowAnimation;
+  int _previousCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _previousCount = widget.inventoryCount;
+
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+
+    _scaleAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween(begin: 1.0, end: 1.35)
+            .chain(CurveTween(curve: Curves.easeOut)),
+        weight: 40,
+      ),
+      TweenSequenceItem(
+        tween: Tween(begin: 1.35, end: 1.0)
+            .chain(CurveTween(curve: Curves.easeOutBack)),
+        weight: 60,
+      ),
+    ]).animate(_pulseController);
+
+    _glowAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween(begin: 0.0, end: 0.6)
+            .chain(CurveTween(curve: Curves.easeOut)),
+        weight: 35,
+      ),
+      TweenSequenceItem(
+        tween: Tween(begin: 0.6, end: 0.0)
+            .chain(CurveTween(curve: Curves.easeIn)),
+        weight: 65,
+      ),
+    ]).animate(_pulseController);
+  }
+
+  @override
+  void didUpdateWidget(PowerShopCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.inventoryCount > _previousCount) {
+      _pulseController.forward(from: 0);
+    }
+    _previousCount = widget.inventoryCount;
+  }
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    super.dispose();
+  }
 
   PowerType get _powerType => PowerType.fromApiName(widget.power.name) ?? PowerType.oracle;
 
@@ -63,14 +122,12 @@ class _PowerShopCardState extends ConsumerState<PowerShopCard> {
 
     final result = await ref
         .read(exchangeProvider.notifier)
-        .buyPower(widget.power.name, diamondType.toUpperCase(), 1);
+        .buyPower(widget.power.name, diamondType.toUpperCase(), _quantity);
 
     if (mounted) {
       result.when(
         success: (_) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(context.tr('purchase_success'))),
-          );
+          // animation in didUpdateWidget is the feedback
         },
         failure: (f) {
           if (f is ServerFailure && f.code == 'INSUFFICIENT_DIAMONDS') {
@@ -125,11 +182,35 @@ class _PowerShopCardState extends ConsumerState<PowerShopCard> {
       child: Row(
         children: [
           // Power icon with inventory badge
-          PowerIcon(
-            type: _powerType,
-            size: 32,
-            showCount: widget.inventoryCount > 0,
-            count: widget.inventoryCount,
+          AnimatedBuilder(
+            animation: _pulseController,
+            builder: (context, child) {
+              return Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: _pulseController.isAnimating
+                      ? [
+                          BoxShadow(
+                            color: _powerType.color
+                                .withValues(alpha: _glowAnimation.value),
+                            blurRadius: 12,
+                            spreadRadius: 2,
+                          ),
+                        ]
+                      : null,
+                ),
+                child: Transform.scale(
+                  scale: _scaleAnimation.value,
+                  child: child,
+                ),
+              );
+            },
+            child: PowerIcon(
+              type: _powerType,
+              size: 32,
+              showCount: widget.inventoryCount > 0,
+              count: widget.inventoryCount,
+            ),
           ),
           const SizedBox(width: AppSpacing.md),
 
@@ -158,13 +239,20 @@ class _PowerShopCardState extends ConsumerState<PowerShopCard> {
           ),
           const SizedBox(width: AppSpacing.sm),
 
+          // Quantity stepper
+          _QuantityStepper(
+            quantity: _quantity,
+            onChanged: (q) => setState(() => _quantity = q),
+          ),
+          const SizedBox(width: AppSpacing.sm),
+
           // Buy buttons
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               // Purple cost button
               _BuyButton(
-                cost: widget.power.purpleCost,
+                cost: widget.power.purpleCost * _quantity,
                 icon: const DiamondIcon.purple(size: 16, showGlow: false),
                 isLoading: _buyingWith == 'purple',
                 onTap: () => _onBuy('purple'),
@@ -172,7 +260,7 @@ class _PowerShopCardState extends ConsumerState<PowerShopCard> {
               const SizedBox(height: AppSpacing.xs),
               // Green cost button
               _BuyButton(
-                cost: widget.power.greenCost,
+                cost: widget.power.greenCost * _quantity,
                 icon: const DiamondIcon.green(size: 16, showGlow: false),
                 isLoading: _buyingWith == 'green',
                 onTap: () => _onBuy('green'),
@@ -180,6 +268,85 @@ class _PowerShopCardState extends ConsumerState<PowerShopCard> {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _QuantityStepper extends StatelessWidget {
+  final int quantity;
+  final ValueChanged<int> onChanged;
+
+  const _QuantityStepper({
+    required this.quantity,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: context.appColors.surfaceElevated,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+        border: Border.all(
+          color: theme.colorScheme.outline.withValues(alpha: 0.2),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _StepperButton(
+            icon: Icons.remove,
+            enabled: quantity > 1,
+            onTap: () => onChanged(quantity - 1),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            child: Text(
+              '$quantity',
+              style: theme.textTheme.labelMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          _StepperButton(
+            icon: Icons.add,
+            enabled: quantity < 99,
+            onTap: () => onChanged(quantity + 1),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StepperButton extends StatelessWidget {
+  final IconData icon;
+  final bool enabled;
+  final VoidCallback onTap;
+
+  const _StepperButton({
+    required this.icon,
+    required this.enabled,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: enabled ? onTap : null,
+      borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: Icon(
+          icon,
+          size: 16,
+          color: enabled
+              ? context.appColors.primary
+              : Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
+        ),
       ),
     );
   }

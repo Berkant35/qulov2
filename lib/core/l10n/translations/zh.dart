@@ -177,6 +177,16 @@ const zhTranslations = <String, String>{
   'delete_account': '删除账号',
   'delete_account_desc': '此操作不可撤销，所有数据将被删除。',
 
+  // Notification Preferences
+  'notification_settings': 'Notification Settings',
+  'notification_settings_desc': 'Disabled notifications will still appear in your inbox',
+  'notif_messages': 'Messages',
+  'notif_messages_desc': 'New message notifications',
+  'notif_matches': 'Matches',
+  'notif_matches_desc': 'Match and question answer notifications',
+  'notif_campaigns': 'Campaigns',
+  'notif_campaigns_desc': 'Promotional and campaign notifications',
+
   // Powers
   'my_powers': '我的道具',
   'power_copy': '抄袭',
@@ -211,6 +221,7 @@ const zhTranslations = <String, String>{
   'accept_terms': '我接受',
   'terms_of_service': '服务条款',
   'privacy_policy': '隐私政策',
+  'legal': '法律信息',
   'and_word': '和',
   'must_accept_terms': '你必须接受条款才能继续',
 
@@ -405,6 +416,10 @@ const zhTranslations = <String, String>{
   'mark_all_read': '全部标为已读',
   'no_notifications': '暂无通知',
   'no_notifications_desc': '匹配和消息会显示在这里',
+  'time_just_now': '刚刚',
+  'time_minutes_ago': '{n}分钟前',
+  'time_hours_ago': '{n}小时前',
+  'time_days_ago': '{n}天前',
   'just_now': '刚刚',
   'minutes_ago': '{}分钟前',
   'hours_ago': '{}小时前',
@@ -429,7 +444,7 @@ const zhTranslations = <String, String>{
   'question_create_step_answers': '添加选项',
   'question_create_step_settings': '设置',
   'question_create_motto': '提问关于你自己的问题 — 别问百度能搜到的！',
-  'question_create_motto_tip': '提示：像"我最喜欢的季节？"这样的个人问题更受欢迎',
+  'question_create_motto_tip': '提示：个人问题有助于找到符合你标准的人',
   'question_create_select_category': '选择分类',
   'question_create_select_time': '选择时间',
   'question_create_hint_label': '提示（可选）',
@@ -449,6 +464,8 @@ const zhTranslations = <String, String>{
   'question_category_lifestyle': '生活',
   'question_category_humor': '幽默',
   'question_category_hobby': '爱好',
+  'question_category_relationship': '恋爱',
+  'question_category_entertainment': '娱乐',
 
   // Time Presets
   'question_time_fast': '快速',
@@ -546,6 +563,7 @@ const zhTranslations = <String, String>{
   'error_general': '出了点问题',
   'error_try_again': '出了点问题，请重试。',
   'question_save_failed': '问题保存失败',
+  'max_questions_reached': '已达到问题上限。请删除一个现有问题后再添加新问题。',
   'badge_claim_failed': '奖励领取失败',
 
   // Chat Question
@@ -700,6 +718,7 @@ const zhTranslations = <String, String>{
 
   // Exchange center
   'exchange_title': '兑换中心',
+  'exchange_subtitle': '将钻石转换为力量',
   'exchange_convert_title': '钻石兑换',
   'exchange_convert_button': '兑换',
   'exchange_powers_title': '道具权益',
@@ -719,6 +738,7 @@ const zhTranslations = <String, String>{
   'referral_title': '邀请好友',
   'referral_description': '邀请好友，双方各得25紫钻！',
   'referral_compact_cta': '邀请好友，赚取钻石',
+  'referral_compact_subtitle': '每次邀请 = 紫色钻石奖励',
   'referral_copy': '复制',
   'referral_share': '分享',
   'referral_progress': '已使用邀请',
@@ -728,6 +748,13 @@ const zhTranslations = <String, String>{
   'referral_code_valid': '邀请人：',
   'referral_code_invalid': '无效邀请码',
   'referral_already_logged_in': '邀请码只能在注册时使用',
+  'referral_enter_code': 'Have an invite code? Enter it here:',
+  'referral_apply': 'Apply',
+  'referral_invited_by': 'Invited by: ',
+  'referral_reward_earned': 'You earned 25 purple diamonds!',
+  'referral_complete_profile': 'Complete your profile to 60% to claim your reward!',
+  'referral_self_error': 'You cannot use your own code',
+  'referral_already_error': 'You have already used an invite code',
 
   // Paywall
   'paywall_title_undo': '解锁撤销',
@@ -861,4 +888,215 @@ const zhTranslations = <String, String>{
   'preview_sheet_regen_cta': '重新生成',
   'preview_sheet_skip_link': '你选吧,我不操心',
   'preview_sheet_error': '生成失败,请重试',
+
+  // Splash
+  'splash_flow_ask': '提问',
+  'splash_flow_answer': '回答',
+  'splash_flow_match': '匹配',
+
+  // Chat — Abandon Warning
+  'abandon_title': 'You\'re Fleeing!',
+  'abandon_question_lock': 'Question Lock',
+  'abandon_power_block': 'Power Block',
+  'abandon_unmatch_risk': 'Unmatch Risk',
+  'abandon_features_added': 'The other person added these features to the question:',
+  'abandon_flee_warning': 'If you leave without answering, you\'ll be marked as fled.',
+  'abandon_unmatch_warning': 'Your match will end!',
+  'abandon_leave': 'Leave',
+  'abandon_stay': 'Go Back',
+
+  // Chat — Question Card
+  'question_risky': 'This question is risky!',
+  'question_power_block': 'Power Block',
+  'question_chat_locked': 'Chat Locked',
+  'question_fled': 'Fled',
+
+  // Chat — Question Result
+  'result_correct': 'Correct!',
+  'result_congrats': 'Congratulations!',
+  'result_wrong': 'Wrong Answer',
+  'result_correct_subtitle': 'You answered the question correctly!',
+  'result_wrong_subtitle': 'Better luck next time.',
+  'result_rescue': 'Rescue (Skip)',
+  'result_go_back': 'Go Back',
+  'result_unmatch_ended': 'Match ended',
+  'result_green_earned': '+{count} Green Diamonds',
+  'result_green_subtitle': 'Earned for the question owner',
+  'result_correct_answer': 'Correct answer',
+  'result_purple_spent': '-{count} Purple Diamonds',
+  'result_power_spent_single': 'Spent for {power}',
+  'result_power_spent_multi': 'Spent for power usage',
+  'result_powers_used': 'Powers Used',
+  'result_your_answer': 'Your Answer',
+  'result_correct_label': 'Correct',
+  'result_time': 'Time',
+
+  // Chat — Media Request
+  'media_active': 'Media sharing active',
+  'media_rejected': 'Media request rejected',
+  'media_sent': 'Media request sent',
+  'media_waiting': 'Waiting for response...',
+  'media_wants_share': '\u{1F4F7} Wants to share media',
+  'media_reject': 'Reject',
+  'media_accept': 'Accept',
+
+  // Chat — App Bar
+  'unmatch': 'Unmatch',
+
+  // Chat — Create Question
+  'create_question': 'Create Question',
+  'drafts_history': 'Drafts & History',
+
+  // Chat — Error Messages
+  'error_chat_generic': 'Something went wrong, please try again',
+  'error_rescue_failed': 'Rescue failed',
+
+  // Profile — Edit
+  'profile_photo_hint': 'Your first photo will be your profile photo',
+  'profile_relationship_title': 'Relationship Goal',
+  'profile_relationship_subtitle': 'Let the other person see what you\'re looking for',
+  'profile_relationship_serious': 'Serious Relationship',
+  'profile_relationship_friendship': 'Friendship',
+  'profile_relationship_not_sure': 'Not Sure',
+  'profile_basic_info_subtitle': 'Help us get to know you',
+  'profile_details_subtitle': 'Enrich your profile, get more matches',
+  'profile_bio_subtitle': 'Briefly introduce yourself',
+  'profile_no_data': 'No user data',
+
+  // Paywall (missing)
+  'paywall_onboarding_title': '发现更多',
+  'paywall_maybe_later': '以后再说',
+
+  // Preferences (missing)
+  'gender_pref_locked_info': '请联系客服更改您的性别偏好。',
+
+  // Chat tabs (missing)
+  'chat_drafts_tab': '草稿',
+  'chat_history_tab': '历史',
+  'chat_drafts_load_failed': '加载草稿失败',
+  'chat_no_drafts': '暂无草稿',
+  'chat_history_load_failed': '加载历史失败',
+  'chat_no_history': '暂无问题历史',
+  'chat_messages_error': '加载消息失败',
+
+  // Onboarding V2 (missing)
+  'onboarding_v2_page1_title': 'Qulo的匹配方式不同',
+  'onboarding_v2_page1_desc': '在这里，你通过问题认识他人。如果有人正确回答了你的所有问题——就是匹配！',
+  'onboarding_v2_page2_title': '准备你的问题',
+  'onboarding_v2_page2_desc': '创建2-10个问题。个人的、有趣的、搜索不到的。如果有人全部答对——就是匹配！',
+  'onboarding_v2_page3_title': '6种超级能力',
+  'onboarding_v2_page3_desc': '答题者可以在你的问题上使用这些能力。每个能力需要紫色钻石——这就是你的收入！',
+  'onboarding_v2_page4_title': '赚取绿色钻石！',
+  'onboarding_v2_page4_desc': '每个在你的问题上使用能力的人都会为你带来绿色钻石。问题越多，收入越多！',
+  'onboarding_v2_page5_title': '你想看哪些语言？',
+  'onboarding_v2_page5_desc': '我们会向你展示包含你所选语言问题的个人资料。你可以选择多种语言。',
+  'onboarding_v2_skip': '跳过',
+  'onboarding_v2_next': '下一步',
+  'onboarding_v2_start': '开始',
+  'onboarding_v2_premium_title': 'Premium更多功能',
+  'onboarding_v2_premium_cta': '升级Premium',
+  'onboarding_v2_premium_benefit_1': '无限发现',
+  'onboarding_v2_premium_benefit_2': '每月紫色钻石奖励',
+  'onboarding_v2_premium_benefit_3': '无广告体验',
+
+  // Report categories (missing)
+  'report_select_category': '选择举报原因',
+  'report_cat_inappropriate': '不当内容',
+  'report_cat_fake': '虚假资料',
+  'report_cat_spam': '垃圾信息',
+  'report_cat_harassment': '骚扰',
+  'report_cat_underage': '未成年人',
+  'report_cat_scam': '诈骗',
+  'report_cat_offensive_photos': '冒犯性照片',
+  'report_cat_threatening': '威胁',
+  'report_cat_impersonation': '冒充他人',
+  'report_cat_other': '其他',
+  'report_reason_title': '描述',
+  'report_reason_optional': '添加可选描述...',
+  'report_reason_required': '请写详细描述...',
+
+  // Block (missing)
+  'blocked_users': '已屏蔽用户',
+  'no_blocked_users': '没有已屏蔽的用户',
+  'unblock': '取消屏蔽',
+  'unblock_confirm_title': '取消屏蔽',
+  'unblock_confirm_message': '确定要取消屏蔽此用户吗？',
+
+  // Support tickets (missing)
+  'my_tickets': '我的工单',
+  'no_tickets': '暂无工单',
+  'create_ticket': '创建工单',
+  'ticket_created_success': '您的工单已创建',
+  'ticket_replied': '已回复',
+  'ticket_category': '类别',
+  'ticket_subject': '主题',
+  'ticket_subject_hint': '简要描述您的问题',
+  'ticket_subject_error': '主题至少需要5个字符',
+  'ticket_message': '消息',
+  'ticket_message_hint': '详细描述您的问题',
+  'ticket_message_error': '消息至少需要10个字符',
+  'ticket_cat_account': '账户',
+  'ticket_cat_technical': '技术',
+  'ticket_cat_billing': '账单',
+  'ticket_cat_match': '匹配',
+  'ticket_cat_other': '其他',
+  'ticket_status_open': '开放',
+  'ticket_status_in_progress': '处理中',
+  'ticket_status_resolved': '已解决',
+  'ticket_status_closed': '已关闭',
+
+  // Help (missing)
+  'help_support': '帮助与支持',
+
+  // Ban (missing)
+  'account_banned_title': '账户已暂停',
+  'account_banned_message': '您的账户因违反社区准则而被暂停。请联系我们了解详情。',
+
+  // Submit (missing)
+  'submit': '提交',
+
+  // Social login (missing)
+  'or': '或',
+  'sign_in_with_google': '使用Google登录',
+  'sign_in_with_apple': '使用Apple登录',
+
+  // Profile completion (missing)
+  'profile_completion_title': '完善您的个人资料',
+
+  // App Review
+  'rate_us': '评价我们',
+  'rate_us_subtitle': '喜欢Qulo吗？给我们留下评价吧！',
+
+  // Chat — Hardcoded fixes
+  'chat_question_load_failed': 'Question could not be loaded',
+  'chat_answer_question_hint': 'Answer the question...',
+  'chat_audio_reward_revealed': 'Audio Reward Unlocked!',
+  'chat_lock_answer_required': 'You need to answer the question to send messages.',
+  'chat_time_up': 'Time\'s Up!',
+  'chat_time_up_desc': 'Your time to answer has run out. Use a power to rescue yourself.',
+  'chat_powers_blocked': 'Powers are blocked. Unlock and use Skip power.',
+  'chat_audio_reward': 'Audio Reward',
+  'chat_audio_locked': 'Locked Audio',
+  'chat_unmatch_confirm': 'Are you sure you want to unmatch? This action cannot be undone.',
+
+  // Power bar labels (short display names)
+  'power_bar_half': 'Half',
+  'power_bar_skip': 'Skip',
+  'power_bar_hint': 'Hint',
+  'power_bar_skip_all': 'Skip All',
+  'power_bar_block': 'Block',
+  'power_bar_unlock': 'Unlock',
+
+  // Milestone celebration
+  'milestone_congrats': 'Congratulations!',
+  'milestone_profile_completed': 'You completed @milestone% of your profile!',
+  'milestone_diamond_earned': 'You earned purple diamonds!',
+  'milestone_boost_earned': 'You earned a free 24-hour boost!',
+
+  // Referral share
+  'referral_share_message': 'Join Qulo! Use my invite code, we both get @reward purple diamonds: @code\nhttps://quloapp.com/invite/@code',
+
+  // Email notifications (added 2026-06-09)
+  'email_notifications': '邮件通知',
+  'email_notifications_desc': '有新匹配时收到邮件',
 };

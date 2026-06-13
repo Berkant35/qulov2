@@ -4,6 +4,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/core/widgets/fullscreen_photo_viewer.dart';
 
 class BlurredMediaPreview extends StatelessWidget {
   final String? mediaUrl;
@@ -27,6 +29,43 @@ class BlurredMediaPreview extends StatelessWidget {
 
     if (mediaUrl == null) return const SizedBox.shrink();
 
+    // Revealed: tappable with original aspect ratio
+    if (isRevealed) {
+      final heroTag = 'reward_preview_$mediaUrl';
+      return GestureDetector(
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => FullscreenPhotoViewer(
+                imageUrl: mediaUrl!,
+                heroTag: heroTag,
+              ),
+            ),
+          );
+        },
+        child: Hero(
+          tag: heroTag,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 300),
+              child: CachedNetworkImage(
+                imageUrl: mediaUrl!,
+                width: double.infinity,
+                fit: BoxFit.contain,
+                errorWidget: (context, __, ___) => Container(
+                  height: height,
+                  color: context.appColors.surfaceElevated,
+                  child: Icon(Icons.image, color: context.appColors.textHint),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    // Locked: fixed height, blurred, not tappable
     return ClipRRect(
       borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       child: SizedBox(
@@ -43,31 +82,29 @@ class BlurredMediaPreview extends StatelessWidget {
                 child: Icon(Icons.image, color: context.appColors.textHint),
               ),
             ),
-            if (!isRevealed) ...[
-              // Blur overlay
-              BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                child: Container(
-                  color: Colors.black.withValues(alpha: 0.2),
+            // Blur overlay
+            BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+              child: Container(
+                color: AppColors.scrimLight,
+              ),
+            ),
+            // Lock icon
+            Center(
+              child: Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.scrimDark,
+                ),
+                child: const Icon(
+                  Icons.lock_rounded,
+                  color: AppColors.onScrim,
+                  size: 22,
                 ),
               ),
-              // Lock icon
-              Center(
-                child: Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.black.withValues(alpha: 0.5),
-                  ),
-                  child: const Icon(
-                    Icons.lock_rounded,
-                    color: Colors.white,
-                    size: 22,
-                  ),
-                ),
-              ),
-            ],
+            ),
           ],
         ),
       ),
@@ -110,13 +147,13 @@ class _AudioPreview extends StatelessWidget {
                   Icon(
                     Icons.lock_rounded,
                     size: 18,
-                    color: Colors.white.withValues(alpha: 0.8),
+                    color: AppColors.onScrimSubtle,
                   ),
               ],
             ),
             const SizedBox(height: AppSpacing.xs),
             Text(
-              isRevealed ? 'Ses Ödülü' : 'Kilitli Ses',
+              isRevealed ? context.tr('chat_audio_reward') : context.tr('chat_audio_locked'),
               style: TextStyle(
                 color: isRevealed
                     ? context.appColors.primary

@@ -25,9 +25,20 @@ abstract class UserService {
   @PATCH('/users/me/push-token')
   Future<void> updatePushToken(@Body() Map<String, dynamic> data);
 
+  @POST('/users/me/heartbeat')
+  Future<void> heartbeat();
+
   @DELETE('/users/me')
   Future<void> deleteAccount();
 
   @GET('/users/{id}/profile')
   Future<PublicProfileModel> getPublicProfile(@Path('id') String userId);
+
+  @GET('/users/me/notification-preferences')
+  Future<dynamic> getNotificationPreferences();
+
+  @PATCH('/users/me/notification-preferences')
+  Future<dynamic> updateNotificationPreferences(
+    @Body() Map<String, dynamic> body,
+  );
 }

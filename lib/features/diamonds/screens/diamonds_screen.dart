@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/widgets/app_icon.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
@@ -21,7 +22,9 @@ import 'package:qulo_v2/features/diamonds/widgets/subscription_banner.dart';
 import 'package:qulo_v2/features/diamonds/widgets/purchase_grid.dart';
 
 class DiamondsScreen extends ConsumerStatefulWidget {
-  const DiamondsScreen({super.key});
+  final String? referralCode;
+
+  const DiamondsScreen({super.key, this.referralCode});
 
   @override
   ConsumerState<DiamondsScreen> createState() => _DiamondsScreenState();
@@ -73,18 +76,89 @@ class _DiamondsScreenState extends ConsumerState<DiamondsScreen>
             const SizedBox(height: AppSpacing.md),
 
             // Exchange Center Button
-            OutlinedButton.icon(
-              onPressed: () {
+            GestureDetector(
+              onTap: () {
                 ref.read(navigationServiceProvider).go(RouteNames.exchange);
               },
-              icon: QIcon(QIcons.icGem, size: 18, color: context.appColors.primary),
-              label: Text(context.tr('exchange_title')),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: context.appColors.primary,
-                side: BorderSide(color: context.appColors.primary),
+              child: Container(
+                width: double.infinity,
                 padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                  vertical: AppSpacing.sm,
+                  horizontal: AppSpacing.lg,
+                  vertical: AppSpacing.cardPadding,
+                ),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      context.appColors.secondary.withValues(alpha: 0.15),
+                      context.appColors.primary.withValues(alpha: 0.10),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                  border: Border.all(
+                    color: context.appColors.secondary.withValues(alpha: 0.25),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: RadialGradient(
+                          colors: [
+                            context.appColors.secondary.withValues(alpha: 0.3),
+                            context.appColors.secondary.withValues(alpha: 0.05),
+                          ],
+                        ),
+                      ),
+                      child: Center(
+                        child: AppIcon(
+                          QIcons.bolt,
+                          color: context.appColors.secondary,
+                          size: 22,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.md),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            context.tr('exchange_title'),
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            context.tr('exchange_subtitle'),
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: Colors.white.withValues(alpha: 0.6),
+                              fontSize: 11,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      width: 28,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: context.appColors.secondary.withValues(alpha: 0.2),
+                      ),
+                      child: QIcon(
+                        QIcons.icChevronRight,
+                        color: Colors.white.withValues(alpha: 0.8),
+                        size: 16,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -110,7 +184,9 @@ class _DiamondsScreenState extends ConsumerState<DiamondsScreen>
             const SizedBox(height: AppSpacing.sectionGap),
 
             // Referral
-            const DiamondsReferralSection(),
+            DiamondsReferralSection(
+              prefillCode: widget.referralCode,
+            ),
 
             const SizedBox(height: AppSpacing.sectionGap),
 

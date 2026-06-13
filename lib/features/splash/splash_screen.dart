@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:qulo_v2/core/constants/app_assets.dart';
-import 'package:qulo_v2/core/constants/app_sizes.dart';
-import 'package:qulo_v2/core/theme/app_colors.dart';
-import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/features/splash/mixins/splash_screen_mixin.dart';
+import 'package:qulo_v2/features/splash/widgets/splash_logo.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -36,47 +32,45 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
     return AppScaffold(
       padding: EdgeInsets.zero,
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+      body: FadeTransition(
+        opacity: ReverseAnimation(fadeOutAnimation),
+        child: Stack(
           children: [
-            FadeTransition(
-              opacity: logoFade,
-              child: ScaleTransition(
-                scale: logoScale,
-                child: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: context.appColors.primary.withValues(alpha: 0.3),
-                        blurRadius: 60,
-                        spreadRadius: 20,
-                      ),
+            // Deep gradient background
+            const Positioned.fill(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color(0xFF0D0015),
+                      Color(0xFF1A0A2E),
                     ],
-                  ),
-                  child: SvgPicture.asset(
-                    AppAssets.logoSvg,
-                    width: AppSizes.logoLg,
-                    height: AppSizes.logoLg,
-                    colorFilter: ColorFilter.mode(
-                      context.appColors.primary,
-                      BlendMode.srcIn,
-                    ),
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: AppSpacing.xl),
-            FadeTransition(
-              opacity: textFade,
-              child: Text(
-                'QULO',
-                style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 4,
-                    ),
+            // Radial spotlight overlay
+            Positioned.fill(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: RadialGradient(
+                    center: Alignment.center,
+                    radius: 0.6,
+                    colors: [
+                      Color(0xFF2D1B4E).withValues(alpha: 0.15),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            // Glitch logo centered
+            Center(
+              child: SplashLogo(
+                glitch: glitchAnimation,
+                glow: glowAnimation,
               ),
             ),
           ],

@@ -11,7 +11,9 @@ import 'package:qulo_v2/core/services/share_manager.dart';
 import 'package:qulo_v2/core/services/audio_recorder_manager.dart';
 import 'package:qulo_v2/core/services/haptic_manager.dart';
 import 'package:qulo_v2/core/services/teleport_service.dart';
+import 'package:qulo_v2/core/services/att_manager.dart';
 import 'package:qulo_v2/core/services/deep_link_manager.dart';
+import 'package:qulo_v2/core/services/social_auth_service.dart';
 import 'package:qulo_v2/core/network/services/auth_service.dart';
 import 'package:qulo_v2/core/network/services/user_service.dart';
 import 'package:qulo_v2/core/network/services/question_service.dart';
@@ -30,6 +32,7 @@ import 'package:qulo_v2/core/network/services/exchange_service.dart';
 import 'package:qulo_v2/core/network/services/chat_question_service.dart';
 import 'package:qulo_v2/core/network/services/block_service.dart';
 import 'package:qulo_v2/core/network/services/presence_service.dart';
+import 'package:qulo_v2/core/network/services/support_ticket_service.dart';
 import 'package:qulo_v2/core/services/presence_manager.dart';
 import 'package:qulo_v2/data/repositories/repositories.dart';
 
@@ -63,6 +66,9 @@ final audioRecorderManagerProvider = Provider<AudioRecorderManager>(
 );
 final hapticManagerProvider = Provider<HapticManager>(
   (_) => HapticManager.instance,
+);
+final attManagerProvider = Provider<AttManager>(
+  (_) => AttManager.instance,
 );
 final teleportServiceProvider = Provider<TeleportService>(
   (_) => TeleportService.instance,
@@ -201,8 +207,20 @@ final blockRepositoryProvider = Provider<BlockRepository>(
   (ref) => BlockRepository(ref.read(blockServiceProvider)),
 );
 
+final socialAuthServiceProvider = Provider<SocialAuthService>(
+  (_) => SocialAuthService.instance,
+);
+
 final deepLinkManagerProvider = Provider<DeepLinkManager>((ref) {
   final manager = DeepLinkManager.instance;
   ref.onDispose(() => manager.dispose());
   return manager;
 });
+
+final supportTicketServiceProvider = Provider<SupportTicketService>(
+  (ref) => SupportTicketService(ref.read(networkManagerProvider).dio),
+);
+
+final supportTicketRepositoryProvider = Provider<SupportTicketRepository>(
+  (ref) => SupportTicketRepository(ref.read(supportTicketServiceProvider)),
+);

@@ -4,7 +4,7 @@ import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
-import 'package:qulo_v2/core/widgets/q_icon.dart';
+import 'package:qulo_v2/core/widgets/app_icon.dart';
 import 'package:qulo_v2/features/diamonds/widgets/paywall_bottom_sheet.dart';
 
 class PassportPremiumGate extends ConsumerWidget {
@@ -20,7 +20,7 @@ class PassportPremiumGate extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            QIcon(QIcons.icLock, size: 64, color: context.appColors.textHint),
+            AppIcon(QIcons.lock, size: 64, color: context.appColors.textHint),
             const SizedBox(height: AppSpacing.lg),
             Text(
               context.tr('passport_premium_only'),

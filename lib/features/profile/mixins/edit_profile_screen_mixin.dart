@@ -4,6 +4,7 @@ import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/services/image_picker_manager.dart';
+import 'package:qulo_v2/core/widgets/image_picker_permission_dialog.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/core/widgets/milestone_celebration_sheet.dart';
@@ -166,8 +167,21 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
   }
 
   Future<void> _pickCropAndUpload(ImageSource source) async {
-    final picked =
-        await ref.read(imagePickerManagerProvider).pickAndCrop(context, source);
+    final PickedImage? picked;
+    try {
+      picked = await ref
+          .read(imagePickerManagerProvider)
+          .pickAndCrop(context, source);
+    } on ImagePickerPermissionException catch (e) {
+      if (mounted) {
+        await showImagePickerPermissionDialog(
+          ref,
+          context,
+          isCamera: e.isCamera,
+        );
+      }
+      return;
+    }
     if (picked == null) return;
 
     final result = await ref
@@ -264,7 +278,6 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
     final profileData = <String, dynamic>{
       'bio': bioController.text.trim(),
       'city': cityController.text.trim(),
-      'gender_pref': epState.selectedGenderPref,
       'age_pref_min': epState.ageRange.start.round(),
       'age_pref_max': epState.ageRange.end.round(),
       'match_radius_km': epState.distanceKm.round(),

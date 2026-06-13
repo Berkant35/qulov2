@@ -177,6 +177,16 @@ const nlTranslations = <String, String>{
   'delete_account': 'Account verwijderen',
   'delete_account_desc': 'Deze actie is onomkeerbaar. Al je gegevens worden verwijderd.',
 
+  // Notification Preferences
+  'notification_settings': 'Notification Settings',
+  'notification_settings_desc': 'Disabled notifications will still appear in your inbox',
+  'notif_messages': 'Messages',
+  'notif_messages_desc': 'New message notifications',
+  'notif_matches': 'Matches',
+  'notif_matches_desc': 'Match and question answer notifications',
+  'notif_campaigns': 'Campaigns',
+  'notif_campaigns_desc': 'Promotional and campaign notifications',
+
   // Powers
   'my_powers': 'Mijn krachten',
   'power_copy': 'Kopi\u00ebren',
@@ -211,6 +221,7 @@ const nlTranslations = <String, String>{
   'accept_terms': 'Ik accepteer de',
   'terms_of_service': 'Servicevoorwaarden',
   'privacy_policy': 'Privacybeleid',
+  'legal': 'Juridisch',
   'and_word': 'en',
   'must_accept_terms': 'Je moet de voorwaarden accepteren om door te gaan',
 
@@ -405,6 +416,10 @@ const nlTranslations = <String, String>{
   'mark_all_read': 'Alles als gelezen markeren',
   'no_notifications': 'Nog geen meldingen',
   'no_notifications_desc': 'Je ziet hier matches en berichten',
+  'time_just_now': 'Zojuist',
+  'time_minutes_ago': '{n} min geleden',
+  'time_hours_ago': '{n}u geleden',
+  'time_days_ago': '{n}d geleden',
   'just_now': 'Zojuist',
   'minutes_ago': '{} min geleden',
   'hours_ago': '{} uur geleden',
@@ -429,7 +444,7 @@ const nlTranslations = <String, String>{
   'question_create_step_answers': 'Voeg antwoorden toe',
   'question_create_step_settings': 'Instellingen',
   'question_create_motto': 'Stel vragen over jezelf \u2014 niet Googlebaar!',
-  'question_create_motto_tip': 'Tip: Persoonlijke vragen zoals "Mijn favoriete seizoen?" worden vaker opgelost',
+  'question_create_motto_tip': 'Tip: Persoonlijke vragen helpen je mensen te vinden die bij jouw criteria passen',
   'question_create_select_category': 'Selecteer categorie',
   'question_create_select_time': 'Selecteer tijd',
   'question_create_hint_label': 'Hint (optioneel)',
@@ -449,6 +464,8 @@ const nlTranslations = <String, String>{
   'question_category_lifestyle': 'Levensstijl',
   'question_category_humor': 'Humor',
   'question_category_hobby': 'Hobby',
+  'question_category_relationship': 'Relatie',
+  'question_category_entertainment': 'Entertainment',
 
   // Time Presets
   'question_time_fast': 'Snel',
@@ -546,6 +563,7 @@ const nlTranslations = <String, String>{
   'error_general': 'Er ging iets mis',
   'error_try_again': 'Er ging iets mis. Probeer het opnieuw.',
   'question_save_failed': 'Vraag kon niet worden opgeslagen',
+  'max_questions_reached': 'Vragenlimiet bereikt. Verwijder een bestaande vraag om een nieuwe toe te voegen.',
   'badge_claim_failed': 'Beloning kon niet worden geclaimed',
 
   // Chat Question
@@ -700,6 +718,7 @@ const nlTranslations = <String, String>{
 
   // Exchange center
   'exchange_title': 'Wisselcentrum',
+  'exchange_subtitle': 'Converteer diamanten naar krachten',
   'exchange_convert_title': 'Diamant conversie',
   'exchange_convert_button': 'Omzetten',
   'exchange_powers_title': 'Krachtrechten',
@@ -719,6 +738,7 @@ const nlTranslations = <String, String>{
   'referral_title': 'Nodig een vriend uit',
   'referral_description': 'Nodig een vriend uit, jullie krijgen allebei 25 paarse diamanten!',
   'referral_compact_cta': 'Nodig een vriend uit, verdien diamanten',
+  'referral_compact_subtitle': 'Elke uitnodiging = paarse diamant beloning',
   'referral_copy': 'Kopi\u00ebren',
   'referral_share': 'Delen',
   'referral_progress': 'Gebruikte uitnodigingen',
@@ -728,6 +748,13 @@ const nlTranslations = <String, String>{
   'referral_code_valid': 'Verwezen door: ',
   'referral_code_invalid': 'Ongeldige verwijscode',
   'referral_already_logged_in': 'Verwijscodes kunnen alleen tijdens registratie worden gebruikt',
+  'referral_enter_code': 'Have an invite code? Enter it here:',
+  'referral_apply': 'Apply',
+  'referral_invited_by': 'Invited by: ',
+  'referral_reward_earned': 'You earned 25 purple diamonds!',
+  'referral_complete_profile': 'Complete your profile to 60% to claim your reward!',
+  'referral_self_error': 'You cannot use your own code',
+  'referral_already_error': 'You have already used an invite code',
 
   // Paywall
   'paywall_title_undo': 'Ontgrendel ongedaan maken',
@@ -861,4 +888,215 @@ const nlTranslations = <String, String>{
   'preview_sheet_regen_cta': 'Opnieuw genereren',
   'preview_sheet_skip_link': 'Kies jij maar, ik bemoei me er niet mee',
   'preview_sheet_error': 'Genereren mislukt, probeer opnieuw',
+
+  // Splash
+  'splash_flow_ask': 'Vraag',
+  'splash_flow_answer': 'Antwoord',
+  'splash_flow_match': 'Match',
+
+  // Chat — Abandon Warning
+  'abandon_title': 'You\'re Fleeing!',
+  'abandon_question_lock': 'Question Lock',
+  'abandon_power_block': 'Power Block',
+  'abandon_unmatch_risk': 'Unmatch Risk',
+  'abandon_features_added': 'The other person added these features to the question:',
+  'abandon_flee_warning': 'If you leave without answering, you\'ll be marked as fled.',
+  'abandon_unmatch_warning': 'Your match will end!',
+  'abandon_leave': 'Leave',
+  'abandon_stay': 'Go Back',
+
+  // Chat — Question Card
+  'question_risky': 'This question is risky!',
+  'question_power_block': 'Power Block',
+  'question_chat_locked': 'Chat Locked',
+  'question_fled': 'Fled',
+
+  // Chat — Question Result
+  'result_correct': 'Correct!',
+  'result_congrats': 'Congratulations!',
+  'result_wrong': 'Wrong Answer',
+  'result_correct_subtitle': 'You answered the question correctly!',
+  'result_wrong_subtitle': 'Better luck next time.',
+  'result_rescue': 'Rescue (Skip)',
+  'result_go_back': 'Go Back',
+  'result_unmatch_ended': 'Match ended',
+  'result_green_earned': '+{count} Green Diamonds',
+  'result_green_subtitle': 'Earned for the question owner',
+  'result_correct_answer': 'Correct answer',
+  'result_purple_spent': '-{count} Purple Diamonds',
+  'result_power_spent_single': 'Spent for {power}',
+  'result_power_spent_multi': 'Spent for power usage',
+  'result_powers_used': 'Powers Used',
+  'result_your_answer': 'Your Answer',
+  'result_correct_label': 'Correct',
+  'result_time': 'Time',
+
+  // Chat — Media Request
+  'media_active': 'Media sharing active',
+  'media_rejected': 'Media request rejected',
+  'media_sent': 'Media request sent',
+  'media_waiting': 'Waiting for response...',
+  'media_wants_share': '\u{1F4F7} Wants to share media',
+  'media_reject': 'Reject',
+  'media_accept': 'Accept',
+
+  // Chat — App Bar
+  'unmatch': 'Unmatch',
+
+  // Chat — Create Question
+  'create_question': 'Create Question',
+  'drafts_history': 'Drafts & History',
+
+  // Chat — Error Messages
+  'error_chat_generic': 'Something went wrong, please try again',
+  'error_rescue_failed': 'Rescue failed',
+
+  // Profile — Edit
+  'profile_photo_hint': 'Your first photo will be your profile photo',
+  'profile_relationship_title': 'Relationship Goal',
+  'profile_relationship_subtitle': 'Let the other person see what you\'re looking for',
+  'profile_relationship_serious': 'Serious Relationship',
+  'profile_relationship_friendship': 'Friendship',
+  'profile_relationship_not_sure': 'Not Sure',
+  'profile_basic_info_subtitle': 'Help us get to know you',
+  'profile_details_subtitle': 'Enrich your profile, get more matches',
+  'profile_bio_subtitle': 'Briefly introduce yourself',
+  'profile_no_data': 'No user data',
+
+  // Paywall (missing)
+  'paywall_onboarding_title': 'Ontdek meer',
+  'paywall_maybe_later': 'Misschien later',
+
+  // Preferences (missing)
+  'gender_pref_locked_info': 'Neem contact op met support om je geslachtsvoorkeur te wijzigen.',
+
+  // Chat tabs (missing)
+  'chat_drafts_tab': 'Concepten',
+  'chat_history_tab': 'Geschiedenis',
+  'chat_drafts_load_failed': 'Concepten laden mislukt',
+  'chat_no_drafts': 'Nog geen concepten',
+  'chat_history_load_failed': 'Geschiedenis laden mislukt',
+  'chat_no_history': 'Nog geen vragengeschiedenis',
+  'chat_messages_error': 'Berichten laden mislukt',
+
+  // Onboarding V2 (missing)
+  'onboarding_v2_page1_title': 'Matchen op Qulo is anders',
+  'onboarding_v2_page1_desc': 'Hier ontmoet je mensen via vragen. Als iemand al jouw vragen goed beantwoordt — het is een match!',
+  'onboarding_v2_page2_title': 'Bereid je vragen voor',
+  'onboarding_v2_page2_desc': 'Maak 2-10 vragen. Persoonlijk, leuk, niet te googelen. Als iemand alles goed heeft — het is een match!',
+  'onboarding_v2_page3_title': '6 Superkrachten',
+  'onboarding_v2_page3_desc': 'Oplossers kunnen deze krachten gebruiken bij jouw vragen. Elke kracht kost paarse diamanten — en dat is jouw verdienste!',
+  'onboarding_v2_page4_title': 'Verdien groene diamanten!',
+  'onboarding_v2_page4_desc': 'Elke persoon die een kracht gebruikt bij jouw vragen levert je groene diamanten op. Meer vragen, meer verdiensten!',
+  'onboarding_v2_page5_title': 'Welke talen wil je zien?',
+  'onboarding_v2_page5_desc': 'We tonen je profielen met vragen in jouw talen. Je kunt er meerdere selecteren.',
+  'onboarding_v2_skip': 'Overslaan',
+  'onboarding_v2_next': 'Volgende',
+  'onboarding_v2_start': 'Aan de slag',
+  'onboarding_v2_premium_title': 'Meer met Premium',
+  'onboarding_v2_premium_cta': 'Ga Premium',
+  'onboarding_v2_premium_benefit_1': 'Onbeperkt ontdekken',
+  'onboarding_v2_premium_benefit_2': 'Maandelijkse paarse diamanten bonus',
+  'onboarding_v2_premium_benefit_3': 'Advertentievrije ervaring',
+
+  // Report categories (missing)
+  'report_select_category': 'Selecteer reden voor melding',
+  'report_cat_inappropriate': 'Ongepaste inhoud',
+  'report_cat_fake': 'Nepprofiel',
+  'report_cat_spam': 'Spam',
+  'report_cat_harassment': 'Intimidatie',
+  'report_cat_underage': 'Minderjarig',
+  'report_cat_scam': 'Oplichting',
+  'report_cat_offensive_photos': 'Aanstootgevende foto\'s',
+  'report_cat_threatening': 'Bedreigend',
+  'report_cat_impersonation': 'Identiteitsfraude',
+  'report_cat_other': 'Overig',
+  'report_reason_title': 'Beschrijving',
+  'report_reason_optional': 'Voeg een optionele beschrijving toe...',
+  'report_reason_required': 'Schrijf een gedetailleerde beschrijving...',
+
+  // Block (missing)
+  'blocked_users': 'Geblokkeerde gebruikers',
+  'no_blocked_users': 'Geen geblokkeerde gebruikers',
+  'unblock': 'Deblokkeren',
+  'unblock_confirm_title': 'Deblokkeren',
+  'unblock_confirm_message': 'Weet je zeker dat je deze gebruiker wilt deblokkeren?',
+
+  // Support tickets (missing)
+  'my_tickets': 'Mijn supporttickets',
+  'no_tickets': 'Nog geen supporttickets',
+  'create_ticket': 'Supportticket aanmaken',
+  'ticket_created_success': 'Je supportticket is aangemaakt',
+  'ticket_replied': 'Beantwoord',
+  'ticket_category': 'Categorie',
+  'ticket_subject': 'Onderwerp',
+  'ticket_subject_hint': 'Beschrijf je probleem kort',
+  'ticket_subject_error': 'Onderwerp moet minimaal 5 tekens bevatten',
+  'ticket_message': 'Bericht',
+  'ticket_message_hint': 'Beschrijf je probleem in detail',
+  'ticket_message_error': 'Bericht moet minimaal 10 tekens bevatten',
+  'ticket_cat_account': 'Account',
+  'ticket_cat_technical': 'Technisch',
+  'ticket_cat_billing': 'Facturering',
+  'ticket_cat_match': 'Match',
+  'ticket_cat_other': 'Overig',
+  'ticket_status_open': 'Open',
+  'ticket_status_in_progress': 'In behandeling',
+  'ticket_status_resolved': 'Opgelost',
+  'ticket_status_closed': 'Gesloten',
+
+  // Help (missing)
+  'help_support': 'Help & ondersteuning',
+
+  // Ban (missing)
+  'account_banned_title': 'Account opgeschort',
+  'account_banned_message': 'Je account is opgeschort wegens schending van de communityrichtlijnen. Neem contact met ons op voor details.',
+
+  // Submit (missing)
+  'submit': 'Versturen',
+
+  // Social login (missing)
+  'or': 'of',
+  'sign_in_with_google': 'Inloggen met Google',
+  'sign_in_with_apple': 'Inloggen met Apple',
+
+  // Profile completion (missing)
+  'profile_completion_title': 'Maak je profiel af',
+
+  // App Review
+  'rate_us': 'Beoordeel ons',
+  'rate_us_subtitle': 'Vind je Qulo leuk? Laat een review achter!',
+
+  // Chat — Hardcoded fixes
+  'chat_question_load_failed': 'Question could not be loaded',
+  'chat_answer_question_hint': 'Answer the question...',
+  'chat_audio_reward_revealed': 'Audio Reward Unlocked!',
+  'chat_lock_answer_required': 'You need to answer the question to send messages.',
+  'chat_time_up': 'Time\'s Up!',
+  'chat_time_up_desc': 'Your time to answer has run out. Use a power to rescue yourself.',
+  'chat_powers_blocked': 'Powers are blocked. Unlock and use Skip power.',
+  'chat_audio_reward': 'Audio Reward',
+  'chat_audio_locked': 'Locked Audio',
+  'chat_unmatch_confirm': 'Are you sure you want to unmatch? This action cannot be undone.',
+
+  // Power bar labels (short display names)
+  'power_bar_half': 'Half',
+  'power_bar_skip': 'Skip',
+  'power_bar_hint': 'Hint',
+  'power_bar_skip_all': 'Skip All',
+  'power_bar_block': 'Block',
+  'power_bar_unlock': 'Unlock',
+
+  // Milestone celebration
+  'milestone_congrats': 'Congratulations!',
+  'milestone_profile_completed': 'You completed @milestone% of your profile!',
+  'milestone_diamond_earned': 'You earned purple diamonds!',
+  'milestone_boost_earned': 'You earned a free 24-hour boost!',
+
+  // Referral share
+  'referral_share_message': 'Join Qulo! Use my invite code, we both get @reward purple diamonds: @code\nhttps://quloapp.com/invite/@code',
+
+  // Email notifications (added 2026-06-09)
+  'email_notifications': 'E-mailmeldingen',
+  'email_notifications_desc': 'Ontvang een e-mail bij een nieuwe match',
 };

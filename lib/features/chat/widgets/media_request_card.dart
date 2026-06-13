@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 
@@ -90,7 +91,7 @@ class _MediaRequestContent extends StatelessWidget {
     switch (status) {
       case 'accepted':
         return Text(
-          'Medya paylaşımı aktif',
+          context.tr('media_active'),
           style: theme.textTheme.bodyMedium?.copyWith(
             color: context.appColors.success,
             fontWeight: FontWeight.w600,
@@ -98,7 +99,7 @@ class _MediaRequestContent extends StatelessWidget {
         );
       case 'rejected':
         return Text(
-          'Medya isteği reddedildi',
+          context.tr('media_rejected'),
           style: theme.textTheme.bodyMedium?.copyWith(
             color: context.appColors.textHint,
           ),
@@ -109,7 +110,7 @@ class _MediaRequestContent extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Medya isteği gönderildi',
+                context.tr('media_sent'),
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: context.appColors.textPrimary,
                   fontWeight: FontWeight.w600,
@@ -117,7 +118,7 @@ class _MediaRequestContent extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.xs),
               Text(
-                'Cevap bekleniyor...',
+                context.tr('media_waiting'),
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: context.appColors.textHint,
                   fontStyle: FontStyle.italic,
@@ -130,7 +131,7 @@ class _MediaRequestContent extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                '\u{1F4F7} Medya paylaşmak istiyor',
+                context.tr('media_wants_share'),
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: context.appColors.textPrimary,
                   fontWeight: FontWeight.w600,
@@ -150,7 +151,7 @@ class _MediaRequestContent extends StatelessWidget {
                               BorderRadius.circular(AppSpacing.radiusSm),
                         ),
                       ),
-                      child: const Text('Reddet'),
+                      child: Text(context.tr('media_reject')),
                     ),
                   ),
                   const SizedBox(width: AppSpacing.sm),
@@ -165,7 +166,7 @@ class _MediaRequestContent extends StatelessWidget {
                               BorderRadius.circular(AppSpacing.radiusSm),
                         ),
                       ),
-                      child: const Text('Kabul Et'),
+                      child: Text(context.tr('media_accept')),
                     ),
                   ),
                 ],

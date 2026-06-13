@@ -12,6 +12,7 @@ import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/features/profile_detail/models/profile_detail_args.dart';
 import 'package:qulo_v2/features/chat/widgets/chat_app_bar_content.dart';
 import 'package:qulo_v2/features/chat/widgets/chat_input_bar.dart';
+import 'package:qulo_v2/features/chat/widgets/chat_popup_menu.dart';
 import 'package:qulo_v2/features/chat/widgets/chat_message_list.dart';
 import 'package:qulo_v2/features/chat/widgets/quiz_summary_card.dart';
 import 'package:qulo_v2/features/chat/widgets/typing_indicator.dart';
@@ -98,10 +99,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with ChatScreenMixin {
               : null,
         ),
         actions: [
-          ChatAppBarActions(
+          ChatPopupMenu(
             mediaEnabled: mediaEnabled,
+            onReport: onChatReport,
+            onBlock: onChatBlock,
             onUnmatch: confirmUnmatch,
-            onMediaDisable: handleDisableMedia,
+            onMediaDisable: mediaEnabled ? handleDisableMedia : null,
           ),
         ],
         bottom: pendingRequest != null

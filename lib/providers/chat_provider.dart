@@ -281,6 +281,10 @@ final activeChatMatchIdProvider = StateProvider<String?>((ref) => null);
 final chatQuestionCacheProvider =
     StateProvider<Map<String, ChatQuestionModel>>((ref) => {});
 
+/// Tracks question IDs that have been opened in the current session.
+/// Used to prevent showing "Soruyu Ac" button again after navigation.
+final openedQuestionIdsProvider = StateProvider<Set<String>>((ref) => {});
+
 /// Fetch provider — cache'de yoksa API'den ceker, cache'e yazar.
 final chatQuestionFetchProvider =
     FutureProvider.autoDispose.family<void, String>((ref, questionId) async {

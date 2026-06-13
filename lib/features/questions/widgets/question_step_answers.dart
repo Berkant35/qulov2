@@ -80,6 +80,7 @@ class QuestionStepAnswers extends StatelessWidget {
                       label: context
                           .tr('answer_n')
                           .replaceAll('{n}', '$num'),
+                      maxLength: 200,
                       textCapitalization: TextCapitalization.sentences,
                       textInputAction: i < 3
                           ? TextInputAction.next
@@ -109,6 +110,7 @@ class QuestionStepAnswers extends StatelessWidget {
             controller: hintController,
             label: context.tr('question_create_hint_label'),
             maxLines: 2,
+            maxLength: 200,
             textCapitalization: TextCapitalization.sentences,
             prefixIcon: QIcon(QIcons.icLightbulb, size: 18, color: context.appColors.warning),
           ),

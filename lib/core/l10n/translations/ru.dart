@@ -177,6 +177,16 @@ const ruTranslations = <String, String>{
   'delete_account': 'Удалить аккаунт',
   'delete_account_desc': 'Это действие необратимо. Все ваши данные будут удалены.',
 
+  // Notification Preferences
+  'notification_settings': 'Notification Settings',
+  'notification_settings_desc': 'Disabled notifications will still appear in your inbox',
+  'notif_messages': 'Messages',
+  'notif_messages_desc': 'New message notifications',
+  'notif_matches': 'Matches',
+  'notif_matches_desc': 'Match and question answer notifications',
+  'notif_campaigns': 'Campaigns',
+  'notif_campaigns_desc': 'Promotional and campaign notifications',
+
   // Powers
   'my_powers': 'Мои силы',
   'power_copy': 'Копия',
@@ -211,6 +221,7 @@ const ruTranslations = <String, String>{
   'accept_terms': 'Я принимаю',
   'terms_of_service': 'Условия использования',
   'privacy_policy': 'Политику конфиденциальности',
+  'legal': 'Правовая информация',
   'and_word': 'и',
   'must_accept_terms': 'Необходимо принять условия для продолжения',
 
@@ -405,6 +416,10 @@ const ruTranslations = <String, String>{
   'mark_all_read': 'Прочитать все',
   'no_notifications': 'Пока нет уведомлений',
   'no_notifications_desc': 'Здесь появятся совпадения и сообщения',
+  'time_just_now': 'Только что',
+  'time_minutes_ago': '{n} мин назад',
+  'time_hours_ago': '{n} ч назад',
+  'time_days_ago': '{n} дн назад',
   'just_now': 'Только что',
   'minutes_ago': '{} мин назад',
   'hours_ago': '{} ч назад',
@@ -429,7 +444,7 @@ const ruTranslations = <String, String>{
   'question_create_step_answers': 'Добавьте ответы',
   'question_create_step_settings': 'Настройки',
   'question_create_motto': 'Задавайте вопросы о себе \u2014 не гуглится!',
-  'question_create_motto_tip': 'Совет: Личные вопросы типа "Мой любимый сезон?" собирают больше ответов',
+  'question_create_motto_tip': 'Совет: Личные вопросы помогут найти людей, подходящих под твои критерии',
   'question_create_select_category': 'Выберите категорию',
   'question_create_select_time': 'Выберите время',
   'question_create_hint_label': 'Подсказка (необязательно)',
@@ -449,6 +464,8 @@ const ruTranslations = <String, String>{
   'question_category_lifestyle': 'Образ жизни',
   'question_category_humor': 'Юмор',
   'question_category_hobby': 'Хобби',
+  'question_category_relationship': 'Отношения',
+  'question_category_entertainment': 'Развлечения',
 
   // Time Presets
   'question_time_fast': 'Быстро',
@@ -546,6 +563,7 @@ const ruTranslations = <String, String>{
   'error_general': 'Что-то пошло не так',
   'error_try_again': 'Что-то пошло не так. Попробуйте снова.',
   'question_save_failed': 'Не удалось сохранить вопрос',
+  'max_questions_reached': 'Достигнут лимит вопросов. Удалите существующий вопрос, чтобы добавить новый.',
   'badge_claim_failed': 'Не удалось получить награду',
 
   // Chat Question
@@ -700,6 +718,7 @@ const ruTranslations = <String, String>{
 
   // Exchange center
   'exchange_title': 'Центр обмена',
+  'exchange_subtitle': 'Конвертируй алмазы в силы',
   'exchange_convert_title': 'Конвертация алмазов',
   'exchange_convert_button': 'Конвертировать',
   'exchange_powers_title': 'Права сил',
@@ -719,6 +738,7 @@ const ruTranslations = <String, String>{
   'referral_title': 'Пригласите друга',
   'referral_description': 'Пригласите друга — оба получите 25 фиолетовых алмазов!',
   'referral_compact_cta': 'Пригласите друга — получите алмазы',
+  'referral_compact_subtitle': 'Каждое приглашение = награда фиолетовый бриллиант',
   'referral_copy': 'Копировать',
   'referral_share': 'Поделиться',
   'referral_progress': 'Использовано приглашений',
@@ -728,6 +748,13 @@ const ruTranslations = <String, String>{
   'referral_code_valid': 'Приглашён: ',
   'referral_code_invalid': 'Неверный код приглашения',
   'referral_already_logged_in': 'Коды приглашений можно использовать только при регистрации',
+  'referral_enter_code': 'Have an invite code? Enter it here:',
+  'referral_apply': 'Apply',
+  'referral_invited_by': 'Invited by: ',
+  'referral_reward_earned': 'You earned 25 purple diamonds!',
+  'referral_complete_profile': 'Complete your profile to 60% to claim your reward!',
+  'referral_self_error': 'You cannot use your own code',
+  'referral_already_error': 'You have already used an invite code',
 
   // Paywall
   'paywall_title_undo': 'Разблокировать отмену',
@@ -861,4 +888,215 @@ const ruTranslations = <String, String>{
   'preview_sheet_regen_cta': 'Сгенерировать заново',
   'preview_sheet_skip_link': 'Выбери сам, я не буду лезть',
   'preview_sheet_error': 'Не удалось сгенерировать, попробуй ещё раз',
+
+  // Splash
+  'splash_flow_ask': 'Спроси',
+  'splash_flow_answer': 'Ответь',
+  'splash_flow_match': 'Совпадение',
+
+  // Chat — Abandon Warning
+  'abandon_title': 'You\'re Fleeing!',
+  'abandon_question_lock': 'Question Lock',
+  'abandon_power_block': 'Power Block',
+  'abandon_unmatch_risk': 'Unmatch Risk',
+  'abandon_features_added': 'The other person added these features to the question:',
+  'abandon_flee_warning': 'If you leave without answering, you\'ll be marked as fled.',
+  'abandon_unmatch_warning': 'Your match will end!',
+  'abandon_leave': 'Leave',
+  'abandon_stay': 'Go Back',
+
+  // Chat — Question Card
+  'question_risky': 'This question is risky!',
+  'question_power_block': 'Power Block',
+  'question_chat_locked': 'Chat Locked',
+  'question_fled': 'Fled',
+
+  // Chat — Question Result
+  'result_correct': 'Correct!',
+  'result_congrats': 'Congratulations!',
+  'result_wrong': 'Wrong Answer',
+  'result_correct_subtitle': 'You answered the question correctly!',
+  'result_wrong_subtitle': 'Better luck next time.',
+  'result_rescue': 'Rescue (Skip)',
+  'result_go_back': 'Go Back',
+  'result_unmatch_ended': 'Match ended',
+  'result_green_earned': '+{count} Green Diamonds',
+  'result_green_subtitle': 'Earned for the question owner',
+  'result_correct_answer': 'Correct answer',
+  'result_purple_spent': '-{count} Purple Diamonds',
+  'result_power_spent_single': 'Spent for {power}',
+  'result_power_spent_multi': 'Spent for power usage',
+  'result_powers_used': 'Powers Used',
+  'result_your_answer': 'Your Answer',
+  'result_correct_label': 'Correct',
+  'result_time': 'Time',
+
+  // Chat — Media Request
+  'media_active': 'Media sharing active',
+  'media_rejected': 'Media request rejected',
+  'media_sent': 'Media request sent',
+  'media_waiting': 'Waiting for response...',
+  'media_wants_share': '\u{1F4F7} Wants to share media',
+  'media_reject': 'Reject',
+  'media_accept': 'Accept',
+
+  // Chat — App Bar
+  'unmatch': 'Unmatch',
+
+  // Chat — Create Question
+  'create_question': 'Create Question',
+  'drafts_history': 'Drafts & History',
+
+  // Chat — Error Messages
+  'error_chat_generic': 'Something went wrong, please try again',
+  'error_rescue_failed': 'Rescue failed',
+
+  // Profile — Edit
+  'profile_photo_hint': 'Your first photo will be your profile photo',
+  'profile_relationship_title': 'Relationship Goal',
+  'profile_relationship_subtitle': 'Let the other person see what you\'re looking for',
+  'profile_relationship_serious': 'Serious Relationship',
+  'profile_relationship_friendship': 'Friendship',
+  'profile_relationship_not_sure': 'Not Sure',
+  'profile_basic_info_subtitle': 'Help us get to know you',
+  'profile_details_subtitle': 'Enrich your profile, get more matches',
+  'profile_bio_subtitle': 'Briefly introduce yourself',
+  'profile_no_data': 'No user data',
+
+  // Paywall (missing)
+  'paywall_onboarding_title': 'Откройте больше',
+  'paywall_maybe_later': 'Может быть позже',
+
+  // Preferences (missing)
+  'gender_pref_locked_info': 'Свяжитесь с поддержкой, чтобы изменить предпочтение пола.',
+
+  // Chat tabs (missing)
+  'chat_drafts_tab': 'Черновики',
+  'chat_history_tab': 'История',
+  'chat_drafts_load_failed': 'Не удалось загрузить черновики',
+  'chat_no_drafts': 'Пока нет черновиков',
+  'chat_history_load_failed': 'Не удалось загрузить историю',
+  'chat_no_history': 'Пока нет истории вопросов',
+  'chat_messages_error': 'Не удалось загрузить сообщения',
+
+  // Onboarding V2 (missing)
+  'onboarding_v2_page1_title': 'Совпадения на Qulo — это другое',
+  'onboarding_v2_page1_desc': 'Здесь вы знакомитесь через вопросы. Если кто-то правильно ответит на все ваши вопросы — это совпадение!',
+  'onboarding_v2_page2_title': 'Подготовьте свои вопросы',
+  'onboarding_v2_page2_desc': 'Создайте 2-10 вопросов. Личные, весёлые, которые нельзя нагуглить. Если кто-то ответит на все правильно — это совпадение!',
+  'onboarding_v2_page3_title': '6 Суперсил',
+  'onboarding_v2_page3_desc': 'Решающие могут использовать эти силы на ваших вопросах. Каждая сила стоит фиолетовые бриллианты — а это ваш заработок!',
+  'onboarding_v2_page4_title': 'Зарабатывайте зелёные бриллианты!',
+  'onboarding_v2_page4_desc': 'Каждый, кто использует силу на ваших вопросах, приносит вам зелёные бриллианты. Больше вопросов — больше заработок!',
+  'onboarding_v2_page5_title': 'Какие языки вы хотите видеть?',
+  'onboarding_v2_page5_desc': 'Мы покажем вам профили с вопросами на ваших языках. Можете выбрать несколько.',
+  'onboarding_v2_skip': 'Пропустить',
+  'onboarding_v2_next': 'Далее',
+  'onboarding_v2_start': 'Начать',
+  'onboarding_v2_premium_title': 'Больше с Premium',
+  'onboarding_v2_premium_cta': 'Перейти на Premium',
+  'onboarding_v2_premium_benefit_1': 'Безлимитное обнаружение',
+  'onboarding_v2_premium_benefit_2': 'Ежемесячный бонус фиолетовых бриллиантов',
+  'onboarding_v2_premium_benefit_3': 'Без рекламы',
+
+  // Report categories (missing)
+  'report_select_category': 'Выберите причину жалобы',
+  'report_cat_inappropriate': 'Неприемлемый контент',
+  'report_cat_fake': 'Фейковый профиль',
+  'report_cat_spam': 'Спам',
+  'report_cat_harassment': 'Домогательства',
+  'report_cat_underage': 'Несовершеннолетний',
+  'report_cat_scam': 'Мошенничество',
+  'report_cat_offensive_photos': 'Оскорбительные фото',
+  'report_cat_threatening': 'Угрозы',
+  'report_cat_impersonation': 'Выдача себя за другого',
+  'report_cat_other': 'Другое',
+  'report_reason_title': 'Описание',
+  'report_reason_optional': 'Добавьте необязательное описание...',
+  'report_reason_required': 'Пожалуйста, напишите подробное описание...',
+
+  // Block (missing)
+  'blocked_users': 'Заблокированные пользователи',
+  'no_blocked_users': 'Нет заблокированных пользователей',
+  'unblock': 'Разблокировать',
+  'unblock_confirm_title': 'Разблокировать',
+  'unblock_confirm_message': 'Вы уверены, что хотите разблокировать этого пользователя?',
+
+  // Support tickets (missing)
+  'my_tickets': 'Мои обращения в поддержку',
+  'no_tickets': 'Пока нет обращений',
+  'create_ticket': 'Создать обращение',
+  'ticket_created_success': 'Ваше обращение создано',
+  'ticket_replied': 'Отвечено',
+  'ticket_category': 'Категория',
+  'ticket_subject': 'Тема',
+  'ticket_subject_hint': 'Кратко опишите проблему',
+  'ticket_subject_error': 'Тема должна содержать не менее 5 символов',
+  'ticket_message': 'Сообщение',
+  'ticket_message_hint': 'Опишите проблему подробно',
+  'ticket_message_error': 'Сообщение должно содержать не менее 10 символов',
+  'ticket_cat_account': 'Аккаунт',
+  'ticket_cat_technical': 'Технический',
+  'ticket_cat_billing': 'Оплата',
+  'ticket_cat_match': 'Совпадение',
+  'ticket_cat_other': 'Другое',
+  'ticket_status_open': 'Открыто',
+  'ticket_status_in_progress': 'В обработке',
+  'ticket_status_resolved': 'Решено',
+  'ticket_status_closed': 'Закрыто',
+
+  // Help (missing)
+  'help_support': 'Помощь и поддержка',
+
+  // Ban (missing)
+  'account_banned_title': 'Аккаунт заблокирован',
+  'account_banned_message': 'Ваш аккаунт заблокирован за нарушение правил сообщества. Свяжитесь с нами для подробностей.',
+
+  // Submit (missing)
+  'submit': 'Отправить',
+
+  // Social login (missing)
+  'or': 'или',
+  'sign_in_with_google': 'Войти через Google',
+  'sign_in_with_apple': 'Войти через Apple',
+
+  // Profile completion (missing)
+  'profile_completion_title': 'Заполните профиль',
+
+  // App Review
+  'rate_us': 'Оцените нас',
+  'rate_us_subtitle': 'Нравится Qulo? Оставьте отзыв!',
+
+  // Chat — Hardcoded fixes
+  'chat_question_load_failed': 'Question could not be loaded',
+  'chat_answer_question_hint': 'Answer the question...',
+  'chat_audio_reward_revealed': 'Audio Reward Unlocked!',
+  'chat_lock_answer_required': 'You need to answer the question to send messages.',
+  'chat_time_up': 'Time\'s Up!',
+  'chat_time_up_desc': 'Your time to answer has run out. Use a power to rescue yourself.',
+  'chat_powers_blocked': 'Powers are blocked. Unlock and use Skip power.',
+  'chat_audio_reward': 'Audio Reward',
+  'chat_audio_locked': 'Locked Audio',
+  'chat_unmatch_confirm': 'Are you sure you want to unmatch? This action cannot be undone.',
+
+  // Power bar labels (short display names)
+  'power_bar_half': 'Half',
+  'power_bar_skip': 'Skip',
+  'power_bar_hint': 'Hint',
+  'power_bar_skip_all': 'Skip All',
+  'power_bar_block': 'Block',
+  'power_bar_unlock': 'Unlock',
+
+  // Milestone celebration
+  'milestone_congrats': 'Congratulations!',
+  'milestone_profile_completed': 'You completed @milestone% of your profile!',
+  'milestone_diamond_earned': 'You earned purple diamonds!',
+  'milestone_boost_earned': 'You earned a free 24-hour boost!',
+
+  // Referral share
+  'referral_share_message': 'Join Qulo! Use my invite code, we both get @reward purple diamonds: @code\nhttps://quloapp.com/invite/@code',
+
+  // Email notifications (added 2026-06-09)
+  'email_notifications': 'Email-уведомления',
+  'email_notifications_desc': 'Получайте email при новом совпадении',
 };

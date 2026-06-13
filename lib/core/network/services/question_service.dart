@@ -15,7 +15,7 @@ abstract class QuestionService {
   @POST('/questions/me')
   Future<QuestionModel> createQuestion(@Body() Map<String, dynamic> data);
 
-  @PUT('/questions/me/{orderNum}')
+  @PATCH('/questions/me/{orderNum}')
   Future<QuestionModel> updateQuestion(
     @Path('orderNum') int orderNum,
     @Body() Map<String, dynamic> data,
@@ -23,6 +23,9 @@ abstract class QuestionService {
 
   @DELETE('/questions/me/{orderNum}')
   Future<void> deleteQuestion(@Path('orderNum') int orderNum);
+
+  @PATCH('/questions/me/reorder')
+  Future<List<QuestionModel>> reorderQuestions(@Body() Map<String, dynamic> data);
 
   @GET('/questions/me/analytics')
   Future<QuestionAnalyticsResponse> getAnalytics();

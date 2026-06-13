@@ -3,8 +3,8 @@ import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/widgets/app_icon.dart';
 import 'package:qulo_v2/core/widgets/diamond_icon.dart';
-import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/data/models/question_analytics_model.dart';
 
 class BestQuestionHighlight extends StatelessWidget {
@@ -40,7 +40,7 @@ class BestQuestionHighlight extends StatelessWidget {
       ),
       child: Row(
         children: [
-          QIcon(QIcons.icCrown, size: 28, color: AppColors.gold),
+          AppIcon(QIcons.crown, size: 28, color: AppColors.gold),
           const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(

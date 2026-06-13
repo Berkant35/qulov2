@@ -50,6 +50,8 @@ class ChatQuestionModel extends Equatable {
   final bool powerBlockRemoved;
   @JsonKey(name: 'powers_used')
   final List<dynamic> powersUsed;
+  @JsonKey(name: 'is_abandoned')
+  final bool isAbandoned;
 
   const ChatQuestionModel({
     required this.id,
@@ -75,13 +77,14 @@ class ChatQuestionModel extends Equatable {
     this.hasPowerBlock = false,
     this.powerBlockRemoved = false,
     this.powersUsed = const [],
+    this.isAbandoned = false,
   });
 
   factory ChatQuestionModel.fromJson(Map<String, dynamic> json) =>
       _$ChatQuestionModelFromJson(json);
   Map<String, dynamic> toJson() => _$ChatQuestionModelToJson(this);
 
-  bool get isAnswered => answeredOption != null;
+  bool get isAnswered => answeredOption != null || isAbandoned;
   bool get hasRewardMedia => rewardMediaUrl != null;
   bool get isPowerBlocked => hasPowerBlock && !powerBlockRemoved;
   List<String> get allOptions {
@@ -101,19 +104,37 @@ class ChatQuestionAnswerResponse extends Equatable {
   @JsonKey(name: 'reward_media_url')
   final String? rewardMediaUrl;
   final ChatQuestionModel? question;
+  @JsonKey(name: 'green_reward')
+  final int greenReward;
+  @JsonKey(name: 'powers_used')
+  final List<String> powersUsed;
+  @JsonKey(name: 'correct_option')
+  final String? correctOption;
+  @JsonKey(name: 'answered_option')
+  final String? answeredOption;
+  @JsonKey(name: 'time_spent')
+  final int? timeSpent;
+  @JsonKey(name: 'is_abandoned')
+  final bool isAbandoned;
 
   const ChatQuestionAnswerResponse({
     required this.isCorrect,
     required this.unmatched,
     this.rewardMediaUrl,
     this.question,
+    this.greenReward = 0,
+    this.powersUsed = const [],
+    this.correctOption,
+    this.answeredOption,
+    this.timeSpent,
+    this.isAbandoned = false,
   });
 
   factory ChatQuestionAnswerResponse.fromJson(Map<String, dynamic> json) =>
       _$ChatQuestionAnswerResponseFromJson(json);
 
   @override
-  List<Object?> get props => [isCorrect, unmatched, rewardMediaUrl];
+  List<Object?> get props => [isCorrect, unmatched, rewardMediaUrl, greenReward, powersUsed, correctOption, answeredOption, isAbandoned];
 }
 
 @JsonSerializable(createToJson: false)
@@ -247,4 +268,16 @@ class ChatQuestionHistoryResponse extends Equatable {
 
   @override
   List<Object?> get props => [items, total];
+}
+
+class PowerUsageRecord {
+  final String powerName;
+  final int purpleSpent;
+  final int greenEarned;
+
+  const PowerUsageRecord({
+    required this.powerName,
+    required this.purpleSpent,
+    required this.greenEarned,
+  });
 }

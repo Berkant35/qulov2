@@ -29,7 +29,8 @@ class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
 
-  String get(String key) => _strings[key] ?? key;
+  String get(String key) =>
+      _strings[key] ?? _localizedValues['en']?[key] ?? key;
 
   String errorMessage(String code) {
     final key = 'error_${code.toLowerCase()}';

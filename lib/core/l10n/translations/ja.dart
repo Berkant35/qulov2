@@ -177,6 +177,16 @@ const jaTranslations = <String, String>{
   'delete_account': 'アカウントを削除',
   'delete_account_desc': 'この操作は取り消せません。すべてのデータが削除されます。',
 
+  // Notification Preferences
+  'notification_settings': 'Notification Settings',
+  'notification_settings_desc': 'Disabled notifications will still appear in your inbox',
+  'notif_messages': 'Messages',
+  'notif_messages_desc': 'New message notifications',
+  'notif_matches': 'Matches',
+  'notif_matches_desc': 'Match and question answer notifications',
+  'notif_campaigns': 'Campaigns',
+  'notif_campaigns_desc': 'Promotional and campaign notifications',
+
   // Powers
   'my_powers': 'マイパワー',
   'power_copy': 'コピー',
@@ -211,6 +221,7 @@ const jaTranslations = <String, String>{
   'accept_terms': '同意します',
   'terms_of_service': '利用規約',
   'privacy_policy': 'プライバシーポリシー',
+  'legal': '法的情報',
   'and_word': 'と',
   'must_accept_terms': '続けるには利用規約に同意してください',
 
@@ -407,6 +418,10 @@ const jaTranslations = <String, String>{
   'mark_all_read': 'すべて既読にする',
   'no_notifications': '通知はまだありません',
   'no_notifications_desc': 'ここにマッチやメッセージが表示されます',
+  'time_just_now': 'たった今',
+  'time_minutes_ago': '{n}分前',
+  'time_hours_ago': '{n}時間前',
+  'time_days_ago': '{n}日前',
   'just_now': 'たった今',
   'minutes_ago': '{}分前',
   'hours_ago': '{}時間前',
@@ -431,7 +446,7 @@ const jaTranslations = <String, String>{
   'question_create_step_answers': '回答を追加',
   'question_create_step_settings': '設定',
   'question_create_motto': '自分についての質問を作りましょう \u2014 検索できないものにしてね！',
-  'question_create_motto_tip': 'ヒント：「私の好きな季節は？」のような質問がたくさん解かれます',
+  'question_create_motto_tip': 'ヒント：個人的な質問は、あなたの基準に合う人を見つけるのに役立ちます',
   'question_create_select_category': 'カテゴリを選択',
   'question_create_select_time': '制限時間を選択',
   'question_create_hint_label': 'ヒント（任意）',
@@ -451,6 +466,8 @@ const jaTranslations = <String, String>{
   'question_category_lifestyle': 'ライフスタイル',
   'question_category_humor': 'ユーモア',
   'question_category_hobby': '趣味',
+  'question_category_relationship': '恋愛',
+  'question_category_entertainment': 'エンターテイメント',
 
   // Time Presets
   'question_time_fast': '高速',
@@ -548,6 +565,7 @@ const jaTranslations = <String, String>{
   'error_general': '問題が発生しました',
   'error_try_again': '問題が発生しました。もう一度お試しください。',
   'question_save_failed': '質問を保存できませんでした',
+  'max_questions_reached': '質問の上限に達しました。新しい質問を追加するには、既存の質問を削除してください。',
   'badge_claim_failed': '報酬を受け取れませんでした',
 
   // Chat Question
@@ -702,6 +720,7 @@ const jaTranslations = <String, String>{
 
   // Exchange center
   'exchange_title': '交換センター',
+  'exchange_subtitle': 'ダイヤモンドをパワーに変換',
   'exchange_convert_title': 'ダイヤ変換',
   'exchange_convert_button': '変換',
   'exchange_powers_title': 'パワー権利',
@@ -721,6 +740,7 @@ const jaTranslations = <String, String>{
   'referral_title': '友達を招待',
   'referral_description': '友達を招待すると、2人ともパープルダイヤ25個もらえます！',
   'referral_compact_cta': '友達を招待してダイヤを獲得',
+  'referral_compact_subtitle': '招待ごとに紫ダイヤモンド報酬',
   'referral_copy': 'コピー',
   'referral_share': 'シェア',
   'referral_progress': '使用済み招待',
@@ -730,6 +750,13 @@ const jaTranslations = <String, String>{
   'referral_code_valid': '紹介者：',
   'referral_code_invalid': '無効な招待コードです',
   'referral_already_logged_in': '招待コードは登録時のみ使用できます',
+  'referral_enter_code': 'Have an invite code? Enter it here:',
+  'referral_apply': 'Apply',
+  'referral_invited_by': 'Invited by: ',
+  'referral_reward_earned': 'You earned 25 purple diamonds!',
+  'referral_complete_profile': 'Complete your profile to 60% to claim your reward!',
+  'referral_self_error': 'You cannot use your own code',
+  'referral_already_error': 'You have already used an invite code',
 
   // Paywall
   'paywall_title_undo': 'アンドゥを解除',
@@ -863,4 +890,215 @@ const jaTranslations = <String, String>{
   'preview_sheet_regen_cta': '再生成',
   'preview_sheet_skip_link': 'あなたが選んで、私は手を出しません',
   'preview_sheet_error': '生成できませんでした、もう一度お試しください',
+
+  // Splash
+  'splash_flow_ask': '質問',
+  'splash_flow_answer': '回答',
+  'splash_flow_match': 'マッチ',
+
+  // Chat — Abandon Warning
+  'abandon_title': 'You\'re Fleeing!',
+  'abandon_question_lock': 'Question Lock',
+  'abandon_power_block': 'Power Block',
+  'abandon_unmatch_risk': 'Unmatch Risk',
+  'abandon_features_added': 'The other person added these features to the question:',
+  'abandon_flee_warning': 'If you leave without answering, you\'ll be marked as fled.',
+  'abandon_unmatch_warning': 'Your match will end!',
+  'abandon_leave': 'Leave',
+  'abandon_stay': 'Go Back',
+
+  // Chat — Question Card
+  'question_risky': 'This question is risky!',
+  'question_power_block': 'Power Block',
+  'question_chat_locked': 'Chat Locked',
+  'question_fled': 'Fled',
+
+  // Chat — Question Result
+  'result_correct': 'Correct!',
+  'result_congrats': 'Congratulations!',
+  'result_wrong': 'Wrong Answer',
+  'result_correct_subtitle': 'You answered the question correctly!',
+  'result_wrong_subtitle': 'Better luck next time.',
+  'result_rescue': 'Rescue (Skip)',
+  'result_go_back': 'Go Back',
+  'result_unmatch_ended': 'Match ended',
+  'result_green_earned': '+{count} Green Diamonds',
+  'result_green_subtitle': 'Earned for the question owner',
+  'result_correct_answer': 'Correct answer',
+  'result_purple_spent': '-{count} Purple Diamonds',
+  'result_power_spent_single': 'Spent for {power}',
+  'result_power_spent_multi': 'Spent for power usage',
+  'result_powers_used': 'Powers Used',
+  'result_your_answer': 'Your Answer',
+  'result_correct_label': 'Correct',
+  'result_time': 'Time',
+
+  // Chat — Media Request
+  'media_active': 'Media sharing active',
+  'media_rejected': 'Media request rejected',
+  'media_sent': 'Media request sent',
+  'media_waiting': 'Waiting for response...',
+  'media_wants_share': '\u{1F4F7} Wants to share media',
+  'media_reject': 'Reject',
+  'media_accept': 'Accept',
+
+  // Chat — App Bar
+  'unmatch': 'Unmatch',
+
+  // Chat — Create Question
+  'create_question': 'Create Question',
+  'drafts_history': 'Drafts & History',
+
+  // Chat — Error Messages
+  'error_chat_generic': 'Something went wrong, please try again',
+  'error_rescue_failed': 'Rescue failed',
+
+  // Profile — Edit
+  'profile_photo_hint': 'Your first photo will be your profile photo',
+  'profile_relationship_title': 'Relationship Goal',
+  'profile_relationship_subtitle': 'Let the other person see what you\'re looking for',
+  'profile_relationship_serious': 'Serious Relationship',
+  'profile_relationship_friendship': 'Friendship',
+  'profile_relationship_not_sure': 'Not Sure',
+  'profile_basic_info_subtitle': 'Help us get to know you',
+  'profile_details_subtitle': 'Enrich your profile, get more matches',
+  'profile_bio_subtitle': 'Briefly introduce yourself',
+  'profile_no_data': 'No user data',
+
+  // Paywall (missing)
+  'paywall_onboarding_title': 'もっと発見する',
+  'paywall_maybe_later': 'また後で',
+
+  // Preferences (missing)
+  'gender_pref_locked_info': '性別の設定を変更するにはサポートにお問い合わせください。',
+
+  // Chat tabs (missing)
+  'chat_drafts_tab': '下書き',
+  'chat_history_tab': '履歴',
+  'chat_drafts_load_failed': '下書きの読み込みに失敗しました',
+  'chat_no_drafts': 'まだ下書きはありません',
+  'chat_history_load_failed': '履歴の読み込みに失敗しました',
+  'chat_no_history': 'まだ質問履歴はありません',
+  'chat_messages_error': 'メッセージの読み込みに失敗しました',
+
+  // Onboarding V2 (missing)
+  'onboarding_v2_page1_title': 'Quloのマッチングは違います',
+  'onboarding_v2_page1_desc': 'ここでは質問を通じて出会います。誰かがあなたの質問に全問正解したら — マッチ！',
+  'onboarding_v2_page2_title': '質問を準備しよう',
+  'onboarding_v2_page2_desc': '2〜10問の質問を作成。個人的で面白い、検索できない質問を。全問正解されたら — マッチ！',
+  'onboarding_v2_page3_title': '6つのスーパーパワー',
+  'onboarding_v2_page3_desc': '回答者はあなたの質問にパワーを使えます。各パワーは紫ダイヤモンドがかかります — それがあなたの収入です！',
+  'onboarding_v2_page4_title': 'グリーンダイヤモンドを稼ごう！',
+  'onboarding_v2_page4_desc': 'あなたの質問にパワーを使う人がいるたびにグリーンダイヤモンドが貰えます。質問が多いほど、収入も多い！',
+  'onboarding_v2_page5_title': 'どの言語を表示しますか？',
+  'onboarding_v2_page5_desc': 'あなたの言語で質問があるプロフィールを表示します。複数選択できます。',
+  'onboarding_v2_skip': 'スキップ',
+  'onboarding_v2_next': '次へ',
+  'onboarding_v2_start': '始める',
+  'onboarding_v2_premium_title': 'Premiumでもっと',
+  'onboarding_v2_premium_cta': 'Premiumにする',
+  'onboarding_v2_premium_benefit_1': '無制限の発見',
+  'onboarding_v2_premium_benefit_2': '毎月の紫ダイヤモンドボーナス',
+  'onboarding_v2_premium_benefit_3': '広告なしの体験',
+
+  // Report categories (missing)
+  'report_select_category': '通報理由を選択',
+  'report_cat_inappropriate': '不適切なコンテンツ',
+  'report_cat_fake': '偽プロフィール',
+  'report_cat_spam': 'スパム',
+  'report_cat_harassment': '嫌がらせ',
+  'report_cat_underage': '未成年',
+  'report_cat_scam': '詐欺',
+  'report_cat_offensive_photos': '不快な写真',
+  'report_cat_threatening': '脅迫',
+  'report_cat_impersonation': 'なりすまし',
+  'report_cat_other': 'その他',
+  'report_reason_title': '説明',
+  'report_reason_optional': '任意の説明を追加...',
+  'report_reason_required': '詳しい説明を書いてください...',
+
+  // Block (missing)
+  'blocked_users': 'ブロックしたユーザー',
+  'no_blocked_users': 'ブロックしたユーザーはいません',
+  'unblock': 'ブロック解除',
+  'unblock_confirm_title': 'ブロック解除',
+  'unblock_confirm_message': 'このユーザーのブロックを解除しますか？',
+
+  // Support tickets (missing)
+  'my_tickets': 'マイサポートチケット',
+  'no_tickets': 'サポートチケットはまだありません',
+  'create_ticket': 'サポートチケットを作成',
+  'ticket_created_success': 'サポートチケットが作成されました',
+  'ticket_replied': '返信済み',
+  'ticket_category': 'カテゴリ',
+  'ticket_subject': '件名',
+  'ticket_subject_hint': '問題を簡潔に説明してください',
+  'ticket_subject_error': '件名は5文字以上必要です',
+  'ticket_message': 'メッセージ',
+  'ticket_message_hint': '問題を詳しく説明してください',
+  'ticket_message_error': 'メッセージは10文字以上必要です',
+  'ticket_cat_account': 'アカウント',
+  'ticket_cat_technical': '技術的',
+  'ticket_cat_billing': '請求',
+  'ticket_cat_match': 'マッチ',
+  'ticket_cat_other': 'その他',
+  'ticket_status_open': 'オープン',
+  'ticket_status_in_progress': '対応中',
+  'ticket_status_resolved': '解決済み',
+  'ticket_status_closed': 'クローズ',
+
+  // Help (missing)
+  'help_support': 'ヘルプとサポート',
+
+  // Ban (missing)
+  'account_banned_title': 'アカウント停止',
+  'account_banned_message': 'コミュニティガイドライン違反のため、アカウントが停止されました。詳細はお問い合わせください。',
+
+  // Submit (missing)
+  'submit': '送信',
+
+  // Social login (missing)
+  'or': 'または',
+  'sign_in_with_google': 'Googleでサインイン',
+  'sign_in_with_apple': 'Appleでサインイン',
+
+  // Profile completion (missing)
+  'profile_completion_title': 'プロフィールを完成させる',
+
+  // App Review
+  'rate_us': '評価する',
+  'rate_us_subtitle': 'Quloが気に入りましたか？レビューを書いてください！',
+
+  // Chat — Hardcoded fixes
+  'chat_question_load_failed': 'Question could not be loaded',
+  'chat_answer_question_hint': 'Answer the question...',
+  'chat_audio_reward_revealed': 'Audio Reward Unlocked!',
+  'chat_lock_answer_required': 'You need to answer the question to send messages.',
+  'chat_time_up': 'Time\'s Up!',
+  'chat_time_up_desc': 'Your time to answer has run out. Use a power to rescue yourself.',
+  'chat_powers_blocked': 'Powers are blocked. Unlock and use Skip power.',
+  'chat_audio_reward': 'Audio Reward',
+  'chat_audio_locked': 'Locked Audio',
+  'chat_unmatch_confirm': 'Are you sure you want to unmatch? This action cannot be undone.',
+
+  // Power bar labels (short display names)
+  'power_bar_half': 'Half',
+  'power_bar_skip': 'Skip',
+  'power_bar_hint': 'Hint',
+  'power_bar_skip_all': 'Skip All',
+  'power_bar_block': 'Block',
+  'power_bar_unlock': 'Unlock',
+
+  // Milestone celebration
+  'milestone_congrats': 'Congratulations!',
+  'milestone_profile_completed': 'You completed @milestone% of your profile!',
+  'milestone_diamond_earned': 'You earned purple diamonds!',
+  'milestone_boost_earned': 'You earned a free 24-hour boost!',
+
+  // Referral share
+  'referral_share_message': 'Join Qulo! Use my invite code, we both get @reward purple diamonds: @code\nhttps://quloapp.com/invite/@code',
+
+  // Email notifications (added 2026-06-09)
+  'email_notifications': 'メール通知',
+  'email_notifications_desc': '新しいマッチがあったときにメールを受け取る',
 };

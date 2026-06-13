@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,6 +18,9 @@ import 'package:qulo_v2/providers/deep_link_provider.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/network/network_manager.dart';
+import 'package:qulo_v2/core/network/interceptors/session_interceptor.dart';
+import 'package:qulo_v2/core/services/analytics_forwarder.dart';
 import 'package:qulo_v2/routing/app_router.dart';
 
 class QuloApp extends ConsumerStatefulWidget {
@@ -34,6 +38,20 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+
+    // Force logout callback — refresh token expire olduğunda tetiklenir
+    NetworkManager.instance.onForceLogout =
+        () => ref.read(authProvider.notifier).forceLogout();
+
+    // Login transition (unauth → auth) — current UI locale'i backend'e sync et
+    ref.listenManual<AuthState>(authProvider, (prev, next) {
+      final wasAuthenticated = prev?.status == AuthStatus.authenticated;
+      if (next.status == AuthStatus.authenticated && !wasAuthenticated) {
+        final code = ref.read(localeProvider).languageCode;
+        unawaited(ref.read(userRepositoryProvider).updateProfile({'locale': code}));
+      }
+    });
+
     ref.read(analyticsManagerProvider).logAppOpen();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _setupNotificationCallbacks();
@@ -54,12 +72,22 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
     switch (state) {
       case AppLifecycleState.resumed:
         analytics.logAppForeground();
-        // Permission-dependent provider'ları tekrar kontrol et
-        ref.read(locationProvider.notifier).onAppResumed();
-        // Restart presence heartbeat
-        ref.read(presenceManagerProvider).start();
+        // Start new analytics session on resume
+        SessionInterceptor.resetSession();
+        // Auth-required side effects yalnızca authenticated iken. Aksi halde
+        // ATT modal / OS resume cycle'ları force-logout fırtınası tetikliyor.
+        if (ref.read(authProvider).status == AuthStatus.authenticated) {
+          // Permission-dependent provider'ları tekrar kontrol et
+          ref.read(locationProvider.notifier).onAppResumed();
+          // Restart presence heartbeat
+          ref.read(presenceManagerProvider).start();
+          // Backend activity heartbeat (debounce in repository)
+          unawaited(ref.read(userRepositoryProvider).heartbeat());
+        }
       case AppLifecycleState.paused:
         analytics.logAppBackground();
+        // Flush any buffered analytics events before backgrounding
+        unawaited(AnalyticsForwarder.instance.flush());
         // Send offline + stop heartbeat
         ref.read(presenceManagerProvider).stop();
       case AppLifecycleState.detached:
@@ -177,7 +205,11 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
                   });
                   removeEntry();
                   if (actionUrl != null && actionUrl.isNotEmpty) {
-                    ref.read(routerProvider).go(actionUrl);
+                    final navType = DeepLinkParser.resolveNavType(actionUrl);
+                    final router = ref.read(routerProvider);
+                    navType == DeepLinkNavType.push
+                        ? router.push(actionUrl)
+                        : router.go(actionUrl);
                   }
                 },
                 onDismiss: () {
@@ -193,7 +225,11 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
         overlayState.insert(entry);
       },
       onNavigate: (actionUrl) {
-        ref.read(routerProvider).go(actionUrl);
+        final navType = DeepLinkParser.resolveNavType(actionUrl);
+        final router = ref.read(routerProvider);
+        navType == DeepLinkNavType.push
+            ? router.push(actionUrl)
+            : router.go(actionUrl);
       },
     );
   }

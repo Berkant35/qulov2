@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/diamond_icon.dart';
@@ -43,7 +44,7 @@ class MilestoneCelebrationSheet extends StatelessWidget {
 
           // Headline
           Text(
-            'Tebrikler!',
+            context.tr('milestone_congrats'),
             style: theme.textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
               color: context.appColors.textPrimary,
@@ -53,7 +54,7 @@ class MilestoneCelebrationSheet extends StatelessWidget {
 
           // Body text
           Text(
-            'Profilini %$milestone tamamladın!',
+            context.tr('milestone_profile_completed').replaceAll('@milestone', '$milestone'),
             style: theme.textTheme.bodyLarge?.copyWith(
               color: context.appColors.textSecondary,
             ),
@@ -80,7 +81,7 @@ class MilestoneCelebrationSheet extends StatelessWidget {
 
           // Subtitle
           Text(
-            'Mor elmas kazandın!',
+            context.tr('milestone_diamond_earned'),
             style: theme.textTheme.bodyMedium?.copyWith(
               color: context.appColors.textSecondary,
             ),
@@ -108,7 +109,7 @@ class MilestoneCelebrationSheet extends StatelessWidget {
                   const SizedBox(width: AppSpacing.sm),
                   Flexible(
                     child: Text(
-                      '24 saatlik ücretsiz boost kazandın!',
+                      context.tr('milestone_boost_earned'),
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: context.appColors.secondary,
                         fontWeight: FontWeight.w600,

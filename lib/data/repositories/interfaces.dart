@@ -13,6 +13,7 @@ import 'package:qulo_v2/data/models/question_model.dart';
 import 'package:qulo_v2/data/models/quiz_model.dart';
 import 'package:qulo_v2/data/models/referral_model.dart';
 import 'package:qulo_v2/data/models/subscription_model.dart';
+import 'package:qulo_v2/data/models/support_ticket_model.dart';
 import 'package:qulo_v2/data/models/public_profile_model.dart';
 import 'package:qulo_v2/data/models/user_details_model.dart';
 import 'package:qulo_v2/data/models/user_model.dart';
@@ -29,7 +30,6 @@ abstract class IAuthRepository {
     double? lat,
     double? lng,
     String locale = 'tr',
-    String? referralCode,
   });
 
   Future<Result<AuthTokens>> login({
@@ -129,6 +129,8 @@ abstract class IQuestionRepository {
   Future<Result<void>> deleteQuestion(int orderNum);
 
   Future<Result<int>> getQuestionCount();
+
+  Future<Result<List<QuestionModel>>> reorderQuestions(List<String> orderedIds);
 }
 
 // ─── Quiz ───
@@ -155,7 +157,8 @@ abstract class IQuizRepository {
 abstract class IReportRepository {
   Future<Result<void>> createReport({
     required String reportedId,
-    required String reason,
+    required String category,
+    String? reason,
     String? description,
   });
 }
@@ -174,6 +177,9 @@ abstract class IReferralRepository {
   Future<Result<List<ReferralItem>>> getHistory();
 
   Future<Result<ValidateCodeResponse>> validateCode(String code);
+
+  Future<Result<String>> applyCode(String code);
+  Future<Result<MyReferrerResponse>> getMyReferrer();
 }
 
 // ─── User ───
@@ -187,6 +193,8 @@ abstract class IUserRepository {
   Future<Result<void>> updateLocation({required double lat, required double lng, String? city});
 
   Future<Result<void>> updatePushToken(String token);
+
+  Future<Result<void>> heartbeat();
 
   Future<Result<Map<String, dynamic>>> uploadPhoto(Uint8List bytes, String mimeType);
 
@@ -211,4 +219,16 @@ abstract class IUserRepository {
 abstract class IBlockRepository {
   Future<Result<void>> blockUser(String blockedId);
   Future<Result<void>> unblockUser(String blockedId);
+  Future<Result<List<Map<String, dynamic>>>> getBlockedUsers();
+}
+
+// ─── SupportTicket ───
+abstract class ISupportTicketRepository {
+  Future<Result<SupportTicketModel>> createTicket({
+    required String subject,
+    required String message,
+    required String category,
+  });
+  Future<Result<List<SupportTicketModel>>> getMyTickets();
+  Future<Result<SupportTicketModel>> getTicket(String id);
 }

@@ -177,6 +177,16 @@ const hiTranslations = <String, String>{
   'delete_account': 'अकाउंट डिलीट करें',
   'delete_account_desc': 'यह बदला नहीं जा सकता। आपका सारा डेटा डिलीट हो जाएगा।',
 
+  // Notification Preferences
+  'notification_settings': 'Notification Settings',
+  'notification_settings_desc': 'Disabled notifications will still appear in your inbox',
+  'notif_messages': 'Messages',
+  'notif_messages_desc': 'New message notifications',
+  'notif_matches': 'Matches',
+  'notif_matches_desc': 'Match and question answer notifications',
+  'notif_campaigns': 'Campaigns',
+  'notif_campaigns_desc': 'Promotional and campaign notifications',
+
   // Powers
   'my_powers': 'मेरी पावर्स',
   'power_copy': 'कॉपी',
@@ -211,6 +221,7 @@ const hiTranslations = <String, String>{
   'accept_terms': 'मैं स्वीकार करता/करती हूँ',
   'terms_of_service': 'सेवा की शर्तें',
   'privacy_policy': 'गोपनीयता नीति',
+  'legal': 'कानूनी',
   'and_word': 'और',
   'must_accept_terms': 'जारी रखने के लिए शर्तें स्वीकार करें',
 
@@ -407,6 +418,10 @@ const hiTranslations = <String, String>{
   'mark_all_read': 'सभी पढ़ा गया',
   'no_notifications': 'अभी कोई नोटिफ़िकेशन नहीं',
   'no_notifications_desc': 'यहाँ आपके मैच और मैसेज दिखेंगे',
+  'time_just_now': 'अभी',
+  'time_minutes_ago': '{n} मिनट पहले',
+  'time_hours_ago': '{n} घंटे पहले',
+  'time_days_ago': '{n} दिन पहले',
   'just_now': 'अभी',
   'minutes_ago': '{} मिनट पहले',
   'hours_ago': '{} घंटे पहले',
@@ -431,7 +446,7 @@ const hiTranslations = <String, String>{
   'question_create_step_answers': 'जवाब जोड़ें',
   'question_create_step_settings': 'सेटिंग्स',
   'question_create_motto': 'अपने बारे में सवाल पूछें \u2014 जो गूगल पर न मिलें!',
-  'question_create_motto_tip': 'टिप: "मेरा पसंदीदा मौसम?" जैसे पर्सनल सवालों के ज़्यादा जवाब आते हैं',
+  'question_create_motto_tip': 'सुझाव: व्यक्तिगत प्रश्न आपके मानदंडों से मेल खाने वाले लोगों को खोजने में मदद करते हैं',
   'question_create_select_category': 'कैटेगरी चुनें',
   'question_create_select_time': 'समय चुनें',
   'question_create_hint_label': 'हिंट (वैकल्पिक)',
@@ -451,6 +466,8 @@ const hiTranslations = <String, String>{
   'question_category_lifestyle': 'जीवनशैली',
   'question_category_humor': 'हास्य',
   'question_category_hobby': 'शौक़',
+  'question_category_relationship': 'रिश्ते',
+  'question_category_entertainment': 'मनोरंजन',
 
   // Time Presets
   'question_time_fast': 'तेज़',
@@ -548,6 +565,7 @@ const hiTranslations = <String, String>{
   'error_general': 'कुछ ग़लत हो गया',
   'error_try_again': 'कुछ ग़लत हो गया। कृपया फिर से कोशिश करें।',
   'question_save_failed': 'सवाल सेव नहीं हो सका',
+  'max_questions_reached': 'सवालों की सीमा पूरी हो गई। नया सवाल जोड़ने के लिए कोई मौजूदा सवाल हटाएं।',
   'badge_claim_failed': 'इनाम नहीं मिल सका',
 
   // Chat Question
@@ -702,6 +720,7 @@ const hiTranslations = <String, String>{
 
   // Exchange center
   'exchange_title': 'एक्सचेंज सेंटर',
+  'exchange_subtitle': 'हीरे को शक्तियों में बदलें',
   'exchange_convert_title': 'हीरा रूपांतरण',
   'exchange_convert_button': 'कन्वर्ट करें',
   'exchange_powers_title': 'पावर अधिकार',
@@ -721,6 +740,7 @@ const hiTranslations = <String, String>{
   'referral_title': 'दोस्त को बुलाएं',
   'referral_description': 'दोस्त को बुलाएं, दोनों को 25 बैंगनी हीरे मिलें!',
   'referral_compact_cta': 'दोस्त लाएं, हीरे कमाएं',
+  'referral_compact_subtitle': 'हर आमंत्रण = बैंगनी हीरा इनाम',
   'referral_copy': 'कॉपी',
   'referral_share': 'शेयर',
   'referral_progress': 'इन्वाइट इस्तेमाल हुए',
@@ -730,6 +750,13 @@ const hiTranslations = <String, String>{
   'referral_code_valid': 'रेफ़र किया: ',
   'referral_code_invalid': 'अमान्य रेफ़रल कोड',
   'referral_already_logged_in': 'रेफ़रल कोड सिर्फ़ रजिस्ट्रेशन के समय इस्तेमाल हो सकते हैं',
+  'referral_enter_code': 'Have an invite code? Enter it here:',
+  'referral_apply': 'Apply',
+  'referral_invited_by': 'Invited by: ',
+  'referral_reward_earned': 'You earned 25 purple diamonds!',
+  'referral_complete_profile': 'Complete your profile to 60% to claim your reward!',
+  'referral_self_error': 'You cannot use your own code',
+  'referral_already_error': 'You have already used an invite code',
 
   // Paywall
   'paywall_title_undo': 'अन्डू अनलॉक करें',
@@ -863,4 +890,215 @@ const hiTranslations = <String, String>{
   'preview_sheet_regen_cta': 'फिर बनाएँ',
   'preview_sheet_skip_link': 'आप चुनें, मैं नहीं उलझूँगा',
   'preview_sheet_error': 'बना नहीं सके, फिर कोशिश करें',
+
+  // Splash
+  'splash_flow_ask': 'पूछो',
+  'splash_flow_answer': 'जवाब दो',
+  'splash_flow_match': 'मैच',
+
+  // Chat — Abandon Warning
+  'abandon_title': 'You\'re Fleeing!',
+  'abandon_question_lock': 'Question Lock',
+  'abandon_power_block': 'Power Block',
+  'abandon_unmatch_risk': 'Unmatch Risk',
+  'abandon_features_added': 'The other person added these features to the question:',
+  'abandon_flee_warning': 'If you leave without answering, you\'ll be marked as fled.',
+  'abandon_unmatch_warning': 'Your match will end!',
+  'abandon_leave': 'Leave',
+  'abandon_stay': 'Go Back',
+
+  // Chat — Question Card
+  'question_risky': 'This question is risky!',
+  'question_power_block': 'Power Block',
+  'question_chat_locked': 'Chat Locked',
+  'question_fled': 'Fled',
+
+  // Chat — Question Result
+  'result_correct': 'Correct!',
+  'result_congrats': 'Congratulations!',
+  'result_wrong': 'Wrong Answer',
+  'result_correct_subtitle': 'You answered the question correctly!',
+  'result_wrong_subtitle': 'Better luck next time.',
+  'result_rescue': 'Rescue (Skip)',
+  'result_go_back': 'Go Back',
+  'result_unmatch_ended': 'Match ended',
+  'result_green_earned': '+{count} Green Diamonds',
+  'result_green_subtitle': 'Earned for the question owner',
+  'result_correct_answer': 'Correct answer',
+  'result_purple_spent': '-{count} Purple Diamonds',
+  'result_power_spent_single': 'Spent for {power}',
+  'result_power_spent_multi': 'Spent for power usage',
+  'result_powers_used': 'Powers Used',
+  'result_your_answer': 'Your Answer',
+  'result_correct_label': 'Correct',
+  'result_time': 'Time',
+
+  // Chat — Media Request
+  'media_active': 'Media sharing active',
+  'media_rejected': 'Media request rejected',
+  'media_sent': 'Media request sent',
+  'media_waiting': 'Waiting for response...',
+  'media_wants_share': '\u{1F4F7} Wants to share media',
+  'media_reject': 'Reject',
+  'media_accept': 'Accept',
+
+  // Chat — App Bar
+  'unmatch': 'Unmatch',
+
+  // Chat — Create Question
+  'create_question': 'Create Question',
+  'drafts_history': 'Drafts & History',
+
+  // Chat — Error Messages
+  'error_chat_generic': 'Something went wrong, please try again',
+  'error_rescue_failed': 'Rescue failed',
+
+  // Profile — Edit
+  'profile_photo_hint': 'Your first photo will be your profile photo',
+  'profile_relationship_title': 'Relationship Goal',
+  'profile_relationship_subtitle': 'Let the other person see what you\'re looking for',
+  'profile_relationship_serious': 'Serious Relationship',
+  'profile_relationship_friendship': 'Friendship',
+  'profile_relationship_not_sure': 'Not Sure',
+  'profile_basic_info_subtitle': 'Help us get to know you',
+  'profile_details_subtitle': 'Enrich your profile, get more matches',
+  'profile_bio_subtitle': 'Briefly introduce yourself',
+  'profile_no_data': 'No user data',
+
+  // Paywall (missing)
+  'paywall_onboarding_title': 'और खोजें',
+  'paywall_maybe_later': 'शायद बाद में',
+
+  // Preferences (missing)
+  'gender_pref_locked_info': 'अपनी लिंग प्राथमिकता बदलने के लिए सहायता से संपर्क करें।',
+
+  // Chat tabs (missing)
+  'chat_drafts_tab': 'ड्राफ्ट',
+  'chat_history_tab': 'इतिहास',
+  'chat_drafts_load_failed': 'ड्राफ्ट लोड करने में विफल',
+  'chat_no_drafts': 'अभी तक कोई ड्राफ्ट नहीं',
+  'chat_history_load_failed': 'इतिहास लोड करने में विफल',
+  'chat_no_history': 'अभी तक कोई प्रश्न इतिहास नहीं',
+  'chat_messages_error': 'संदेश लोड करने में विफल',
+
+  // Onboarding V2 (missing)
+  'onboarding_v2_page1_title': 'Qulo पर मैचिंग अलग है',
+  'onboarding_v2_page1_desc': 'यहाँ आप सवालों के ज़रिए लोगों से मिलते हैं। अगर कोई आपके सभी सवालों का सही जवाब दे दे — तो मैच!',
+  'onboarding_v2_page2_title': 'अपने सवाल तैयार करें',
+  'onboarding_v2_page2_desc': '2-10 सवाल बनाएँ। निजी, मज़ेदार, जो Google पर न मिलें। अगर कोई सब सही करे — तो मैच!',
+  'onboarding_v2_page3_title': '6 सुपर पावर',
+  'onboarding_v2_page3_desc': 'हल करने वाले आपके सवालों पर ये पावर इस्तेमाल कर सकते हैं। हर पावर की कीमत बैंगनी हीरे हैं — और वो आपकी कमाई है!',
+  'onboarding_v2_page4_title': 'हरे हीरे कमाएँ!',
+  'onboarding_v2_page4_desc': 'हर व्यक्ति जो आपके सवालों पर पावर इस्तेमाल करता है, आपको हरे हीरे देता है। ज़्यादा सवाल, ज़्यादा कमाई!',
+  'onboarding_v2_page5_title': 'कौन सी भाषाएँ देखना चाहते हैं?',
+  'onboarding_v2_page5_desc': 'हम आपको आपकी भाषाओं में सवालों वाली प्रोफ़ाइल दिखाएँगे। आप कई चुन सकते हैं।',
+  'onboarding_v2_skip': 'छोड़ें',
+  'onboarding_v2_next': 'अगला',
+  'onboarding_v2_start': 'शुरू करें',
+  'onboarding_v2_premium_title': 'Premium के साथ और भी',
+  'onboarding_v2_premium_cta': 'Premium लें',
+  'onboarding_v2_premium_benefit_1': 'असीमित खोज',
+  'onboarding_v2_premium_benefit_2': 'मासिक बैंगनी हीरा बोनस',
+  'onboarding_v2_premium_benefit_3': 'विज्ञापन-मुक्त अनुभव',
+
+  // Report categories (missing)
+  'report_select_category': 'रिपोर्ट का कारण चुनें',
+  'report_cat_inappropriate': 'अनुचित सामग्री',
+  'report_cat_fake': 'फ़र्ज़ी प्रोफ़ाइल',
+  'report_cat_spam': 'स्पैम',
+  'report_cat_harassment': 'उत्पीड़न',
+  'report_cat_underage': 'नाबालिग',
+  'report_cat_scam': 'धोखाधड़ी',
+  'report_cat_offensive_photos': 'आपत्तिजनक फ़ोटो',
+  'report_cat_threatening': 'धमकी',
+  'report_cat_impersonation': 'प्रतिरूपण',
+  'report_cat_other': 'अन्य',
+  'report_reason_title': 'विवरण',
+  'report_reason_optional': 'वैकल्पिक विवरण जोड़ें...',
+  'report_reason_required': 'कृपया विस्तृत विवरण लिखें...',
+
+  // Block (missing)
+  'blocked_users': 'ब्लॉक किए गए उपयोगकर्ता',
+  'no_blocked_users': 'कोई ब्लॉक किया गया उपयोगकर्ता नहीं',
+  'unblock': 'अनब्लॉक',
+  'unblock_confirm_title': 'अनब्लॉक',
+  'unblock_confirm_message': 'क्या आप वाकई इस उपयोगकर्ता को अनब्लॉक करना चाहते हैं?',
+
+  // Support tickets (missing)
+  'my_tickets': 'मेरे सहायता टिकट',
+  'no_tickets': 'अभी तक कोई सहायता टिकट नहीं',
+  'create_ticket': 'सहायता टिकट बनाएँ',
+  'ticket_created_success': 'आपका सहायता टिकट बन गया है',
+  'ticket_replied': 'जवाब दिया गया',
+  'ticket_category': 'श्रेणी',
+  'ticket_subject': 'विषय',
+  'ticket_subject_hint': 'अपनी समस्या का संक्षेप में वर्णन करें',
+  'ticket_subject_error': 'विषय कम से कम 5 अक्षर का होना चाहिए',
+  'ticket_message': 'संदेश',
+  'ticket_message_hint': 'अपनी समस्या का विस्तार से वर्णन करें',
+  'ticket_message_error': 'संदेश कम से कम 10 अक्षर का होना चाहिए',
+  'ticket_cat_account': 'खाता',
+  'ticket_cat_technical': 'तकनीकी',
+  'ticket_cat_billing': 'बिलिंग',
+  'ticket_cat_match': 'मैच',
+  'ticket_cat_other': 'अन्य',
+  'ticket_status_open': 'खुला',
+  'ticket_status_in_progress': 'प्रगति में',
+  'ticket_status_resolved': 'हल किया गया',
+  'ticket_status_closed': 'बंद',
+
+  // Help (missing)
+  'help_support': 'सहायता और समर्थन',
+
+  // Ban (missing)
+  'account_banned_title': 'खाता निलंबित',
+  'account_banned_message': 'सामुदायिक दिशानिर्देशों का उल्लंघन करने के कारण आपका खाता निलंबित कर दिया गया है। विवरण के लिए हमसे संपर्क करें।',
+
+  // Submit (missing)
+  'submit': 'सबमिट करें',
+
+  // Social login (missing)
+  'or': 'या',
+  'sign_in_with_google': 'Google से साइन इन करें',
+  'sign_in_with_apple': 'Apple से साइन इन करें',
+
+  // Profile completion (missing)
+  'profile_completion_title': 'अपनी प्रोफ़ाइल पूरी करें',
+
+  // App Review
+  'rate_us': 'हमें रेट करें',
+  'rate_us_subtitle': 'क्या आपको Qulo पसंद है? हमें रिव्यू दें!',
+
+  // Chat — Hardcoded fixes
+  'chat_question_load_failed': 'Question could not be loaded',
+  'chat_answer_question_hint': 'Answer the question...',
+  'chat_audio_reward_revealed': 'Audio Reward Unlocked!',
+  'chat_lock_answer_required': 'You need to answer the question to send messages.',
+  'chat_time_up': 'Time\'s Up!',
+  'chat_time_up_desc': 'Your time to answer has run out. Use a power to rescue yourself.',
+  'chat_powers_blocked': 'Powers are blocked. Unlock and use Skip power.',
+  'chat_audio_reward': 'Audio Reward',
+  'chat_audio_locked': 'Locked Audio',
+  'chat_unmatch_confirm': 'Are you sure you want to unmatch? This action cannot be undone.',
+
+  // Power bar labels (short display names)
+  'power_bar_half': 'Half',
+  'power_bar_skip': 'Skip',
+  'power_bar_hint': 'Hint',
+  'power_bar_skip_all': 'Skip All',
+  'power_bar_block': 'Block',
+  'power_bar_unlock': 'Unlock',
+
+  // Milestone celebration
+  'milestone_congrats': 'Congratulations!',
+  'milestone_profile_completed': 'You completed @milestone% of your profile!',
+  'milestone_diamond_earned': 'You earned purple diamonds!',
+  'milestone_boost_earned': 'You earned a free 24-hour boost!',
+
+  // Referral share
+  'referral_share_message': 'Join Qulo! Use my invite code, we both get @reward purple diamonds: @code\nhttps://quloapp.com/invite/@code',
+
+  // Email notifications (added 2026-06-09)
+  'email_notifications': 'ईमेल सूचनाएं',
+  'email_notifications_desc': 'नया मैच होने पर ईमेल पाएं',
 };

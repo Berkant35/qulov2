@@ -177,6 +177,16 @@ const koTranslations = <String, String>{
   'delete_account': '계정 삭제',
   'delete_account_desc': '이 작업은 되돌릴 수 없어요. 모든 데이터가 삭제돼요.',
 
+  // Notification Preferences
+  'notification_settings': 'Notification Settings',
+  'notification_settings_desc': 'Disabled notifications will still appear in your inbox',
+  'notif_messages': 'Messages',
+  'notif_messages_desc': 'New message notifications',
+  'notif_matches': 'Matches',
+  'notif_matches_desc': 'Match and question answer notifications',
+  'notif_campaigns': 'Campaigns',
+  'notif_campaigns_desc': 'Promotional and campaign notifications',
+
   // Powers
   'my_powers': '내 파워',
   'power_copy': '복사',
@@ -211,6 +221,7 @@ const koTranslations = <String, String>{
   'accept_terms': '동의합니다',
   'terms_of_service': '이용약관',
   'privacy_policy': '개인정보처리방침',
+  'legal': '법적 정보',
   'and_word': '및',
   'must_accept_terms': '계속하려면 약관에 동의해야 해요',
 
@@ -405,6 +416,10 @@ const koTranslations = <String, String>{
   'mark_all_read': '모두 읽음 처리',
   'no_notifications': '아직 알림이 없어요',
   'no_notifications_desc': '매칭과 메시지가 여기에 표시돼요',
+  'time_just_now': '방금',
+  'time_minutes_ago': '{n}분 전',
+  'time_hours_ago': '{n}시간 전',
+  'time_days_ago': '{n}일 전',
   'just_now': '방금',
   'minutes_ago': '{}분 전',
   'hours_ago': '{}시간 전',
@@ -429,7 +444,7 @@ const koTranslations = <String, String>{
   'question_create_step_answers': '답변 추가',
   'question_create_step_settings': '설정',
   'question_create_motto': '나에 대한 질문을 만들어요 \u2014 검색으로 찾을 수 없는 질문!',
-  'question_create_motto_tip': '팁: "내가 좋아하는 계절은?" 같은 개인적인 질문이 풀이 수가 더 높아요',
+  'question_create_motto_tip': '팁: 개인적인 질문은 당신의 기준에 맞는 사람을 찾는 데 도움이 됩니다',
   'question_create_select_category': '카테고리 선택',
   'question_create_select_time': '시간 선택',
   'question_create_hint_label': '힌트 (선택사항)',
@@ -449,6 +464,8 @@ const koTranslations = <String, String>{
   'question_category_lifestyle': '라이프스타일',
   'question_category_humor': '유머',
   'question_category_hobby': '취미',
+  'question_category_relationship': '연애',
+  'question_category_entertainment': '엔터테인먼트',
 
   // Time Presets
   'question_time_fast': '빠름',
@@ -546,6 +563,7 @@ const koTranslations = <String, String>{
   'error_general': '문제가 발생했어요',
   'error_try_again': '문제가 발생했어요. 다시 시도해주세요.',
   'question_save_failed': '질문을 저장할 수 없었어요',
+  'max_questions_reached': '질문 한도에 도달했어요. 새 질문을 추가하려면 기존 질문을 삭제하세요.',
   'badge_claim_failed': '보상을 받을 수 없었어요',
 
   // Chat Question
@@ -700,6 +718,7 @@ const koTranslations = <String, String>{
 
   // Exchange center
   'exchange_title': '교환소',
+  'exchange_subtitle': '다이아몬드를 파워로 변환',
   'exchange_convert_title': '다이아몬드 전환',
   'exchange_convert_button': '전환',
   'exchange_powers_title': '파워 권한',
@@ -719,6 +738,7 @@ const koTranslations = <String, String>{
   'referral_title': '친구 초대',
   'referral_description': '친구를 초대하면 둘 다 보라색 다이아몬드 25개를 받아요!',
   'referral_compact_cta': '친구를 초대하고 다이아몬드를 받으세요',
+  'referral_compact_subtitle': '초대할 때마다 보라 다이아몬드 보상',
   'referral_copy': '복사',
   'referral_share': '공유',
   'referral_progress': '사용된 초대',
@@ -728,6 +748,13 @@ const koTranslations = <String, String>{
   'referral_code_valid': '추천인: ',
   'referral_code_invalid': '유효하지 않은 초대 코드예요',
   'referral_already_logged_in': '초대 코드는 회원가입 시에만 사용할 수 있어요',
+  'referral_enter_code': 'Have an invite code? Enter it here:',
+  'referral_apply': 'Apply',
+  'referral_invited_by': 'Invited by: ',
+  'referral_reward_earned': 'You earned 25 purple diamonds!',
+  'referral_complete_profile': 'Complete your profile to 60% to claim your reward!',
+  'referral_self_error': 'You cannot use your own code',
+  'referral_already_error': 'You have already used an invite code',
 
   // Paywall
   'paywall_title_undo': '되돌리기 잠금 해제',
@@ -861,4 +888,215 @@ const koTranslations = <String, String>{
   'preview_sheet_regen_cta': '다시 생성',
   'preview_sheet_skip_link': '당신이 골라요, 저는 빠질게요',
   'preview_sheet_error': '생성 실패, 다시 시도하세요',
+
+  // Splash
+  'splash_flow_ask': '질문',
+  'splash_flow_answer': '답변',
+  'splash_flow_match': '매칭',
+
+  // Chat — Abandon Warning
+  'abandon_title': 'You\'re Fleeing!',
+  'abandon_question_lock': 'Question Lock',
+  'abandon_power_block': 'Power Block',
+  'abandon_unmatch_risk': 'Unmatch Risk',
+  'abandon_features_added': 'The other person added these features to the question:',
+  'abandon_flee_warning': 'If you leave without answering, you\'ll be marked as fled.',
+  'abandon_unmatch_warning': 'Your match will end!',
+  'abandon_leave': 'Leave',
+  'abandon_stay': 'Go Back',
+
+  // Chat — Question Card
+  'question_risky': 'This question is risky!',
+  'question_power_block': 'Power Block',
+  'question_chat_locked': 'Chat Locked',
+  'question_fled': 'Fled',
+
+  // Chat — Question Result
+  'result_correct': 'Correct!',
+  'result_congrats': 'Congratulations!',
+  'result_wrong': 'Wrong Answer',
+  'result_correct_subtitle': 'You answered the question correctly!',
+  'result_wrong_subtitle': 'Better luck next time.',
+  'result_rescue': 'Rescue (Skip)',
+  'result_go_back': 'Go Back',
+  'result_unmatch_ended': 'Match ended',
+  'result_green_earned': '+{count} Green Diamonds',
+  'result_green_subtitle': 'Earned for the question owner',
+  'result_correct_answer': 'Correct answer',
+  'result_purple_spent': '-{count} Purple Diamonds',
+  'result_power_spent_single': 'Spent for {power}',
+  'result_power_spent_multi': 'Spent for power usage',
+  'result_powers_used': 'Powers Used',
+  'result_your_answer': 'Your Answer',
+  'result_correct_label': 'Correct',
+  'result_time': 'Time',
+
+  // Chat — Media Request
+  'media_active': 'Media sharing active',
+  'media_rejected': 'Media request rejected',
+  'media_sent': 'Media request sent',
+  'media_waiting': 'Waiting for response...',
+  'media_wants_share': '\u{1F4F7} Wants to share media',
+  'media_reject': 'Reject',
+  'media_accept': 'Accept',
+
+  // Chat — App Bar
+  'unmatch': 'Unmatch',
+
+  // Chat — Create Question
+  'create_question': 'Create Question',
+  'drafts_history': 'Drafts & History',
+
+  // Chat — Error Messages
+  'error_chat_generic': 'Something went wrong, please try again',
+  'error_rescue_failed': 'Rescue failed',
+
+  // Profile — Edit
+  'profile_photo_hint': 'Your first photo will be your profile photo',
+  'profile_relationship_title': 'Relationship Goal',
+  'profile_relationship_subtitle': 'Let the other person see what you\'re looking for',
+  'profile_relationship_serious': 'Serious Relationship',
+  'profile_relationship_friendship': 'Friendship',
+  'profile_relationship_not_sure': 'Not Sure',
+  'profile_basic_info_subtitle': 'Help us get to know you',
+  'profile_details_subtitle': 'Enrich your profile, get more matches',
+  'profile_bio_subtitle': 'Briefly introduce yourself',
+  'profile_no_data': 'No user data',
+
+  // Paywall (missing)
+  'paywall_onboarding_title': '더 많이 발견하기',
+  'paywall_maybe_later': '나중에',
+
+  // Preferences (missing)
+  'gender_pref_locked_info': '성별 선호도를 변경하려면 지원팀에 문의하세요.',
+
+  // Chat tabs (missing)
+  'chat_drafts_tab': '임시저장',
+  'chat_history_tab': '기록',
+  'chat_drafts_load_failed': '임시저장 불러오기 실패',
+  'chat_no_drafts': '아직 임시저장이 없습니다',
+  'chat_history_load_failed': '기록 불러오기 실패',
+  'chat_no_history': '아직 질문 기록이 없습니다',
+  'chat_messages_error': '메시지 불러오기 실패',
+
+  // Onboarding V2 (missing)
+  'onboarding_v2_page1_title': 'Qulo에서의 매칭은 다릅니다',
+  'onboarding_v2_page1_desc': '여기서는 질문을 통해 만납니다. 누군가 당신의 모든 질문에 정답을 맞추면 — 매치!',
+  'onboarding_v2_page2_title': '질문을 준비하세요',
+  'onboarding_v2_page2_desc': '2-10개의 질문을 만드세요. 개인적이고, 재미있고, 검색할 수 없는 질문을. 모두 맞추면 — 매치!',
+  'onboarding_v2_page3_title': '6가지 슈퍼 파워',
+  'onboarding_v2_page3_desc': '풀이자는 당신의 질문에 파워를 사용할 수 있습니다. 각 파워는 보라 다이아몬드가 필요합니다 — 그게 당신의 수입입니다!',
+  'onboarding_v2_page4_title': '초록 다이아몬드를 벌어보세요!',
+  'onboarding_v2_page4_desc': '당신의 질문에 파워를 사용하는 사람마다 초록 다이아몬드를 벌 수 있습니다. 질문이 많을수록 수입도 많아집니다!',
+  'onboarding_v2_page5_title': '어떤 언어를 보고 싶으세요?',
+  'onboarding_v2_page5_desc': '당신의 언어로 된 질문이 있는 프로필을 보여드립니다. 여러 언어를 선택할 수 있습니다.',
+  'onboarding_v2_skip': '건너뛰기',
+  'onboarding_v2_next': '다음',
+  'onboarding_v2_start': '시작하기',
+  'onboarding_v2_premium_title': 'Premium으로 더 많이',
+  'onboarding_v2_premium_cta': 'Premium 시작',
+  'onboarding_v2_premium_benefit_1': '무제한 발견',
+  'onboarding_v2_premium_benefit_2': '월간 보라 다이아몬드 보너스',
+  'onboarding_v2_premium_benefit_3': '광고 없는 경험',
+
+  // Report categories (missing)
+  'report_select_category': '신고 사유 선택',
+  'report_cat_inappropriate': '부적절한 콘텐츠',
+  'report_cat_fake': '가짜 프로필',
+  'report_cat_spam': '스팸',
+  'report_cat_harassment': '괴롭힘',
+  'report_cat_underage': '미성년자',
+  'report_cat_scam': '사기',
+  'report_cat_offensive_photos': '불쾌한 사진',
+  'report_cat_threatening': '위협',
+  'report_cat_impersonation': '사칭',
+  'report_cat_other': '기타',
+  'report_reason_title': '설명',
+  'report_reason_optional': '선택적 설명 추가...',
+  'report_reason_required': '자세한 설명을 작성해주세요...',
+
+  // Block (missing)
+  'blocked_users': '차단된 사용자',
+  'no_blocked_users': '차단된 사용자 없음',
+  'unblock': '차단 해제',
+  'unblock_confirm_title': '차단 해제',
+  'unblock_confirm_message': '이 사용자의 차단을 해제하시겠습니까?',
+
+  // Support tickets (missing)
+  'my_tickets': '내 지원 티켓',
+  'no_tickets': '아직 지원 티켓이 없습니다',
+  'create_ticket': '지원 티켓 생성',
+  'ticket_created_success': '지원 티켓이 생성되었습니다',
+  'ticket_replied': '답변됨',
+  'ticket_category': '카테고리',
+  'ticket_subject': '제목',
+  'ticket_subject_hint': '문제를 간략하게 설명하세요',
+  'ticket_subject_error': '제목은 최소 5자 이상이어야 합니다',
+  'ticket_message': '메시지',
+  'ticket_message_hint': '문제를 자세히 설명하세요',
+  'ticket_message_error': '메시지는 최소 10자 이상이어야 합니다',
+  'ticket_cat_account': '계정',
+  'ticket_cat_technical': '기술',
+  'ticket_cat_billing': '결제',
+  'ticket_cat_match': '매치',
+  'ticket_cat_other': '기타',
+  'ticket_status_open': '열림',
+  'ticket_status_in_progress': '처리 중',
+  'ticket_status_resolved': '해결됨',
+  'ticket_status_closed': '닫힘',
+
+  // Help (missing)
+  'help_support': '도움말 및 지원',
+
+  // Ban (missing)
+  'account_banned_title': '계정 정지',
+  'account_banned_message': '커뮤니티 가이드라인 위반으로 계정이 정지되었습니다. 자세한 내용은 문의해주세요.',
+
+  // Submit (missing)
+  'submit': '제출',
+
+  // Social login (missing)
+  'or': '또는',
+  'sign_in_with_google': 'Google로 로그인',
+  'sign_in_with_apple': 'Apple로 로그인',
+
+  // Profile completion (missing)
+  'profile_completion_title': '프로필 완성하기',
+
+  // App Review
+  'rate_us': '평가하기',
+  'rate_us_subtitle': 'Qulo가 마음에 드시나요? 리뷰를 남겨주세요!',
+
+  // Chat — Hardcoded fixes
+  'chat_question_load_failed': 'Question could not be loaded',
+  'chat_answer_question_hint': 'Answer the question...',
+  'chat_audio_reward_revealed': 'Audio Reward Unlocked!',
+  'chat_lock_answer_required': 'You need to answer the question to send messages.',
+  'chat_time_up': 'Time\'s Up!',
+  'chat_time_up_desc': 'Your time to answer has run out. Use a power to rescue yourself.',
+  'chat_powers_blocked': 'Powers are blocked. Unlock and use Skip power.',
+  'chat_audio_reward': 'Audio Reward',
+  'chat_audio_locked': 'Locked Audio',
+  'chat_unmatch_confirm': 'Are you sure you want to unmatch? This action cannot be undone.',
+
+  // Power bar labels (short display names)
+  'power_bar_half': 'Half',
+  'power_bar_skip': 'Skip',
+  'power_bar_hint': 'Hint',
+  'power_bar_skip_all': 'Skip All',
+  'power_bar_block': 'Block',
+  'power_bar_unlock': 'Unlock',
+
+  // Milestone celebration
+  'milestone_congrats': 'Congratulations!',
+  'milestone_profile_completed': 'You completed @milestone% of your profile!',
+  'milestone_diamond_earned': 'You earned purple diamonds!',
+  'milestone_boost_earned': 'You earned a free 24-hour boost!',
+
+  // Referral share
+  'referral_share_message': 'Join Qulo! Use my invite code, we both get @reward purple diamonds: @code\nhttps://quloapp.com/invite/@code',
+
+  // Email notifications (added 2026-06-09)
+  'email_notifications': '이메일 알림',
+  'email_notifications_desc': '새로운 매치가 있을 때 이메일 받기',
 };

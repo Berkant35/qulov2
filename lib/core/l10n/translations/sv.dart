@@ -177,6 +177,16 @@ const svTranslations = <String, String>{
   'delete_account': 'Ta bort konto',
   'delete_account_desc': 'Denna åtgärd kan inte ångras. All din data kommer att raderas.',
 
+  // Notification Preferences
+  'notification_settings': 'Notification Settings',
+  'notification_settings_desc': 'Disabled notifications will still appear in your inbox',
+  'notif_messages': 'Messages',
+  'notif_messages_desc': 'New message notifications',
+  'notif_matches': 'Matches',
+  'notif_matches_desc': 'Match and question answer notifications',
+  'notif_campaigns': 'Campaigns',
+  'notif_campaigns_desc': 'Promotional and campaign notifications',
+
   // Powers
   'my_powers': 'Mina krafter',
   'power_copy': 'Kopiera',
@@ -211,6 +221,7 @@ const svTranslations = <String, String>{
   'accept_terms': 'Jag godkänner',
   'terms_of_service': 'Användarvillkor',
   'privacy_policy': 'Integritetspolicy',
+  'legal': 'Juridisk',
   'and_word': 'och',
   'must_accept_terms': 'Du måste godkänna villkoren för att fortsätta',
 
@@ -407,6 +418,10 @@ const svTranslations = <String, String>{
   'mark_all_read': 'Markera alla som lästa',
   'no_notifications': 'Inga aviseringar ännu',
   'no_notifications_desc': 'Här ser du matchningar och meddelanden',
+  'time_just_now': 'Nyss',
+  'time_minutes_ago': '{n} min sedan',
+  'time_hours_ago': '{n}h sedan',
+  'time_days_ago': '{n}d sedan',
   'just_now': 'Just nu',
   'minutes_ago': '{} min sedan',
   'hours_ago': '{} timmar sedan',
@@ -431,7 +446,7 @@ const svTranslations = <String, String>{
   'question_create_step_answers': 'Lägg till svar',
   'question_create_step_settings': 'Inställningar',
   'question_create_motto': 'Ställ frågor om dig själv \u2014 inget som går att googla!',
-  'question_create_motto_tip': 'Tips: Personliga frågor som "Min favoritårstid?" får fler svar',
+  'question_create_motto_tip': 'Tips: Personliga frågor hjälper dig att hitta personer som matchar dina kriterier',
   'question_create_select_category': 'Välj kategori',
   'question_create_select_time': 'Välj tid',
   'question_create_hint_label': 'Ledtråd (valfritt)',
@@ -451,6 +466,8 @@ const svTranslations = <String, String>{
   'question_category_lifestyle': 'Livsstil',
   'question_category_humor': 'Humor',
   'question_category_hobby': 'Hobby',
+  'question_category_relationship': 'Relation',
+  'question_category_entertainment': 'Underhållning',
 
   // Time Presets
   'question_time_fast': 'Snabbt',
@@ -548,6 +565,7 @@ const svTranslations = <String, String>{
   'error_general': 'Något gick fel',
   'error_try_again': 'Något gick fel. Försök igen.',
   'question_save_failed': 'Frågan kunde inte sparas',
+  'max_questions_reached': 'Frågegränsen nådd. Ta bort en befintlig fråga för att lägga till en ny.',
   'badge_claim_failed': 'Belöningen kunde inte hämtas',
 
   // Chat Question
@@ -702,6 +720,7 @@ const svTranslations = <String, String>{
 
   // Exchange center
   'exchange_title': 'Växelcentral',
+  'exchange_subtitle': 'Omvandla diamanter till krafter',
   'exchange_convert_title': 'Diamantkonvertering',
   'exchange_convert_button': 'Konvertera',
   'exchange_powers_title': 'Krafträttigheter',
@@ -721,6 +740,7 @@ const svTranslations = <String, String>{
   'referral_title': 'Bjud in en vän',
   'referral_description': 'Bjud in en vän, båda får 25 lila diamanter!',
   'referral_compact_cta': 'Bjud in en vän, tjäna diamanter',
+  'referral_compact_subtitle': 'Varje inbjudan = lila diamantbelöning',
   'referral_copy': 'Kopiera',
   'referral_share': 'Dela',
   'referral_progress': 'Inbjudningar använda',
@@ -730,6 +750,13 @@ const svTranslations = <String, String>{
   'referral_code_valid': 'Inbjuden av: ',
   'referral_code_invalid': 'Ogiltig inbjudningskod',
   'referral_already_logged_in': 'Inbjudningskoder kan bara användas vid registrering',
+  'referral_enter_code': 'Have an invite code? Enter it here:',
+  'referral_apply': 'Apply',
+  'referral_invited_by': 'Invited by: ',
+  'referral_reward_earned': 'You earned 25 purple diamonds!',
+  'referral_complete_profile': 'Complete your profile to 60% to claim your reward!',
+  'referral_self_error': 'You cannot use your own code',
+  'referral_already_error': 'You have already used an invite code',
 
   // Paywall
   'paywall_title_undo': 'Lås upp Ångra',
@@ -863,4 +890,215 @@ const svTranslations = <String, String>{
   'preview_sheet_regen_cta': 'Generera om',
   'preview_sheet_skip_link': 'Välj du, jag lägger mig inte i',
   'preview_sheet_error': 'Kunde inte generera, försök igen',
+
+  // Splash
+  'splash_flow_ask': 'Fråga',
+  'splash_flow_answer': 'Svara',
+  'splash_flow_match': 'Matcha',
+
+  // Chat — Abandon Warning
+  'abandon_title': 'You\'re Fleeing!',
+  'abandon_question_lock': 'Question Lock',
+  'abandon_power_block': 'Power Block',
+  'abandon_unmatch_risk': 'Unmatch Risk',
+  'abandon_features_added': 'The other person added these features to the question:',
+  'abandon_flee_warning': 'If you leave without answering, you\'ll be marked as fled.',
+  'abandon_unmatch_warning': 'Your match will end!',
+  'abandon_leave': 'Leave',
+  'abandon_stay': 'Go Back',
+
+  // Chat — Question Card
+  'question_risky': 'This question is risky!',
+  'question_power_block': 'Power Block',
+  'question_chat_locked': 'Chat Locked',
+  'question_fled': 'Fled',
+
+  // Chat — Question Result
+  'result_correct': 'Correct!',
+  'result_congrats': 'Congratulations!',
+  'result_wrong': 'Wrong Answer',
+  'result_correct_subtitle': 'You answered the question correctly!',
+  'result_wrong_subtitle': 'Better luck next time.',
+  'result_rescue': 'Rescue (Skip)',
+  'result_go_back': 'Go Back',
+  'result_unmatch_ended': 'Match ended',
+  'result_green_earned': '+{count} Green Diamonds',
+  'result_green_subtitle': 'Earned for the question owner',
+  'result_correct_answer': 'Correct answer',
+  'result_purple_spent': '-{count} Purple Diamonds',
+  'result_power_spent_single': 'Spent for {power}',
+  'result_power_spent_multi': 'Spent for power usage',
+  'result_powers_used': 'Powers Used',
+  'result_your_answer': 'Your Answer',
+  'result_correct_label': 'Correct',
+  'result_time': 'Time',
+
+  // Chat — Media Request
+  'media_active': 'Media sharing active',
+  'media_rejected': 'Media request rejected',
+  'media_sent': 'Media request sent',
+  'media_waiting': 'Waiting for response...',
+  'media_wants_share': '\u{1F4F7} Wants to share media',
+  'media_reject': 'Reject',
+  'media_accept': 'Accept',
+
+  // Chat — App Bar
+  'unmatch': 'Unmatch',
+
+  // Chat — Create Question
+  'create_question': 'Create Question',
+  'drafts_history': 'Drafts & History',
+
+  // Chat — Error Messages
+  'error_chat_generic': 'Something went wrong, please try again',
+  'error_rescue_failed': 'Rescue failed',
+
+  // Profile — Edit
+  'profile_photo_hint': 'Your first photo will be your profile photo',
+  'profile_relationship_title': 'Relationship Goal',
+  'profile_relationship_subtitle': 'Let the other person see what you\'re looking for',
+  'profile_relationship_serious': 'Serious Relationship',
+  'profile_relationship_friendship': 'Friendship',
+  'profile_relationship_not_sure': 'Not Sure',
+  'profile_basic_info_subtitle': 'Help us get to know you',
+  'profile_details_subtitle': 'Enrich your profile, get more matches',
+  'profile_bio_subtitle': 'Briefly introduce yourself',
+  'profile_no_data': 'No user data',
+
+  // Paywall (missing)
+  'paywall_onboarding_title': 'Upptäck mer',
+  'paywall_maybe_later': 'Kanske senare',
+
+  // Preferences (missing)
+  'gender_pref_locked_info': 'Kontakta supporten för att ändra din könspreferens.',
+
+  // Chat tabs (missing)
+  'chat_drafts_tab': 'Utkast',
+  'chat_history_tab': 'Historik',
+  'chat_drafts_load_failed': 'Kunde inte ladda utkast',
+  'chat_no_drafts': 'Inga utkast ännu',
+  'chat_history_load_failed': 'Kunde inte ladda historik',
+  'chat_no_history': 'Ingen frågehistorik ännu',
+  'chat_messages_error': 'Kunde inte ladda meddelanden',
+
+  // Onboarding V2 (missing)
+  'onboarding_v2_page1_title': 'Matchning på Qulo är annorlunda',
+  'onboarding_v2_page1_desc': 'Här möter du människor genom frågor. Om någon svarar rätt på alla dina frågor — det är en match!',
+  'onboarding_v2_page2_title': 'Förbered dina frågor',
+  'onboarding_v2_page2_desc': 'Skapa 2-10 frågor. Personliga, roliga, som inte kan googlas. Om någon klarar alla — det är en match!',
+  'onboarding_v2_page3_title': '6 Superkrafter',
+  'onboarding_v2_page3_desc': 'Lösare kan använda dessa krafter på dina frågor. Varje kraft kostar lila diamanter — och det är din inkomst!',
+  'onboarding_v2_page4_title': 'Tjäna gröna diamanter!',
+  'onboarding_v2_page4_desc': 'Varje person som använder en kraft på dina frågor ger dig gröna diamanter. Fler frågor, mer inkomst!',
+  'onboarding_v2_page5_title': 'Vilka språk vill du se?',
+  'onboarding_v2_page5_desc': 'Vi visar dig profiler med frågor på dina språk. Du kan välja flera.',
+  'onboarding_v2_skip': 'Hoppa över',
+  'onboarding_v2_next': 'Nästa',
+  'onboarding_v2_start': 'Kom igång',
+  'onboarding_v2_premium_title': 'Mer med Premium',
+  'onboarding_v2_premium_cta': 'Skaffa Premium',
+  'onboarding_v2_premium_benefit_1': 'Obegränsat upptäckande',
+  'onboarding_v2_premium_benefit_2': 'Månatlig lila diamantbonus',
+  'onboarding_v2_premium_benefit_3': 'Reklamfri upplevelse',
+
+  // Report categories (missing)
+  'report_select_category': 'Välj anledning till anmälan',
+  'report_cat_inappropriate': 'Olämpligt innehåll',
+  'report_cat_fake': 'Falsk profil',
+  'report_cat_spam': 'Skräppost',
+  'report_cat_harassment': 'Trakasserier',
+  'report_cat_underage': 'Minderårig',
+  'report_cat_scam': 'Bedrägeri',
+  'report_cat_offensive_photos': 'Stötande foton',
+  'report_cat_threatening': 'Hotfullt',
+  'report_cat_impersonation': 'Identitetsstöld',
+  'report_cat_other': 'Övrigt',
+  'report_reason_title': 'Beskrivning',
+  'report_reason_optional': 'Lägg till en valfri beskrivning...',
+  'report_reason_required': 'Skriv en detaljerad beskrivning...',
+
+  // Block (missing)
+  'blocked_users': 'Blockerade användare',
+  'no_blocked_users': 'Inga blockerade användare',
+  'unblock': 'Avblockera',
+  'unblock_confirm_title': 'Avblockera',
+  'unblock_confirm_message': 'Är du säker på att du vill avblockera den här användaren?',
+
+  // Support tickets (missing)
+  'my_tickets': 'Mina supportärenden',
+  'no_tickets': 'Inga supportärenden ännu',
+  'create_ticket': 'Skapa supportärende',
+  'ticket_created_success': 'Ditt supportärende har skapats',
+  'ticket_replied': 'Besvarad',
+  'ticket_category': 'Kategori',
+  'ticket_subject': 'Ämne',
+  'ticket_subject_hint': 'Beskriv kort ditt problem',
+  'ticket_subject_error': 'Ämnet måste vara minst 5 tecken',
+  'ticket_message': 'Meddelande',
+  'ticket_message_hint': 'Beskriv ditt problem i detalj',
+  'ticket_message_error': 'Meddelandet måste vara minst 10 tecken',
+  'ticket_cat_account': 'Konto',
+  'ticket_cat_technical': 'Tekniskt',
+  'ticket_cat_billing': 'Fakturering',
+  'ticket_cat_match': 'Match',
+  'ticket_cat_other': 'Övrigt',
+  'ticket_status_open': 'Öppet',
+  'ticket_status_in_progress': 'Pågående',
+  'ticket_status_resolved': 'Löst',
+  'ticket_status_closed': 'Stängt',
+
+  // Help (missing)
+  'help_support': 'Hjälp och support',
+
+  // Ban (missing)
+  'account_banned_title': 'Konto avstängt',
+  'account_banned_message': 'Ditt konto har stängts av för brott mot communityreglerna. Kontakta oss för detaljer.',
+
+  // Submit (missing)
+  'submit': 'Skicka',
+
+  // Social login (missing)
+  'or': 'eller',
+  'sign_in_with_google': 'Logga in med Google',
+  'sign_in_with_apple': 'Logga in med Apple',
+
+  // Profile completion (missing)
+  'profile_completion_title': 'Fyll i din profil',
+
+  // App Review
+  'rate_us': 'Betygsätt oss',
+  'rate_us_subtitle': 'Gillar du Qulo? Lämna en recension!',
+
+  // Chat — Hardcoded fixes
+  'chat_question_load_failed': 'Question could not be loaded',
+  'chat_answer_question_hint': 'Answer the question...',
+  'chat_audio_reward_revealed': 'Audio Reward Unlocked!',
+  'chat_lock_answer_required': 'You need to answer the question to send messages.',
+  'chat_time_up': 'Time\'s Up!',
+  'chat_time_up_desc': 'Your time to answer has run out. Use a power to rescue yourself.',
+  'chat_powers_blocked': 'Powers are blocked. Unlock and use Skip power.',
+  'chat_audio_reward': 'Audio Reward',
+  'chat_audio_locked': 'Locked Audio',
+  'chat_unmatch_confirm': 'Are you sure you want to unmatch? This action cannot be undone.',
+
+  // Power bar labels (short display names)
+  'power_bar_half': 'Half',
+  'power_bar_skip': 'Skip',
+  'power_bar_hint': 'Hint',
+  'power_bar_skip_all': 'Skip All',
+  'power_bar_block': 'Block',
+  'power_bar_unlock': 'Unlock',
+
+  // Milestone celebration
+  'milestone_congrats': 'Congratulations!',
+  'milestone_profile_completed': 'You completed @milestone% of your profile!',
+  'milestone_diamond_earned': 'You earned purple diamonds!',
+  'milestone_boost_earned': 'You earned a free 24-hour boost!',
+
+  // Referral share
+  'referral_share_message': 'Join Qulo! Use my invite code, we both get @reward purple diamonds: @code\nhttps://quloapp.com/invite/@code',
+
+  // Email notifications (added 2026-06-09)
+  'email_notifications': 'E-postmeddelanden',
+  'email_notifications_desc': 'Få ett e-postmeddelande vid en ny matchning',
 };

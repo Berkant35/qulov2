@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'dart:developer' as dev;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/data/models/discover_model.dart';
 import 'package:qulo_v2/data/models/match_model.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
+import 'package:qulo_v2/providers/auth_provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DiscoverNotifier extends AsyncNotifier<DiscoverState> {
   bool _isPrefetching = false;
@@ -164,21 +167,46 @@ class DiscoverState {
 final discoverProvider = AsyncNotifierProvider<DiscoverNotifier, DiscoverState>(DiscoverNotifier.new);
 
 class MatchListNotifier extends AsyncNotifier<List<MatchModel>> {
+  final List<RealtimeChannel> _channels = [];
+  int _generation = 0;
+  int _retryCount = 0;
+  static const _maxRetries = 3;
+
   @override
   Future<List<MatchModel>> build() async {
+    _generation++;
+    _retryCount = 0;
+
+    ref.onDispose(_unsubscribeAll);
+
     final result = await ref.read(matchRepositoryProvider).getMatches();
-    return result.when(
+    final matches = result.when(
       success: (data) => data,
       failure: (f) => throw f,
     );
+
+    Future.microtask(() => _subscribeToRealtime());
+
+    return _sortMatches(matches);
   }
 
   Future<void> fetchMatches() async {
     state = const AsyncLoading();
     final result = await ref.read(matchRepositoryProvider).getMatches();
     state = result.when(
-      success: (data) => AsyncData(data),
+      success: (data) => AsyncData(_sortMatches(data)),
       failure: (f) => AsyncError(f, StackTrace.current),
+    );
+    _unsubscribeAll();
+    _retryCount = 0;
+    _subscribeToRealtime();
+  }
+
+  Future<void> silentRefresh() async {
+    final result = await ref.read(matchRepositoryProvider).getMatches();
+    result.when(
+      success: (data) => state = AsyncData(_sortMatches(data)),
+      failure: (_) {},
     );
   }
 
@@ -189,6 +217,221 @@ class MatchListNotifier extends AsyncNotifier<List<MatchModel>> {
       failure: (f) => dev.log('unmatch failed: $f', name: 'MatchListNotifier'),
     );
     return result;
+  }
+
+  /// Chat ekranı açıldığında badge'i anında sıfırlar (realtime'a bağımlı değil).
+  void clearUnreadCount(String matchId) {
+    final current = state.valueOrNull;
+    if (current == null) return;
+
+    final updated = current.map((m) {
+      if (m.matchId != matchId || m.unreadCount == 0) return m;
+      return m.copyWith(unreadCount: 0);
+    }).toList();
+
+    state = AsyncData(updated);
+  }
+
+  // --- Sorting ---
+
+  List<MatchModel> _sortMatches(List<MatchModel> matches) {
+    return [...matches]..sort((a, b) {
+      final aTime = a.lastMessageSentAt;
+      final bTime = b.lastMessageSentAt;
+      if (aTime != null && bTime != null) return bTime.compareTo(aTime);
+      if (aTime != null) return -1;
+      if (bTime != null) return 1;
+      return b.matchedAt.compareTo(a.matchedAt);
+    });
+  }
+
+  // --- Realtime Event Handlers ---
+
+  void _onNewMessage(int gen, PostgresChangePayload payload) {
+    if (gen != _generation) return;
+    final current = state.valueOrNull;
+    if (current == null) return;
+
+    final record = payload.newRecord;
+    final matchId = record['match_id'] as String?;
+    final senderId = record['sender_id'] as String?;
+    final content = record['content'] as String?;
+    final createdAt = record['created_at'] as String?;
+    final myId = ref.read(authProvider).userId;
+
+    if (matchId == null) return;
+
+    final updated = current.map((m) {
+      if (m.matchId != matchId) return m;
+      if (createdAt != null && m.lastMessageSentAt != null && createdAt.compareTo(m.lastMessageSentAt!) <= 0) return m;
+      return m.copyWith(
+        lastMessage: content,
+        lastMessageSentAt: createdAt,
+        lastMessageSenderId: senderId,
+        unreadCount: (senderId != myId) ? m.unreadCount + 1 : m.unreadCount,
+      );
+    }).toList();
+
+    state = AsyncData(_sortMatches(updated));
+  }
+
+  void _onMessageRead(int gen, PostgresChangePayload payload) {
+    if (gen != _generation) return;
+    final current = state.valueOrNull;
+    if (current == null) return;
+
+    final record = payload.newRecord;
+    final matchId = record['match_id'] as String?;
+    final readAt = record['read_at'];
+    final senderId = record['sender_id'] as String?;
+    final myId = ref.read(authProvider).userId;
+
+    if (matchId == null || readAt == null) return;
+    if (senderId == myId) return;
+
+    final updated = current.map((m) {
+      if (m.matchId != matchId || m.unreadCount == 0) return m;
+      return m.copyWith(unreadCount: 0);
+    }).toList();
+
+    state = AsyncData(updated);
+  }
+
+  void _onUserStatusChange(int gen, PostgresChangePayload payload) {
+    if (gen != _generation) return;
+    final current = state.valueOrNull;
+    if (current == null) return;
+
+    final record = payload.newRecord;
+    final userId = record['id'] as String?;
+    final isOnline = record['is_online'] as bool?;
+
+    if (userId == null || isOnline == null) return;
+
+    final updated = current.map((m) {
+      if (m.user?.userId != userId) return m;
+      return m.copyWith(user: m.user!.copyWith(isOnline: isOnline));
+    }).toList();
+
+    state = AsyncData(updated);
+  }
+
+  void _onNewMatch(int gen, PostgresChangePayload payload) {
+    if (gen != _generation) return;
+    final record = payload.newRecord;
+    final user1 = record['user1_id'] as String?;
+    final user2 = record['user2_id'] as String?;
+    final myId = ref.read(authProvider).userId;
+
+    if (myId == user1 || myId == user2) {
+      silentRefresh();
+    }
+  }
+
+  // --- Subscription Management ---
+
+  void _subscribeToRealtime() {
+    final gen = _generation;
+    final current = state.valueOrNull;
+    if (current == null || current.isEmpty) {
+      _subscribeNewMatches(gen);
+      return;
+    }
+
+    final matchIds = current.map((m) => m.matchId).toList();
+    final userIds = current.where((m) => m.user != null).map((m) => m.user!.userId).toList();
+
+    // Channel 1: New messages
+    final msgChannel = Supabase.instance.client
+        .channel('matches:messages')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.insert,
+          schema: 'public',
+          table: 'messages',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.inFilter,
+            column: 'match_id',
+            value: matchIds,
+          ),
+          callback: (payload) => _onNewMessage(gen, payload),
+        )
+        .subscribe((status, [error]) {
+          if (status == RealtimeSubscribeStatus.channelError ||
+              status == RealtimeSubscribeStatus.timedOut) {
+            _handleReconnect();
+          }
+        });
+    _channels.add(msgChannel);
+
+    // Channel 2: Read receipts
+    final readChannel = Supabase.instance.client
+        .channel('matches:read')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.update,
+          schema: 'public',
+          table: 'messages',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.inFilter,
+            column: 'match_id',
+            value: matchIds,
+          ),
+          callback: (payload) => _onMessageRead(gen, payload),
+        )
+        .subscribe();
+    _channels.add(readChannel);
+
+    // Channel 3: Online status
+    if (userIds.isNotEmpty) {
+      final onlineChannel = Supabase.instance.client
+          .channel('matches:online')
+          .onPostgresChanges(
+            event: PostgresChangeEvent.update,
+            schema: 'public',
+            table: 'users',
+            filter: PostgresChangeFilter(
+              type: PostgresChangeFilterType.inFilter,
+              column: 'id',
+              value: userIds,
+            ),
+            callback: (payload) => _onUserStatusChange(gen, payload),
+          )
+          .subscribe();
+      _channels.add(onlineChannel);
+    }
+
+    // Channel 4: New matches
+    _subscribeNewMatches(gen);
+  }
+
+  void _subscribeNewMatches(int gen) {
+    final newMatchChannel = Supabase.instance.client
+        .channel('matches:new')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.insert,
+          schema: 'public',
+          table: 'matches',
+          callback: (payload) => _onNewMatch(gen, payload),
+        )
+        .subscribe();
+    _channels.add(newMatchChannel);
+  }
+
+  void _unsubscribeAll() {
+    _generation++;
+    for (final channel in _channels) {
+      channel.unsubscribe();
+    }
+    _channels.clear();
+  }
+
+  Future<void> _handleReconnect() async {
+    if (_retryCount >= _maxRetries) return;
+    _retryCount++;
+    final delay = Duration(seconds: 5 * _retryCount);
+    await Future.delayed(delay);
+    _unsubscribeAll();
+    await silentRefresh();
+    _subscribeToRealtime();
   }
 }
 

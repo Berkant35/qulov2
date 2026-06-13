@@ -31,20 +31,20 @@ class _PowerPurchaseSheetState extends ConsumerState<PowerPurchaseSheet> {
     });
   }
 
-  Future<void> _onBuy(String powerName, String diamondType) async {
+  Future<void> _onBuy(String powerName, String diamondType, int quantity) async {
     final key = '${powerName}_$diamondType';
     if (_buyingKey != null) return;
     setState(() => _buyingKey = key);
 
     final result = await ref
         .read(exchangeProvider.notifier)
-        .buyPower(powerName, diamondType, 1);
+        .buyPower(powerName, diamondType, quantity);
 
     if (!mounted) return;
 
     result.when(
       success: (_) {
-        Navigator.of(context).pop();
+        // Sheet stays open — user closes manually
       },
       failure: (f) {
         if (f is ServerFailure && f.code == 'INSUFFICIENT_DIAMONDS') {
@@ -152,11 +152,11 @@ class _PowerPurchaseSheetState extends ConsumerState<PowerPurchaseSheet> {
   }
 }
 
-class _PowerRow extends StatelessWidget {
+class _PowerRow extends StatefulWidget {
   final ExchangeRatePower power;
   final int inventoryCount;
   final String? buyingKey;
-  final Future<void> Function(String powerName, String diamondType) onBuy;
+  final Future<void> Function(String powerName, String diamondType, int quantity) onBuy;
 
   const _PowerRow({
     required this.power,
@@ -165,8 +165,72 @@ class _PowerRow extends StatelessWidget {
     required this.onBuy,
   });
 
+  @override
+  State<_PowerRow> createState() => _PowerRowState();
+}
+
+class _PowerRowState extends State<_PowerRow>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _pulseController;
+  late final Animation<double> _scaleAnimation;
+  late final Animation<double> _glowAnimation;
+  late int _previousCount;
+  int _quantity = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    _previousCount = widget.inventoryCount;
+
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+
+    _scaleAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween(begin: 1.0, end: 1.35)
+            .chain(CurveTween(curve: Curves.easeOut)),
+        weight: 40,
+      ),
+      TweenSequenceItem(
+        tween: Tween(begin: 1.35, end: 1.0)
+            .chain(CurveTween(curve: Curves.easeOutBack)),
+        weight: 60,
+      ),
+    ]).animate(_pulseController);
+
+    _glowAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween(begin: 0.0, end: 0.6)
+            .chain(CurveTween(curve: Curves.easeOut)),
+        weight: 35,
+      ),
+      TweenSequenceItem(
+        tween: Tween(begin: 0.6, end: 0.0)
+            .chain(CurveTween(curve: Curves.easeIn)),
+        weight: 65,
+      ),
+    ]).animate(_pulseController);
+  }
+
+  @override
+  void didUpdateWidget(_PowerRow oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.inventoryCount > _previousCount) {
+      _pulseController.forward(from: 0);
+    }
+    _previousCount = widget.inventoryCount;
+  }
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    super.dispose();
+  }
+
   String _powerLabel(BuildContext context) {
-    final key = switch (power.name) {
+    final key = switch (widget.power.name) {
       'ORACLE' => 'power_oracle',
       'HALF' => 'power_half',
       'SKIP' => 'power_skip',
@@ -175,13 +239,13 @@ class _PowerRow extends StatelessWidget {
       'HINT' => 'power_hint',
       'POWER_BLOCK' => 'power_block',
       'POWER_UNBLOCK' => 'power_unblock',
-      _ => power.name,
+      _ => widget.power.name,
     };
     return context.tr(key);
   }
 
   String _powerDesc(BuildContext context) {
-    final key = switch (power.name) {
+    final key = switch (widget.power.name) {
       'ORACLE' => 'power_oracle_desc',
       'HALF' => 'power_half_desc',
       'SKIP' => 'power_skip_desc',
@@ -198,7 +262,7 @@ class _PowerRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final powerType = PowerType.fromApiName(power.name);
+    final powerType = PowerType.fromApiName(widget.power.name);
     if (powerType == null) return const SizedBox.shrink();
 
     return Padding(
@@ -217,11 +281,35 @@ class _PowerRow extends StatelessWidget {
         ),
         child: Row(
           children: [
-            PowerIcon(
-              type: powerType,
-              size: 28,
-              showCount: inventoryCount > 0,
-              count: inventoryCount,
+            AnimatedBuilder(
+              animation: _pulseController,
+              builder: (context, child) {
+                return Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: _pulseController.isAnimating
+                        ? [
+                            BoxShadow(
+                              color: powerType.color
+                                  .withValues(alpha: _glowAnimation.value),
+                              blurRadius: 12,
+                              spreadRadius: 2,
+                            ),
+                          ]
+                        : null,
+                  ),
+                  child: Transform.scale(
+                    scale: _scaleAnimation.value,
+                    child: child,
+                  ),
+                );
+              },
+              child: PowerIcon(
+                type: powerType,
+                size: 28,
+                showCount: widget.inventoryCount > 0,
+                count: widget.inventoryCount,
+              ),
             ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
@@ -244,22 +332,107 @@ class _PowerRow extends StatelessWidget {
                 ],
               ),
             ),
+            // Quantity stepper
+            _QuantityStepper(
+              quantity: _quantity,
+              onChanged: (q) => setState(() => _quantity = q),
+            ),
+            const SizedBox(width: AppSpacing.sm),
             // Purple buy button
             _BuyChip(
-              cost: power.purpleCost,
+              cost: widget.power.purpleCost * _quantity,
               icon: const DiamondIcon.purple(size: 14, showGlow: false),
-              isLoading: buyingKey == '${power.name}_PURPLE',
-              onTap: () => onBuy(power.name, 'PURPLE'),
+              isLoading: widget.buyingKey == '${widget.power.name}_PURPLE',
+              onTap: () => widget.onBuy(widget.power.name, 'PURPLE', _quantity),
             ),
             const SizedBox(width: AppSpacing.xs),
             // Green buy button
             _BuyChip(
-              cost: power.greenCost,
+              cost: widget.power.greenCost * _quantity,
               icon: const DiamondIcon.green(size: 14, showGlow: false),
-              isLoading: buyingKey == '${power.name}_GREEN',
-              onTap: () => onBuy(power.name, 'GREEN'),
+              isLoading: widget.buyingKey == '${widget.power.name}_GREEN',
+              onTap: () => widget.onBuy(widget.power.name, 'GREEN', _quantity),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _QuantityStepper extends StatelessWidget {
+  final int quantity;
+  final ValueChanged<int> onChanged;
+
+  const _QuantityStepper({
+    required this.quantity,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: context.appColors.surfaceElevated,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+        border: Border.all(
+          color: theme.colorScheme.outline.withValues(alpha: 0.2),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _StepperButton(
+            icon: Icons.remove,
+            enabled: quantity > 1,
+            onTap: () => onChanged(quantity - 1),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            child: Text(
+              '$quantity',
+              style: theme.textTheme.labelMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          _StepperButton(
+            icon: Icons.add,
+            enabled: quantity < 99,
+            onTap: () => onChanged(quantity + 1),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StepperButton extends StatelessWidget {
+  final IconData icon;
+  final bool enabled;
+  final VoidCallback onTap;
+
+  const _StepperButton({
+    required this.icon,
+    required this.enabled,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: enabled ? onTap : null,
+      borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: Icon(
+          icon,
+          size: 16,
+          color: enabled
+              ? context.appColors.primary
+              : Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
         ),
       ),
     );

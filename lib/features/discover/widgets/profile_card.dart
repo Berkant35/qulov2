@@ -4,7 +4,7 @@ import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
-import 'package:qulo_v2/core/widgets/q_icon.dart';
+import 'package:qulo_v2/core/widgets/app_icon.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/data/models/discover_model.dart';
 import 'package:qulo_v2/features/questions/widgets/difficulty_badge.dart';
@@ -51,7 +51,7 @@ class _ProfileCardState extends State<ProfileCard> {
 
   Widget _photoPlaceholder(ThemeData theme) => Container(
         color: theme.colorScheme.surface,
-        child: Center(child: QIcon(QIcons.icUser, color: theme.hintColor, size: 80)),
+        child: Center(child: AppIcon(QIcons.userRounded, color: theme.hintColor, size: 80)),
       );
 
   String _relationshipGoalLabel(BuildContext context, String? goal) {
@@ -106,6 +106,7 @@ class _ProfileCardState extends State<ProfileCard> {
                       child: CachedNetworkImage(
                         imageUrl: _photos[index],
                         fit: BoxFit.cover,
+                        memCacheWidth: 1080,
                         placeholder: (_, __) => _photoPlaceholder(theme),
                         errorWidget: (_, __, ___) => _photoPlaceholder(theme),
                       ),
@@ -178,7 +179,7 @@ class _ProfileCardState extends State<ProfileCard> {
                       ),
                       if (widget.card.isBoosted) ...[
                         const SizedBox(width: AppSpacing.sm),
-                        QIcon(QIcons.icZap, color: context.appColors.warning, size: 20),
+                        AppIcon(QIcons.bolt, color: context.appColors.warning, size: 20),
                       ],
                     ],
                   ),
@@ -186,7 +187,7 @@ class _ProfileCardState extends State<ProfileCard> {
                   if (widget.card.city != null)
                     Row(
                       children: [
-                        QIcon(QIcons.icMapPin, color: Colors.white70, size: 16),
+                        AppIcon(QIcons.mapPin, color: Colors.white70, size: 16),
                         const SizedBox(width: AppSpacing.xs),
                         Text(
                           '${widget.card.city} • ${widget.card.distanceKm < 1.0 ? context.tr('nearby') : '${widget.card.distanceKm.toStringAsFixed(1)} km'}',

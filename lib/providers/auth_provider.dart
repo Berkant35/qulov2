@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -9,6 +10,7 @@ import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/network/network_manager.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/services/revenuecat_service.dart';
+import 'package:qulo_v2/core/services/social_auth_service.dart';
 import 'package:qulo_v2/data/models/auth_model.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
@@ -21,8 +23,13 @@ import 'package:qulo_v2/providers/subscription_provider.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
 import 'package:qulo_v2/providers/passport_provider.dart';
 import 'package:qulo_v2/providers/user_languages_provider.dart';
+import 'package:qulo_v2/providers/exchange_provider.dart';
+import 'package:qulo_v2/providers/referral_provider.dart';
+import 'package:qulo_v2/providers/quiz_provider.dart';
+import 'package:qulo_v2/providers/deep_link_provider.dart';
+import 'package:qulo_v2/providers/notification_preferences_provider.dart';
 
-enum AuthStatus { initial, authenticated, unauthenticated }
+enum AuthStatus { initial, authenticated, unauthenticated, banned }
 
 class AuthState {
   final AuthStatus status;
@@ -83,6 +90,21 @@ class AuthNotifier extends Notifier<AuthState> {
       // Token not expired (or refreshed) — validate with server
       try {
         await ref.read(userProvider.notifier).fetchMe();
+
+        // Check if fetchMe resulted in a ban error
+        final userState = ref.read(userProvider);
+        if (userState is AsyncError) {
+          final failure = userState.error;
+          if (failure is ServerFailure && failure.code == 'ACCOUNT_BANNED') {
+            await _clearTokens();
+            state = state.copyWith(status: AuthStatus.banned);
+            return;
+          }
+          await _clearTokens();
+          state = state.copyWith(status: AuthStatus.unauthenticated);
+          return;
+        }
+
         ErrorManager.setUser(userId);
         AnalyticsManager.instance.setUserId(userId);
         AnalyticsManager.instance.logEvent(AnalyticsEvents.authLoginSuccess, params: {
@@ -157,7 +179,6 @@ class AuthNotifier extends Notifier<AuthState> {
     double? lat,
     double? lng,
     String locale = 'tr',
-    String? referralCode,
   }) async {
     AnalyticsManager.instance.logEvent(AnalyticsEvents.authRegisterStart, params: {
       AnalyticsEvents.paramMethod: 'email',
@@ -173,7 +194,6 @@ class AuthNotifier extends Notifier<AuthState> {
       lat: lat,
       lng: lng,
       locale: locale,
-      referralCode: referralCode,
     );
     result.when(
       success: (_) {
@@ -221,50 +241,137 @@ class AuthNotifier extends Notifier<AuthState> {
           userId: data.userId,
           isLoading: false,
         );
-        // Fetch user profile + seed location for immediate discover
-        await ref.read(userProvider.notifier).fetchMe();
-        final user = ref.read(userProvider).value;
-        if (user != null) {
-          final analytics = AnalyticsManager.instance;
-          analytics.updateUserProperties(
-            gender: user.gender ?? '',
-            ageRange: AnalyticsManager.ageRange(user.age ?? 0),
-            city: user.city ?? '',
-            photoCount: (user.photos?.length ?? 0).toString(),
-            questionsCount: user.questionCount.toString(),
-          );
-          if (user.lat != null && user.lng != null) {
-            ref.read(locationProvider.notifier).seedFromProfile(
-              lat: user.lat!,
-              lng: user.lng!,
-              city: user.city,
-            );
-            // Pre-fetch discover cards while transitioning
-            ref.read(discoverProvider.notifier).loadCards();
-            // Background GPS update (non-blocking)
-            ref.read(locationProvider.notifier).getCurrentLocation();
-          }
-          // Sync passport state from user profile
-          ref.read(passportProvider.notifier).syncFromUser(
-            user.passportCity,
-            user.passportLat,
-            user.passportLng,
-          );
-        }
-        // Initialize push notifications after successful login
-        ref.read(notificationProvider.notifier).init();
-        // Sync user language preferences from user profile
-        ref.read(userLanguagesProvider.notifier).syncFromUser();
-        // Start presence heartbeat
-        ref.read(presenceManagerProvider).start();
+        await _postLoginInit();
       case Failure(:final failure):
         AnalyticsManager.instance.logEvent(AnalyticsEvents.authLoginFail, params: {
           AnalyticsEvents.paramMethod: 'email',
           AnalyticsEvents.paramErrorCode: failure.message ?? 'unknown',
         });
-        state = state.copyWith(isLoading: false, failure: failure);
+        if (failure is ServerFailure && failure.code == 'ACCOUNT_BANNED') {
+          state = state.copyWith(isLoading: false, status: AuthStatus.banned, failure: failure);
+        } else {
+          state = state.copyWith(isLoading: false, failure: failure);
+        }
     }
     return result;
+  }
+
+  Future<void> _postLoginInit() async {
+    await ref.read(userProvider.notifier).fetchMe();
+    final user = ref.read(userProvider).value;
+    if (user != null) {
+      final analytics = AnalyticsManager.instance;
+      analytics.updateUserProperties(
+        gender: user.gender ?? '',
+        ageRange: AnalyticsManager.ageRange(user.age ?? 0),
+        city: user.city ?? '',
+        photoCount: (user.photos?.length ?? 0).toString(),
+        questionsCount: user.questionCount.toString(),
+      );
+      if (user.lat != null && user.lng != null) {
+        ref.read(locationProvider.notifier).seedFromProfile(
+          lat: user.lat!,
+          lng: user.lng!,
+          city: user.city,
+        );
+        ref.read(discoverProvider.notifier).loadCards();
+        ref.read(locationProvider.notifier).getCurrentLocation();
+      }
+      ref.read(passportProvider.notifier).syncFromUser(
+        user.passportCity,
+        user.passportLat,
+        user.passportLng,
+      );
+    }
+    ref.read(notificationProvider.notifier).init();
+    ref.read(userLanguagesProvider.notifier).syncFromUser();
+    ref.read(presenceManagerProvider).start();
+  }
+
+  /// Called after social login profile completion.
+  /// Re-emits auth state to trigger GoRouter redirect (profile-completion → discover).
+  Future<void> onProfileCompleted() async {
+    await _postLoginInit();
+    // Re-emit authenticated state so GoRouter re-evaluates redirect
+    // (user.age is now non-null → profile-completion guard passes)
+    state = state.copyWith(status: AuthStatus.authenticated);
+  }
+
+  Future<Result<SocialLoginResponse>> socialLogin(String provider) async {
+    state = state.copyWith(isLoading: true, failure: null);
+
+    try {
+      final socialService = ref.read(socialAuthServiceProvider);
+      final SocialSignInResult signInResult;
+
+      try {
+        if (provider == 'google') {
+          signInResult = await socialService.signInWithGoogle();
+        } else {
+          signInResult = await socialService.signInWithApple();
+        }
+      } catch (e, st) {
+        debugPrint('[SocialAuth] Sign-in error: $e');
+        debugPrint('[SocialAuth] Stack: $st');
+        state = state.copyWith(isLoading: false);
+        return Failure(UnknownFailure(message: e.toString()));
+      }
+
+      final authService = ref.read(authServiceProvider);
+      final response = await authService.socialLogin({
+        'provider': signInResult.provider,
+        'id_token': signInResult.idToken,
+        if (signInResult.name != null) 'name': signInResult.name,
+        if (signInResult.surname != null) 'surname': signInResult.surname,
+        if (signInResult.nonce != null) 'nonce': signInResult.nonce,
+      });
+
+      await _saveTokens(AuthTokens(
+        accessToken: response.accessToken,
+        refreshToken: response.refreshToken,
+        userId: response.userId,
+      ));
+
+      ErrorManager.setUser(response.userId);
+      AnalyticsManager.instance.setUserId(response.userId);
+      AnalyticsManager.instance.logEvent(AnalyticsEvents.authLoginSuccess, params: {
+        AnalyticsEvents.paramMethod: provider,
+      });
+
+      try {
+        await RevenueCatService.init(response.userId);
+        await RevenueCatService.logIn(response.userId);
+      } catch (_) {}
+
+      // Load user BEFORE flipping auth state — router only listens to authProvider, so the
+      // refresh fires once when status becomes authenticated. If user is still null at that
+      // moment, the redirect skips /profile-completion and lands on /discover (App Store Guideline 4).
+      await ref.read(userProvider.notifier).fetchMe();
+
+      state = state.copyWith(
+        status: AuthStatus.authenticated,
+        userId: response.userId,
+        isLoading: false,
+      );
+
+      if (!response.profileIncomplete) {
+        await _postLoginInit();
+      }
+
+      return Success(response);
+    } on DioException catch (e) {
+      final failure = e.toAppFailure();
+      if (failure is ServerFailure && failure.code == 'ACCOUNT_BANNED') {
+        state = state.copyWith(isLoading: false, status: AuthStatus.banned, failure: failure);
+      } else {
+        state = state.copyWith(isLoading: false, failure: failure);
+      }
+      return Failure(failure);
+    } catch (e) {
+      final failure = UnknownFailure(message: e.toString());
+      state = state.copyWith(isLoading: false, failure: failure);
+      return Failure(failure);
+    }
   }
 
   Future<void> logout() async {
@@ -288,16 +395,7 @@ class AuthNotifier extends Notifier<AuthState> {
     // Clean up notification listeners before invalidation
     ref.read(notificationManagerProvider).dispose();
 
-    // Invalidate all auth-dependent providers to prevent stale data crashes
-    ref.invalidate(userProvider);
-    ref.invalidate(discoverProvider);
-    ref.invalidate(matchListProvider);
-    ref.invalidate(diamondProvider);
-    ref.invalidate(powerProvider);
-    ref.invalidate(questionProvider);
-    ref.invalidate(subscriptionProvider);
-    ref.invalidate(notificationProvider);
-    ref.invalidate(userLanguagesProvider);
+    _invalidateAllProviders();
 
     state = const AuthState(status: AuthStatus.unauthenticated);
   }
@@ -359,17 +457,32 @@ class AuthNotifier extends Notifier<AuthState> {
   }
 
   Future<void> forceLogout() async {
+    // Idempotent: ilk force-logout sonrası storage boş kalan in-flight 401'ler
+    // bizi tekrar tetikliyor — cascade'i kırmak için zaten unauthenticated ise çık.
+    if (state.status == AuthStatus.unauthenticated) {
+      debugPrint('[auth] forceLogout: already unauthenticated, skip');
+      return;
+    }
+
     try {
       await RevenueCatService.logOut();
     } catch (e) {
       debugPrint('[auth] forceLogout: RevenueCat error (ignored): $e');
     }
 
-    // Stop presence heartbeat
-    await ref.read(presenceManagerProvider).stop();
+    // Stop presence heartbeat — pause instead of stop to skip offline API call
+    // (token is already invalid during force logout)
+    ref.read(presenceManagerProvider).pause();
 
     ref.read(notificationManagerProvider).dispose();
 
+    _invalidateAllProviders();
+
+    state = const AuthState(status: AuthStatus.unauthenticated);
+  }
+
+  /// Invalidate all auth-dependent providers to prevent stale data crashes
+  void _invalidateAllProviders() {
     ref.invalidate(userProvider);
     ref.invalidate(discoverProvider);
     ref.invalidate(matchListProvider);
@@ -379,8 +492,13 @@ class AuthNotifier extends Notifier<AuthState> {
     ref.invalidate(subscriptionProvider);
     ref.invalidate(notificationProvider);
     ref.invalidate(userLanguagesProvider);
-
-    state = const AuthState(status: AuthStatus.unauthenticated);
+    ref.invalidate(passportProvider);
+    ref.invalidate(locationProvider);
+    ref.invalidate(exchangeProvider);
+    ref.invalidate(referralProvider);
+    ref.invalidate(quizProvider);
+    ref.invalidate(notificationPreferencesProvider);
+    ref.read(pendingDeepLinkProvider.notifier).state = null;
   }
 
   Future<void> _saveTokens(AuthTokens tokens) async {
@@ -392,7 +510,11 @@ class AuthNotifier extends Notifier<AuthState> {
   }
 
   Future<void> _clearTokens() async {
-    await _storage.deleteAll();
+    await Future.wait([
+      _storage.delete(key: 'access_token'),
+      _storage.delete(key: 'refresh_token'),
+      _storage.delete(key: 'user_id'),
+    ]);
   }
 }
 

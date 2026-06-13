@@ -7,6 +7,7 @@ import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/core/widgets/app_icon.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/core/widgets/question_progress_bar.dart';
 import 'package:qulo_v2/data/models/discover_model.dart';
@@ -58,7 +59,7 @@ class DiscoverQuestionGate extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  QIcon(QIcons.icLock, size: 64, color: context.appColors.primary),
+                  AppIcon(QIcons.lock, size: 64, color: context.appColors.primary),
                   const SizedBox(height: AppSpacing.lg),
                   Text(
                     context.tr('question_nudge_discover_locked'),
@@ -109,7 +110,7 @@ class QuestionGateEasyModeNudge extends StatelessWidget {
             ),
             child: Row(
               children: [
-                QIcon(QIcons.icWand, size: 20, color: context.appColors.primary),
+                AppIcon(QIcons.wand, size: 20, color: context.appColors.primary),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(
@@ -128,7 +129,7 @@ class QuestionGateEasyModeNudge extends StatelessWidget {
           onPressed: () => ref.read(navigationServiceProvider).push(
             RouteNames.questionEasyMode,
           ),
-          icon: QIcon(QIcons.icWand, color: theme.colorScheme.onPrimary, size: 18),
+          icon: AppIcon(QIcons.wand, color: theme.colorScheme.onPrimary, size: 18),
           label: Text(context.tr('nudge_easy_mode_button')),
           style: FilledButton.styleFrom(
             backgroundColor: context.appColors.primary,

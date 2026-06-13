@@ -20,6 +20,7 @@ class DeepLinkResult {
 
 abstract class DeepLinkParser {
   static const _validHosts = {'quloapp.com', 'www.quloapp.com'};
+  static final _safeSegmentPattern = RegExp(r'^[a-zA-Z0-9_-]+$');
 
   /// URI'yi parse eder, desteklenen bir deep link ise DeepLinkResult doner.
   /// Desteklenmiyorsa veya gecersizse null doner.
@@ -31,7 +32,8 @@ abstract class DeepLinkParser {
     }
 
     final segments = uri.pathSegments;
-    if (segments.isEmpty || segments.any((s) => s == '..' || s == '.')) {
+    if (segments.isEmpty ||
+        segments.any((s) => s == '..' || s == '.' || !_safeSegmentPattern.hasMatch(s))) {
       return null;
     }
 
@@ -101,5 +103,21 @@ abstract class DeepLinkParser {
 
     dev.log('[DeepLinkParser] Unsupported path: $path', name: 'DeepLink');
     return null;
+  }
+
+  /// Bildirim action_url'ini (ör. "/chat/abc123") parse eder.
+  /// Host doğrulaması yapmaz — sadece path üzerinden navType belirler.
+  static DeepLinkNavType resolveNavType(String actionUrl) {
+    final uri = Uri.tryParse(actionUrl);
+    if (uri == null || uri.pathSegments.isEmpty) return DeepLinkNavType.go;
+
+    final first = uri.pathSegments.first;
+
+    // push gerektiren route'lar
+    if (first == 'chat' || first == 'profile-detail') {
+      return DeepLinkNavType.push;
+    }
+
+    return DeepLinkNavType.go;
   }
 }

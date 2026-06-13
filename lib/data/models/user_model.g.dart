@@ -57,6 +57,8 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
   interests:
       (json['interests'] as List<dynamic>?)?.map((e) => e as String).toList() ??
       [],
+  emailNotificationsEnabled:
+      json['email_notifications_enabled'] as bool? ?? true,
   details: json['details'] == null
       ? null
       : UserDetailsModel.fromJson(json['details'] as Map<String, dynamic>),
@@ -102,5 +104,6 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
   'strict_language_mode': instance.strictLanguageMode,
   'referral_code': instance.referralCode,
   'interests': instance.interests,
+  'email_notifications_enabled': instance.emailNotificationsEnabled,
   'details': instance.details,
 };

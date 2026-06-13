@@ -14,21 +14,28 @@ class OnboardingIndicators extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(
         count,
-        (i) => Container(
-          width: i == currentPage ? 24 : 8,
-          height: 8,
-          margin: const EdgeInsets.symmetric(horizontal: 4),
-          decoration: BoxDecoration(
-            color: i == currentPage
-                ? context.appColors.primary
-                : Theme.of(context).hintColor,
-            borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
-          ),
-        ),
+        (i) {
+          final isActive = i == currentPage;
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            width: isActive ? 24 : 8,
+            height: 8,
+            margin: const EdgeInsets.symmetric(horizontal: 4),
+            decoration: BoxDecoration(
+              color: isActive
+                  ? colors.primary
+                  : colors.primary.withAlpha(77),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
+            ),
+          );
+        },
       ),
     );
   }

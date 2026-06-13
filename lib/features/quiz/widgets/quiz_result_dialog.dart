@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
+import 'package:qulo_v2/core/icons/icon_ref.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/widgets/app_icon.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 
 class QuizResultContent extends StatelessWidget {
@@ -129,7 +131,7 @@ class _TopIcon extends StatelessWidget {
           color: context.appColors.secondarySurface,
         ),
         child: Center(
-          child: QIcon(QIcons.icHeart, size: 40, color: context.appColors.secondary),
+          child: AppIcon(QIcons.heart, size: 40, color: context.appColors.secondary),
         ),
       );
     }
@@ -152,10 +154,10 @@ class _Badge extends StatelessWidget {
 
   const _Badge({required this.performanceBadge});
 
-  (String icon, Color color, String labelKey) _badgeConfig(BuildContext context) {
+  (dynamic icon, Color color, String labelKey) _badgeConfig(BuildContext context) {
     return switch (performanceBadge) {
-      'flawless' => (QIcons.icCrown, AppColors.gold, 'quiz_result_flawless'),
-      'speed_solver' => (QIcons.icZap, context.appColors.info, 'quiz_result_speed_solver'),
+      'flawless' => (QIcons.crown, AppColors.gold, 'quiz_result_flawless'),
+      'speed_solver' => (QIcons.bolt, context.appColors.info, 'quiz_result_speed_solver'),
       'power_master' => (QIcons.icGem, context.appColors.primary, 'quiz_result_power_master'),
       'determined' => (QIcons.icFire, context.appColors.warning, 'quiz_result_determined'),
       _ => (QIcons.icTarget, context.appColors.textSecondary, 'quiz_result_determined'),
@@ -180,7 +182,10 @@ class _Badge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          QIcon(icon, size: 20, color: color),
+          if (icon is IconRef)
+            AppIcon(icon, size: 20, color: color)
+          else
+            QIcon(icon as String, size: 20, color: color),
           const SizedBox(width: AppSpacing.sm),
           Text(
             context.tr(labelKey),
@@ -239,7 +244,7 @@ class _Stats extends StatelessWidget {
           if (powersUsed > 0) ...[
             const SizedBox(height: AppSpacing.md),
             _StatRow(
-              icon: QIcons.icZap,
+              icon: QIcons.bolt,
               iconColor: context.appColors.primary,
               label: '${context.tr('quiz_result_powers_used')}: $powersUsed',
               theme: theme,
@@ -252,7 +257,7 @@ class _Stats extends StatelessWidget {
 }
 
 class _StatRow extends StatelessWidget {
-  final String icon;
+  final dynamic icon;
   final Color iconColor;
   final String label;
   final ThemeData theme;
@@ -268,7 +273,10 @@ class _StatRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        QIcon(icon, size: 18, color: iconColor),
+        if (icon is IconRef)
+          AppIcon(icon, size: 18, color: iconColor)
+        else
+          QIcon(icon as String, size: 18, color: iconColor),
         const SizedBox(width: AppSpacing.md),
         Expanded(
           child: Text(

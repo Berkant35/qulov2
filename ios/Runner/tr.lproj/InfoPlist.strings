@@ -1,5 +1,6 @@
 "CFBundleDisplayName" = "Qulo";
-"CAMERA_USAGE_DESCRIPTION" = "Profil fotoğraflarınızı çekmek için kamera erişimi gereklidir.";
-"PHOTO_LIBRARY_DESCRIPTION" = "Profil fotoğraflarınızı seçmek için galeri erişimi gereklidir.";
-"LOCATION_WHEN_IN_USE_DESCRIPTION" = "Yakınlarınızdaki kullanıcıları görmek için konum erişimi gereklidir.";
-"MICROPHONE_USAGE_DESCRIPTION" = "Sesli mesaj göndermek için mikrofon erişimi gereklidir.";
+"NSCameraUsageDescription" = "Profil fotoğraflarınızı çekmek için kamera erişimi gereklidir.";
+"NSPhotoLibraryUsageDescription" = "Profil fotoğraflarınızı seçmek için galeri erişimi gereklidir.";
+"NSLocationWhenInUseUsageDescription" = "Qulo konumunu şu amaçlarla kullanır: (1) Keşfet'te seçtiğin mesafedeki kişileri bulmak, (2) profilinde şehrini göstermek, (3) her profilin mesafesini göstermek (ör. \"İstanbul · 2,5 km\").";
+"NSMicrophoneUsageDescription" = "Sesli mesaj göndermek için mikrofon erişimi gereklidir.";
+"NSUserTrackingUsageDescription" = "Qulo, kişiselleştirilmiş içerik sunmak ve deneyimini iyileştirmek için bu tanımlayıcıyı kullanır. Verilerin reklam amacıyla üçüncü taraflarla paylaşılmaz.";

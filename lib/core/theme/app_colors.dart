@@ -54,6 +54,14 @@ abstract final class AppColors {
   static const Color pink = Color(0xFFE91E63);
   static const Color red = Color(0xFFF44336);
 
+  // ─── Scrim / Overlay ───
+  /// Semi-transparent dark scrim — used for blur overlays, lock icons, etc.
+  static const scrimDark = Color(0x80000000); // black 50%
+  static const scrimLight = Color(0x33000000); // black 20%
+  /// Icon/text color placed on top of a dark scrim
+  static const onScrim = Color(0xFFFFFFFF);
+  static const onScrimSubtle = Color(0xCCFFFFFF); // white 80%
+
   // ─── Gradients ───
   static const purpleGradient = LinearGradient(
     colors: [Color(0xFFBB86FC), Color(0xFF9C27B0)],
@@ -212,21 +220,21 @@ class AppColorsResolved {
   );
 }
 
-/// Light theme colors
+/// Light theme colors — warm off-white palette for comfortable reading
 abstract final class AppColorsLight {
   // ─── Background & Surface ───
-  static const background = Color(0xFFFAFAFA);
-  static const scaffold = Color(0xFFFFFFFF);
-  static const surface = Color(0xFFF5F5F5);
-  static const surfaceElevated = Color(0xFFFFFFFF);
-  static const surfaceInput = Color(0xFFF0F0F0);
+  static const background = Color(0xFFF5F0EB);  // warm cream
+  static const scaffold = Color(0xFFF8F4F0);     // soft warm white
+  static const surface = Color(0xFFF0EBE5);      // warm surface
+  static const surfaceElevated = Color(0xFFFAF7F4); // slightly lifted
+  static const surfaceInput = Color(0xFFEDE7E1);    // warm input bg
 
   // ─── Text ───
-  static const textPrimary = Color(0xFF1A1A1A);
-  static const textSecondary = Color(0xFF666666);
-  static const textHint = Color(0xFF999999);
+  static const textPrimary = Color(0xFF1C1917);   // warm black
+  static const textSecondary = Color(0xFF57534E);  // warm gray (better contrast)
+  static const textHint = Color(0xFF8C8680);       // warm hint
 
   // ─── Border & Divider ───
-  static const border = Color(0xFFE0E0E0);
-  static const divider = Color(0xFFE0E0E0);
+  static const border = Color(0xFFD6D0CA);         // warm border
+  static const divider = Color(0xFFD6D0CA);
 }

@@ -57,6 +57,7 @@ class ChatInputBar extends StatelessWidget {
                 enabled: !isLocked,
                 minLines: 1,
                 maxLines: 5,
+                maxLength: 2000,
                 textInputAction: TextInputAction.send,
                 onSubmitted: (_) => onSend(),
                 onChanged: onChanged,
@@ -67,7 +68,7 @@ class ChatInputBar extends StatelessWidget {
                 ),
                 decoration: InputDecoration(
                   hintText: isLocked
-                      ? 'Soruyu cevaplayın...'
+                      ? context.tr('chat_answer_question_hint')
                       : context.tr('message_hint'),
                   hintStyle: TextStyle(color: theme.hintColor),
                   filled: true,

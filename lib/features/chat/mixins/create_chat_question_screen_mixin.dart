@@ -168,7 +168,7 @@ mixin CreateChatQuestionScreenMixin
       'time_limit_seconds': timeLimitSeconds,
       'has_unmatch_risk': hasUnmatchRisk,
       'has_chat_lock': hasChatLock,
-      'has_power_block': hasPowerBlock,
+      'use_power_block': hasPowerBlock,
     };
     if (optionCount == 4) {
       data['option_c'] = optionC.trim();

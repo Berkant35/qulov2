@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { notificationApiService } from "../services/notification-api.service.js";
+import { assertUuid } from "../utils/validation.js";
 
 export async function getNotificationsHandler(req: Request, res: Response, next: NextFunction) {
   try {
@@ -24,6 +25,7 @@ export async function getUnreadCountHandler(req: Request, res: Response, next: N
 export async function markAsReadHandler(req: Request, res: Response, next: NextFunction) {
   try {
     const notificationId = req.params.id as string;
+    assertUuid(notificationId, "notification_id");
     await notificationApiService.markAsRead(req.user!.userId, notificationId);
     res.json({ success: true });
   } catch (err) {
@@ -43,6 +45,7 @@ export async function markAllAsReadHandler(req: Request, res: Response, next: Ne
 export async function trackClickHandler(req: Request, res: Response, next: NextFunction) {
   try {
     const notificationId = req.params.id as string;
+    assertUuid(notificationId, "notification_id");
     await notificationApiService.trackClick(req.user!.userId, notificationId);
     res.json({ success: true });
   } catch (err) {

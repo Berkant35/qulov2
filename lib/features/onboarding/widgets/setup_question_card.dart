@@ -4,6 +4,7 @@ import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_button.dart';
+import 'package:qulo_v2/core/widgets/app_icon.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 
 /// Loader policy: only Quick Assign shows `isLoading` because it performs a
@@ -104,8 +105,9 @@ class SetupQuestionCard extends StatelessWidget {
               variant: AppButtonVariant.secondary,
               fullWidth: true,
               isLoading: isProcessing,
-              leadingWidget: QIcon(
-                QIcons.icZap,
+              leadingWidget: AppIcon(
+                QIcons.bolt,
+                filled: true,
                 size: 18,
                 color: context.appColors.primary,
               ),

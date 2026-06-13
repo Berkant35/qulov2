@@ -1,10 +1,9 @@
 abstract final class AppDurations {
-  // Splash
-  static const splashInitDelay = Duration(milliseconds: 300);
-  static const splashLogo = Duration(milliseconds: 1000);
-  static const splashTextDelay = Duration(milliseconds: 600);
-  static const splashText = Duration(milliseconds: 600);
-  static const splashHold = Duration(milliseconds: 1800);
+  // Splash — Glitch Reveal
+  static const splashGlitch = Duration(milliseconds: 1000);
+  static const splashGlowSettle = Duration(milliseconds: 500);
+  static const splashMinDisplay = Duration(milliseconds: 3000);
+  static const splashFadeOut = Duration(milliseconds: 300);
 
   // Transitions
   static const fadeTransition = Duration(milliseconds: 500);

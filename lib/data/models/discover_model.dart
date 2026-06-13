@@ -21,7 +21,7 @@ class DiscoverResponse extends Equatable {
   Map<String, dynamic> toJson() => _$DiscoverResponseToJson(this);
 
   @override
-  List<Object?> get props => [page, cards.length];
+  List<Object?> get props => [page, hasMore, cards];
 }
 
 @JsonSerializable()
@@ -89,7 +89,20 @@ class ProfileCardModel extends Equatable {
   Map<String, dynamic> toJson() => _$ProfileCardModelToJson(this);
 
   @override
-  List<Object?> get props => [userId, relationshipGoal];
+  List<Object?> get props => [
+        userId,
+        name,
+        age,
+        city,
+        bio,
+        photos,
+        distanceKm,
+        questionCount,
+        profileCompletion,
+        isBoosted,
+        relationshipGoal,
+        questionInfo,
+      ];
 }
 
 @JsonSerializable()

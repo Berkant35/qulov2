@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/navigation/navigation_provider.dart';
+import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_progress_bar.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
@@ -13,9 +15,7 @@ import 'package:qulo_v2/features/auth/widgets/register_step_name.dart';
 import 'package:qulo_v2/features/auth/widgets/register_step_terms.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
-  final String? referralCode;
-
-  const RegisterScreen({super.key, this.referralCode});
+  const RegisterScreen({super.key});
 
   @override
   ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
@@ -129,16 +129,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                     errorText: termsError,
                     isLoading: isLoading,
                     onRegister: register,
-                    onOpenUrl: (url) =>
-                        ref.read(urlLauncherManagerProvider).launch(url),
-                    referralCodeCtrl: referralCodeCtrl,
-                    referralExpanded: referralExpanded,
-                    onToggleReferral: () =>
-                        setState(() => referralExpanded = !referralExpanded),
-                    onValidateReferral: validateReferralCode,
-                    validatingReferral: validatingReferral,
-                    referralValidName: referralValidName,
-                    referralError: referralError,
+                    onTerms: () => ref.read(navigationServiceProvider).push(RouteNames.terms),
+                    onPrivacy: () => ref.read(navigationServiceProvider).push(RouteNames.privacyPolicy),
                   ),
                 ],
               ),

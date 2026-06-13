@@ -6,6 +6,7 @@ import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/features/profile_detail/models/profile_detail_args.dart';
 import 'package:qulo_v2/features/profile_detail/screens/profile_detail_screen.dart';
+import 'package:qulo_v2/features/profile_detail/widgets/report_category_sheet.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 
@@ -100,41 +101,58 @@ mixin ProfileDetailScreenMixin on ConsumerState<ProfileDetailScreen> {
   // ─── Dialogs ───
 
   void _showReportDialog() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (_) => ReportCategorySheet(
+        onSelected: _showReportReasonDialog,
+      ),
+    );
+  }
+
+  void _showReportReasonDialog(String category) {
     final nav = ref.read(navigationServiceProvider);
     final controller = TextEditingController();
+    final isOther = category == 'OTHER';
 
     nav.showAppDialog(
       CustomDialog(
-        name: 'report_user',
+        name: 'report_reason',
         builder: (ctx) => AlertDialog(
-          title: Text(context.tr('report')),
+          title: Text(ctx.tr('report')),
           content: TextField(
             controller: controller,
-            decoration: InputDecoration(hintText: context.tr('report_reason_hint')),
+            decoration: InputDecoration(
+              hintText: ctx.tr('report_reason_hint'),
+            ),
             maxLines: 3,
+            maxLength: 500,
           ),
           actions: [
             TextButton(
               onPressed: () => nav.closeOverlay(),
-              child: Text(context.tr('cancel')),
+              child: Text(ctx.tr('cancel')),
             ),
             FilledButton(
               onPressed: () async {
-                nav.closeOverlay();
                 final reason = controller.text.trim();
-                if (reason.isNotEmpty) {
-                  AnalyticsManager.instance.logEvent(
-                    AnalyticsEvents.profileDetailReport,
-                    params: {AnalyticsEvents.paramTargetUserId: widget.userId},
-                  );
-                  await ref.read(reportRepositoryProvider).createReport(
-                    reportedId: widget.userId,
-                    reason: reason,
-                  );
-                }
+                if (isOther && reason.isEmpty) return;
+                nav.closeOverlay();
+                AnalyticsManager.instance.logEvent(
+                  AnalyticsEvents.profileDetailReport,
+                  params: {AnalyticsEvents.paramTargetUserId: widget.userId},
+                );
+                await ref.read(reportRepositoryProvider).createReport(
+                  reportedId: widget.userId,
+                  category: category,
+                  reason: reason.isNotEmpty ? reason : null,
+                );
                 controller.dispose();
               },
-              child: Text(context.tr('report')),
+              child: Text(ctx.tr('report')),
             ),
           ],
         ),

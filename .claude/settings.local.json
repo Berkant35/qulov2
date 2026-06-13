@@ -56,7 +56,11 @@
       "Bash(ls /Users/berkantcalikusu/IdeaProjects/qulo/qulov2/lib/features/*/mixins/)",
       "Bash(find lib/features -name \"*_screen.dart\" -exec wc -l {} +)",
       "Bash(find /Users/berkantcalikusu/IdeaProjects/qulo/qulov2/ios/Pods -name upload-symbols -o -name run -path */FirebaseCrashlytics/*)",
-      "Bash(./deploy_testflight.sh 2>&1)"
+      "Bash(./deploy_testflight.sh 2>&1)",
+      "Bash(flutter clean:*)",
+      "Bash(xcrun altool:*)",
+      "Bash(chmod +x deploy_testflight.sh)",
+      "Bash(./deploy_testflight.sh)"
     ]
   },
   "hooks": {

@@ -104,6 +104,10 @@ class NotificationManager {
       settings: initSettings,
       onDidReceiveNotificationResponse: (response) {
         dev.log('[LocalNotif] Tapped: ${response.payload}', name: 'NotificationManager');
+        final actionUrl = response.payload;
+        if (actionUrl != null && actionUrl.isNotEmpty) {
+          _onLocalNotificationTap?.call(actionUrl);
+        }
       },
     );
 
@@ -174,6 +178,7 @@ class NotificationManager {
   void Function(String token)? _onTokenRefresh;
   void Function(RemoteMessage message)? _onForegroundMessage;
   void Function(RemoteMessage message)? _onMessageOpenedApp;
+  void Function(String actionUrl)? _onLocalNotificationTap;
   /// Gelen mesajın banner/local notification olarak gösterilmesini engellemek için.
   /// true dönerse hem banner hem Android local notification suppress edilir.
   bool Function(RemoteMessage message)? shouldSuppressNotification;
@@ -183,11 +188,13 @@ class NotificationManager {
     void Function(RemoteMessage message)? onForegroundMessage,
     void Function(RemoteMessage message)? onMessageOpenedApp,
     bool Function(RemoteMessage message)? shouldSuppress,
+    void Function(String actionUrl)? onLocalNotificationTap,
   }) {
     _onTokenRefresh = onTokenRefresh;
     _onForegroundMessage = onForegroundMessage;
     _onMessageOpenedApp = onMessageOpenedApp;
     shouldSuppressNotification = shouldSuppress;
+    _onLocalNotificationTap = onLocalNotificationTap;
 
     // Cancel previous listeners to prevent duplicates
     _onMessageSub?.cancel();
@@ -235,5 +242,6 @@ class NotificationManager {
     _onTokenRefresh = null;
     _onForegroundMessage = null;
     _onMessageOpenedApp = null;
+    _onLocalNotificationTap = null;
   }
 }

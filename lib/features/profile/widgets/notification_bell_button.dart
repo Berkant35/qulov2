@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
-import 'package:qulo_v2/core/widgets/q_icon.dart';
+import 'package:qulo_v2/core/widgets/app_icon.dart';
 
 class NotificationBellButton extends StatelessWidget {
   const NotificationBellButton({
@@ -20,7 +20,7 @@ class NotificationBellButton extends StatelessWidget {
     return Stack(
       children: [
         IconButton(
-          icon: QIcon(QIcons.icBell, color: theme.colorScheme.onSurfaceVariant, size: 24),
+          icon: AppIcon(QIcons.bell, filled: unreadCount > 0, color: theme.colorScheme.onSurfaceVariant, size: 24),
           onPressed: onTap,
         ),
         if (unreadCount > 0)

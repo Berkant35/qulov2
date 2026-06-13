@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 
@@ -28,7 +29,7 @@ class ChatLockBanner extends StatelessWidget {
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
-              'Mesaj göndermek için soruyu cevaplamanız gerekiyor.',
+              context.tr('chat_lock_answer_required'),
               style: theme.textTheme.bodySmall?.copyWith(
                 color: context.appColors.warning,
                 fontWeight: FontWeight.w500,

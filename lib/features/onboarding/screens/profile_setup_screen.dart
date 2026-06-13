@@ -6,6 +6,7 @@ import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_button.dart';
+import 'package:qulo_v2/core/widgets/app_icon.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/features/onboarding/mixins/profile_setup_mixin.dart';
@@ -131,7 +132,7 @@ class _HurryHintCard extends StatelessWidget {
           ),
           child: Row(
             children: [
-              QIcon(QIcons.icZap, size: 22, color: colors.primary),
+              AppIcon(QIcons.bolt, filled: true, size: 22, color: colors.primary),
               const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Text(

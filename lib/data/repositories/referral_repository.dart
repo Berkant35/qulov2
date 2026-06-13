@@ -54,4 +54,30 @@ class ReferralRepository implements IReferralRepository {
       return Failure(e.toAppFailure());
     }
   }
+
+  @override
+  Future<Result<String>> applyCode(String code) async {
+    try {
+      final response = await _service.applyCode({'code': code});
+      final name = response['referrerName'];
+      if (name is! String) {
+        return const Failure(UnknownFailure(message: 'Missing referrerName'));
+      }
+      return Success(name);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    } catch (e) {
+      return Failure(UnknownFailure(error: e));
+    }
+  }
+
+  @override
+  Future<Result<MyReferrerResponse>> getMyReferrer() async {
+    try {
+      final response = await _service.getMyReferrer();
+      return Success(response);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
 }

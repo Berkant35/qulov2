@@ -2,11 +2,12 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qulo_v2/core/l10n/app_localizations.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/services/image_picker_manager.dart';
+import 'package:qulo_v2/core/widgets/image_picker_permission_dialog.dart';
 import 'package:qulo_v2/core/navigation/navigation_provider.dart';
 import 'package:qulo_v2/core/navigation/models/app_dialog.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
@@ -21,6 +22,7 @@ import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/features/chat/screens/chat_screen.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/features/chat/widgets/reaction_picker.dart';
+import 'package:qulo_v2/features/profile_detail/widgets/report_category_sheet.dart';
 
 mixin ChatScreenMixin on ConsumerState<ChatScreen> {
 
@@ -54,9 +56,12 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
       ref.read(activeChatMatchIdProvider.notifier).state = widget.matchId;
       // Clear question cache so cards re-fetch fresh data
       ref.read(chatQuestionCacheProvider.notifier).state = {};
+      ref.read(openedQuestionIdsProvider.notifier).state = {};
 
       final notifier = ref.read(chatProvider(widget.matchId).notifier);
+      notifier.loadMessages();
       notifier.markAsRead();
+      ref.read(matchListProvider.notifier).clearUnreadCount(widget.matchId);
       notifier.loadMediaStatus();
       _subscribeRealtime();
       _subscribeTyping();
@@ -158,14 +163,19 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
           ),
           callback: (payload) {
             if (_disposed) return;
-            final newMsg = MessageModel.fromJson(payload.newRecord);
-            if (newMsg.senderId != myId) {
-              ref
-                  .read(chatProvider(widget.matchId).notifier)
-                  .addRealtimeMessage(newMsg);
-              ref.read(chatProvider(widget.matchId).notifier).markAsRead();
-              WidgetsBinding.instance
-                  .addPostFrameCallback((_) => scrollToBottom());
+            try {
+              final newMsg = MessageModel.fromJson(payload.newRecord);
+              if (newMsg.senderId != myId) {
+                ref
+                    .read(chatProvider(widget.matchId).notifier)
+                    .addRealtimeMessage(newMsg);
+                ref.read(chatProvider(widget.matchId).notifier).markAsRead();
+                WidgetsBinding.instance
+                    .addPostFrameCallback((_) => scrollToBottom());
+              }
+            } catch (e) {
+              debugPrint('[chat] Realtime parse error: $e');
+              debugPrint('[chat] Payload: ${payload.newRecord}');
             }
           },
         )
@@ -316,11 +326,10 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
   Future<void> confirmUnmatch() async {
     final nav = ref.read(navigationServiceProvider);
     final confirm = await nav.showAppDialog<bool>(
-      const ConfirmDialog(
+      ConfirmDialog(
         name: 'unmatch',
         title: 'Unmatch',
-        message:
-            'Bu kisiyle eslesmeni kaldirmak istedigine emin misin? Bu islem geri alinamaz.',
+        message: context.tr('chat_unmatch_confirm'),
         confirmText: 'Unmatch',
         isDestructive: true,
       ),
@@ -425,9 +434,21 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
 
   Future<void> _pickAndSendPhoto(ImageSource source) async {
     final picker = ref.read(imagePickerManagerProvider);
-    final picked = source == ImageSource.gallery
-        ? await picker.pickFromGallery()
-        : await picker.pickFromCamera();
+    final PickedImage? picked;
+    try {
+      picked = source == ImageSource.gallery
+          ? await picker.pickFromGallery()
+          : await picker.pickFromCamera();
+    } on ImagePickerPermissionException catch (e) {
+      if (mounted) {
+        await showImagePickerPermissionDialog(
+          ref,
+          context,
+          isCamera: e.isCamera,
+        );
+      }
+      return;
+    }
     if (picked == null) return;
 
     try {
@@ -533,6 +554,96 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
             );
     if (confirmed == true) {
       await ref.read(chatProvider(widget.matchId).notifier).disableMedia();
+    }
+  }
+
+  // ─── Report & Block ───
+
+  String? _getTargetUserId() {
+    return ref.read(matchListProvider).valueOrNull
+        ?.where((m) => m.matchId == widget.matchId)
+        .firstOrNull
+        ?.user
+        ?.userId;
+  }
+
+  void onChatReport() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (_) => ReportCategorySheet(
+        onSelected: _showChatReportReasonDialog,
+      ),
+    );
+  }
+
+  void _showChatReportReasonDialog(String category) {
+    final nav = ref.read(navigationServiceProvider);
+    final controller = TextEditingController();
+    final isOther = category == 'OTHER';
+    final l10n = AppLocalizations.of(context);
+
+    nav.showAppDialog(
+      CustomDialog(
+        name: 'chat_report_reason',
+        builder: (ctx) => AlertDialog(
+          title: Text(l10n.get('report')),
+          content: TextField(
+            controller: controller,
+            decoration: InputDecoration(
+              hintText: l10n.get('report_reason_hint'),
+            ),
+            maxLines: 3,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => nav.closeOverlay(),
+              child: Text(l10n.get('cancel')),
+            ),
+            FilledButton(
+              onPressed: () async {
+                final reason = controller.text.trim();
+                if (isOther && reason.isEmpty) return;
+                nav.closeOverlay();
+                final targetId = _getTargetUserId();
+                if (targetId == null) return;
+                await ref.read(reportRepositoryProvider).createReport(
+                  reportedId: targetId,
+                  category: category,
+                  reason: reason.isNotEmpty ? reason : null,
+                );
+                controller.dispose();
+              },
+              child: Text(l10n.get('report')),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> onChatBlock() async {
+    final l10n = AppLocalizations.of(context);
+    final nav = ref.read(navigationServiceProvider);
+    final confirmed = await nav.showAppDialog<bool>(
+      ConfirmDialog(
+        name: 'chat_block_user',
+        title: l10n.get('block_user_title'),
+        message: l10n.get('block_user_message'),
+        confirmText: l10n.get('block'),
+        cancelText: l10n.get('cancel'),
+        isDestructive: true,
+      ),
+    );
+    if (confirmed != true) return;
+    final targetId = _getTargetUserId();
+    if (targetId == null) return;
+    await ref.read(blockRepositoryProvider).blockUser(targetId);
+    if (mounted) {
+      ref.read(navigationServiceProvider).pop();
     }
   }
 

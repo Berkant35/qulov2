@@ -15,73 +15,91 @@ import 'package:qulo_v2/features/splash/splash_screen.dart';
 
 mixin SplashScreenMixin on ConsumerState<SplashScreen>
     implements TickerProvider {
-  late final AnimationController logoController;
-  late final AnimationController textController;
-  late final Animation<double> logoFade;
-  late final Animation<double> logoScale;
-  late final Animation<double> textFade;
+  // ─── Animation Controllers ───
+  late final AnimationController glitchController;
+  late final AnimationController glowController;
+  late final AnimationController fadeOutController;
+
+  // ─── Animations ───
+  late final Animation<double> glitchAnimation;
+  late final Animation<double> glowAnimation;
+  late final Animation<double> fadeOutAnimation;
 
   final Stopwatch _splashStopwatch = Stopwatch()..start();
+  bool _authCheckDone = false;
+  bool _animationDone = false;
 
   void initMixin() {
-    logoController = AnimationController(
-      vsync: this,
-      duration: AppDurations.splashLogo,
-    );
-
-    textController = AnimationController(
-      vsync: this,
-      duration: AppDurations.splashText,
-    );
-
-    logoFade = CurvedAnimation(
-      parent: logoController,
-      curve: Curves.easeIn,
-    );
-
-    logoScale = Tween<double>(begin: 0.7, end: 1.0).animate(
-      CurvedAnimation(parent: logoController, curve: Curves.easeOutBack),
-    );
-
-    textFade = CurvedAnimation(
-      parent: textController,
-      curve: Curves.easeIn,
-    );
-
+    _setupControllers();
+    _setupAnimations();
     _startAnimation();
+    // Delay auth check to after first frame — calling providers
+    // during initState/build triggers Riverpod's "modify while building" error.
+    Future.microtask(_startAuthCheckInParallel);
+  }
+
+  void _setupControllers() {
+    glitchController = AnimationController(
+      vsync: this,
+      duration: AppDurations.splashGlitch,
+    );
+
+    glowController = AnimationController(
+      vsync: this,
+      duration: AppDurations.splashGlowSettle,
+    );
+
+    fadeOutController = AnimationController(
+      vsync: this,
+      duration: AppDurations.splashFadeOut,
+    );
+  }
+
+  void _setupAnimations() {
+    glitchAnimation = CurvedAnimation(
+      parent: glitchController,
+      curve: Curves.easeOutCubic,
+    );
+
+    glowAnimation = CurvedAnimation(
+      parent: glowController,
+      curve: Curves.easeOut,
+    );
+
+    fadeOutAnimation = CurvedAnimation(
+      parent: fadeOutController,
+      curve: Curves.easeIn,
+    );
   }
 
   void disposeMixin() {
-    logoController.dispose();
-    textController.dispose();
+    glitchController.dispose();
+    glowController.dispose();
+    fadeOutController.dispose();
   }
 
   Future<void> _startAnimation() async {
-    await Future.delayed(AppDurations.splashInitDelay);
+    // Phase 1: Glitch chaos (1000ms)
+    await glitchController.forward().orCancel.catchError((_) {});
     if (!mounted) return;
 
-    logoController.forward();
-
-    await Future.delayed(AppDurations.splashTextDelay);
+    // Phase 2: Glow settle (500ms)
+    await glowController.forward().orCancel.catchError((_) {});
     if (!mounted) return;
 
-    textController.forward();
-
-    await Future.delayed(AppDurations.splashHold);
+    // Ensure minimum display time (3000ms total)
+    final elapsed = _splashStopwatch.elapsedMilliseconds;
+    final remaining = AppDurations.splashMinDisplay.inMilliseconds - elapsed;
+    if (remaining > 0) {
+      await Future.delayed(Duration(milliseconds: remaining));
+    }
     if (!mounted) return;
 
-    _checkVersionAndAuth();
+    _animationDone = true;
+    _tryProceed();
   }
 
-  Future<void> _checkVersionAndAuth() async {
-    _splashStopwatch.stop();
-    AnalyticsManager.instance.logEvent(
-      AnalyticsEvents.appSplashDuration,
-      params: {
-        AnalyticsEvents.paramDurationMs: _splashStopwatch.elapsedMilliseconds,
-      },
-    );
-
+  Future<void> _startAuthCheckInParallel() async {
     final status = await ref.read(appConfigProvider.notifier).checkVersion();
     if (!mounted) return;
 
@@ -108,7 +126,22 @@ mixin SplashScreenMixin on ConsumerState<SplashScreen>
         break;
     }
 
-    _continueToAuth();
+    _authCheckDone = true;
+    _tryProceed();
+  }
+
+  void _tryProceed() {
+    if (!_animationDone || !_authCheckDone || !mounted) return;
+
+    _splashStopwatch.stop();
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.appSplashDuration,
+      params: {
+        AnalyticsEvents.paramDurationMs: _splashStopwatch.elapsedMilliseconds,
+      },
+    );
+
+    ref.read(authProvider.notifier).checkAuth();
   }
 
   Future<void> _showOptionalUpdateThenContinue() async {
@@ -116,7 +149,8 @@ mixin SplashScreenMixin on ConsumerState<SplashScreen>
     final isDismissed = await notifier.isOptionalUpdateDismissed();
 
     if (isDismissed) {
-      _continueToAuth();
+      _authCheckDone = true;
+      _tryProceed();
       return;
     }
 
@@ -140,10 +174,7 @@ mixin SplashScreenMixin on ConsumerState<SplashScreen>
       await notifier.dismissOptionalUpdate();
     }
 
-    _continueToAuth();
-  }
-
-  void _continueToAuth() {
-    ref.read(authProvider.notifier).checkAuth();
+    _authCheckDone = true;
+    _tryProceed();
   }
 }

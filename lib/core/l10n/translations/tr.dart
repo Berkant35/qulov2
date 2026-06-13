@@ -177,6 +177,16 @@ const trTranslations = <String, String>{
   'delete_account': 'Hesabı Sil',
   'delete_account_desc': 'Bu işlem geri alınamaz. Tüm verilerin silinecek.',
 
+  // Notification Preferences
+  'notification_settings': 'Bildirim Ayarları',
+  'notification_settings_desc': 'Kapatılan bildirimler gelen kutunuzda görünmeye devam eder',
+  'notif_messages': 'Mesajlar',
+  'notif_messages_desc': 'Yeni mesaj bildirimleri',
+  'notif_matches': 'Eşleşmeler',
+  'notif_matches_desc': 'Eşleşme ve soru cevap bildirimleri',
+  'notif_campaigns': 'Kampanyalar',
+  'notif_campaigns_desc': 'Promosyon ve kampanya bildirimleri',
+
   // Powers
   'my_powers': 'Güçlerim',
   'power_copy': 'Kopya',
@@ -211,6 +221,7 @@ const trTranslations = <String, String>{
   'accept_terms': 'Kabul ediyorum:',
   'terms_of_service': 'Kullanım Koşulları',
   'privacy_policy': 'Gizlilik Politikası',
+  'legal': 'Yasal',
   'and_word': 've',
   'must_accept_terms': 'Devam etmek için koşulları kabul etmelisiniz',
 
@@ -300,6 +311,7 @@ const trTranslations = <String, String>{
 
   // Preferences
   'gender_preference': 'Cinsiyet Tercihi',
+  'gender_pref_locked_info': 'Cinsiyet tercihinizi değiştirmek için destek ekibine başvurun.',
   'distance_range': 'Mesafe',
   'km': 'km',
   'men': 'Erkek',
@@ -328,11 +340,15 @@ const trTranslations = <String, String>{
   'sub_price_free': 'Ücretsiz',
   'sub_price_plus': '\$4.99/ay',
   'sub_price_premium': '\$9.99/ay',
+  'paywall_onboarding_title': 'Daha fazlasını keşfet',
+  'paywall_maybe_later': 'Daha sonra',
   'sub_recommended': 'ÖNERİLEN',
   'sub_current_plan': 'Mevcut Plan',
   'sub_restore_purchases': 'Satın Almaları Geri Yükle',
   'sub_purchase_coming_soon': 'Satın alma yakında aktif olacak',
   'sub_restore_done': 'Satın almalar geri yüklendi',
+  'sub_terms_of_use': 'Kullanım Koşulları (EULA)',
+  'sub_privacy_policy': 'Gizlilik Politikası',
   'sub_free_discovers': '50 keşif/gün',
   'sub_free_questions': '4 soru slotu',
   'sub_free_ads': 'Reklam var',
@@ -407,6 +423,10 @@ const trTranslations = <String, String>{
   'mark_all_read': 'Tümünü Okundu Yap',
   'no_notifications': 'Henüz bildirim yok',
   'no_notifications_desc': 'Eşleşmeler ve mesajlar geldiğinde burada göreceksin',
+  'time_just_now': 'Az önce',
+  'time_minutes_ago': '{n} dk önce',
+  'time_hours_ago': '{n} saat önce',
+  'time_days_ago': '{n} gün önce',
   'just_now': 'Az önce',
   'minutes_ago': '{} dk önce',
   'hours_ago': '{} saat önce',
@@ -431,7 +451,7 @@ const trTranslations = <String, String>{
   'question_create_step_answers': 'Şıkları Gir',
   'question_create_step_settings': 'Ayarlar',
   'question_create_motto': 'Seni anlatan sorular sor \u2014 cevabı Google\'da bulunmasın',
-  'question_create_motto_tip': 'İpucu: "En sevdiğim mevsim?" gibi kişisel sorular daha çok çözülür',
+  'question_create_motto_tip': 'İpucu: Kişisel sorular, senin kriterlerine uygun kişileri bulmanda sana yardımcı olur',
   'question_create_select_category': 'Kategori Seç',
   'question_create_select_time': 'Süre Seç',
   'question_create_hint_label': 'İpucu (opsiyonel)',
@@ -451,6 +471,8 @@ const trTranslations = <String, String>{
   'question_category_lifestyle': 'Yaşam Tarzı',
   'question_category_humor': 'Mizah',
   'question_category_hobby': 'Hobi',
+  'question_category_relationship': 'İlişki',
+  'question_category_entertainment': 'Eğlence',
 
   // Time Presets
   'question_time_fast': 'Hızlı',
@@ -548,6 +570,7 @@ const trTranslations = <String, String>{
   'error_general': 'Bir şeyler ters gitti',
   'error_try_again': 'Bir şeyler ters gitti. Lütfen tekrar deneyin.',
   'question_save_failed': 'Soru kaydedilemedi',
+  'max_questions_reached': 'Soru limitine ulaştınız. Yeni soru eklemek için mevcut bir soruyu silin.',
   'badge_claim_failed': 'Ödül alınamadı',
 
   // Chat Question
@@ -559,6 +582,12 @@ const trTranslations = <String, String>{
   'chat_draft_saved': 'Taslak kaydedildi',
   'chat_draft_save_failed': 'Taslak kaydedilemedi',
   'chat_draft_delete_failed': 'Taslak silinemedi',
+  'chat_drafts_tab': 'Taslaklar',
+  'chat_history_tab': 'Geçmiş',
+  'chat_drafts_load_failed': 'Taslaklar yüklenemedi',
+  'chat_no_drafts': 'Henüz taslak yok',
+  'chat_history_load_failed': 'Geçmiş yüklenemedi',
+  'chat_no_history': 'Henüz soru geçmişi yok',
   'chat_media_pending': 'Medya isteği zaten gönderildi. Karşı tarafın yanıtı bekleniyor.',
   'chat_media_request_sent': 'Medya paylaşım isteği gönderildi!',
   'chat_media_request_failed': 'Medya isteği gönderilemedi. Lütfen tekrar deneyin.',
@@ -578,6 +607,7 @@ const trTranslations = <String, String>{
   'chat_media_request_pending_short': 'Medya isteği gönderildi, yanıt bekleniyor...',
   'chat_media_sharing_request': 'Medya paylaşımı isteği',
   'chat_reject': 'Reddet',
+  'chat_messages_error': 'Mesajlar yüklenemedi',
 
   // Chat Quiz Summary
   'chat_quiz_summary': 'Quiz Özeti',
@@ -656,6 +686,27 @@ const trTranslations = <String, String>{
   'settings_question_languages_none': 'Hen\u00fcz dil se\u00e7ilmedi',
   'onboarding_questions_slide4_title': 'Hangi Dilleri Biliyorsun?',
   'onboarding_questions_slide4_desc': 'Sana uygun dillerdeki profilleri g\u00f6sterelim. Birden fazla se\u00e7ebilirsin!',
+
+  // Onboarding V2
+  'onboarding_v2_page1_title': "Qulo'da Eşleşmek Farklı",
+  'onboarding_v2_page1_desc': 'Burada sorularınla tanışırsın. Birisi tüm sorularını doğru cevaplarsa — eşleşirsiniz!',
+  'onboarding_v2_page2_title': 'Sorularını Hazırla',
+  'onboarding_v2_page2_desc': '2-10 soru oluştur. Kişisel, eğlenceli, Google\'lanamayan sorular sor. Biri tüm sorularını bilirse — eşleşirsiniz!',
+  'onboarding_v2_page3_title': '6 Süper Güç',
+  'onboarding_v2_page3_desc': 'Sorularını çözenler bu güçleri kullanabilir. Her güç mor elmas harcar — ve bu senin kazancın!',
+  'onboarding_v2_page4_title': 'Yeşil Elmas Kazan!',
+  'onboarding_v2_page4_desc': 'Sorularında güç kullanan her kişi sana yeşil elmas kazandırır. Daha çok soru, daha çok kazanç!',
+  'onboarding_v2_page5_title': 'Hangi Dillerde Soru Görmek İstersin?',
+  'onboarding_v2_page5_desc': 'Seçtiğin dillerdeki profilleri göstereceğiz. Birden fazla seçebilirsin.',
+  'onboarding_v2_skip': 'Atla',
+  'onboarding_v2_next': 'İleri',
+  'onboarding_v2_start': 'Başla',
+  'onboarding_v2_premium_title': 'Premium ile Daha Fazlası',
+  'onboarding_v2_premium_cta': "Premium'a Geç",
+  'onboarding_v2_premium_benefit_1': 'Sınırsız keşif',
+  'onboarding_v2_premium_benefit_2': 'Her ay mor elmas hediye',
+  'onboarding_v2_premium_benefit_3': 'Reklamsız deneyim',
+
   // Locale names
   'locale_tr': 'T\u00fcrk\u00e7e',
   'locale_en': 'English',
@@ -702,6 +753,7 @@ const trTranslations = <String, String>{
 
   // Exchange center
   'exchange_title': 'Dönüşüm Merkezi',
+  'exchange_subtitle': 'Elmasları güçlere dönüştür',
   'exchange_convert_title': 'Elmas Dönüşümü',
   'exchange_convert_button': 'Dönüştür',
   'exchange_powers_title': 'Power Hakları',
@@ -721,6 +773,7 @@ const trTranslations = <String, String>{
   'referral_title': 'Arkadaşını Davet Et',
   'referral_description': 'Arkadaşını davet et, ikimize de 25 mor elmas hediye!',
   'referral_compact_cta': 'Arkadaşını getir, elmas kazan',
+  'referral_compact_subtitle': 'Her davet = mor elmas ödülü',
   'referral_copy': 'Kopyala',
   'referral_share': 'Paylaş',
   'referral_progress': 'Davet kullanıldı',
@@ -730,6 +783,13 @@ const trTranslations = <String, String>{
   'referral_code_valid': 'Davet eden: ',
   'referral_code_invalid': 'Geçersiz davet kodu',
   'referral_already_logged_in': 'Davet kodu sadece yeni kayıt sırasında kullanılabilir',
+  'referral_enter_code': 'Davet kodun var mı? Buraya gir:',
+  'referral_apply': 'Uygula',
+  'referral_invited_by': 'Davet eden: ',
+  'referral_reward_earned': '25 mor elmas kazandın!',
+  'referral_complete_profile': 'Profilini %60 tamamla, ödülünü kazan!',
+  'referral_self_error': 'Kendi kodunu kullanamazsın',
+  'referral_already_error': 'Zaten bir davet kodu kullandın',
 
   // Paywall
   'paywall_title_undo': 'Geri Alma\'nın Kilidini Aç',
@@ -863,4 +923,185 @@ const trTranslations = <String, String>{
   'preview_sheet_regen_cta': 'Yeniden Üret',
   'preview_sheet_skip_link': 'Sen seç, ben uğraşmayayım',
   'preview_sheet_error': 'Üretemedim, tekrar dene',
+
+  // Splash
+  'splash_flow_ask': 'Sor',
+  'splash_flow_answer': 'Cevapla',
+  'splash_flow_match': 'Eşleş',
+
+  // Report categories
+  'report_select_category': 'Bildirme Nedeni Seçin',
+  'report_cat_inappropriate': 'Uygunsuz İçerik',
+  'report_cat_fake': 'Sahte Profil',
+  'report_cat_spam': 'Spam',
+  'report_cat_harassment': 'Taciz',
+  'report_cat_underage': 'Yaş Altı',
+  'report_cat_scam': 'Dolandırıcılık',
+  'report_cat_offensive_photos': 'Uygunsuz Fotoğraflar',
+  'report_cat_threatening': 'Tehdit',
+  'report_cat_impersonation': 'Kimliğe Bürünme',
+  'report_cat_other': 'Diğer',
+  'report_reason_title': 'Açıklama',
+  'report_reason_optional': 'Opsiyonel açıklama ekleyin...',
+  'report_reason_required': 'Lütfen detaylı açıklama yazın...',
+
+  // Block
+  'blocked_users': 'Engellenen Kullanıcılar',
+  'no_blocked_users': 'Engellenen kullanıcı yok',
+  'unblock': 'Engeli Kaldır',
+  'unblock_confirm_title': 'Engeli Kaldır',
+  'unblock_confirm_message': 'Bu kullanıcının engelini kaldırmak istediğinize emin misiniz?',
+
+  // Support tickets
+  'my_tickets': 'Destek Taleplerim',
+  'no_tickets': 'Henüz destek talebiniz yok',
+  'create_ticket': 'Destek Talebi Oluştur',
+  'ticket_created_success': 'Destek talebiniz oluşturuldu',
+  'ticket_replied': 'Yanıtlandı',
+  'ticket_category': 'Kategori',
+  'ticket_subject': 'Konu',
+  'ticket_subject_hint': 'Sorununuzu kısaca özetleyin',
+  'ticket_subject_error': 'Konu en az 5 karakter olmalı',
+  'ticket_message': 'Mesaj',
+  'ticket_message_hint': 'Sorununuzu detaylı açıklayın',
+  'ticket_message_error': 'Mesaj en az 10 karakter olmalı',
+  'ticket_cat_account': 'Hesap',
+  'ticket_cat_technical': 'Teknik',
+  'ticket_cat_billing': 'Ödeme',
+  'ticket_cat_match': 'Eşleşme',
+  'ticket_cat_other': 'Diğer',
+  'ticket_status_open': 'Açık',
+  'ticket_status_in_progress': 'İnceleniyor',
+  'ticket_status_resolved': 'Çözüldü',
+  'ticket_status_closed': 'Kapatıldı',
+
+  // Help
+  'help_support': 'Yardım & Destek',
+
+  // Ban
+  'account_banned_title': 'Hesabınız Askıya Alındı',
+  'account_banned_message': 'Hesabınız topluluk kurallarını ihlal ettiği için askıya alınmıştır. Detaylı bilgi için bize ulaşın.',
+
+  // Submit
+  'submit': 'Gönder',
+
+  // Chat — Abandon Warning
+  'abandon_title': 'Sorudan Kaçıyorsun!',
+  'abandon_question_lock': 'Soru Kilidi',
+  'abandon_power_block': 'Güç Engeli',
+  'abandon_unmatch_risk': 'Unmatch Riski',
+  'abandon_features_added': 'Karşı taraf bu soruya şu özellikleri eklemiş:',
+  'abandon_flee_warning': 'Cevap vermeden çıkarsan sorudan kaçmış sayılırsın.',
+  'abandon_unmatch_warning': 'Eşleşmen sona erecek!',
+  'abandon_leave': 'Vazgeç ve Çık',
+  'abandon_stay': 'Geri Dön',
+
+  // Chat — Question Card
+  'question_risky': 'Bu soru riskli!',
+  'question_power_block': 'Güç Engeli',
+  'question_chat_locked': 'Sohbet Kilitli',
+  'question_fled': 'Kaçtı',
+
+  // Chat — Question Result
+  'result_correct': 'Doğru!',
+  'result_congrats': 'Tebrikler!',
+  'result_wrong': 'Yanlış Cevap',
+  'result_correct_subtitle': 'Soruyu doğru cevapladın!',
+  'result_wrong_subtitle': 'Bir dahaki sefere daha şanslı olursun.',
+  'result_rescue': 'Kurtarma Hakkı (Skip)',
+  'result_go_back': 'Geri Dön',
+  'result_unmatch_ended': 'Eşleşme sona erdi',
+  'result_green_earned': '+{count} Yeşil Elmas',
+  'result_green_subtitle': 'Soru sahibine kazandırdın',
+  'result_correct_answer': 'Doğru cevap',
+  'result_purple_spent': '-{count} Mor Elmas',
+  'result_power_spent_single': '{power} için harcandı',
+  'result_power_spent_multi': 'Güç kullanımı için harcandı',
+  'result_powers_used': 'Kullanılan Güçler',
+  'result_your_answer': 'Cevabın',
+  'result_correct_label': 'Doğru',
+  'result_time': 'Süre',
+
+  // Chat — Media Request
+  'media_active': 'Medya paylaşımı aktif',
+  'media_rejected': 'Medya isteği reddedildi',
+  'media_sent': 'Medya isteği gönderildi',
+  'media_waiting': 'Cevap bekleniyor...',
+  'media_wants_share': '\u{1F4F7} Medya paylaşmak istiyor',
+  'media_reject': 'Reddet',
+  'media_accept': 'Kabul Et',
+
+  // Chat — App Bar
+  'unmatch': 'Unmatch',
+
+  // Chat — Create Question
+  'create_question': 'Soru Oluştur',
+  'drafts_history': 'Taslaklar & Geçmiş',
+
+  // Chat — Error Messages
+  'error_chat_generic': 'Bir hata oluştu, tekrar deneyin',
+  'error_rescue_failed': 'Kurtarma başarısız',
+
+  // Profile — Edit
+  'profile_photo_hint': 'İlk fotoğrafın profil fotoğrafın olur',
+  'profile_relationship_title': 'İlişki Amacı',
+  'profile_relationship_subtitle': 'Ne aradığını karşı taraf görsün',
+  'profile_relationship_serious': 'Ciddi İlişki',
+  'profile_relationship_friendship': 'Arkadaşlık',
+  'profile_relationship_not_sure': 'Emin Değilim',
+  'profile_basic_info_subtitle': 'Seni tanımamıza yardımcı ol',
+  'profile_details_subtitle': 'Profilini zenginleştir, daha fazla eşleşme al',
+  'profile_bio_subtitle': 'Kendini kısaca tanıt',
+  'profile_no_data': 'Kullanıcı verisi bulunamadı',
+
+  // Social login
+  'or': 'veya',
+  'sign_in_with_google': 'Google ile Giriş Yap',
+  'sign_in_with_apple': 'Apple ile Giriş Yap',
+
+  // Profile completion (social login)
+  'profile_completion_title': 'Profilini Tamamla',
+
+  // App Review
+  'rate_us': 'Bizi Değerlendir',
+  'rate_us_subtitle': 'Qulo\'yu seviyor musun? Bize yorum bırak!',
+
+  // Chat — Hardcoded fixes
+  'chat_question_load_failed': 'Soru yüklenemedi',
+  'chat_answer_question_hint': 'Soruyu cevaplayın...',
+  'chat_audio_reward_revealed': 'Ses Ödülü Açıldı!',
+  'chat_lock_answer_required': 'Mesaj göndermek için soruyu cevaplamanız gerekiyor.',
+  'chat_time_up': 'Süre Doldu!',
+  'chat_time_up_desc': 'Cevap vermek için süren bitti. Güç kullanarak kurtulabilirsin.',
+  'chat_powers_blocked': 'Güçler engellenmiş. Kilidi aç ve Geç gücünü kullan.',
+  'chat_audio_reward': 'Ses Ödülü',
+  'chat_audio_locked': 'Kilitli Ses',
+  'chat_unmatch_confirm': 'Bu kişiyle eşleşmeni kaldırmak istediğine emin misin? Bu işlem geri alınamaz.',
+
+  // Power bar labels (short display names)
+  'power_bar_half': 'Yarıla',
+  'power_bar_skip': 'Geç',
+  'power_bar_hint': 'İpucu',
+  'power_bar_skip_all': 'Hepsini Geç',
+  'power_bar_block': 'Engel',
+  'power_bar_unlock': 'Kilidi Aç',
+
+  // Milestone celebration
+  'milestone_congrats': 'Tebrikler!',
+  'milestone_profile_completed': 'Profilini %@milestone tamamladın!',
+  'milestone_diamond_earned': 'Mor elmas kazandın!',
+  'milestone_boost_earned': '24 saatlik ücretsiz boost kazandın!',
+
+  // Referral share
+  'referral_share_message': 'Qulo\'ya katıl! Davet kodumu kullan, ikimize de @reward mor elmas hediye: @code\nhttps://quloapp.com/invite/@code',
+
+  // Permission denied (image picker)
+  'camera_permission_denied_title': 'Kamera izni gerekli',
+  'camera_permission_denied_message': 'Fotoğraf çekebilmek için Ayarlar > Qulo bölümünden kamera iznini açman gerekiyor.',
+  'photo_permission_denied_title': 'Fotoğraf izni gerekli',
+  'photo_permission_denied_message': 'Galeriden fotoğraf seçebilmek için Ayarlar > Qulo bölümünden fotoğraf iznini açman gerekiyor.',
+
+  // Email notifications (added 2026-06-09)
+  'email_notifications': 'E-posta Bildirimleri',
+  'email_notifications_desc': 'Yeni eşleşme olduğunda e-posta al',
 };

@@ -4,10 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/widgets/app_icon.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/app_text_field.dart';
 import 'package:qulo_v2/core/widgets/profile_section_card.dart';
-import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
 
@@ -36,7 +36,7 @@ class EditProfileBasicInfoSection extends ConsumerWidget {
     return ProfileSectionCard(
       icon: Icons.person,
       title: context.tr('edit_basic_info'),
-      subtitle: 'Seni tanimamiza yardimci ol',
+      subtitle: context.tr('profile_basic_info_subtitle'),
       completionText: completionText,
       isComplete: completionText == '4/4',
       child: Column(
@@ -54,6 +54,7 @@ class EditProfileBasicInfoSection extends ConsumerWidget {
                   controller: cityController,
                   label: context.tr('city'),
                   hint: context.tr('city_hint'),
+                  maxLength: 100,
                   textCapitalization: TextCapitalization.words,
                 ),
               ),
@@ -72,6 +73,7 @@ class EditProfileBasicInfoSection extends ConsumerWidget {
                   controller: heightController,
                   label: context.tr('height'),
                   hint: 'cm',
+                  maxLength: 3,
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 ),
@@ -82,6 +84,7 @@ class EditProfileBasicInfoSection extends ConsumerWidget {
                   controller: weightController,
                   label: context.tr('weight'),
                   hint: 'kg',
+                  maxLength: 3,
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 ),
@@ -122,7 +125,7 @@ class _LocationButton extends StatelessWidget {
                 height: 20,
                 child: AppLoadingWidget.small(),
               )
-            : QIcon(QIcons.icMapPin, color: context.appColors.primary, size: 20),
+            : AppIcon(QIcons.mapPin, color: context.appColors.primary, size: 20),
       ),
     );
   }

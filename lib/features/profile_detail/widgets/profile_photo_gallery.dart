@@ -86,6 +86,7 @@ class _ProfilePhotoGalleryState extends State<ProfilePhotoGallery> {
                 child: CachedNetworkImage(
                   imageUrl: url,
                   fit: BoxFit.cover,
+                  memCacheWidth: 1080,
                   placeholder: (ctx, __) => Container(color: Theme.of(ctx).colorScheme.surface),
                   errorWidget: (_, __, ___) => Container(
                     color: theme.colorScheme.surface,

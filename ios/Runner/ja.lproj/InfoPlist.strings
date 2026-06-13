@@ -1,0 +1,6 @@
+"CFBundleDisplayName" = "Qulo";
+"NSCameraUsageDescription" = "プロフィール写真を撮影するためにカメラへのアクセスが必要です。";
+"NSPhotoLibraryUsageDescription" = "プロフィール写真を選択するためにフォトライブラリへのアクセスが必要です。";
+"NSLocationWhenInUseUsageDescription" = "Qulo は、Discover 画面で設定した距離内のユーザーを見つけるため、またプロフィールに都市名を表示するために位置情報を使用します。たとえば距離を 50 km に設定すると、Discover はその範囲内のユーザーを表示し、各カードに「東京 · 2.5 km」のように都市と距離が表示されます。";
+"NSMicrophoneUsageDescription" = "ボイスメッセージを送信するためにマイクへのアクセスが必要です。";
+"NSUserTrackingUsageDescription" = "Quloはパーソナライズされたコンテンツを提供し、体験を向上させるためにこの識別子を使用します。あなたのデータは広告目的で第三者と共有されることはありません。";

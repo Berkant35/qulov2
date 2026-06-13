@@ -1,0 +1,6 @@
+"CFBundleDisplayName" = "Qulo";
+"NSCameraUsageDescription" = "O acesso à câmera é necessário para tirar fotos de perfil.";
+"NSPhotoLibraryUsageDescription" = "O acesso à galeria é necessário para selecionar fotos de perfil.";
+"NSLocationWhenInUseUsageDescription" = "O Qulo usa sua localização para encontrar pessoas dentro da distância escolhida na tela Discover e mostrar sua cidade no perfil. Por exemplo, ao definir a distância em 50 km, o Discover lista usuários nesse raio e cada cartão mostra cidade e distância, como \"Lisboa · 2,5 km\".";
+"NSMicrophoneUsageDescription" = "O acesso ao microfone é necessário para enviar mensagens de voz.";
+"NSUserTrackingUsageDescription" = "O Qulo usa este identificador para fornecer conteúdo personalizado e melhorar sua experiência. Seus dados não são compartilhados com terceiros para fins publicitários.";

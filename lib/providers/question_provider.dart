@@ -50,6 +50,32 @@ class QuestionNotifier extends AsyncNotifier<List<QuestionModel>> {
     );
     return result;
   }
+
+  Future<void> reorderQuestions(int oldIndex, int newIndex) async {
+    final current = state.valueOrNull;
+    if (current == null) return;
+
+    // Adjust index for ReorderableListView behavior
+    if (newIndex > oldIndex) newIndex--;
+
+    final reordered = List<QuestionModel>.from(current);
+    final item = reordered.removeAt(oldIndex);
+    reordered.insert(newIndex, item);
+
+    // Optimistic update
+    state = AsyncData(reordered);
+
+    final orderedIds = reordered.map((q) => q.id).toList();
+    final result = await ref.read(questionRepositoryProvider).reorderQuestions(orderedIds);
+    result.when(
+      success: (data) => state = AsyncData(data),
+      failure: (f) {
+        // Rollback
+        state = AsyncData(current);
+        dev.log('reorderQuestions failed: $f', name: 'QuestionNotifier');
+      },
+    );
+  }
 }
 
 final questionProvider = AsyncNotifierProvider<QuestionNotifier, List<QuestionModel>>(QuestionNotifier.new);
