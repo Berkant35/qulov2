@@ -117,14 +117,7 @@ class UserNotifier extends AsyncNotifier<UserModel?> {
 
   Future<Result<Map<String, dynamic>>> setInterests(List<String> interests) async {
     final result = await ref.read(userRepositoryProvider).setInterests(interests);
-    if (result.isSuccess) {
-      await fetchMe();
-    } else {
-      result.when(
-        success: (_) {},
-        failure: (f) => dev.log('setInterests failed: $f', name: 'UserNotifier'),
-      );
-    }
+    if (result.isSuccess) await fetchMe();
     return result;
   }
 
@@ -134,11 +127,6 @@ class UserNotifier extends AsyncNotifier<UserModel?> {
       await fetchMe();
       // Invalidate question provider so question list refreshes
       ref.invalidate(questionProvider);
-    } else {
-      result.when(
-        success: (_) {},
-        failure: (f) => dev.log('quickAssignQuestions failed: $f', name: 'UserNotifier'),
-      );
     }
     return result;
   }
