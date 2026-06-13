@@ -4,6 +4,11 @@ import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_button.dart';
 
+/// Loader policy: only Quick Assign shows `isLoading` because it performs a
+/// network call inline. Magic Fill opens a bottom sheet immediately (no
+/// network), and Manual Create pushes a route — a spinner on either would be
+/// misleading. All three CTAs still disable via `isProcessing` so the user
+/// cannot double-tap into a different flow mid-async.
 class SetupQuestionCard extends StatelessWidget {
   final bool isComplete;
   final bool isProcessing;

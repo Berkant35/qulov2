@@ -3,12 +3,16 @@ import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_button.dart';
 
+/// Note on loaders: this sheet has no `isProcessing` prop because callers are
+/// expected to `Navigator.pop()` the sheet BEFORE running their async work.
+/// Showing a loader here would never animate (the sheet is gone by the time
+/// the mixin flips `isProcessing = true`). Loaders, if needed, belong on the
+/// underlying gate screen — not on these CTAs.
 class SetupAiPreviewSheet extends StatelessWidget {
   final List<Map<String, dynamic>> suggestions;
   final VoidCallback onAssign;
   final VoidCallback onRegenerate;
   final VoidCallback onSkip; // "Sen seç" — fallback to quick-assign upstream
-  final bool isProcessing;
 
   const SetupAiPreviewSheet({
     super.key,
@@ -16,7 +20,6 @@ class SetupAiPreviewSheet extends StatelessWidget {
     required this.onAssign,
     required this.onRegenerate,
     required this.onSkip,
-    required this.isProcessing,
   });
 
   @override
@@ -84,19 +87,18 @@ class SetupAiPreviewSheet extends StatelessWidget {
 
             const SizedBox(height: AppSpacing.lg),
 
-            // Assign CTA
+            // Assign CTA — sheet pops first; no loader needed here.
             AppButton(
               label: context.tr('preview_sheet_assign_cta'),
-              onPressed: isProcessing ? null : onAssign,
+              onPressed: onAssign,
               fullWidth: true,
-              isLoading: isProcessing,
             ),
             const SizedBox(height: AppSpacing.sm),
 
             // Regenerate
             AppButton(
               label: context.tr('preview_sheet_regen_cta'),
-              onPressed: isProcessing ? null : onRegenerate,
+              onPressed: onRegenerate,
               variant: AppButtonVariant.secondary,
               fullWidth: true,
             ),
@@ -104,7 +106,7 @@ class SetupAiPreviewSheet extends StatelessWidget {
 
             // Skip link
             TextButton(
-              onPressed: isProcessing ? null : onSkip,
+              onPressed: onSkip,
               child: Text(
                 context.tr('preview_sheet_skip_link'),
                 style: theme.textTheme.bodyMedium?.copyWith(

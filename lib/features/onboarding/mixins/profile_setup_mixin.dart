@@ -43,25 +43,20 @@ mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
 
     final navigation = ref.read(navigationServiceProvider);
     final source = await navigation.showAppBottomSheet<String>(
-      CustomBottomSheet(
+      ListBottomSheet<String>(
         name: 'photo_source',
-        builder: (ctx) => SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.camera_alt_outlined),
-                title: Text(ctx.tr('setup_photo_picker_camera')),
-                onTap: () => Navigator.of(ctx).pop('camera'),
-              ),
-              ListTile(
-                leading: const Icon(Icons.photo_library_outlined),
-                title: Text(ctx.tr('setup_photo_picker_gallery')),
-                onTap: () => Navigator.of(ctx).pop('gallery'),
-              ),
-            ],
+        options: [
+          SheetOption(
+            label: context.tr('setup_photo_picker_camera'),
+            icon: Icons.camera_alt_outlined,
+            value: 'camera',
           ),
-        ),
+          SheetOption(
+            label: context.tr('setup_photo_picker_gallery'),
+            icon: Icons.photo_library_outlined,
+            value: 'gallery',
+          ),
+        ],
       ),
     );
 
@@ -186,7 +181,6 @@ mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
         maxHeightFactor: 0.85,
         builder: (ctx) => SetupAiPreviewSheet(
           suggestions: _previewSuggestions,
-          isProcessing: isProcessing,
           onAssign: () async {
             Navigator.of(ctx).pop();
             await _assignSuggestions();
@@ -282,23 +276,17 @@ mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
 
   Future<bool> handleBackAttempt() async {
     AnalyticsManager.instance.logEvent(AnalyticsEvents.setupExitAttempt);
-    final shouldLogout = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(ctx.tr('setup_exit_confirm_title')),
-        content: Text(ctx.tr('setup_exit_confirm_body')),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(ctx.tr('setup_exit_confirm_stay')),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(ctx.tr('setup_exit_confirm_logout')),
-          ),
-        ],
-      ),
-    );
+    final shouldLogout =
+        await ref.read(navigationServiceProvider).showAppDialog<bool>(
+              ConfirmDialog(
+                name: 'setup_exit_confirm',
+                title: context.tr('setup_exit_confirm_title'),
+                message: context.tr('setup_exit_confirm_body'),
+                confirmText: context.tr('setup_exit_confirm_logout'),
+                cancelText: context.tr('setup_exit_confirm_stay'),
+                isDestructive: true,
+              ),
+            );
 
     if (shouldLogout ?? false) {
       AnalyticsManager.instance.logEvent(AnalyticsEvents.setupExitConfirm);
