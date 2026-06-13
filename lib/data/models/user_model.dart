@@ -72,7 +72,7 @@ class UserModel extends Equatable {
   final bool strictLanguageMode;
   @JsonKey(name: 'referral_code')
   final String? referralCode;
-  @JsonKey(defaultValue: <String>[])
+  @JsonKey(name: 'interests', defaultValue: <String>[])
   final List<String> interests;
   final UserDetailsModel? details;
 
