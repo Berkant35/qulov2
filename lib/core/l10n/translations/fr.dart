@@ -841,6 +841,7 @@ const frTranslations = <String, String>{
   'setup_exit_confirm_stay': 'Rester',
   'setup_exit_confirm_logout': 'Se déconnecter',
   'setup_completing': 'Presque prêt...',
+  'setup_finish_cta': 'Commencer le matching →',
   'brief_sheet_title': 'Je vais créer 2 questions pour toi',
   'brief_sheet_hint': "Choisis quelques centres d'intérêt (min 1, 3 recommandés)",
   'brief_sheet_generate_cta': 'Générer mes questions →',

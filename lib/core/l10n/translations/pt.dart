@@ -841,6 +841,7 @@ const ptTranslations = <String, String>{
   'setup_exit_confirm_stay': 'Ficar',
   'setup_exit_confirm_logout': 'Sair',
   'setup_completing': 'Quase pronto...',
+  'setup_finish_cta': 'Começar a combinar →',
   'brief_sheet_title': 'Vou criar 2 perguntas para você',
   'brief_sheet_hint': 'Escolha alguns interesses (mín 1, 3 recomendados)',
   'brief_sheet_generate_cta': 'Gerar minhas perguntas →',

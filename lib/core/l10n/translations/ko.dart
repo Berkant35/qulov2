@@ -839,6 +839,7 @@ const koTranslations = <String, String>{
   'setup_exit_confirm_stay': '머무르기',
   'setup_exit_confirm_logout': '로그아웃',
   'setup_completing': '거의 다 됐어요...',
+  'setup_finish_cta': '매칭 시작하기 →',
   'brief_sheet_title': '당신을 위해 질문 2개를 만들게요',
   'brief_sheet_hint': '관심사를 골라주세요 (최소 1개, 3개 추천)',
   'brief_sheet_generate_cta': '내 질문 생성 →',

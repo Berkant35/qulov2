@@ -839,6 +839,7 @@ const nlTranslations = <String, String>{
   'setup_exit_confirm_stay': 'Blijven',
   'setup_exit_confirm_logout': 'Uitloggen',
   'setup_completing': 'Bijna klaar...',
+  'setup_finish_cta': 'Begin met matchen →',
   'brief_sheet_title': 'Ik maak 2 vragen voor je',
   'brief_sheet_hint': 'Kies een paar interesses (min 1, 3 aanbevolen)',
   'brief_sheet_generate_cta': 'Maak mijn vragen →',

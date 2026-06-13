@@ -841,6 +841,7 @@ const jaTranslations = <String, String>{
   'setup_exit_confirm_stay': 'とどまる',
   'setup_exit_confirm_logout': 'ログアウト',
   'setup_completing': 'もうすぐ完了...',
+  'setup_finish_cta': 'マッチングを始める →',
   'brief_sheet_title': 'あなたのために2つの質問を作ります',
   'brief_sheet_hint': '興味を選んでください（最低1つ、3つ推奨）',
   'brief_sheet_generate_cta': '質問を生成 →',

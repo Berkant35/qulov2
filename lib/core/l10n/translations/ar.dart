@@ -839,6 +839,7 @@ const arTranslations = <String, String>{
   'setup_exit_confirm_stay': 'البقاء',
   'setup_exit_confirm_logout': 'تسجيل الخروج',
   'setup_completing': 'تقريباً جاهز...',
+  'setup_finish_cta': 'ابدأ المطابقة ←',
   'brief_sheet_title': 'سأنشئ لك سؤالين',
   'brief_sheet_hint': 'اختر بعض الاهتمامات (الحد الأدنى 1، يُفضّل 3)',
   'brief_sheet_generate_cta': 'أنشئ أسئلتي ←',

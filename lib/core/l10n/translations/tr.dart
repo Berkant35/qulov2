@@ -841,6 +841,7 @@ const trTranslations = <String, String>{
   'setup_exit_confirm_stay': 'Kal',
   'setup_exit_confirm_logout': 'Çıkış Yap',
   'setup_completing': 'Neredeyse hazır...',
+  'setup_finish_cta': 'Eşleşmeye Başla →',
   'brief_sheet_title': 'Senin için 2 soru üreteceğim',
   'brief_sheet_hint': 'Birkaç ilgi alanı seç (min 1, 3 önerilen)',
   'brief_sheet_generate_cta': 'Sorularımı Üret →',

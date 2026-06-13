@@ -841,6 +841,7 @@ const esTranslations = <String, String>{
   'setup_exit_confirm_stay': 'Quedarse',
   'setup_exit_confirm_logout': 'Cerrar sesión',
   'setup_completing': 'Casi listo...',
+  'setup_finish_cta': 'Empezar a emparejar →',
   'brief_sheet_title': 'Te crearé 2 preguntas',
   'brief_sheet_hint': 'Elige algunos intereses (mín. 1, 3 recomendados)',
   'brief_sheet_generate_cta': 'Generar mis preguntas →',

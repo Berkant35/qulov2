@@ -841,6 +841,7 @@ const itTranslations = <String, String>{
   'setup_exit_confirm_stay': 'Resta',
   'setup_exit_confirm_logout': 'Esci',
   'setup_completing': 'Quasi pronto...',
+  'setup_finish_cta': 'Inizia a matchare →',
   'brief_sheet_title': 'Creerò 2 domande per te',
   'brief_sheet_hint': 'Scegli alcuni interessi (min 1, 3 consigliati)',
   'brief_sheet_generate_cta': 'Genera le mie domande →',

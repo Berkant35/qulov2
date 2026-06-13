@@ -59,6 +59,12 @@ class ImagePickerManager {
     return PickedImage(bytes: bytes, mimeType: mimeType, fileName: fileName);
   }
 
+  Future<PickedImage?> pickAndCropFromCamera(BuildContext context) =>
+      pickAndCrop(context, ImageSource.camera);
+
+  Future<PickedImage?> pickAndCropFromGallery(BuildContext context) =>
+      pickAndCrop(context, ImageSource.gallery);
+
   Future<PickedImage?> pickAndCrop(
     BuildContext context,
     ImageSource source, {

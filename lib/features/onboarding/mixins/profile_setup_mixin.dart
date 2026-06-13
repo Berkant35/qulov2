@@ -54,9 +54,13 @@ mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
 
     try {
       final picker = ref.read(imagePickerManagerProvider);
+      if (!mounted) return;
+      // ignore: use_build_context_synchronously
       final picked = source == 'camera'
-          ? await picker.pickFromCamera()
-          : await picker.pickFromGallery();
+          // ignore: use_build_context_synchronously
+          ? await picker.pickAndCropFromCamera(context)
+          // ignore: use_build_context_synchronously
+          : await picker.pickAndCropFromGallery(context);
       if (picked == null) {
         if (mounted) setState(() => isUploadingPhoto = false);
         return;
@@ -261,6 +265,14 @@ mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
       AnalyticsManager.instance.logEvent(AnalyticsEvents.setupComplete);
       // Router guard re-evaluates redirect when userProvider state changes.
     }
+  }
+
+  /// User-initiated finish from the gate's footer CTA (only shown when
+  /// `setupComplete == true`). Explicit navigation since router refresh
+  /// is driven by auth state, not userProvider mutations.
+  void handleFinish() {
+    AnalyticsManager.instance.logEvent(AnalyticsEvents.setupComplete);
+    ref.read(navigationServiceProvider).go(RouteNames.discover);
   }
 
   // ─── Back Confirmation ────────────────────────────────────────────

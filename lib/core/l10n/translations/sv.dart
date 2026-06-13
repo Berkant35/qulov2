@@ -841,6 +841,7 @@ const svTranslations = <String, String>{
   'setup_exit_confirm_stay': 'Stanna',
   'setup_exit_confirm_logout': 'Logga ut',
   'setup_completing': 'Snart klart...',
+  'setup_finish_cta': 'Börja matcha →',
   'brief_sheet_title': 'Jag skapar 2 frågor åt dig',
   'brief_sheet_hint': 'Välj några intressen (minst 1, 3 rekommenderas)',
   'brief_sheet_generate_cta': 'Skapa mina frågor →',

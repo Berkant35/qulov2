@@ -839,6 +839,7 @@ const plTranslations = <String, String>{
   'setup_exit_confirm_stay': 'Zostań',
   'setup_exit_confirm_logout': 'Wyloguj',
   'setup_completing': 'Już prawie gotowe...',
+  'setup_finish_cta': 'Zacznij dopasowywać →',
   'brief_sheet_title': 'Stworzę dla ciebie 2 pytania',
   'brief_sheet_hint': 'Wybierz kilka zainteresowań (min 1, 3 zalecane)',
   'brief_sheet_generate_cta': 'Wygeneruj moje pytania →',

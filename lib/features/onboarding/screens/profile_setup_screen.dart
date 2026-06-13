@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation_provider.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/widgets/app_button.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/features/onboarding/mixins/profile_setup_mixin.dart';
 import 'package:qulo_v2/features/onboarding/widgets/setup_photo_card.dart';
@@ -36,6 +37,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen>
     final user = ref.watch(userProvider).valueOrNull;
     final hasPhoto = user?.photos?.isNotEmpty ?? false;
     final questionsReady = (user?.questionCount ?? 0) >= 2;
+    final isComplete = hasPhoto && questionsReady;
 
     return PopScope(
       canPop: false,
@@ -77,14 +79,21 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen>
                   .push(RouteNames.questions),
             ),
             const Spacer(),
-            Center(
-              child: Text(
-                context.tr('setup_hint'),
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
+            if (isComplete)
+              AppButton(
+                label: context.tr('setup_finish_cta'),
+                onPressed: handleFinish,
+                fullWidth: true,
+              )
+            else
+              Center(
+                child: Text(
+                  context.tr('setup_hint'),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ),
-            ),
             const SizedBox(height: AppSpacing.md),
           ],
         ),

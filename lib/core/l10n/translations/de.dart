@@ -841,6 +841,7 @@ const deTranslations = <String, String>{
   'setup_exit_confirm_stay': 'Bleiben',
   'setup_exit_confirm_logout': 'Abmelden',
   'setup_completing': 'Fast fertig...',
+  'setup_finish_cta': 'Matching starten →',
   'brief_sheet_title': 'Ich erstelle 2 Fragen für dich',
   'brief_sheet_hint': 'Wähle ein paar Interessen (min. 1, 3 empfohlen)',
   'brief_sheet_generate_cta': 'Meine Fragen erstellen →',

@@ -839,6 +839,7 @@ const ruTranslations = <String, String>{
   'setup_exit_confirm_stay': 'Остаться',
   'setup_exit_confirm_logout': 'Выйти',
   'setup_completing': 'Почти готово...',
+  'setup_finish_cta': 'Начать матчинг →',
   'brief_sheet_title': 'Создам для тебя 2 вопроса',
   'brief_sheet_hint': 'Выбери несколько интересов (минимум 1, рекомендуется 3)',
   'brief_sheet_generate_cta': 'Создать вопросы →',

@@ -839,6 +839,7 @@ const zhTranslations = <String, String>{
   'setup_exit_confirm_stay': '留下',
   'setup_exit_confirm_logout': '登出',
   'setup_completing': '马上就好...',
+  'setup_finish_cta': '开始匹配 →',
   'brief_sheet_title': '我来为你创建2个问题',
   'brief_sheet_hint': '选几个兴趣(最少1个,推荐3个)',
   'brief_sheet_generate_cta': '生成我的问题 →',

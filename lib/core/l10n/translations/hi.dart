@@ -841,6 +841,7 @@ const hiTranslations = <String, String>{
   'setup_exit_confirm_stay': 'रुकें',
   'setup_exit_confirm_logout': 'लॉग आउट',
   'setup_completing': 'लगभग तैयार...',
+  'setup_finish_cta': 'मैचिंग शुरू करें →',
   'brief_sheet_title': 'मैं आपके लिए 2 सवाल बनाऊँगा',
   'brief_sheet_hint': 'कुछ रुचियाँ चुनें (न्यूनतम 1, 3 सुझाई गई)',
   'brief_sheet_generate_cta': 'मेरे सवाल बनाएँ →',

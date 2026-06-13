@@ -841,6 +841,7 @@ const enTranslations = <String, String>{
   'setup_exit_confirm_stay': 'Stay',
   'setup_exit_confirm_logout': 'Log Out',
   'setup_completing': 'Almost ready...',
+  'setup_finish_cta': 'Start Matching →',
   'brief_sheet_title': "I'll create 2 questions for you",
   'brief_sheet_hint': 'Pick a few interests (min 1, 3 recommended)',
   'brief_sheet_generate_cta': 'Generate My Questions →',
