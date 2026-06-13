@@ -350,6 +350,21 @@ abstract class AnalyticsEvents {
   static const String paramToCity = 'to_city';
   static const String paramSearchQuery = 'search_query';
 
+  // ─── Profile Setup Gate (13) ─ T20 finalizes ───────────────────────
+  static const String setupGateView = 'setup_gate_view';
+  static const String setupPhotoStart = 'setup_photo_start';
+  static const String setupPhotoSuccess = 'setup_photo_success';
+  static const String setupPhotoFail = 'setup_photo_fail';
+  static const String setupMagicFillStart = 'setup_magic_fill_start';
+  static const String setupMagicFillAssign = 'setup_magic_fill_assign';
+  static const String setupMagicFillRegen = 'setup_magic_fill_regen';
+  static const String setupMagicFillSkip = 'setup_magic_fill_skip';
+  static const String setupQuickAssign = 'setup_quick_assign';
+  static const String setupManualCreate = 'setup_manual_create';
+  static const String setupComplete = 'setup_complete';
+  static const String setupExitAttempt = 'setup_exit_attempt';
+  static const String setupExitConfirm = 'setup_exit_confirm';
+
   // ─── Deep Link (5) ──────────────────────────────────────────────────
   static const String deepLinkReceived = 'deep_link_received';
   static const String deepLinkNavigated = 'deep_link_navigated';
