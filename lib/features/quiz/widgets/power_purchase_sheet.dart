@@ -48,8 +48,28 @@ class _PowerPurchaseSheetState extends ConsumerState<PowerPurchaseSheet> {
       },
       failure: (f) {
         if (f is ServerFailure && f.code == 'INSUFFICIENT_DIAMONDS') {
-          Navigator.of(context).pop();
-          PaywallBottomSheetContent.show(ref, trigger: 'power_purchase');
+          // Paywall purple-only path; green can only be earned, so show snackbar instead.
+          if (diamondType == 'PURPLE') {
+            Navigator.of(context).pop();
+            PaywallBottomSheetContent.show(ref, trigger: 'power_purchase');
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(f.message ?? context.tr('purchase_failed')),
+                backgroundColor: context.appColors.error,
+              ),
+            );
+          }
+          return;
+        }
+        if (f is ServerFailure && f.code == 'DIAMOND_COOLDOWN') {
+          // 24h social-signup cooldown — subscription doesn't bypass; show explanation.
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(f.message ?? context.tr('purchase_failed')),
+              backgroundColor: context.appColors.error,
+            ),
+          );
           return;
         }
         final message = f.message ?? context.tr('purchase_failed');

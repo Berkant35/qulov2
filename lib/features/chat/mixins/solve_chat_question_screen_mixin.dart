@@ -248,11 +248,18 @@ mixin SolveChatQuestionScreenMixin
         timerKey.currentState?.resume();
       },
       failure: (f) async {
-        if (f is ServerFailure &&
-            (f.code == 'INSUFFICIENT_DIAMONDS' || f.code == 'DIAMOND_COOLDOWN')) {
+        if (f is ServerFailure && f.code == 'INSUFFICIENT_DIAMONDS') {
           await PaywallBottomSheetContent.show(ref,
               trigger: 'chat_question_power');
           if (mounted) timerKey.currentState?.resume();
+        } else if (f is ServerFailure && f.code == 'DIAMOND_COOLDOWN') {
+          // 24h social-signup cooldown — paywall bypass etmez; mesaj göster.
+          timerKey.currentState?.resume();
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(f.message ?? context.tr('error_general'))),
+            );
+          }
         } else if (f is ServerFailure && f.code == 'RATE_LIMITED') {
           timerKey.currentState?.resume();
           if (mounted) {
@@ -290,11 +297,11 @@ mixin SolveChatQuestionScreenMixin
       },
       failure: (f) {
         setState(() => isSubmitting = false);
-        if (f is ServerFailure &&
-            (f.code == 'INSUFFICIENT_DIAMONDS' || f.code == 'DIAMOND_COOLDOWN')) {
+        if (f is ServerFailure && f.code == 'INSUFFICIENT_DIAMONDS') {
           PaywallBottomSheetContent.show(ref, trigger: 'chat_question_skip');
           return;
         }
+        // DIAMOND_COOLDOWN ve diğer hatalar — snackbar.
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(f.message ?? context.tr('error_general'))),
         );
@@ -402,12 +409,12 @@ mixin SolveChatQuestionScreenMixin
         });
       },
       failure: (f) {
-        if (f is ServerFailure &&
-            (f.code == 'INSUFFICIENT_DIAMONDS' || f.code == 'DIAMOND_COOLDOWN')) {
+        if (f is ServerFailure && f.code == 'INSUFFICIENT_DIAMONDS') {
           PaywallBottomSheetContent.show(ref,
               trigger: 'chat_question_rescue');
           return;
         }
+        // DIAMOND_COOLDOWN ve diğer hatalar — snackbar (paywall cooldown'u atlayamaz).
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(f.message ?? context.tr('error_rescue_failed'))),
         );
