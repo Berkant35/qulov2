@@ -10,6 +10,7 @@ import 'package:qulo_v2/core/widgets/app_icon.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/features/onboarding/mixins/profile_setup_mixin.dart';
+import 'package:qulo_v2/features/onboarding/widgets/setup_gender_pref_card.dart';
 import 'package:qulo_v2/features/onboarding/widgets/setup_photo_card.dart';
 import 'package:qulo_v2/features/onboarding/widgets/setup_question_card.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
@@ -41,7 +42,10 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen>
     final user = ref.watch(userProvider).valueOrNull;
     final hasPhoto = user?.photos?.isNotEmpty ?? false;
     final questionsReady = (user?.questionCount ?? 0) >= 2;
-    final isComplete = hasPhoto && questionsReady;
+    final genderPrefReady = user?.genderPrefSetAt != null;
+    final isComplete = hasPhoto && questionsReady && genderPrefReady;
+    final genderPrefValue =
+        genderPrefReady ? user!.genderPref : selectedGenderPref;
 
     return PopScope(
       canPop: false,
@@ -82,6 +86,12 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen>
               onEdit: () => ref
                   .read(navigationServiceProvider)
                   .push(RouteNames.questions),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            SetupGenderPrefCard(
+              selectedValue: genderPrefValue,
+              isProcessing: isSubmittingGenderPref,
+              onSelect: handleGenderPrefSelect,
             ),
             const Spacer(),
             if (isComplete)

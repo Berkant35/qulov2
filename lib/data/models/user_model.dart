@@ -18,6 +18,8 @@ class UserModel extends Equatable {
   final String? gender;
   @JsonKey(name: 'gender_pref')
   final String? genderPref;
+  @JsonKey(name: 'gender_pref_set_at')
+  final DateTime? genderPrefSetAt;
   @JsonKey(name: 'match_radius_km', defaultValue: 50)
   final int matchRadiusKm;
   @JsonKey(name: 'age_pref_min')
@@ -87,6 +89,7 @@ class UserModel extends Equatable {
     this.age,
     this.gender,
     this.genderPref,
+    this.genderPrefSetAt,
     this.matchRadiusKm = 50,
     this.agePrefMin,
     this.agePrefMax,
@@ -127,11 +130,13 @@ class UserModel extends Equatable {
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
 
   bool get setupComplete =>
-      (photos?.isNotEmpty ?? false) && questionCount >= 2;
+      (photos?.isNotEmpty ?? false) &&
+      questionCount >= 2 &&
+      genderPrefSetAt != null;
 
   @override
   List<Object?> get props => [
-    id, email, name, surname, bio, age, gender, genderPref,
+    id, email, name, surname, bio, age, gender, genderPref, genderPrefSetAt,
     matchRadiusKm, agePrefMin, agePrefMax, city, country, locale,
     lat, lng, photos, profileCompletion, greenDiamonds, purpleDiamonds,
     isOnline, lastSeenAt, emailVerified, passportCity, boostUntil,

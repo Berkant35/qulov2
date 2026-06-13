@@ -386,6 +386,10 @@ abstract class AnalyticsEvents {
   static const String setupExitAttempt = 'setup_exit_attempt';
   static const String setupExitConfirm = 'setup_exit_confirm';
 
+  // ─── Gender Preference Collection (2) ──────────────────────────────
+  static const String signupGenderPrefSelected = 'signup_gender_pref_selected';
+  static const String setupGenderPrefSelected = 'setup_gender_pref_selected';
+
   // ─── Deep Link (5) ──────────────────────────────────────────────────
   static const String deepLinkReceived = 'deep_link_received';
   static const String deepLinkNavigated = 'deep_link_navigated';

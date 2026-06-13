@@ -27,6 +27,7 @@ abstract class IAuthRepository {
     required String surname,
     required int age,
     required String gender,
+    required String genderPref,
     double? lat,
     double? lng,
     String locale = 'tr',
