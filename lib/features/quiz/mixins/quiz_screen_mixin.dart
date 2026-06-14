@@ -278,32 +278,31 @@ mixin QuizScreenMixin on ConsumerState<QuizScreen> {
   }
 
   // Rescue başarısız → overlay AÇIK KALIR (SKIP/SKIP_ALL/decline tuşları kullanılabilir).
-  // INSUFFICIENT_DIAMONDS'ta paywall açılır; kullanıcı satın alır, kapatınca aynı overlay'den
-  // tekrar SKIP'e basıp denerse artık güç yeter. Session'ı zorla failed yapmıyoruz.
+  // Paywall, kullanıcıya satın alma yolunu sunan aksiyon — server insufficient/cooldown vb.
+  // kaynak-yokluğu hataları döndüğünde aç. Network/unknown gibi hatalarda snackbar.
   Future<void> _handleRescueFailure(AppFailure f) async {
-    if (f is ServerFailure && f.code == 'INSUFFICIENT_DIAMONDS') {
+    final isResourceFailure = f is ServerFailure &&
+        (f.code == 'INSUFFICIENT_DIAMONDS' ||
+            f.code == 'DIAMOND_COOLDOWN' ||
+            f.code == 'NO_INVENTORY');
+
+    if (isResourceFailure) {
       await PaywallBottomSheetContent.show(ref, trigger: 'quiz_rescue');
       if (!mounted) return;
       // Paywall kapandığında bakiyeyi senkronize et — kullanıcı satın aldıysa
       // tekrar SKIP'e basınca güncel balance ile çalışsın.
       ref.read(exchangeProvider.notifier).fetchAll();
       ref.read(diamondProvider.notifier).fetchBalance();
-    } else if (f is ServerFailure && f.code == 'DIAMOND_COOLDOWN') {
-      // 24h social-signup cooldown — subscription bypass etmez; mesaj göster.
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(f.message ?? context.tr('quiz_rescue_failed')),
-          backgroundColor: context.appColors.error,
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(f.message ?? context.tr('quiz_rescue_failed')),
-          backgroundColor: context.appColors.error,
-        ),
-      );
+      return;
     }
+
+    // Network/unknown/validation hatalarında paywall yardım etmez — snackbar.
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(f.message ?? context.tr('quiz_rescue_failed')),
+        backgroundColor: context.appColors.error,
+      ),
+    );
   }
 
   Future<void> onDeclineRescue() async {
