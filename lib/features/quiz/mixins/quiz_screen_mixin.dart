@@ -10,6 +10,7 @@ import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/data/models/quiz_model.dart';
 import 'package:qulo_v2/features/diamonds/widgets/paywall_bottom_sheet.dart';
+import 'package:qulo_v2/providers/diamond_provider.dart';
 import 'package:qulo_v2/providers/quiz_provider.dart';
 import 'package:qulo_v2/providers/exchange_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
@@ -271,44 +272,38 @@ mixin QuizScreenMixin on ConsumerState<QuizScreen> {
       },
       failure: (f) {
         if (!mounted) return;
-        // Rescue başarısız — overlay'i kapat ve session'ı sonlandır.
-        // Aksi takdirde kullanıcı boş soruda stuck kalır (timer paused, decline butonu yok).
-        _resetQuestionState();
         _handleRescueFailure(f);
       },
     );
   }
 
+  // Rescue başarısız → overlay AÇIK KALIR (SKIP/SKIP_ALL/decline tuşları kullanılabilir).
+  // INSUFFICIENT_DIAMONDS'ta paywall açılır; kullanıcı satın alır, kapatınca aynı overlay'den
+  // tekrar SKIP'e basıp denerse artık güç yeter. Session'ı zorla failed yapmıyoruz.
   Future<void> _handleRescueFailure(AppFailure f) async {
     if (f is ServerFailure && f.code == 'INSUFFICIENT_DIAMONDS') {
       await PaywallBottomSheetContent.show(ref, trigger: 'quiz_rescue');
+      if (!mounted) return;
+      // Paywall kapandığında bakiyeyi senkronize et — kullanıcı satın aldıysa
+      // tekrar SKIP'e basınca güncel balance ile çalışsın.
+      ref.read(exchangeProvider.notifier).fetchAll();
+      ref.read(diamondProvider.notifier).fetchBalance();
     } else if (f is ServerFailure && f.code == 'DIAMOND_COOLDOWN') {
       // 24h social-signup cooldown — subscription bypass etmez; mesaj göster.
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(f.message ?? context.tr('quiz_rescue_failed')),
-            backgroundColor: context.appColors.error,
-          ),
-        );
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(f.message ?? context.tr('quiz_rescue_failed')),
+          backgroundColor: context.appColors.error,
+        ),
+      );
     } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(f.message ?? context.tr('quiz_rescue_failed')),
-            backgroundColor: context.appColors.error,
-          ),
-        );
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(f.message ?? context.tr('quiz_rescue_failed')),
+          backgroundColor: context.appColors.error,
+        ),
+      );
     }
-
-    if (!mounted) return;
-    // Session'ı FAILED olarak kapat → kullanıcı result ekranı görsün, soruda stuck kalmasın.
-    await ref.read(quizProvider.notifier).fail();
-    if (!mounted) return;
-    sessionStopwatch.stop();
-    _showGamifiedResult(matched: false, badge: 'none');
   }
 
   Future<void> onDeclineRescue() async {
