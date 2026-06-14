@@ -80,9 +80,12 @@ class QuizNotifier extends Notifier<QuizState> {
       powerUsed: powerUsed,
       timeSpent: timeSpent,
     );
+    // Sadece success'i state'e yansıt — answer/rescue API hatasında state.failure
+    // setlemek QuizErrorView'a yönlendirir; rescue popup'tan paywall'a geçiş bozulur.
+    // Caller (mixin) failure'u Result üzerinden handle eder.
     result.when(
       success: (data) => state = state.copyWith(lastAnswer: data),
-      failure: (f) => state = state.copyWith(failure: f),
+      failure: (_) {},
     );
     return result;
   }
@@ -93,7 +96,7 @@ class QuizNotifier extends Notifier<QuizState> {
     final result = await ref.read(quizRepositoryProvider).rescueWithSkip(sessionId, powerType: powerType);
     result.when(
       success: (data) => state = state.copyWith(lastAnswer: data),
-      failure: (f) => state = state.copyWith(failure: f),
+      failure: (_) {},
     );
     return result;
   }
@@ -104,7 +107,7 @@ class QuizNotifier extends Notifier<QuizState> {
     final result = await ref.read(quizRepositoryProvider).failSession(sessionId);
     result.when(
       success: (data) => state = state.copyWith(lastAnswer: data),
-      failure: (f) => state = state.copyWith(failure: f),
+      failure: (_) {},
     );
     return result;
   }
