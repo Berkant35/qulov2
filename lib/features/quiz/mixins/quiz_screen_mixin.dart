@@ -271,18 +271,44 @@ mixin QuizScreenMixin on ConsumerState<QuizScreen> {
       },
       failure: (f) {
         if (!mounted) return;
-        if (f is ServerFailure && f.code == 'INSUFFICIENT_DIAMONDS') {
-          PaywallBottomSheetContent.show(ref, trigger: 'quiz_rescue');
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(f.message ?? context.tr('quiz_rescue_failed')),
-              backgroundColor: context.appColors.error,
-            ),
-          );
-        }
+        // Rescue başarısız — overlay'i kapat ve session'ı sonlandır.
+        // Aksi takdirde kullanıcı boş soruda stuck kalır (timer paused, decline butonu yok).
+        _resetQuestionState();
+        _handleRescueFailure(f);
       },
     );
+  }
+
+  Future<void> _handleRescueFailure(AppFailure f) async {
+    if (f is ServerFailure && f.code == 'INSUFFICIENT_DIAMONDS') {
+      await PaywallBottomSheetContent.show(ref, trigger: 'quiz_rescue');
+    } else if (f is ServerFailure && f.code == 'DIAMOND_COOLDOWN') {
+      // 24h social-signup cooldown — subscription bypass etmez; mesaj göster.
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(f.message ?? context.tr('quiz_rescue_failed')),
+            backgroundColor: context.appColors.error,
+          ),
+        );
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(f.message ?? context.tr('quiz_rescue_failed')),
+            backgroundColor: context.appColors.error,
+          ),
+        );
+      }
+    }
+
+    if (!mounted) return;
+    // Session'ı FAILED olarak kapat → kullanıcı result ekranı görsün, soruda stuck kalmasın.
+    await ref.read(quizProvider.notifier).fail();
+    if (!mounted) return;
+    sessionStopwatch.stop();
+    _showGamifiedResult(matched: false, badge: 'none');
   }
 
   Future<void> onDeclineRescue() async {
