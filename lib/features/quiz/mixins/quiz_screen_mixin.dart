@@ -289,10 +289,13 @@ mixin QuizScreenMixin on ConsumerState<QuizScreen> {
     if (isResourceFailure) {
       await PaywallBottomSheetContent.show(ref, trigger: 'quiz_rescue');
       if (!mounted) return;
-      // Paywall kapandığında bakiyeyi senkronize et — kullanıcı satın aldıysa
-      // tekrar SKIP'e basınca güncel balance ile çalışsın.
-      ref.read(exchangeProvider.notifier).fetchAll();
-      ref.read(diamondProvider.notifier).fetchBalance();
+      // RevenueCat webhook'una ~1.5s tampon — purchase başarılı olsa bile
+      // sunucu credit'i bu süre içinde işliyor; aksi halde tekrar SKIP'e basınca
+      // balance hala eski görünür ve paywall loop'a girer.
+      await Future.delayed(const Duration(milliseconds: 1500));
+      if (!mounted) return;
+      await ref.read(exchangeProvider.notifier).fetchAll();
+      await ref.read(diamondProvider.notifier).fetchBalance();
       return;
     }
 
