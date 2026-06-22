@@ -75,6 +75,7 @@ class _PageMessageHostState extends ConsumerState<PageMessageHost> {
           );
     }
 
+    if (!mounted) return;
     if (!ctaUsed) {
       ref.read(pageMessagesProvider.notifier).trackEvent(msg.id, 'dismissed');
     }

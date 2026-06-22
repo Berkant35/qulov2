@@ -27,6 +27,15 @@ class PageMessagesNotifier extends Notifier<PageMessagesState> {
   }
 
   /// O sayfa için gösterilmeye uygun en yüksek priority mesaj (oturum-içi tekrar engeli).
+  ///
+  /// NOT — Frekans yönetimi iki katmanda:
+  ///   • Kalıcı (once / daily / until_dismissed): SERVER tarafında `page_message_events`
+  ///     tablosu + `passesFrequency()` servisi kontrol eder; zaten uygun olmayan mesajlar
+  ///     API'den gelmez.
+  ///   • Oturum-içi (`shownThisSession`): Aynı oturumda tekrar gösterimi engeller.
+  ///     Bu yalnızca `every_visit` dışındaki mesajlar için geçerlidir.
+  ///   Dolayısıyla `shownThisSession`'ın dolu olması "once kalıcı olarak kaydedildi" anlamına
+  ///   GELMEZ — sadece bu oturumda zaten gösterildi demektir.
   PageMessageModel? consumeForPage(String page) {
     final candidates = state.messages.where((m) {
       if (m.page != page) return false;

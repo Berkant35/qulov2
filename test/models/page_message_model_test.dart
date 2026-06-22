@@ -17,4 +17,17 @@ void main() {
     expect(m.localized('de').title, 'Hi'); // fallback en
     expect(m.priority, 5);
   });
+
+  test('PageMessageModel.localized() boş content ile crash etmez', () {
+    final json = {
+      'id': 'm2', 'page': 'discover', 'display_type': 'banner',
+      'content': <String, dynamic>{},
+      'image_url': null, 'action_url': null, 'frequency': 'once', 'priority': 1,
+    };
+    final m = PageMessageModel.fromJson(json);
+    final result = m.localized('tr');
+    expect(result.title, '');
+    expect(result.body, '');
+    expect(result.ctaLabel, '');
+  });
 }

@@ -45,8 +45,11 @@ class PageMessageModel extends Equatable {
   });
 
   /// Mevcut locale içeriği; yoksa 'en'; o da yoksa ilk mevcut.
-  LocaleContent localized(String locale) =>
-      content[locale] ?? content['en'] ?? content.values.first;
+  /// content boşsa crash önlemek için boş LocaleContent döner.
+  LocaleContent localized(String locale) {
+    if (content.isEmpty) return const LocaleContent(title: '', body: '');
+    return content[locale] ?? content['en'] ?? content.values.first;
+  }
 
   factory PageMessageModel.fromJson(Map<String, dynamic> json) => _$PageMessageModelFromJson(json);
   Map<String, dynamic> toJson() => _$PageMessageModelToJson(this);
