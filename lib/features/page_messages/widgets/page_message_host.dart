@@ -46,33 +46,37 @@ class _PageMessageHostState extends ConsumerState<PageMessageHost> {
       case 'banner':
         setState(() => _inline = msg);
       case 'bottom_sheet':
-        ref.read(navigationServiceProvider).showAppBottomSheet(
-              CustomBottomSheet(
-                name: 'page_message_${msg.id}',
-                builder: (_) => Padding(
-                  padding: const EdgeInsets.all(AppSpacing.lg),
-                  child: PageMessageContent(
-                    message: msg,
-                    onClose: () =>
-                        ref.read(navigationServiceProvider).closeOverlay(),
-                  ),
-                ),
-              ),
-            );
+        _showOverlay(msg);
       case 'modal':
-        ref.read(navigationServiceProvider).showAppDialog(
-              CustomDialog(
-                name: 'page_message_${msg.id}',
-                builder: (_) => Padding(
-                  padding: const EdgeInsets.all(AppSpacing.lg),
-                  child: PageMessageContent(
-                    message: msg,
-                    onClose: () =>
-                        ref.read(navigationServiceProvider).closeOverlay(),
-                  ),
-                ),
-              ),
-            );
+        _showOverlay(msg, isModal: true);
+    }
+  }
+
+  Future<void> _showOverlay(PageMessageModel msg, {bool isModal = false}) async {
+    var ctaUsed = false;
+
+    void onClose() {
+      ctaUsed = true;
+      ref.read(navigationServiceProvider).closeOverlay();
+    }
+
+    final content = Padding(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      child: PageMessageContent(message: msg, onClose: onClose),
+    );
+
+    if (isModal) {
+      await ref.read(navigationServiceProvider).showAppDialog(
+            CustomDialog(name: 'page_message_${msg.id}', builder: (_) => content),
+          );
+    } else {
+      await ref.read(navigationServiceProvider).showAppBottomSheet(
+            CustomBottomSheet(name: 'page_message_${msg.id}', builder: (_) => content),
+          );
+    }
+
+    if (!ctaUsed) {
+      ref.read(pageMessagesProvider.notifier).trackEvent(msg.id, 'dismissed');
     }
   }
 
