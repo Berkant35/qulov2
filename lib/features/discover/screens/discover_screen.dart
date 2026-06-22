@@ -16,6 +16,7 @@ import 'package:qulo_v2/features/discover/widgets/discover_card_view.dart';
 import 'package:qulo_v2/features/discover/widgets/discover_empty_state.dart';
 import 'package:qulo_v2/features/discover/widgets/discover_location_error.dart';
 import 'package:qulo_v2/features/discover/widgets/passport_badge.dart';
+import 'package:qulo_v2/features/page_messages/widgets/page_message_host.dart';
 
 class DiscoverScreen extends ConsumerStatefulWidget {
   const DiscoverScreen({super.key});
@@ -78,6 +79,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen>
 
                 return Column(
                   children: [
+                    const PageMessageHost(page: 'discover'),
                     if (!hasMinQuestions)
                       Padding(
                         padding: const EdgeInsets.fromLTRB(

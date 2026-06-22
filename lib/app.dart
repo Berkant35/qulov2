@@ -16,6 +16,7 @@ import 'package:qulo_v2/providers/theme_provider.dart';
 import 'package:qulo_v2/core/services/deep_link_parser.dart';
 import 'package:qulo_v2/providers/deep_link_provider.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
+import 'package:qulo_v2/providers/page_messages_provider.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/network/network_manager.dart';
@@ -49,6 +50,8 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
       if (next.status == AuthStatus.authenticated && !wasAuthenticated) {
         final code = ref.read(localeProvider).languageCode;
         unawaited(ref.read(userRepositoryProvider).updateProfile({'locale': code}));
+        // İlk authenticated anında sayfa mesajlarını çek
+        ref.read(pageMessagesProvider.notifier).fetch();
       }
     });
 
@@ -83,6 +86,8 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
           ref.read(presenceManagerProvider).start();
           // Backend activity heartbeat (debounce in repository)
           unawaited(ref.read(userRepositoryProvider).heartbeat());
+          // Resume'da sayfa mesajlarını güncelle
+          ref.read(pageMessagesProvider.notifier).fetch();
         }
       case AppLifecycleState.paused:
         analytics.logAppBackground();

@@ -23,6 +23,7 @@ import 'package:qulo_v2/features/profile/widgets/profile_preferences_section.dar
 import 'package:qulo_v2/features/profile/widgets/profile_progress_card.dart';
 import 'package:qulo_v2/features/profile/widgets/question_vitrin_card.dart';
 import 'package:qulo_v2/features/profile/widgets/section_card.dart';
+import 'package:qulo_v2/features/page_messages/widgets/page_message_host.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -79,6 +80,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
             padding: const EdgeInsets.all(AppSpacing.pagePadding),
             child: Column(
               children: [
+                // ─── Page Messages ───
+                const PageMessageHost(page: 'profile'),
+
                 // ─── Photo Grid ───
                 PhotoGridFull(
                   photos: photos.map<String?>((e) => e).toList(),

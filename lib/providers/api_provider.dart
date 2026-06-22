@@ -33,8 +33,10 @@ import 'package:qulo_v2/core/network/services/chat_question_service.dart';
 import 'package:qulo_v2/core/network/services/block_service.dart';
 import 'package:qulo_v2/core/network/services/presence_service.dart';
 import 'package:qulo_v2/core/network/services/support_ticket_service.dart';
+import 'package:qulo_v2/core/network/services/page_message_service.dart';
 import 'package:qulo_v2/core/services/presence_manager.dart';
 import 'package:qulo_v2/data/repositories/repositories.dart';
+import 'package:qulo_v2/features/page_messages/data/repositories/page_message_repository.dart';
 
 // ─── Core Services ───
 final imagePickerManagerProvider = Provider<ImagePickerManager>(
@@ -223,4 +225,12 @@ final supportTicketServiceProvider = Provider<SupportTicketService>(
 
 final supportTicketRepositoryProvider = Provider<SupportTicketRepository>(
   (ref) => SupportTicketRepository(ref.read(supportTicketServiceProvider)),
+);
+
+final pageMessageRetrofitServiceProvider = Provider<PageMessageRetrofitService>(
+  (ref) => PageMessageRetrofitService(ref.read(networkManagerProvider).dio),
+);
+
+final pageMessageRepositoryProvider = Provider<PageMessageRepository>(
+  (ref) => PageMessageRepository(ref.read(pageMessageRetrofitServiceProvider)),
 );
