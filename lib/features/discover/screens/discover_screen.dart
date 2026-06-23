@@ -71,7 +71,13 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen>
                     return const SizedBox.shrink();
                   }
                   onCardsEmpty();
-                  return const DiscoverEmptyState();
+                  // Kart yokken de sayfa mesajı görünmeli (onboarding/rehberlik için).
+                  return const Column(
+                    children: [
+                      PageMessageHost(page: 'discover'),
+                      Expanded(child: DiscoverEmptyState()),
+                    ],
+                  );
                 }
 
                 final user = ref.watch(userProvider).valueOrNull;
