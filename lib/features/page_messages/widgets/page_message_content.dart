@@ -32,6 +32,8 @@ class PageMessageContent extends ConsumerWidget {
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             child: CachedNetworkImage(
               imageUrl: message.imageUrl!,
+              width: double.infinity,
+              height: 160,
               fit: BoxFit.cover,
             ),
           ),
