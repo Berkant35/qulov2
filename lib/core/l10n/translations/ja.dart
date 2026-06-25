@@ -1115,4 +1115,25 @@ const jaTranslations = <String, String>{
   // Email notifications (added 2026-06-09)
   'email_notifications': 'メール通知',
   'email_notifications_desc': '新しいマッチがあったときにメールを受け取る',
+
+  // Coach-marks
+  'coach_cta_next': '次へ',
+  'coach_cta_start': 'はじめる',
+  'coach_cta_got_it': 'わかった',
+  'coach_discover_intro_title': 'Quloの使い方',
+  'coach_discover_intro_body': 'スワイプなし。相手の問題を解いてマッチしよう。',
+  'coach_discover_solve_title': '解いてマッチ',
+  'coach_discover_solve_body': 'この人の問題に答えて。全問正解でマッチ成立。',
+  'coach_discover_match_title': 'いいね or スキップ',
+  'coach_discover_match_body': '解くをタップしてマッチを試みるか、次の人へスキップ。',
+  'coach_quiz_powers_title': 'あなたのパワー',
+  'coach_quiz_powers_body': '問題で詰まった？パワーを使って有利に進もう。',
+  'coach_quiz_power_oracle': 'オラクル：強力なヒントを公開',
+  'coach_quiz_power_half': 'ハーフ：誤答の半分を消去',
+  'coach_quiz_power_skip': 'スキップ：この問題をとばす',
+  'coach_quiz_power_hint': 'ヒント：問題のヒントを表示',
+  'coach_quiz_power_time_extend': 'タイム：追加秒数を付与',
+  'coach_quiz_power_skip_all': '全スキップ：残りの問題をすべてとばす',
+  'coach_chat_question_title': '質問を送る',
+  'coach_chat_question_body': 'ここをタップしてマッチに新しい質問を作成・送信。',
 };

@@ -1113,4 +1113,25 @@ const zhTranslations = <String, String>{
   // Email notifications (added 2026-06-09)
   'email_notifications': '邮件通知',
   'email_notifications_desc': '有新匹配时收到邮件',
+
+  // Coach-marks
+  'coach_cta_next': '下一步',
+  'coach_cta_start': '开始',
+  'coach_cta_got_it': '明白了',
+  'coach_discover_intro_title': 'Qulo 如何运作',
+  'coach_discover_intro_body': '无需滑动。通过解答他人的题目来配对。',
+  'coach_discover_solve_title': '解题配对',
+  'coach_discover_solve_body': '回答这个人的题目。全部答对就能配对成功。',
+  'coach_discover_match_title': '喜欢或跳过',
+  'coach_discover_match_body': '点击解题来尝试配对，或跳过查看下一个人。',
+  'coach_quiz_powers_title': '你的能力',
+  'coach_quiz_powers_body': '题目卡住了？使用能力来获得优势。',
+  'coach_quiz_power_oracle': '神谕：揭示强力提示',
+  'coach_quiz_power_half': '减半：去掉一半错误选项',
+  'coach_quiz_power_skip': '跳过：跳过这道题',
+  'coach_quiz_power_hint': '提示：显示题目提示',
+  'coach_quiz_power_time_extend': '加时：增加额外秒数',
+  'coach_quiz_power_skip_all': '全部跳过：跳过所有剩余题目',
+  'coach_chat_question_title': '发送问题',
+  'coach_chat_question_body': '点击这里为你的配对准备并发送一个新问题。',
 };

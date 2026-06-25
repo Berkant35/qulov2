@@ -1115,4 +1115,25 @@ const svTranslations = <String, String>{
   // Email notifications (added 2026-06-09)
   'email_notifications': 'E-postmeddelanden',
   'email_notifications_desc': 'Få ett e-postmeddelande vid en ny matchning',
+
+  // Coach-marks
+  'coach_cta_next': 'Nästa',
+  'coach_cta_start': 'Kom igång',
+  'coach_cta_got_it': 'Fattat',
+  'coach_discover_intro_title': 'Hur Qulo fungerar',
+  'coach_discover_intro_body': 'Ingen svepning. Du matchar genom att lösa andras frågor.',
+  'coach_discover_solve_title': 'Lös och matcha',
+  'coach_discover_solve_body': 'Svara på den här personens frågor. Rätt på allt – ni matchar.',
+  'coach_discover_match_title': 'Gilla eller skippa',
+  'coach_discover_match_body': 'Tryck lös för att försöka matcha, eller skippa för nästa person.',
+  'coach_quiz_powers_title': 'Dina krafter',
+  'coach_quiz_powers_body': 'Fastnat på en fråga? Använd krafter för att få ett övertag.',
+  'coach_quiz_power_oracle': 'Orakel: avslöjar en stark ledtråd',
+  'coach_quiz_power_half': 'Halva: tar bort hälften av de felaktiga alternativen',
+  'coach_quiz_power_skip': 'Skippa: hoppar över den här frågan',
+  'coach_quiz_power_hint': 'Tips: visar frågans ledtråd',
+  'coach_quiz_power_time_extend': 'Tid: lägger till extra sekunder',
+  'coach_quiz_power_skip_all': 'Skippa allt: hoppar över alla återstående frågor',
+  'coach_chat_question_title': 'Skicka en fråga',
+  'coach_chat_question_body': 'Tryck här för att förbereda och skicka en ny fråga till din match.',
 };

@@ -1113,4 +1113,25 @@ const ruTranslations = <String, String>{
   // Email notifications (added 2026-06-09)
   'email_notifications': 'Email-уведомления',
   'email_notifications_desc': 'Получайте email при новом совпадении',
+
+  // Coach-marks
+  'coach_cta_next': 'Далее',
+  'coach_cta_start': 'Начать',
+  'coach_cta_got_it': 'Понятно',
+  'coach_discover_intro_title': 'Как работает Qulo',
+  'coach_discover_intro_body': 'Никакого свайпа. Ты находишь пару, решая вопросы других людей.',
+  'coach_discover_solve_title': 'Реши и найди пару',
+  'coach_discover_solve_body': 'Ответь на вопросы этого человека. Всё верно — вы пара.',
+  'coach_discover_match_title': 'Нравится или пропустить',
+  'coach_discover_match_body': 'Нажми «решить», чтобы попытаться найти пару, или пропусти.',
+  'coach_quiz_powers_title': 'Твои силы',
+  'coach_quiz_powers_body': 'Застрял на вопросе? Потрать силы, чтобы получить преимущество.',
+  'coach_quiz_power_oracle': 'Оракул: открывает сильную подсказку',
+  'coach_quiz_power_half': 'Половина: убирает половину неверных вариантов',
+  'coach_quiz_power_skip': 'Пропустить: пропускает этот вопрос',
+  'coach_quiz_power_hint': 'Подсказка: показывает подсказку к вопросу',
+  'coach_quiz_power_time_extend': 'Время: добавляет дополнительные секунды',
+  'coach_quiz_power_skip_all': 'Пропустить всё: пропускает все оставшиеся вопросы',
+  'coach_chat_question_title': 'Отправить вопрос',
+  'coach_chat_question_body': 'Нажми здесь, чтобы подготовить и отправить новый вопрос своей паре.',
 };

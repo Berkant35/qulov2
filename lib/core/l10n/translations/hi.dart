@@ -1115,4 +1115,25 @@ const hiTranslations = <String, String>{
   // Email notifications (added 2026-06-09)
   'email_notifications': 'ईमेल सूचनाएं',
   'email_notifications_desc': 'नया मैच होने पर ईमेल पाएं',
+
+  // Coach-marks
+  'coach_cta_next': 'आगे',
+  'coach_cta_start': 'शुरू करें',
+  'coach_cta_got_it': 'समझ गया',
+  'coach_discover_intro_title': 'Qulo कैसे काम करता है',
+  'coach_discover_intro_body': 'कोई स्वाइप नहीं। दूसरों के सवाल हल करके मैच करो।',
+  'coach_discover_solve_title': 'हल करो और मैच करो',
+  'coach_discover_solve_body': 'इस व्यक्ति के सवालों का जवाब दो। सब सही हो तो मैच होगा।',
+  'coach_discover_match_title': 'पसंद या अगला',
+  'coach_discover_match_body': 'मैच के लिए हल करें दबाओ, या अगले व्यक्ति के लिए आगे बढ़ो।',
+  'coach_quiz_powers_title': 'तुम्हारी शक्तियाँ',
+  'coach_quiz_powers_body': 'सवाल में फंसे हो? फायदे के लिए शक्ति खर्च करो।',
+  'coach_quiz_power_oracle': 'ओरेकल: एक मज़बूत संकेत देता है',
+  'coach_quiz_power_half': 'आधा: गलत विकल्पों का आधा हटा देता है',
+  'coach_quiz_power_skip': 'छोड़ो: इस सवाल को छोड़ देता है',
+  'coach_quiz_power_hint': 'संकेत: सवाल का संकेत दिखाता है',
+  'coach_quiz_power_time_extend': 'समय: अतिरिक्त सेकंड जोड़ता है',
+  'coach_quiz_power_skip_all': 'सब छोड़ो: बाकी सभी सवाल छोड़ देता है',
+  'coach_chat_question_title': 'सवाल भेजो',
+  'coach_chat_question_body': 'अपने मैच को नया सवाल तैयार करने और भेजने के लिए यहाँ दबाओ।',
 };

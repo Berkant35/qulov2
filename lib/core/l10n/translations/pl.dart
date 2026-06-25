@@ -1113,4 +1113,25 @@ const plTranslations = <String, String>{
   // Email notifications (added 2026-06-09)
   'email_notifications': 'Powiadomienia e-mail',
   'email_notifications_desc': 'Otrzymuj e-mail przy nowym dopasowaniu',
+
+  // Coach-marks
+  'coach_cta_next': 'Dalej',
+  'coach_cta_start': 'Zaczynamy',
+  'coach_cta_got_it': 'Rozumiem',
+  'coach_discover_intro_title': 'Jak działa Qulo',
+  'coach_discover_intro_body': 'Bez przesuwania. Dopasowujesz się, rozwiązując pytania innych.',
+  'coach_discover_solve_title': 'Rozwiąż i dopasuj',
+  'coach_discover_solve_body': 'Odpowiedz na pytania tej osoby. Wszystko poprawnie – macie dopasowanie.',
+  'coach_discover_match_title': 'Lubię lub pomiń',
+  'coach_discover_match_body': 'Dotknij rozwiąż, by spróbować dopasowania, lub pomiń, by zobaczyć kolejną osobę.',
+  'coach_quiz_powers_title': 'Twoje moce',
+  'coach_quiz_powers_body': 'Utknąłeś na pytaniu? Wydaj moce, by zyskać przewagę.',
+  'coach_quiz_power_oracle': 'Wyrocznia: ujawnia silną wskazówkę',
+  'coach_quiz_power_half': 'Połowa: usuwa połowę złych opcji',
+  'coach_quiz_power_skip': 'Pomiń: pomija to pytanie',
+  'coach_quiz_power_hint': 'Wskazówka: pokazuje wskazówkę pytania',
+  'coach_quiz_power_time_extend': 'Czas: dodaje dodatkowe sekundy',
+  'coach_quiz_power_skip_all': 'Pomiń wszystko: pomija wszystkie pozostałe pytania',
+  'coach_chat_question_title': 'Wyślij pytanie',
+  'coach_chat_question_body': 'Dotknij tutaj, by przygotować i wysłać nowe pytanie do swojego dopasowania.',
 };

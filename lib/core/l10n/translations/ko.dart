@@ -1113,4 +1113,25 @@ const koTranslations = <String, String>{
   // Email notifications (added 2026-06-09)
   'email_notifications': '이메일 알림',
   'email_notifications_desc': '새로운 매치가 있을 때 이메일 받기',
+
+  // Coach-marks
+  'coach_cta_next': '다음',
+  'coach_cta_start': '시작하기',
+  'coach_cta_got_it': '알겠어요',
+  'coach_discover_intro_title': 'Qulo 사용법',
+  'coach_discover_intro_body': '스와이프 없음. 상대방의 질문을 풀어서 매칭하세요.',
+  'coach_discover_solve_title': '풀고 매칭하기',
+  'coach_discover_solve_body': '이 사람의 질문에 답하세요. 모두 맞으면 매칭됩니다.',
+  'coach_discover_match_title': '좋아요 또는 넘기기',
+  'coach_discover_match_body': '매칭을 시도하려면 풀기를, 다음 사람을 보려면 넘기세요.',
+  'coach_quiz_powers_title': '나의 파워',
+  'coach_quiz_powers_body': '질문에 막혔나요? 파워를 써서 유리하게 진행하세요.',
+  'coach_quiz_power_oracle': '오라클: 강력한 힌트 공개',
+  'coach_quiz_power_half': '절반: 오답 절반 제거',
+  'coach_quiz_power_skip': '건너뛰기: 이 질문 스킵',
+  'coach_quiz_power_hint': '힌트: 질문 힌트 표시',
+  'coach_quiz_power_time_extend': '시간: 추가 초 부여',
+  'coach_quiz_power_skip_all': '모두 건너뛰기: 남은 질문 전부 스킵',
+  'coach_chat_question_title': '질문 보내기',
+  'coach_chat_question_body': '여기를 탭해서 매치에게 새 질문을 준비하고 보내세요.',
 };
