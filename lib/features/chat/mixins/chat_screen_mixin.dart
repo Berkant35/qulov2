@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/core/services/coach_mark_service.dart';
+import 'package:qulo_v2/features/chat/coach/chat_question_coach_marks.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:qulo_v2/core/network/result.dart';
@@ -67,12 +69,22 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
       _subscribeTyping();
       _subscribeMediaRequests();
       // Question updates handled via FCM (NotificationNotifier)
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        CoachMarkService.instance.maybeStartTour(
+          context,
+          tourId: 'chat_question',
+          steps: buildChatQuestionCoachSteps(),
+        );
+      });
     });
   }
 
   void disposeMixin() {
     _disposed = true;
     _chatStopwatch.stop();
+    // Prevent orphaned overlay if chat is popped while coach-mark is open.
+    CoachMarkService.instance.forceClose();
     // Aktif chat'i temizle — guard against disposed ref
     try {
       ref.read(activeChatMatchIdProvider.notifier).state = null;
