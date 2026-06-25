@@ -60,7 +60,12 @@
       "Bash(flutter clean:*)",
       "Bash(xcrun altool:*)",
       "Bash(chmod +x deploy_testflight.sh)",
-      "Bash(./deploy_testflight.sh)"
+      "Bash(./deploy_testflight.sh)",
+      "Bash(tee /tmp/qulo_ios_deploy.log)",
+      "Bash(node -e \"console.log\\('fetch:', typeof fetch\\)\")",
+      "Bash(flutter build *)",
+      "Bash(tee /tmp/qulo_aab.log)",
+      "Read(//private/tmp/**)"
     ]
   },
   "hooks": {

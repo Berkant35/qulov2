@@ -1,0 +1,18 @@
+{
+  "tr": "• Sayfa içi bildirim sistemi: keşif ve profil sayfalarında size özel mesajlar\n• Quiz akışında paywall ve rescue iyileştirmeleri\n• Bildirim banner ve overlay kapanma sorunları giderildi\n• Performans ve stabilite iyileştirmeleri",
+  "en": "• In-app page messages: personalized banners on Discover and Profile\n• Quiz flow paywall & rescue improvements\n• Fixed banner and overlay dismiss issues\n• Performance and stability improvements",
+  "ar": "• رسائل الصفحات داخل التطبيق: لافتات مخصصة في الاستكشاف والملف الشخصي\n• تحسينات على بوابة الدفع وإنقاذ الاختبار\n• إصلاح مشاكل إغلاق اللافتات والنوافذ المنبثقة\n• تحسينات الأداء والاستقرار",
+  "de": "• In-App-Seitennachrichten: personalisierte Banner in Entdecken und Profil\n• Verbesserungen bei Quiz-Paywall und Rettung\n• Banner- und Overlay-Schließprobleme behoben\n• Leistung und Stabilität verbessert",
+  "es": "• Mensajes en la app: banners personalizados en Descubrir y Perfil\n• Mejoras en el paywall y rescate del quiz\n• Corregidos problemas al cerrar banners y overlays\n• Mejoras de rendimiento y estabilidad",
+  "fr": "• Messages dans l'application: bannières personnalisées dans Découvrir et Profil\n• Améliorations du paywall et du sauvetage du quiz\n• Correction des problèmes de fermeture des bannières et overlays\n• Améliorations des performances et de la stabilité",
+  "hi": "• इन-ऐप पेज संदेश: डिस्कवर और प्रोफ़ाइल पर निजी बैनर\n• क्विज़ पेवॉल और रेस्क्यू में सुधार\n• बैनर और ओवरले बंद होने की समस्याएं ठीक की गईं\n• प्रदर्शन और स्थिरता में सुधार",
+  "it": "• Messaggi in-app: banner personalizzati in Scopri e Profilo\n• Miglioramenti al paywall e al recupero del quiz\n• Risolti problemi di chiusura di banner e overlay\n• Miglioramenti di prestazioni e stabilità",
+  "ja": "• アプリ内ページメッセージ: ディスカバーとプロフィールにパーソナライズされたバナー\n• クイズのペイウォールとレスキューを改善\n• バナーとオーバーレイの閉じる問題を修正\n• パフォーマンスと安定性の向上",
+  "ko": "• 인앱 페이지 메시지: 탐색과 프로필에 맞춤 배너\n• 퀴즈 페이월 및 구조 기능 개선\n• 배너 및 오버레이 닫힘 문제 수정\n• 성능 및 안정성 개선",
+  "nl": "• Berichten in de app: persoonlijke banners op Ontdekken en Profiel\n• Verbeteringen aan quiz-paywall en redding\n• Banner- en overlay-sluitproblemen opgelost\n• Prestatie- en stabiliteitsverbeteringen",
+  "pl": "• Wiadomości w aplikacji: spersonalizowane banery w Odkrywaj i Profil\n• Ulepszenia paywalla i ratunku w quizie\n• Naprawiono problemy z zamykaniem banerów i nakładek\n• Ulepszenia wydajności i stabilności",
+  "pt": "• Mensagens no app: banners personalizados em Descobrir e Perfil\n• Melhorias no paywall e resgate do quiz\n• Corrigidos problemas ao fechar banners e overlays\n• Melhorias de desempenho e estabilidade",
+  "ru": "• Сообщения в приложении: персональные баннеры в Поиске и Профиле\n• Улучшения платного доступа и восстановления в викторине\n• Исправлены проблемы закрытия баннеров и оверлеев\n• Улучшения производительности и стабильности",
+  "sv": "• Meddelanden i appen: personliga banderoller i Upptäck och Profil\n• Förbättringar av quiz-paywall och räddning\n• Fixade problem med att stänga banderoller och overlays\n• Prestanda- och stabilitetsförbättringar",
+  "zh": "• 应用内页面消息：在探索和个人资料中显示个性化横幅\n• 改进测验付费墙和救援功能\n• 修复横幅和遮罩关闭问题\n• 性能和稳定性改进"
+}
