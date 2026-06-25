@@ -83,6 +83,8 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen>
                 final user = ref.watch(userProvider).valueOrNull;
                 final hasMinQuestions = (user?.questionCount ?? 0) >= AppConstants.minQuestions;
 
+                maybeStartDiscoverCoach(hasCards: true);
+
                 return Column(
                   children: [
                     const PageMessageHost(page: 'discover'),

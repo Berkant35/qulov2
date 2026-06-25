@@ -1,9 +1,14 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/services/coach_mark_service.dart';
+import 'package:qulo_v2/features/discover/coach/discover_coach_marks.dart';
+import 'package:qulo_v2/features/discover/screens/discover_screen.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
-import 'package:qulo_v2/features/discover/screens/discover_screen.dart';
+import 'package:qulo_v2/providers/user_provider.dart';
 
 mixin DiscoverScreenMixin on ConsumerState<DiscoverScreen> {
   final Stopwatch sessionStopwatch = Stopwatch()..start();
@@ -11,6 +16,7 @@ mixin DiscoverScreenMixin on ConsumerState<DiscoverScreen> {
   int swipesLeft = 0;
   int profilesViewed = 0;
   bool emptyLogged = false;
+  bool _coachTried = false;
 
   void initMixin() {
     AnalyticsManager.instance.logEvent(AnalyticsEvents.discoverSessionStart);
@@ -69,6 +75,23 @@ mixin DiscoverScreenMixin on ConsumerState<DiscoverScreen> {
           ref.read(discoverProvider.notifier).loadCards();
         }
       }
+    });
+  }
+
+  /// Cards are visible + user has min questions (no gate banner) → start tour.
+  void maybeStartDiscoverCoach({required bool hasCards}) {
+    if (_coachTried || !hasCards) return;
+    final user = ref.read(userProvider).valueOrNull;
+    final hasMinQuestions = (user?.questionCount ?? 0) >= AppConstants.minQuestions;
+    if (!hasMinQuestions) return; // guard: QuestionGateBanner is showing
+    _coachTried = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      CoachMarkService.instance.maybeStartTour(
+        context,
+        tourId: 'discover',
+        steps: buildDiscoverCoachSteps(),
+      );
     });
   }
 
