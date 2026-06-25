@@ -25,6 +25,7 @@ mixin DiscoverScreenMixin on ConsumerState<DiscoverScreen> {
   }
 
   void disposeMixin() {
+    CoachMarkService.instance.forceClose();
     sessionStopwatch.stop();
     AnalyticsManager.instance.logEvent(
       AnalyticsEvents.discoverSessionEnd,

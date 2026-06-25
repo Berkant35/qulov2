@@ -23,4 +23,14 @@ void main() {
   test('isTourActive is false when no overlay is shown', () {
     expect(CoachMarkService.instance.isTourActive, isFalse);
   });
+
+  test('forceClose on idle service is a safe no-op and isTourActive stays false', () {
+    final s = CoachMarkService.instance;
+    // Precondition: no active tour.
+    expect(s.isTourActive, isFalse);
+    // Calling forceClose with no active entry must not throw.
+    expect(() => s.forceClose(), returnsNormally);
+    // Guard stays clear.
+    expect(s.isTourActive, isFalse);
+  });
 }

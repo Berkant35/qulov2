@@ -64,6 +64,12 @@ class _QuizQuestionContentState extends State<QuizQuestionContent> {
   bool _coachTried = false;
 
   @override
+  void dispose() {
+    CoachMarkService.instance.forceClose();
+    super.dispose();
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _maybeStartPowerCoach();

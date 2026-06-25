@@ -49,6 +49,14 @@ class CoachMarkService {
     overlay.insert(entry);
   }
 
+  /// Force-removes the active tour overlay WITHOUT marking it seen.
+  /// Call from a triggering screen's dispose() so a route pop while the
+  /// card is open cannot orphan the overlay or wedge the single-tour guard.
+  void forceClose() {
+    _activeEntry?.remove();
+    _activeEntry = null;
+  }
+
   void _close(String tourId) {
     _activeEntry?.remove();
     _activeEntry = null;
