@@ -3,6 +3,7 @@ import 'package:qulo_v2/core/coach_mark/coach_mark_controller.dart';
 import 'package:qulo_v2/core/coach_mark/coach_mark_painter.dart';
 import 'package:qulo_v2/core/coach_mark/coach_mark_registry.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_button.dart';
 
@@ -48,7 +49,7 @@ class _CoachMarkOverlayState extends State<CoachMarkOverlay> {
     final step = controller.current;
     final screen = MediaQuery.of(context).size;
     final hole = _resolveRect(step.anchorId);
-    const barrier = Color(0xCC000000);
+    const barrier = AppColors.scrimDark;
 
     // Card on the opposite half from the target (or centered when no anchor).
     final targetBelowHalf = hole != null && hole.center.dy > screen.height / 2;
@@ -70,7 +71,7 @@ class _CoachMarkOverlayState extends State<CoachMarkOverlay> {
             child: Align(
               alignment: Alignment.topRight,
               child: IconButton(
-                icon: const Icon(Icons.close, color: Colors.white),
+                icon: const Icon(Icons.close, color: AppColors.onScrim),
                 onPressed: controller.skipAll,
               ),
             ),
