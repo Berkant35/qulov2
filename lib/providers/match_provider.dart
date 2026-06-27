@@ -26,12 +26,21 @@ class DiscoverNotifier extends AsyncNotifier<DiscoverState> {
       )),
       failure: (f) => AsyncError(f, StackTrace.current),
     );
+    // İlk batch küçükse (eşik altı) prefetch zincirini hemen başlat;
+    // kullanıcı kartları çözmeden bir sonraki sayfa arka planda gelsin.
+    _maybePrefetch();
   }
+
+  /// Kart kuyruğu azaldığında (son ~3 kart kala) bir sonraki sayfayı arka
+  /// planda çeker; kuyruk boşken (hasMore varken) otomatik doldurur ki
+  /// kullanıcı "tekrar ara" boş ekranına düşüp manuel butona basmasın.
+  Future<void> maybePrefetch() => _maybePrefetch();
 
   Future<void> _maybePrefetch() async {
     final current = state.valueOrNull;
     if (current == null || !current.hasMore || _isPrefetching) return;
-    if (current.cards.length > 2) return;
+    // Son 3 karta kadar buffer — network gecikmesinde kuyruk boşalmasın.
+    if (current.cards.length > 3) return;
 
     _isPrefetching = true;
     _updatePrefetchingState(true);
@@ -44,7 +53,8 @@ class DiscoverNotifier extends AsyncNotifier<DiscoverState> {
             state = AsyncData(latest.copyWith(
               cards: [...latest.cards, ...response.cards],
               page: response.page,
-              hasMore: response.hasMore,
+              // Boş sayfa döndüyse daha fazla yok say → sonsuz prefetch önle.
+              hasMore: response.cards.isEmpty ? false : response.hasMore,
               isPrefetching: false,
             ));
           }

@@ -70,6 +70,15 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen>
                   if (discover.isPrefetching) {
                     return const SizedBox.shrink();
                   }
+                  // Kuyruk boş ama sunucuda daha fazla profil var → "tekrar ara"
+                  // boş ekranı YERİNE bir sonraki sayfayı otomatik çek (manuel
+                  // butona basma zorunluluğu olmadan profiller gelsin).
+                  if (discover.hasMore) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      ref.read(discoverProvider.notifier).maybePrefetch();
+                    });
+                    return const SizedBox.shrink();
+                  }
                   onCardsEmpty();
                   // Boş discover'da da "Qulo nasıl çalışır" intro turu görünmeli.
                   maybeStartDiscoverCoach(hasCards: false);
