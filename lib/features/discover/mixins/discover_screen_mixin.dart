@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/services/coach_mark_service.dart';
@@ -8,7 +7,6 @@ import 'package:qulo_v2/features/discover/coach/discover_coach_marks.dart';
 import 'package:qulo_v2/features/discover/screens/discover_screen.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
-import 'package:qulo_v2/providers/user_provider.dart';
 
 mixin DiscoverScreenMixin on ConsumerState<DiscoverScreen> {
   final Stopwatch sessionStopwatch = Stopwatch()..start();
@@ -79,20 +77,32 @@ mixin DiscoverScreenMixin on ConsumerState<DiscoverScreen> {
     });
   }
 
-  /// Cards are visible + user has min questions (no gate banner) → start tour.
+  /// First discover visit shows the "how Qulo works" intro unconditionally
+  /// (even on empty discover / before the user has questions). Once the intro
+  /// is seen, a later visit with cards shows the anchored solve/action steps.
   void maybeStartDiscoverCoach({required bool hasCards}) {
-    if (_coachTried || !hasCards) return;
-    final user = ref.read(userProvider).valueOrNull;
-    final hasMinQuestions = (user?.questionCount ?? 0) >= AppConstants.minQuestions;
-    if (!hasMinQuestions) return; // guard: QuestionGateBanner is showing
+    if (_coachTried) return;
     _coachTried = true;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) return;
-      CoachMarkService.instance.maybeStartTour(
-        context,
-        tourId: 'discover',
-        steps: buildDiscoverCoachSteps(),
-      );
+      final service = CoachMarkService.instance;
+      final introSeen = await service.isSeen('discover_intro');
+      if (!mounted) return;
+      if (!introSeen) {
+        await service.maybeStartTour(
+          context,
+          tourId: 'discover_intro',
+          steps: buildDiscoverIntroSteps(),
+        );
+        return; // anchored steps come on a later visit, once cards exist
+      }
+      if (hasCards) {
+        await service.maybeStartTour(
+          context,
+          tourId: 'discover_steps',
+          steps: buildDiscoverActionSteps(),
+        );
+      }
     });
   }
 
