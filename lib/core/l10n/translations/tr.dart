@@ -1139,4 +1139,12 @@ const trTranslations = <String, String>{
   'coach_quiz_power_skip_all': 'Hepsini atla: kalan tüm soruları atlar',
   'coach_chat_question_title': 'Soru gönder',
   'coach_chat_question_body': 'Eşleşmene yeni bir soru hazırlayıp göndermek için buraya dokun.',
+
+  // Acquisition ("Bizi nereden duydunuz?")
+  'acq_title': 'Bizi nereden duydun?',
+  'acq_subtitle': 'Qulo\'ya nasıl ulaştığını öğrenmek bize çok yardımcı olur.',
+  'acq_skip': 'Atla',
+  'acq_continue': 'Devam',
+  'acq_other_hint': 'İstersen biraz daha anlat (opsiyonel)',
+  'acq_thanks': 'Teşekkürler!',
 };

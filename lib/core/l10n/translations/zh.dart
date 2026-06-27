@@ -1134,4 +1134,12 @@ const zhTranslations = <String, String>{
   'coach_quiz_power_skip_all': '全部跳过：跳过所有剩余题目',
   'coach_chat_question_title': '发送问题',
   'coach_chat_question_body': '点击这里为你的配对准备并发送一个新问题。',
+
+  // Acquisition ("Bizi nereden duydunuz?")
+  'acq_title': '你是怎么知道我们的？',
+  'acq_subtitle': '了解你如何找到 Qulo 对我们很有帮助。',
+  'acq_skip': '跳过',
+  'acq_continue': '继续',
+  'acq_other_hint': '再多告诉我们一点（可选）',
+  'acq_thanks': '谢谢！',
 };

@@ -1134,4 +1134,12 @@ const koTranslations = <String, String>{
   'coach_quiz_power_skip_all': '모두 건너뛰기: 남은 질문 전부 스킵',
   'coach_chat_question_title': '질문 보내기',
   'coach_chat_question_body': '여기를 탭해서 매치에게 새 질문을 준비하고 보내세요.',
+
+  // Acquisition ("저희를 어떻게 알게 되셨나요?")
+  'acq_title': '저희를 어떻게 알게 되셨나요?',
+  'acq_subtitle': 'Qulo를 어떻게 찾으셨는지 알려주시면 큰 도움이 됩니다.',
+  'acq_skip': '건너뛰기',
+  'acq_continue': '계속',
+  'acq_other_hint': '조금 더 알려주세요 (선택)',
+  'acq_thanks': '감사합니다!',
 };

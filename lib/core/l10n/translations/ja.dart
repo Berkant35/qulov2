@@ -1136,4 +1136,12 @@ const jaTranslations = <String, String>{
   'coach_quiz_power_skip_all': '全スキップ：残りの問題をすべてとばす',
   'coach_chat_question_title': '質問を送る',
   'coach_chat_question_body': 'ここをタップしてマッチに新しい質問を作成・送信。',
+
+  // Acquisition ("どこで私たちを知りましたか？")
+  'acq_title': 'どこで私たちを知りましたか？',
+  'acq_subtitle': 'Quloをどう見つけたか教えていただけると助かります。',
+  'acq_skip': 'スキップ',
+  'acq_continue': '続ける',
+  'acq_other_hint': 'もう少し教えてください（任意）',
+  'acq_thanks': 'ありがとう！',
 };

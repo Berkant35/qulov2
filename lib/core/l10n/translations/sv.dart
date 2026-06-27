@@ -1136,4 +1136,12 @@ const svTranslations = <String, String>{
   'coach_quiz_power_skip_all': 'Skippa allt: hoppar över alla återstående frågor',
   'coach_chat_question_title': 'Skicka en fråga',
   'coach_chat_question_body': 'Tryck här för att förbereda och skicka en ny fråga till din match.',
+
+  // Acquisition ("Bizi nereden duydunuz?")
+  'acq_title': 'Hur hörde du talas om oss?',
+  'acq_subtitle': 'Att veta hur du hittade Qulo hjälper oss mycket.',
+  'acq_skip': 'Hoppa över',
+  'acq_continue': 'Fortsätt',
+  'acq_other_hint': 'Berätta gärna lite mer (valfritt)',
+  'acq_thanks': 'Tack!',
 };

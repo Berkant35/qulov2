@@ -1136,4 +1136,12 @@ const deTranslations = <String, String>{
   'coach_quiz_power_skip_all': 'Alle überspringen: überspringt alle verbleibenden Fragen',
   'coach_chat_question_title': 'Frage senden',
   'coach_chat_question_body': 'Tippe hier, um eine neue Frage für dein Match vorzubereiten.',
+
+  // Acquisition ("Wie hast du von uns erfahren?")
+  'acq_title': 'Wie hast du von uns erfahren?',
+  'acq_subtitle': 'Zu wissen, wie du Qulo gefunden hast, hilft uns sehr.',
+  'acq_skip': 'Überspringen',
+  'acq_continue': 'Weiter',
+  'acq_other_hint': 'Erzähl uns etwas mehr (optional)',
+  'acq_thanks': 'Danke!',
 };

@@ -1134,4 +1134,12 @@ const ruTranslations = <String, String>{
   'coach_quiz_power_skip_all': 'Пропустить всё: пропускает все оставшиеся вопросы',
   'coach_chat_question_title': 'Отправить вопрос',
   'coach_chat_question_body': 'Нажми здесь, чтобы подготовить и отправить новый вопрос своей паре.',
+
+  // Acquisition ("Откуда вы о нас узнали?")
+  'acq_title': 'Откуда вы о нас узнали?',
+  'acq_subtitle': 'Нам очень помогает знать, как вы нашли Qulo.',
+  'acq_skip': 'Пропустить',
+  'acq_continue': 'Продолжить',
+  'acq_other_hint': 'Расскажите подробнее (необязательно)',
+  'acq_thanks': 'Спасибо!',
 };

@@ -1134,4 +1134,12 @@ const nlTranslations = <String, String>{
   'coach_quiz_power_skip_all': 'Alles overslaan: sla alle resterende vragen over',
   'coach_chat_question_title': 'Stuur een vraag',
   'coach_chat_question_body': 'Tik hier om een nieuwe vraag voor je match voor te bereiden en te sturen.',
+
+  // Acquisition ("Bizi nereden duydunuz?")
+  'acq_title': 'Hoe heb je over ons gehoord?',
+  'acq_subtitle': 'Weten hoe je Qulo hebt gevonden helpt ons enorm.',
+  'acq_skip': 'Overslaan',
+  'acq_continue': 'Doorgaan',
+  'acq_other_hint': 'Vertel ons iets meer (optioneel)',
+  'acq_thanks': 'Bedankt!',
 };

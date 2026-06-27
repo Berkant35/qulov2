@@ -1134,4 +1134,12 @@ const arTranslations = <String, String>{
   'coach_quiz_power_skip_all': 'تخطي الكل: يتخطى جميع الأسئلة المتبقية',
   'coach_chat_question_title': 'أرسل سؤالاً',
   'coach_chat_question_body': 'اضغط هنا لإعداد وإرسال سؤال جديد لتطابقك.',
+
+  // Acquisition ("كيف سمعت عنّا؟")
+  'acq_title': 'كيف سمعت عنّا؟',
+  'acq_subtitle': 'معرفة كيف وجدت Qulo تساعدنا كثيرًا.',
+  'acq_skip': 'تخطّي',
+  'acq_continue': 'متابعة',
+  'acq_other_hint': 'أخبرنا المزيد (اختياري)',
+  'acq_thanks': 'شكرًا!',
 };
