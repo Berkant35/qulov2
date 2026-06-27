@@ -9,6 +9,8 @@ class AcquisitionChannel extends Equatable {
   final String key;
   final String label;
   final String? emoji;
+  @JsonKey(name: 'icon_url')
+  final String? iconUrl;
   @JsonKey(name: 'is_freeform')
   final bool isFreeform;
 
@@ -17,6 +19,7 @@ class AcquisitionChannel extends Equatable {
     required this.key,
     required this.label,
     this.emoji,
+    this.iconUrl,
     this.isFreeform = false,
   });
 
@@ -25,5 +28,5 @@ class AcquisitionChannel extends Equatable {
   Map<String, dynamic> toJson() => _$AcquisitionChannelToJson(this);
 
   @override
-  List<Object?> get props => [id, key, label, emoji, isFreeform];
+  List<Object?> get props => [id, key, label, emoji, iconUrl, isFreeform];
 }

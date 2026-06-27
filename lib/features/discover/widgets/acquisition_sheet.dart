@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
@@ -46,7 +47,13 @@ class _AcquisitionSheetState extends ConsumerState<AcquisitionSheet> {
   Widget build(BuildContext context) {
     final channelsAsync = ref.watch(acquisitionProvider);
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      // Klavye (freeform TextField) açılınca içeriği yukarı iter → yazılan görünür.
+      padding: EdgeInsets.only(
+        left: AppSpacing.lg,
+        right: AppSpacing.lg,
+        top: AppSpacing.lg,
+        bottom: AppSpacing.lg + MediaQuery.of(context).viewInsets.bottom,
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -128,6 +135,26 @@ class _ChannelTile extends StatelessWidget {
     required this.onTap,
   });
 
+  /// Logo (icon_url, SVG) varsa onu; yoksa emoji; o da yoksa null gösterir.
+  /// Logo yüklenirken/eksikse emoji placeholder olarak görünür.
+  Widget? _leading() {
+    final url = channel.iconUrl;
+    final emoji = channel.emoji;
+    Widget? emojiWidget = emoji != null
+        ? Text(emoji, style: const TextStyle(fontSize: 20))
+        : null;
+    if (url != null && url.isNotEmpty) {
+      return SvgPicture.network(
+        url,
+        width: 24,
+        height: 24,
+        placeholderBuilder: (_) =>
+            emojiWidget ?? const SizedBox(width: 24, height: 24),
+      );
+    }
+    return emojiWidget;
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
@@ -150,8 +177,8 @@ class _ChannelTile extends StatelessWidget {
           ),
           child: Row(
             children: [
-              if (channel.emoji != null) ...[
-                Text(channel.emoji!, style: const TextStyle(fontSize: 20)),
+              if (_leading() case final leading?) ...[
+                leading,
                 const SizedBox(width: AppSpacing.md),
               ],
               Expanded(child: Text(channel.label)),

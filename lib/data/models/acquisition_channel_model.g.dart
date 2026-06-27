@@ -12,6 +12,7 @@ AcquisitionChannel _$AcquisitionChannelFromJson(Map<String, dynamic> json) =>
       key: json['key'] as String,
       label: json['label'] as String,
       emoji: json['emoji'] as String?,
+      iconUrl: json['icon_url'] as String?,
       isFreeform: json['is_freeform'] as bool? ?? false,
     );
 
@@ -21,5 +22,6 @@ Map<String, dynamic> _$AcquisitionChannelToJson(AcquisitionChannel instance) =>
       'key': instance.key,
       'label': instance.label,
       'emoji': instance.emoji,
+      'icon_url': instance.iconUrl,
       'is_freeform': instance.isFreeform,
     };
