@@ -14,9 +14,6 @@ class CoachMarkService {
 
   bool get isTourActive => _activeEntry != null;
 
-  /// Alias used by acquisition-sheet guard to check overlay conflict.
-  bool get hasActiveTour => _activeEntry != null;
-
   String _flag(String tourId) => 'coach_${tourId}_seen';
 
   Future<bool> isSeen(String tourId) async {

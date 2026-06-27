@@ -87,10 +87,10 @@ mixin DiscoverScreenMixin on ConsumerState<DiscoverScreen> {
   /// açmaz (overlay çakışma guard).
   void maybeStartAcquisition() {
     if (_acqTried) return;
+    _acqTried = true;
     final user = ref.read(userProvider).valueOrNull;
     if (user == null || user.acquisitionAnswered) return;
-    if (CoachMarkService.instance.hasActiveTour) return;
-    _acqTried = true;
+    if (CoachMarkService.instance.isTourActive) return; // overlay çakışması
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) return;
       await ref.read(navigationServiceProvider).showAppBottomSheet<void>(
