@@ -5,6 +5,7 @@ import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/data/models/acquisition_channel_model.dart';
 import 'package:qulo_v2/providers/acquisition_provider.dart';
+import 'package:qulo_v2/providers/user_provider.dart';
 
 class AcquisitionSheet extends ConsumerStatefulWidget {
   const AcquisitionSheet({super.key});
@@ -28,19 +29,23 @@ class _AcquisitionSheetState extends ConsumerState<AcquisitionSheet> {
   Future<void> _submit({required bool skip}) async {
     if (_submitting) return;
     setState(() => _submitting = true);
-    await ref.read(acquisitionProvider.notifier).submit(
+    final result = await ref.read(acquisitionProvider.notifier).submit(
           channelId: skip ? null : _selectedId,
           skipped: skip,
           freeformText: _selectedFreeform ? _freeformController.text.trim() : null,
         );
     if (!mounted) return;
+    result.when(
+      success: (_) => ref.read(userProvider.notifier).fetchMe(),
+      failure: (_) {},
+    );
     Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
     final channelsAsync = ref.watch(acquisitionProvider);
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -60,7 +65,13 @@ class _AcquisitionSheetState extends ConsumerState<AcquisitionSheet> {
           const SizedBox(height: AppSpacing.lg),
           channelsAsync.when(
             loading: () => const Center(child: AppLoadingWidget.large()),
-            error: (_, __) => const SizedBox.shrink(),
+            error: (_, __) => Center(
+              child: Text(
+                context.tr('acq_error'),
+                style: Theme.of(context).textTheme.bodyMedium,
+                textAlign: TextAlign.center,
+              ),
+            ),
             data: (channels) => Column(
               mainAxisSize: MainAxisSize.min,
               children: [

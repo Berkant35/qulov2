@@ -1144,4 +1144,5 @@ const svTranslations = <String, String>{
   'acq_continue': 'Fortsätt',
   'acq_other_hint': 'Berätta gärna lite mer (valfritt)',
   'acq_thanks': 'Tack!',
+  'acq_error': 'Något gick fel.',
 };

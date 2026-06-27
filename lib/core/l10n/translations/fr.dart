@@ -1144,4 +1144,5 @@ const frTranslations = <String, String>{
   'acq_continue': 'Continuer',
   'acq_other_hint': 'Dites-nous en un peu plus (facultatif)',
   'acq_thanks': 'Merci !',
+  'acq_error': 'Une erreur est survenue.',
 };

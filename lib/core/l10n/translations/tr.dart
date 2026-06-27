@@ -1147,4 +1147,5 @@ const trTranslations = <String, String>{
   'acq_continue': 'Devam',
   'acq_other_hint': 'İstersen biraz daha anlat (opsiyonel)',
   'acq_thanks': 'Teşekkürler!',
+  'acq_error': 'Bir şeyler ters gitti.',
 };

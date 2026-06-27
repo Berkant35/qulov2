@@ -1144,4 +1144,5 @@ const deTranslations = <String, String>{
   'acq_continue': 'Weiter',
   'acq_other_hint': 'Erzähl uns etwas mehr (optional)',
   'acq_thanks': 'Danke!',
+  'acq_error': 'Etwas ist schiefgelaufen.',
 };

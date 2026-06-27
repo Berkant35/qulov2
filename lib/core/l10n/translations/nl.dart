@@ -1142,4 +1142,5 @@ const nlTranslations = <String, String>{
   'acq_continue': 'Doorgaan',
   'acq_other_hint': 'Vertel ons iets meer (optioneel)',
   'acq_thanks': 'Bedankt!',
+  'acq_error': 'Er is iets misgegaan.',
 };

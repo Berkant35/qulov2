@@ -1144,4 +1144,5 @@ const jaTranslations = <String, String>{
   'acq_continue': '続ける',
   'acq_other_hint': 'もう少し教えてください（任意）',
   'acq_thanks': 'ありがとう！',
+  'acq_error': '問題が発生しました。',
 };

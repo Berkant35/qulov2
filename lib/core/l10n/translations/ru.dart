@@ -1142,4 +1142,5 @@ const ruTranslations = <String, String>{
   'acq_continue': 'Продолжить',
   'acq_other_hint': 'Расскажите подробнее (необязательно)',
   'acq_thanks': 'Спасибо!',
+  'acq_error': 'Что-то пошло не так.',
 };

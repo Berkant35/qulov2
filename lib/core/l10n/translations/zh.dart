@@ -1142,4 +1142,5 @@ const zhTranslations = <String, String>{
   'acq_continue': '继续',
   'acq_other_hint': '再多告诉我们一点（可选）',
   'acq_thanks': '谢谢！',
+  'acq_error': '出错了。',
 };

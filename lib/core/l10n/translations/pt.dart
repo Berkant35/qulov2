@@ -1144,4 +1144,5 @@ const ptTranslations = <String, String>{
   'acq_continue': 'Continuar',
   'acq_other_hint': 'Conte-nos um pouco mais (opcional)',
   'acq_thanks': 'Obrigado!',
+  'acq_error': 'Algo deu errado.',
 };

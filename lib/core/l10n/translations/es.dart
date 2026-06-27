@@ -1144,4 +1144,5 @@ const esTranslations = <String, String>{
   'acq_continue': 'Continuar',
   'acq_other_hint': 'Cuéntanos un poco más (opcional)',
   'acq_thanks': '¡Gracias!',
+  'acq_error': 'Algo salió mal.',
 };
