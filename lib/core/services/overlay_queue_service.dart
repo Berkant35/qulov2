@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:qulo_v2/core/services/overlay_request.dart';
 
 /// App-wide serializer for "show something to the user" overlays
@@ -7,6 +8,9 @@ import 'package:qulo_v2/core/services/overlay_request.dart';
 /// queue and start as each active overlay closes. Hardware-Manager pattern:
 /// features go through [instance], never insert overlays directly.
 class OverlayQueueService {
+  /// Production code MUST use [instance]. This public constructor exists only
+  /// so tests can create isolated queues.
+  @visibleForTesting
   OverlayQueueService();
   static final OverlayQueueService instance = OverlayQueueService();
 

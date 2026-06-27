@@ -239,6 +239,11 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
                 ),
               );
               overlayState.insert(entry);
+              // Failsafe: InAppBanner unmount olursa onDismiss atlanabilir;
+              // widget'tan bağımsız bir timer removeEntry'i garanti eder ki
+              // kuyruk asla kilitlenmesin (banner ~4sn + 300ms reverse içinde
+              // normalde kendi kapanır; bu 6sn failsafe sadece anormal durumda).
+              Timer(const Duration(seconds: 6), removeEntry);
               return completer.future;
             },
           ),
