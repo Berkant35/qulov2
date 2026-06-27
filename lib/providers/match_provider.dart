@@ -61,7 +61,13 @@ class DiscoverNotifier extends AsyncNotifier<DiscoverState> {
         },
         failure: (f) {
           dev.log('prefetch failed: $f', name: 'DiscoverNotifier');
-          _updatePrefetchingState(false);
+          // Ağ hatasında otomatik tetik (empty+hasMore) her rebuild'de yeniden
+          // istek atıp sonsuz retry döngüsüne girmesin → hasMore'u kapat.
+          // Kullanıcı "tekrar ara"/pull-to-refresh ile loadCards çağırınca sıfırlanır.
+          final latest = state.valueOrNull;
+          if (latest != null) {
+            state = AsyncData(latest.copyWith(hasMore: false, isPrefetching: false));
+          }
         },
       );
     } finally {

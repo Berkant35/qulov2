@@ -75,6 +75,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen>
                   // butona basma zorunluluğu olmadan profiller gelsin).
                   if (discover.hasMore) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
+                      if (!mounted) return;
                       ref.read(discoverProvider.notifier).maybePrefetch();
                     });
                     return const SizedBox.shrink();
