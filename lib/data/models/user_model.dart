@@ -74,6 +74,8 @@ class UserModel extends Equatable {
   final bool strictLanguageMode;
   @JsonKey(name: 'referral_code')
   final String? referralCode;
+  @JsonKey(name: 'acquisition_answered', defaultValue: false)
+  final bool acquisitionAnswered;
   @JsonKey(name: 'interests', defaultValue: <String>[])
   final List<String> interests;
   @JsonKey(name: 'email_notifications_enabled', defaultValue: true)
@@ -120,6 +122,7 @@ class UserModel extends Equatable {
     this.completionRewardsClaimed = const {},
     this.strictLanguageMode = false,
     this.referralCode,
+    this.acquisitionAnswered = false,
     this.interests = const [],
     this.emailNotificationsEnabled = true,
     this.details,
@@ -142,6 +145,7 @@ class UserModel extends Equatable {
     isOnline, lastSeenAt, emailVerified, passportCity, boostUntil,
     likeReceivedCount, timesShownCount, badgeRewardsClaimed, questionCount,
     relationshipGoal, preferredLanguages, completionRewardsClaimed, strictLanguageMode, referralCode,
+    acquisitionAnswered,
     interests,
     emailNotificationsEnabled,
   ];

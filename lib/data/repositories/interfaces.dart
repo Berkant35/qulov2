@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:qulo_v2/core/network/result.dart';
+import 'package:qulo_v2/data/models/acquisition_channel_model.dart';
 import 'package:qulo_v2/data/models/auth_model.dart';
 import 'package:qulo_v2/data/models/diamond_model.dart';
 import 'package:qulo_v2/data/models/discover_model.dart';
@@ -232,4 +233,14 @@ abstract class ISupportTicketRepository {
   });
   Future<Result<List<SupportTicketModel>>> getMyTickets();
   Future<Result<SupportTicketModel>> getTicket(String id);
+}
+
+// ─── Acquisition ───
+abstract class IAcquisitionRepository {
+  Future<Result<List<AcquisitionChannel>>> getChannels();
+  Future<Result<void>> submitAnswer({
+    String? channelId,
+    bool skipped,
+    String? freeformText,
+  });
 }
