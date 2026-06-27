@@ -1136,4 +1136,13 @@ const ptTranslations = <String, String>{
   'coach_quiz_power_skip_all': 'Pular tudo: pula todas as perguntas restantes',
   'coach_chat_question_title': 'Enviar uma pergunta',
   'coach_chat_question_body': 'Toque aqui para preparar e enviar uma nova pergunta para seu match.',
+
+  // Acquisition ("Como ouviu falar de nós?")
+  'acq_title': 'Como ouviu falar de nós?',
+  'acq_subtitle': 'Saber como você encontrou o Qulo nos ajuda muito.',
+  'acq_skip': 'Pular',
+  'acq_continue': 'Continuar',
+  'acq_other_hint': 'Conte-nos um pouco mais (opcional)',
+  'acq_thanks': 'Obrigado!',
+  'acq_error': 'Algo deu errado.',
 };

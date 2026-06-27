@@ -9,6 +9,8 @@ import 'package:qulo_v2/features/page_messages/data/models/page_message_model.da
 import 'package:qulo_v2/features/page_messages/widgets/page_message_banner.dart';
 import 'package:qulo_v2/features/page_messages/widgets/page_message_content.dart';
 import 'package:qulo_v2/features/page_messages/widgets/page_message_inline_card.dart';
+import 'package:qulo_v2/core/services/overlay_queue_service.dart';
+import 'package:qulo_v2/core/services/overlay_request.dart';
 import 'package:qulo_v2/providers/page_messages_provider.dart';
 
 /// Bir sayfaya gömülür; o sayfanın uygun mesajını display_type'a göre gösterir.
@@ -48,9 +50,27 @@ class _PageMessageHostState extends ConsumerState<PageMessageHost> {
       case 'banner':
         setState(() => _inline = msg);
       case 'bottom_sheet':
-        _showOverlay(msg);
+        OverlayQueueService.instance.enqueue(
+          OverlayRequest(
+            id: 'pagemsg_${msg.id}',
+            priority: OverlayPriority.campaign + msg.priority,
+            show: () async {
+              if (!mounted) return;
+              await _showOverlay(msg);
+            },
+          ),
+        );
       case 'modal':
-        _showOverlay(msg, isModal: true);
+        OverlayQueueService.instance.enqueue(
+          OverlayRequest(
+            id: 'pagemsg_${msg.id}',
+            priority: OverlayPriority.campaign + msg.priority,
+            show: () async {
+              if (!mounted) return;
+              await _showOverlay(msg, isModal: true);
+            },
+          ),
+        );
     }
   }
 

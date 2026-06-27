@@ -1136,4 +1136,13 @@ const hiTranslations = <String, String>{
   'coach_quiz_power_skip_all': 'सब छोड़ो: बाकी सभी सवाल छोड़ देता है',
   'coach_chat_question_title': 'सवाल भेजो',
   'coach_chat_question_body': 'अपने मैच को नया सवाल तैयार करने और भेजने के लिए यहाँ दबाओ।',
+
+  // Acquisition ("Bizi nereden duydunuz?")
+  'acq_title': 'आपने हमारे बारे में कैसे सुना?',
+  'acq_subtitle': 'आपने Qulo को कैसे पाया, यह जानना हमें बहुत मदद करता है।',
+  'acq_skip': 'छोड़ें',
+  'acq_continue': 'जारी रखें',
+  'acq_other_hint': 'थोड़ा और बताएं (वैकल्पिक)',
+  'acq_thanks': 'धन्यवाद!',
+  'acq_error': 'कुछ गलत हो गया।',
 };

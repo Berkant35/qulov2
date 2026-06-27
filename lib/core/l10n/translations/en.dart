@@ -1139,4 +1139,13 @@ const enTranslations = <String, String>{
   'coach_quiz_power_skip_all': 'Skip all: skip every remaining question',
   'coach_chat_question_title': 'Send a question',
   'coach_chat_question_body': 'Tap here to prepare and send a new question to your match.',
+
+  // Acquisition ("How did you hear about us?")
+  'acq_title': 'How did you hear about us?',
+  'acq_subtitle': 'Knowing how you found Qulo really helps us.',
+  'acq_skip': 'Skip',
+  'acq_continue': 'Continue',
+  'acq_other_hint': 'Tell us a bit more (optional)',
+  'acq_thanks': 'Thanks!',
+  'acq_error': 'Something went wrong.',
 };

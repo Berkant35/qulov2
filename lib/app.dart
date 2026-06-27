@@ -22,6 +22,8 @@ import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/network/network_manager.dart';
 import 'package:qulo_v2/core/network/interceptors/session_interceptor.dart';
 import 'package:qulo_v2/core/services/analytics_forwarder.dart';
+import 'package:qulo_v2/core/services/overlay_queue_service.dart';
+import 'package:qulo_v2/core/services/overlay_request.dart';
 import 'package:qulo_v2/routing/app_router.dart';
 
 class QuloApp extends ConsumerStatefulWidget {
@@ -176,58 +178,76 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
         final body = message.notification?.body ?? '';
         final actionUrl = message.data['action_url'] as String?;
 
-        final context = rootNavigatorKey.currentContext;
-        if (context == null) return;
-
         final overlayState = rootNavigatorKey.currentState?.overlay;
         if (overlayState == null) return;
 
-        bool removed = false;
-        late OverlayEntry entry;
-        void removeEntry() {
-          if (removed) return;
-          removed = true;
-          entry.remove();
-        }
+        final bannerId = 'banner_${message.messageId ?? message.hashCode}';
 
-        AnalyticsManager.instance.logEvent(AnalyticsEvents.notificationBannerShow, params: {
-          AnalyticsEvents.paramType: message.data['type'] ?? 'unknown',
-        });
+        OverlayQueueService.instance.enqueue(
+          OverlayRequest(
+            id: bannerId,
+            priority: OverlayPriority.notification,
+            show: () {
+              final completer = Completer<void>();
+              bool removed = false;
+              late OverlayEntry entry;
+              void removeEntry() {
+                if (removed) return;
+                removed = true;
+                entry.remove();
+                if (!completer.isCompleted) completer.complete();
+              }
 
-        entry = OverlayEntry(
-          builder: (_) => Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: Material(
-              color: Colors.transparent,
-              child: InAppBanner(
-                title: title,
-                body: body,
-                onTap: () {
-                  AnalyticsManager.instance.logEvent(AnalyticsEvents.notificationBannerTap, params: {
-                    AnalyticsEvents.paramType: message.data['type'] ?? 'unknown',
-                  });
-                  removeEntry();
-                  if (actionUrl != null && actionUrl.isNotEmpty) {
-                    final navType = DeepLinkParser.resolveNavType(actionUrl);
-                    final router = ref.read(routerProvider);
-                    navType == DeepLinkNavType.push
-                        ? router.push(actionUrl)
-                        : router.go(actionUrl);
-                  }
-                },
-                onDismiss: () {
-                  AnalyticsManager.instance.logEvent(AnalyticsEvents.notificationBannerDismiss, params: {
-                    AnalyticsEvents.paramType: message.data['type'] ?? 'unknown',
-                  });
-                  removeEntry();
-                },
-              ),
-            ),
+              AnalyticsManager.instance.logEvent(
+                AnalyticsEvents.notificationBannerShow,
+                params: {AnalyticsEvents.paramType: message.data['type'] ?? 'unknown'},
+              );
+
+              entry = OverlayEntry(
+                builder: (_) => Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InAppBanner(
+                      title: title,
+                      body: body,
+                      onTap: () {
+                        AnalyticsManager.instance.logEvent(
+                          AnalyticsEvents.notificationBannerTap,
+                          params: {AnalyticsEvents.paramType: message.data['type'] ?? 'unknown'},
+                        );
+                        removeEntry();
+                        if (actionUrl != null && actionUrl.isNotEmpty) {
+                          final navType = DeepLinkParser.resolveNavType(actionUrl);
+                          final router = ref.read(routerProvider);
+                          navType == DeepLinkNavType.push
+                              ? router.push(actionUrl)
+                              : router.go(actionUrl);
+                        }
+                      },
+                      onDismiss: () {
+                        AnalyticsManager.instance.logEvent(
+                          AnalyticsEvents.notificationBannerDismiss,
+                          params: {AnalyticsEvents.paramType: message.data['type'] ?? 'unknown'},
+                        );
+                        removeEntry();
+                      },
+                    ),
+                  ),
+                ),
+              );
+              overlayState.insert(entry);
+              // Failsafe: InAppBanner unmount olursa onDismiss atlanabilir;
+              // widget'tan bağımsız bir timer removeEntry'i garanti eder ki
+              // kuyruk asla kilitlenmesin (banner ~4sn + 300ms reverse içinde
+              // normalde kendi kapanır; bu 6sn failsafe sadece anormal durumda).
+              Timer(const Duration(seconds: 6), removeEntry);
+              return completer.future;
+            },
           ),
         );
-        overlayState.insert(entry);
       },
       onNavigate: (actionUrl) {
         final navType = DeepLinkParser.resolveNavType(actionUrl);

@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/services/coach_mark_service.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
+import 'package:qulo_v2/features/discover/widgets/acquisition_sheet.dart';
 import 'package:qulo_v2/providers/exchange_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/features/profile/screens/profile_screen.dart';
 
 mixin ProfileScreenMixin on ConsumerState<ProfileScreen> {
+  bool _acqTried = false;
+
   void initMixin() {
     Future.microtask(() {
       ref.read(userProvider.notifier).fetchMe();
@@ -18,7 +22,36 @@ mixin ProfileScreenMixin on ConsumerState<ProfileScreen> {
         ref.read(exchangeProvider.notifier).fetchAll();
       }
     });
+    // "Bizi nereden duydunuz?" anketi: kullanıcı (yeni ya da mevcut) profile'a
+    // gelince, henüz cevaplamadıysa tek seferlik sorulur. Discover yerine burada
+    // gösterilir (discover'da coach-mark/sayfa mesajı çakışması olabiliyor).
+    // fetchMe asenkron olduğu için user yüklendiğinde tetiklemek üzere dinlenir.
+    ref.listenManual(userProvider, (prev, next) {
+      final user = next.valueOrNull;
+      if (user == null || user.acquisitionAnswered) return;
+      _maybeOpenAcquisition();
+    }, fireImmediately: true);
     AnalyticsManager.instance.logEvent(AnalyticsEvents.profileViewOwn);
+  }
+
+  /// Henüz cevaplanmamış anketi tek seferlik açar. Başka bir overlay
+  /// (coach-mark) aktifse o turda açmaz.
+  void _maybeOpenAcquisition() {
+    if (_acqTried) return;
+    if (CoachMarkService.instance.isTourActive) return;
+    _acqTried = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      await ref.read(navigationServiceProvider).showAppBottomSheet<void>(
+            CustomBottomSheet(
+              name: 'acquisition',
+              isDismissible: false,
+              enableDrag: false,
+              maxHeightFactor: 0.85,
+              builder: (_) => const AcquisitionSheet(),
+            ),
+          );
+    });
   }
 
   void disposeMixin() {

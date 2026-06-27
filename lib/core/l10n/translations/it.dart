@@ -1136,4 +1136,13 @@ const itTranslations = <String, String>{
   'coach_quiz_power_skip_all': 'Salta tutto: salta tutte le domande rimanenti',
   'coach_chat_question_title': 'Invia una domanda',
   'coach_chat_question_body': 'Tocca qui per preparare e inviare una nuova domanda al tuo match.',
+
+  // Acquisition ("Come ci hai conosciuti?")
+  'acq_title': 'Come ci hai conosciuti?',
+  'acq_subtitle': 'Sapere come hai trovato Qulo ci aiuta molto.',
+  'acq_skip': 'Salta',
+  'acq_continue': 'Continua',
+  'acq_other_hint': 'Raccontaci qualcosa in più (facoltativo)',
+  'acq_thanks': 'Grazie!',
+  'acq_error': 'Qualcosa è andato storto.',
 };

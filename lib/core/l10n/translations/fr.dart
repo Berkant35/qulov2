@@ -1136,4 +1136,13 @@ const frTranslations = <String, String>{
   'coach_quiz_power_skip_all': 'Tout passer : ignore toutes les questions restantes',
   'coach_chat_question_title': 'Envoyer une question',
   'coach_chat_question_body': 'Touche ici pour préparer et envoyer une nouvelle question à ton match.',
+
+  // Acquisition ("Comment avez-vous entendu parler de nous ?")
+  'acq_title': 'Comment avez-vous entendu parler de nous ?',
+  'acq_subtitle': 'Savoir comment vous avez découvert Qulo nous aide beaucoup.',
+  'acq_skip': 'Passer',
+  'acq_continue': 'Continuer',
+  'acq_other_hint': 'Dites-nous en un peu plus (facultatif)',
+  'acq_thanks': 'Merci !',
+  'acq_error': 'Une erreur est survenue.',
 };
