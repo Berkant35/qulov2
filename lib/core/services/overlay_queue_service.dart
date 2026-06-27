@@ -66,6 +66,8 @@ class OverlayQueueService {
       return;
     }
     future.whenComplete(() {
+      // Guard: only advance if THIS request is still active (defensive —
+      // protects against double-advance if _active is cleared elsewhere).
       if (_active?.id == req.id) {
         _active = null;
         _drainNext();

@@ -100,6 +100,21 @@ void main() {
     expect(log.where((e) => e.startsWith('n')).first, 'n2');
   });
 
+  test('duplicate id already in queue is ignored', () async {
+    final q = OverlayQueueService();
+    final log = <String>[];
+    final a = make('a', OverlayPriority.campaign, log);
+    final b = make('b', OverlayPriority.campaign, log);
+    final b2 = make('b', OverlayPriority.campaign, log);
+    q.enqueue(a.req);  // active
+    q.enqueue(b.req);  // queued
+    q.enqueue(b2.req); // same id as queued b → ignored
+    expect(q.isShowing, true);
+    a.done.complete();
+    await Future.microtask(() {});
+    expect(log.where((e) => e == 'b').length, 1); // b shown only once
+  });
+
   test('throwing show does not wedge the queue', () async {
     final q = OverlayQueueService();
     final log = <String>[];
