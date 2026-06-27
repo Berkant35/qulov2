@@ -86,7 +86,6 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen>
                 final hasMinQuestions = (user?.questionCount ?? 0) >= AppConstants.minQuestions;
 
                 maybeStartDiscoverCoach(hasCards: true);
-                maybeStartAcquisition();
 
                 return Column(
                   children: [

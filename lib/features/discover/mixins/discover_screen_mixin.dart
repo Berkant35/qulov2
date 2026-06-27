@@ -1,15 +1,12 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/services/coach_mark_service.dart';
 import 'package:qulo_v2/features/discover/coach/discover_coach_marks.dart';
 import 'package:qulo_v2/features/discover/screens/discover_screen.dart';
-import 'package:qulo_v2/features/discover/widgets/acquisition_sheet.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
-import 'package:qulo_v2/providers/user_provider.dart';
 
 mixin DiscoverScreenMixin on ConsumerState<DiscoverScreen> {
   final Stopwatch sessionStopwatch = Stopwatch()..start();
@@ -18,7 +15,6 @@ mixin DiscoverScreenMixin on ConsumerState<DiscoverScreen> {
   int profilesViewed = 0;
   bool emptyLogged = false;
   bool _coachTried = false;
-  bool _acqTried = false;
 
   void initMixin() {
     AnalyticsManager.instance.logEvent(AnalyticsEvents.discoverSessionStart);
@@ -78,30 +74,6 @@ mixin DiscoverScreenMixin on ConsumerState<DiscoverScreen> {
           ref.read(discoverProvider.notifier).loadCards();
         }
       }
-    });
-  }
-
-  /// Profile-setup-gate tamamlandıktan sonra ilk discover ziyaretinde,
-  /// kullanıcı henüz cevaplamadıysa tek seferlik "bizi nereden duydunuz?"
-  /// sheet'ini açar. Coach-mark gibi başka bir overlay aktifse bu turda
-  /// açmaz (overlay çakışma guard).
-  void maybeStartAcquisition() {
-    if (_acqTried) return;
-    _acqTried = true;
-    final user = ref.read(userProvider).valueOrNull;
-    if (user == null || user.acquisitionAnswered) return;
-    if (CoachMarkService.instance.isTourActive) return; // overlay çakışması
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (!mounted) return;
-      await ref.read(navigationServiceProvider).showAppBottomSheet<void>(
-            CustomBottomSheet(
-              name: 'acquisition',
-              isDismissible: false,
-              enableDrag: false,
-              maxHeightFactor: 0.85,
-              builder: (_) => const AcquisitionSheet(),
-            ),
-          );
     });
   }
 
