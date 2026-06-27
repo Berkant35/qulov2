@@ -17,6 +17,7 @@ import 'package:qulo_v2/providers/daily_stats_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/features/discover/widgets/profile_card.dart';
+import 'package:qulo_v2/core/coach_mark/coach_mark_anchor.dart';
 import 'package:qulo_v2/features/profile_detail/models/profile_detail_args.dart';
 
 class DiscoverCardView extends ConsumerStatefulWidget {
@@ -202,23 +203,29 @@ class _DiscoverCardViewState extends ConsumerState<DiscoverCardView>
                     ),
                   ),
           ),
-          SafeTapButton(
-            onTap: _isProcessing ? null : _navigateToQuiz,
-            builder: (context, isLoading, onTap) => DiscoverSolveButton(
-              label: context.tr('solve_questions'),
-              onTap: onTap,
-              isLoading: isLoading || _isProcessing,
+          CoachMarkAnchor(
+            anchorId: 'discover_solve',
+            child: SafeTapButton(
+              onTap: _isProcessing ? null : _navigateToQuiz,
+              builder: (context, isLoading, onTap) => DiscoverSolveButton(
+                label: context.tr('solve_questions'),
+                onTap: onTap,
+                isLoading: isLoading || _isProcessing,
+              ),
             ),
           ),
           const SizedBox(height: AppSpacing.sm),
-          DiscoverActionButtons(
-            canUndo: canUndo,
-            onUndo: _handleUndo,
-            onReject: () {
-              ref.read(hapticManagerProvider).light();
-              widget.onSwipeLeft();
-              ref.read(discoverProvider.notifier).rejectCard(widget.card.userId);
-            },
+          CoachMarkAnchor(
+            anchorId: 'discover_actions',
+            child: DiscoverActionButtons(
+              canUndo: canUndo,
+              onUndo: _handleUndo,
+              onReject: () {
+                ref.read(hapticManagerProvider).light();
+                widget.onSwipeLeft();
+                ref.read(discoverProvider.notifier).rejectCard(widget.card.userId);
+              },
+            ),
           ),
           const SizedBox(height: AppSpacing.lg),
         ],

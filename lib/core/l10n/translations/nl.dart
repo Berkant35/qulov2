@@ -1113,4 +1113,25 @@ const nlTranslations = <String, String>{
   // Email notifications (added 2026-06-09)
   'email_notifications': 'E-mailmeldingen',
   'email_notifications_desc': 'Ontvang een e-mail bij een nieuwe match',
+
+  // Coach-marks
+  'coach_cta_next': 'Volgende',
+  'coach_cta_start': 'Aan de slag',
+  'coach_cta_got_it': 'Begrepen',
+  'coach_discover_intro_title': 'Hoe Qulo werkt',
+  'coach_discover_intro_body': 'Geen swipen. Je matcht door vragen van anderen op te lossen.',
+  'coach_discover_solve_title': 'Los op en match',
+  'coach_discover_solve_body': 'Beantwoord de vragen van deze persoon. Alles goed, jullie matchen.',
+  'coach_discover_match_title': 'Leuk of overslaan',
+  'coach_discover_match_body': 'Tik op oplossen om te matchen, of sla over voor de volgende persoon.',
+  'coach_quiz_powers_title': 'Jouw krachten',
+  'coach_quiz_powers_body': 'Vastgelopen bij een vraag? Gebruik krachten voor een voordeel.',
+  'coach_quiz_power_oracle': 'Orakel: onthult een sterke hint',
+  'coach_quiz_power_half': 'Helft: verwijdert de helft van de foute opties',
+  'coach_quiz_power_skip': 'Overslaan: sla deze vraag over',
+  'coach_quiz_power_hint': 'Hint: toont de vraaghint',
+  'coach_quiz_power_time_extend': 'Tijd: voegt extra seconden toe',
+  'coach_quiz_power_skip_all': 'Alles overslaan: sla alle resterende vragen over',
+  'coach_chat_question_title': 'Stuur een vraag',
+  'coach_chat_question_body': 'Tik hier om een nieuwe vraag voor je match voor te bereiden en te sturen.',
 };

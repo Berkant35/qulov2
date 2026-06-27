@@ -1118,4 +1118,25 @@ const enTranslations = <String, String>{
   // Email notifications (added 2026-06-09)
   'email_notifications': 'Email Notifications',
   'email_notifications_desc': 'Get an email when you have a new match',
+
+  // Coach-marks
+  'coach_cta_next': 'Next',
+  'coach_cta_start': 'Get started',
+  'coach_cta_got_it': 'Got it',
+  'coach_discover_intro_title': 'How Qulo works',
+  'coach_discover_intro_body': 'No swiping. You match by solving the questions people set.',
+  'coach_discover_solve_title': 'Solve to match',
+  'coach_discover_solve_body': "Answer this person's questions. Get them all right and you match.",
+  'coach_discover_match_title': 'Like or pass',
+  'coach_discover_match_body': 'Tap solve to try matching, or pass to see the next person.',
+  'coach_quiz_powers_title': 'Your powers',
+  'coach_quiz_powers_body': 'Stuck on a question? Spend powers to get an edge.',
+  'coach_quiz_power_oracle': 'Oracle: reveals a strong hint',
+  'coach_quiz_power_half': 'Half: removes half the wrong options',
+  'coach_quiz_power_skip': 'Skip: skip this question',
+  'coach_quiz_power_hint': 'Hint: shows the question hint',
+  'coach_quiz_power_time_extend': 'Time: adds extra seconds',
+  'coach_quiz_power_skip_all': 'Skip all: skip every remaining question',
+  'coach_chat_question_title': 'Send a question',
+  'coach_chat_question_body': 'Tap here to prepare and send a new question to your match.',
 };

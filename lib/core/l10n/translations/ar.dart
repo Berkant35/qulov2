@@ -1113,4 +1113,25 @@ const arTranslations = <String, String>{
   // Email notifications (added 2026-06-09)
   'email_notifications': 'إشعارات البريد الإلكتروني',
   'email_notifications_desc': 'استلم بريدًا إلكترونيًا عند وجود تطابق جديد',
+
+  // Coach-marks
+  'coach_cta_next': 'التالي',
+  'coach_cta_start': 'ابدأ',
+  'coach_cta_got_it': 'فهمت',
+  'coach_discover_intro_title': 'كيف يعمل Qulo',
+  'coach_discover_intro_body': 'لا تمرير. تتطابق بحل الأسئلة التي يضعها الآخرون.',
+  'coach_discover_solve_title': 'حل للتطابق',
+  'coach_discover_solve_body': 'أجب على أسئلة هذا الشخص. إذا أجبت بشكل صحيح ستتطابقان.',
+  'coach_discover_match_title': 'أعجبني أو تجاوز',
+  'coach_discover_match_body': 'اضغط حل للمحاولة، أو تجاوز لرؤية الشخص التالي.',
+  'coach_quiz_powers_title': 'قواك',
+  'coach_quiz_powers_body': 'عالق في سؤال؟ استخدم القوى للحصول على ميزة.',
+  'coach_quiz_power_oracle': 'الأوراكل: يكشف تلميحًا قويًا',
+  'coach_quiz_power_half': 'النصف: يزيل نصف الخيارات الخاطئة',
+  'coach_quiz_power_skip': 'تخطي: يتخطى هذا السؤال',
+  'coach_quiz_power_hint': 'تلميح: يعرض تلميح السؤال',
+  'coach_quiz_power_time_extend': 'الوقت: يضيف ثوانٍ إضافية',
+  'coach_quiz_power_skip_all': 'تخطي الكل: يتخطى جميع الأسئلة المتبقية',
+  'coach_chat_question_title': 'أرسل سؤالاً',
+  'coach_chat_question_body': 'اضغط هنا لإعداد وإرسال سؤال جديد لتطابقك.',
 };

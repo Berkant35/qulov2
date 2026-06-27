@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/coach_mark/coach_mark_anchor.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
@@ -38,23 +39,26 @@ class PowerBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final exchangeState = ref.watch(exchangeProvider);
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: _powers.map((type) {
-        final count = exchangeState.getCount(type.apiName);
-        final hasInventory = count > 0;
-        final isHintDisabled = type == PowerType.hint && !hasHint;
-        final isDisabled = !hasInventory || isHintDisabled;
+    return CoachMarkAnchor(
+      anchorId: 'quiz_powerbar',
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: _powers.map((type) {
+          final count = exchangeState.getCount(type.apiName);
+          final hasInventory = count > 0;
+          final isHintDisabled = type == PowerType.hint && !hasHint;
+          final isDisabled = !hasInventory || isHintDisabled;
 
-        return _PowerButton(
-          type: type,
-          count: count,
-          hasInventory: hasInventory && !isHintDisabled,
-          onTap: isDisabled
-              ? () async => _onEmptyPowerTap(context)
-              : () async => onPowerUsed?.call(type.apiName),
-        );
-      }).toList(),
+          return _PowerButton(
+            type: type,
+            count: count,
+            hasInventory: hasInventory && !isHintDisabled,
+            onTap: isDisabled
+                ? () async => _onEmptyPowerTap(context)
+                : () async => onPowerUsed?.call(type.apiName),
+          );
+        }).toList(),
+      ),
     );
   }
 

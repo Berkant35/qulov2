@@ -1118,4 +1118,25 @@ const trTranslations = <String, String>{
   // Email notifications (added 2026-06-09)
   'email_notifications': 'E-posta Bildirimleri',
   'email_notifications_desc': 'Yeni eşleşme olduğunda e-posta al',
+
+  // Coach-marks
+  'coach_cta_next': 'İleri',
+  'coach_cta_start': 'Başla',
+  'coach_cta_got_it': 'Anladım',
+  'coach_discover_intro_title': 'Qulo nasıl çalışır',
+  'coach_discover_intro_body': 'Kaydırma yok. İnsanların hazırladığı soruları çözerek eşleşirsin.',
+  'coach_discover_solve_title': 'Çöz ve eşleş',
+  'coach_discover_solve_body': 'Bu kişinin sorularını yanıtla. Hepsi doğruysa eşleşirsin.',
+  'coach_discover_match_title': 'Beğen ya da geç',
+  'coach_discover_match_body': 'Eşleşmeyi denemek için çöz\'e dokun, ya da sıradakine geç.',
+  'coach_quiz_powers_title': 'Güçlerin',
+  'coach_quiz_powers_body': 'Soruda takıldın mı? Avantaj için güç harca.',
+  'coach_quiz_power_oracle': 'Kâhin: güçlü bir ipucu verir',
+  'coach_quiz_power_half': 'Yarı: yanlış şıkların yarısını siler',
+  'coach_quiz_power_skip': 'Atla: bu soruyu atlar',
+  'coach_quiz_power_hint': 'İpucu: sorunun ipucunu gösterir',
+  'coach_quiz_power_time_extend': 'Süre: ekstra saniye ekler',
+  'coach_quiz_power_skip_all': 'Hepsini atla: kalan tüm soruları atlar',
+  'coach_chat_question_title': 'Soru gönder',
+  'coach_chat_question_body': 'Eşleşmene yeni bir soru hazırlayıp göndermek için buraya dokun.',
 };

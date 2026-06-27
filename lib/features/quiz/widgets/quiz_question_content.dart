@@ -2,17 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/services/coach_mark_service.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/safe_tap_button.dart';
 import 'package:qulo_v2/data/models/quiz_model.dart' show QuizQuestionModel;
+import 'package:qulo_v2/features/quiz/coach/quiz_power_coach_marks.dart';
 import 'package:qulo_v2/features/quiz/widgets/answer_button.dart';
 import 'package:qulo_v2/features/quiz/widgets/power_banner.dart';
 import 'package:qulo_v2/features/quiz/widgets/power_bar.dart';
 import 'package:qulo_v2/features/quiz/widgets/quiz_timer.dart';
 
-class QuizQuestionContent extends StatelessWidget {
+/// Displays the active quiz question, timer, answers, and power bar.
+///
+/// Converted from StatelessWidget to StatefulWidget solely to hold the
+/// [_coachTried] guard that schedules the one-shot power-bar coach-mark tour
+/// on the first build. All rendering behaviour is unchanged.
+class QuizQuestionContent extends StatefulWidget {
   final QuizQuestionModel question;
   final GlobalKey<QuizTimerState> timerKey;
   final String sessionId;
@@ -47,6 +54,44 @@ class QuizQuestionContent extends StatelessWidget {
   });
 
   @override
+  State<QuizQuestionContent> createState() => _QuizQuestionContentState();
+}
+
+class _QuizQuestionContentState extends State<QuizQuestionContent> {
+  /// One-shot guard — ensures the coach tour is scheduled only once per quiz
+  /// session (widget lifetime). The service's SharedPreferences flag prevents
+  /// it from ever showing again in subsequent sessions.
+  bool _coachTried = false;
+
+  @override
+  void dispose() {
+    CoachMarkService.instance.forceClose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _maybeStartPowerCoach();
+  }
+
+  void _maybeStartPowerCoach() {
+    if (_coachTried) return;
+    _coachTried = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      CoachMarkService.instance.maybeStartTour(
+        context,
+        tourId: 'quiz_powers',
+        steps: buildQuizPowerCoachSteps(
+          onPause: () => widget.timerKey.currentState?.pause(),
+          onResume: () => widget.timerKey.currentState?.resume(),
+        ),
+      );
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
@@ -56,15 +101,16 @@ class QuizQuestionContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           QuizTimer(
-            key: timerKey,
-            seconds: question.timeLimitSeconds,
-            questionId: question.questionId,
-            onTimeout: onTimeout,
+            key: widget.timerKey,
+            seconds: widget.question.timeLimitSeconds,
+            questionId: widget.question.questionId,
+            onTimeout: widget.onTimeout,
             onWarning: () {
               AnalyticsManager.instance.logEvent(
                 AnalyticsEvents.quizTimerWarning,
                 params: {
-                  AnalyticsEvents.paramQuestionIndex: question.questionNumber,
+                  AnalyticsEvents.paramQuestionIndex:
+                      widget.question.questionNumber,
                   AnalyticsEvents.paramSecondsRemaining: 10,
                 },
               );
@@ -73,7 +119,8 @@ class QuizQuestionContent extends StatelessWidget {
               AnalyticsManager.instance.logEvent(
                 AnalyticsEvents.quizTimerCritical,
                 params: {
-                  AnalyticsEvents.paramQuestionIndex: question.questionNumber,
+                  AnalyticsEvents.paramQuestionIndex:
+                      widget.question.questionNumber,
                   AnalyticsEvents.paramSecondsRemaining: 5,
                 },
               );
@@ -81,48 +128,49 @@ class QuizQuestionContent extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.xl),
           Text(
-            question.questionText,
+            widget.question.questionText,
             style: theme.textTheme.titleLarge,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.xxl),
-          if (oracleSuggestedIndex != null)
+          if (widget.oracleSuggestedIndex != null)
             PowerBanner(
               icon: Icons.auto_awesome,
               text: context.tr('power_oracle_desc'),
             ),
-          if (hintText != null && hintText!.isNotEmpty)
+          if (widget.hintText != null && widget.hintText!.isNotEmpty)
             PowerBanner(
               icon: Icons.lightbulb_outline,
-              text: hintText!,
+              text: widget.hintText!,
               color: context.appColors.warning,
             ),
-          ...question.answers.map((a) {
-            final isRemoved = removedIndices.contains(a.index);
+          ...widget.question.answers.map((a) {
+            final isRemoved = widget.removedIndices.contains(a.index);
             return Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.md),
               child: AnswerButton(
                 text: a.text,
                 onTap: () {
-                  if (!isRemoved) onSelectAnswer(a.index);
+                  if (!isRemoved) widget.onSelectAnswer(a.index);
                 },
-                isSelected: selectedAnswerIndex == a.index,
-                isOracleSuggested: oracleSuggestedIndex == a.index,
+                isSelected: widget.selectedAnswerIndex == a.index,
+                isOracleSuggested: widget.oracleSuggestedIndex == a.index,
                 isDisabled: isRemoved,
               ),
             );
           }),
-          if (selectedAnswerIndex != null) _ConfirmButton(
-            isSubmitting: isSubmitting,
-            onSubmitAnswer: onSubmitAnswer,
-          ),
+          if (widget.selectedAnswerIndex != null)
+            _ConfirmButton(
+              isSubmitting: widget.isSubmitting,
+              onSubmitAnswer: widget.onSubmitAnswer,
+            ),
           const Spacer(),
           PowerBar(
-            sessionId: sessionId,
-            hasHint: question.hasHint,
-            onPowerUsed: onPowerUsed,
-            onSheetOpening: onSheetOpening,
-            onSheetClosed: onSheetClosed,
+            sessionId: widget.sessionId,
+            hasHint: widget.question.hasHint,
+            onPowerUsed: widget.onPowerUsed,
+            onSheetOpening: widget.onSheetOpening,
+            onSheetClosed: widget.onSheetClosed,
           ),
         ],
       ),

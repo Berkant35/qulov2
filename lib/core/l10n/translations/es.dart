@@ -1115,4 +1115,25 @@ const esTranslations = <String, String>{
   // Email notifications (added 2026-06-09)
   'email_notifications': 'Notificaciones por correo',
   'email_notifications_desc': 'Recibe un correo cuando tengas una nueva coincidencia',
+
+  // Coach-marks
+  'coach_cta_next': 'Siguiente',
+  'coach_cta_start': 'Empezar',
+  'coach_cta_got_it': 'Entendido',
+  'coach_discover_intro_title': 'Cómo funciona Qulo',
+  'coach_discover_intro_body': 'Sin deslizar. Haces match resolviendo las preguntas de otros.',
+  'coach_discover_solve_title': 'Resuelve para hacer match',
+  'coach_discover_solve_body': 'Responde las preguntas de esta persona. Si aciertas todo, hacéis match.',
+  'coach_discover_match_title': 'Me gusta o pasar',
+  'coach_discover_match_body': 'Toca resolver para intentar el match, o pasa para ver a la siguiente persona.',
+  'coach_quiz_powers_title': 'Tus poderes',
+  'coach_quiz_powers_body': '¿Atascado en una pregunta? Gasta poderes para obtener ventaja.',
+  'coach_quiz_power_oracle': 'Oráculo: revela una pista importante',
+  'coach_quiz_power_half': 'Mitad: elimina la mitad de las opciones incorrectas',
+  'coach_quiz_power_skip': 'Saltar: omite esta pregunta',
+  'coach_quiz_power_hint': 'Pista: muestra la pista de la pregunta',
+  'coach_quiz_power_time_extend': 'Tiempo: añade segundos extra',
+  'coach_quiz_power_skip_all': 'Saltar todo: omite todas las preguntas restantes',
+  'coach_chat_question_title': 'Enviar una pregunta',
+  'coach_chat_question_body': 'Toca aquí para preparar y enviar una nueva pregunta a tu match.',
 };

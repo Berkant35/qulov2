@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/coach_mark/coach_mark_anchor.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
@@ -104,12 +105,17 @@ class ChatInputBar extends StatelessWidget {
               ),
             ),
             const SizedBox(width: AppSpacing.sm),
-            IconButton(
-              onPressed: isLocked ? null : onQuestionTap,
-              icon: Icon(
-                Icons.help_outline,
-                color: isLocked ? context.appColors.primary.withValues(alpha: 0.4) : context.appColors.primary,
-                size: 22,
+            CoachMarkAnchor(
+              anchorId: 'chat_question_btn',
+              child: IconButton(
+                onPressed: isLocked ? null : onQuestionTap,
+                icon: Icon(
+                  Icons.help_outline,
+                  color: isLocked
+                      ? context.appColors.primary.withValues(alpha: 0.4)
+                      : context.appColors.primary,
+                  size: 22,
+                ),
               ),
             ),
             if (hasText)

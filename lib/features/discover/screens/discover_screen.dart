@@ -71,6 +71,8 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen>
                     return const SizedBox.shrink();
                   }
                   onCardsEmpty();
+                  // Boş discover'da da "Qulo nasıl çalışır" intro turu görünmeli.
+                  maybeStartDiscoverCoach(hasCards: false);
                   // Kart yokken de sayfa mesajı görünmeli (onboarding/rehberlik için).
                   return const Column(
                     children: [
@@ -82,6 +84,8 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen>
 
                 final user = ref.watch(userProvider).valueOrNull;
                 final hasMinQuestions = (user?.questionCount ?? 0) >= AppConstants.minQuestions;
+
+                maybeStartDiscoverCoach(hasCards: true);
 
                 return Column(
                   children: [
