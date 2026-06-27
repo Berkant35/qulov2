@@ -11,6 +11,11 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class DiscoverNotifier extends AsyncNotifier<DiscoverState> {
   bool _isPrefetching = false;
 
+  /// Bu oturumda gösterilmiş TÜM profil id'leri (swipe edilip kuyruktan
+  /// çıkanlar dahil). Taze-çek dedup'u buna karşı yapılır; sunucu swipe'ı
+  /// henüz işlememişken aynı profili tekrar döndürse de duplicate olmaz.
+  final Set<String> _seenUserIds = {};
+
   @override
   Future<DiscoverState> build() async => const DiscoverState();
 
@@ -18,15 +23,21 @@ class DiscoverNotifier extends AsyncNotifier<DiscoverState> {
     state = const AsyncLoading();
     final result = await ref.read(matchRepositoryProvider).discover(page: page);
     state = result.when(
-      success: (response) => AsyncData(DiscoverState(
-        cards: response.cards,
-        page: response.page,
-        // Sunucu has_more'u güvenilmez (limit 50 + in-memory filtre → çoğu
-        // zaman false). Discover sayfa-tabanlı değil "görülmemiş aday havuzu"
-        // tabanlı; ilk batch doluysa taze-çek denemelerine devam edebiliriz.
-        hasMore: response.cards.isNotEmpty,
-        initialized: true,
-      )),
+      success: (response) {
+        // Taze başlangıç (ilk yükleme / retry / "tekrar ara") — seen takibini sıfırla.
+        _seenUserIds
+          ..clear()
+          ..addAll(response.cards.map((c) => c.userId));
+        return AsyncData(DiscoverState(
+          cards: response.cards,
+          page: response.page,
+          // Sunucu has_more'u güvenilmez (limit 50 + in-memory filtre → çoğu
+          // zaman false). Discover sayfa-tabanlı değil "görülmemiş aday havuzu"
+          // tabanlı; ilk batch doluysa taze-çek denemelerine devam edebiliriz.
+          hasMore: response.cards.isNotEmpty,
+          initialized: true,
+        ));
+      },
       failure: (f) => AsyncError(f, StackTrace.current),
     );
     // İlk batch küçükse prefetch zincirini hemen başlat.
@@ -55,10 +66,13 @@ class DiscoverNotifier extends AsyncNotifier<DiscoverState> {
         success: (response) {
           final latest = state.valueOrNull;
           if (latest != null) {
-            final existingIds = latest.cards.map((c) => c.userId).toSet();
+            // Dedup, bu oturumda gösterilmiş TÜM id'lere karşı (swipe edilip
+            // kuyruktan çıkanlar dahil) — yoksa sunucu işlenmemiş swipe'ı
+            // tekrar döndürünce aynı profil ikinci kez eklenirdi.
             final fresh = response.cards
-                .where((c) => !existingIds.contains(c.userId))
+                .where((c) => !_seenUserIds.contains(c.userId))
                 .toList();
+            _seenUserIds.addAll(fresh.map((c) => c.userId));
             state = AsyncData(latest.copyWith(
               cards: [...latest.cards, ...fresh],
               // Taze (dedup sonrası yeni) kart geldiyse havuz devam edebilir;
