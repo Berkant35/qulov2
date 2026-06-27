@@ -21,13 +21,15 @@ class DiscoverNotifier extends AsyncNotifier<DiscoverState> {
       success: (response) => AsyncData(DiscoverState(
         cards: response.cards,
         page: response.page,
-        hasMore: response.hasMore,
+        // Sunucu has_more'u güvenilmez (limit 50 + in-memory filtre → çoğu
+        // zaman false). Discover sayfa-tabanlı değil "görülmemiş aday havuzu"
+        // tabanlı; ilk batch doluysa taze-çek denemelerine devam edebiliriz.
+        hasMore: response.cards.isNotEmpty,
         initialized: true,
       )),
       failure: (f) => AsyncError(f, StackTrace.current),
     );
-    // İlk batch küçükse (eşik altı) prefetch zincirini hemen başlat;
-    // kullanıcı kartları çözmeden bir sonraki sayfa arka planda gelsin.
+    // İlk batch küçükse prefetch zincirini hemen başlat.
     _maybePrefetch();
   }
 
@@ -45,16 +47,23 @@ class DiscoverNotifier extends AsyncNotifier<DiscoverState> {
     _isPrefetching = true;
     _updatePrefetchingState(true);
     try {
-      final result = await ref.read(matchRepositoryProvider).discover(page: current.page + 1);
+      // Sunucu her discover çağrısında swiped'leri eler ve (ORDER BY olmadan)
+      // taze bir aday havuzu döndürür — page+1 boş döner. Bu yüzden her zaman
+      // page=1 çekip mevcut kartlarla dedup ederek yeni gelenleri ekleriz.
+      final result = await ref.read(matchRepositoryProvider).discover(page: 1);
       result.when(
         success: (response) {
           final latest = state.valueOrNull;
           if (latest != null) {
+            final existingIds = latest.cards.map((c) => c.userId).toSet();
+            final fresh = response.cards
+                .where((c) => !existingIds.contains(c.userId))
+                .toList();
             state = AsyncData(latest.copyWith(
-              cards: [...latest.cards, ...response.cards],
-              page: response.page,
-              // Boş sayfa döndüyse daha fazla yok say → sonsuz prefetch önle.
-              hasMore: response.cards.isEmpty ? false : response.hasMore,
+              cards: [...latest.cards, ...fresh],
+              // Taze (dedup sonrası yeni) kart geldiyse havuz devam edebilir;
+              // gelmediyse tükendi → dur (sonsuz prefetch önle).
+              hasMore: fresh.isNotEmpty,
               isPrefetching: false,
             ));
           }
