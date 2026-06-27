@@ -54,7 +54,10 @@ class _PageMessageHostState extends ConsumerState<PageMessageHost> {
           OverlayRequest(
             id: 'pagemsg_${msg.id}',
             priority: OverlayPriority.campaign + msg.priority,
-            show: () => _showOverlay(msg),
+            show: () async {
+              if (!mounted) return;
+              await _showOverlay(msg);
+            },
           ),
         );
       case 'modal':
@@ -62,7 +65,10 @@ class _PageMessageHostState extends ConsumerState<PageMessageHost> {
           OverlayRequest(
             id: 'pagemsg_${msg.id}',
             priority: OverlayPriority.campaign + msg.priority,
-            show: () => _showOverlay(msg, isModal: true),
+            show: () async {
+              if (!mounted) return;
+              await _showOverlay(msg, isModal: true);
+            },
           ),
         );
     }
