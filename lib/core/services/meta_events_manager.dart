@@ -46,6 +46,19 @@ class MetaEventsManager {
     }
   }
 
+  /// RevenueCat → Meta Ads eşleşmesi için FB anonymous ID
+  /// (`$fbAnonId` attribute'u — IDFA reddedilse bile purchase attribution sağlar).
+  Future<String?> getAnonymousId() async {
+    if (!_initialized) return null;
+    try {
+      return await _events.getAnonymousId();
+    } catch (e, st) {
+      AnalyticsManager.instance
+          .logNonFatalError(e, st, context: 'MetaEventsManager.getAnonymousId');
+      return null;
+    }
+  }
+
   /// fb_mobile_complete_registration — install kampanyalarının
   /// optimize edildiği standart kayıt eventi.
   Future<void> logCompleteRegistration({String? method}) async {

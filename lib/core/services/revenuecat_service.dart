@@ -3,6 +3,7 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:qulo_v2/core/config/env.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/services/meta_events_manager.dart';
 
 class RevenueCatNotConfiguredException implements Exception {
   @override
@@ -24,6 +25,26 @@ class RevenueCatService {
     final config = PurchasesConfiguration(apiKey)..appUserID = userId;
     await Purchases.configure(config);
     _isConfigured = true;
+    await _syncAdAttributionIds();
+  }
+
+  /// Meta Ads entegrasyonu için cihaz kimliklerini RevenueCat'e iletir
+  /// ($idfa/$idfv/$gpsAdId + $fbAnonId). init() login akışında ATT
+  /// prompt'undan sonra çağrıldığı için tek sefer yeterli.
+  static Future<void> _syncAdAttributionIds() async {
+    try {
+      await Purchases.collectDeviceIdentifiers();
+      final fbAnonId = await MetaEventsManager.instance.getAnonymousId();
+      if (fbAnonId != null && fbAnonId.isNotEmpty) {
+        await Purchases.setFBAnonymousID(fbAnonId);
+      }
+    } catch (e, st) {
+      AnalyticsManager.instance.logNonFatalError(
+        e,
+        st,
+        context: 'RevenueCatService._syncAdAttributionIds',
+      );
+    }
   }
 
   static void _ensureConfigured() {
