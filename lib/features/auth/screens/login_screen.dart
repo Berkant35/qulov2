@@ -1,29 +1,29 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qulo_v2/core/constants/app_assets.dart';
-import 'package:qulo_v2/core/constants/app_sizes.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
-import 'package:qulo_v2/core/navigation/models/app_bottom_sheet.dart';
-import 'package:qulo_v2/core/widgets/language_picker_sheet.dart';
-import 'package:qulo_v2/providers/locale_provider.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:qulo_v2/core/mixins/form_mixin.dart';
 import 'package:qulo_v2/core/mixins/loading_mixin.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
-import 'package:qulo_v2/core/network/result.dart';
-import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_button.dart';
-import 'package:qulo_v2/core/widgets/app_text_field.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
+import 'package:qulo_v2/core/widgets/app_text_field.dart';
+import 'package:qulo_v2/features/auth/mixins/login_screen_mixin.dart';
 import 'package:qulo_v2/features/auth/widgets/background_video.dart';
-import 'package:qulo_v2/features/auth/widgets/staggered_column.dart';
-import 'package:qulo_v2/providers/auth_provider.dart';
-import 'package:qulo_v2/routing/route_names.dart';
+import 'package:qulo_v2/features/auth/widgets/login_header.dart';
+import 'package:qulo_v2/features/auth/widgets/login_register_prompt.dart';
+import 'package:qulo_v2/features/auth/widgets/login_version_label.dart';
 import 'package:qulo_v2/features/auth/widgets/social_login_buttons.dart';
+import 'package:qulo_v2/features/auth/widgets/staggered_column.dart';
+import 'package:qulo_v2/routing/route_names.dart';
 
+/*
+
+DEBUG_EMAIL=tester_001@qulo.test
+DEBUG_PASSWORD=Test1234!
+
+* */
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
@@ -32,110 +32,20 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen>
-    with FormMixin, LoadingMixin {
-  static const _videoAsset = 'assets/videos/login_bg.mp4';
+    with FormMixin, LoadingMixin, LoginScreenMixin {
   static final _gradientPainter = AppBackgroundPainter();
-
-  final _emailCtrl = TextEditingController(
-    text: kDebugMode
-        ? const String.fromEnvironment('DEBUG_EMAIL', defaultValue: '')
-        : null,
-  );
-  final _passwordCtrl = TextEditingController(
-    text: kDebugMode
-        ? const String.fromEnvironment('DEBUG_PASSWORD', defaultValue: '')
-        : null,
-  );
-  bool _obscure = true;
-  String? _loginError;
-  String _appVersion = '';
-
-  final _staggeredKey = GlobalKey<StaggeredColumnState>();
 
   @override
   void initState() {
     super.initState();
-    PackageInfo.fromPlatform().then((info) {
-      if (mounted) setState(() => _appVersion = info.version);
-    });
+    initMixin();
   }
 
   @override
   void dispose() {
-    _emailCtrl.dispose();
-    _passwordCtrl.dispose();
+    disposeMixin();
     super.dispose();
   }
-
-  Future<void> _showLanguagePicker() async {
-    final currentLocale = ref.read(localeProvider).languageCode;
-    final result = await ref
-        .read(navigationServiceProvider)
-        .showAppBottomSheet<List<String>>(
-          CustomBottomSheet(
-            name: 'language_picker',
-            builder: (_) => LanguagePickerSheet(
-              selectedLanguages: [currentLocale],
-              multiSelect: false,
-            ),
-          ),
-        );
-    if (result != null && result.isNotEmpty) {
-      ref.read(localeProvider.notifier).setLocale(Locale(result.first));
-    }
-  }
-
-  void _onVideoInitialized() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _staggeredKey.currentState?.forward();
-    });
-  }
-
-  Future<void> _login() => withLoading(() async {
-        setState(() => _loginError = null);
-        if (!validateForm()) return;
-        final result = await ref
-            .read(authProvider.notifier)
-            .login(email: _emailCtrl.text.trim(), password: _passwordCtrl.text);
-        if (!mounted) return;
-        result.when(
-          success: (_) {},
-          failure: (f) {
-            final errorCode = switch (f) {
-              ServerFailure(:final code) => code,
-              NetworkFailure() => 'NETWORK_ERROR',
-              TimeoutFailure() => 'TIMEOUT',
-              _ => 'UNKNOWN',
-            };
-            setState(
-                () => _loginError = context.l10n.errorMessage(errorCode));
-          },
-        );
-      });
-
-  Future<void> _socialLogin(String provider) => withLoading(() async {
-        setState(() => _loginError = null);
-        final result =
-            await ref.read(authProvider.notifier).socialLogin(provider);
-        if (!mounted) return;
-        result.when(
-          success: (_) {},
-          failure: (f) {
-            if (f.message?.contains('cancelled') != true) {
-              final errorCode = switch (f) {
-                ServerFailure(:final code) => code,
-                NetworkFailure() => 'NETWORK_ERROR',
-                TimeoutFailure() => 'TIMEOUT',
-                _ => null,
-              };
-              if (errorCode != null) {
-                setState(
-                    () => _loginError = context.l10n.errorMessage(errorCode));
-              }
-            }
-          },
-        );
-      });
 
   @override
   Widget build(BuildContext context) {
@@ -149,9 +59,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           children: [
             // 1) Arka plan video + koyu overlay
             BackgroundVideo(
-              assetPath: _videoAsset,
+              assetPath: AppAssets.videoLoginBg,
               overlayOpacity: 0.75,
-              onInitialized: _onVideoInitialized,
+              onInitialized: onVideoInitialized,
             ),
 
             // 2) Gradient daireler (AppScaffold ile paylaşımlı)
@@ -174,39 +84,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                         child: Form(
                           key: formKey,
                           child: StaggeredColumn(
-                            key: _staggeredKey,
+                            key: staggeredKey,
                             children: [
                               const SizedBox(height: AppSpacing.xxxl),
-                              Center(
-                                child: SvgPicture.asset(
-                                  AppAssets.logoSvg,
-                                  width: AppSizes.logoMd,
-                                  height: AppSizes.logoMd,
-                                  colorFilter: ColorFilter.mode(
-                                      context.appColors.primary,
-                                      BlendMode.srcIn),
-                                ),
-                              ),
-                              const SizedBox(height: AppSpacing.md),
-                              Text(
-                                context.tr('app_name'),
-                                textAlign: TextAlign.center,
-                                style: theme.textTheme.displaySmall?.copyWith(
-                                  color: context.appColors.primary,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: AppSpacing.sm),
-                              Text(
-                                context.tr('welcome_back'),
-                                textAlign: TextAlign.center,
-                                style: theme.textTheme.bodyLarge?.copyWith(
-                                  color: theme.colorScheme.onSurfaceVariant,
-                                ),
-                              ),
+                              const LoginHeader(),
                               const SizedBox(height: AppSpacing.xxxl),
                               AppTextField(
-                                controller: _emailCtrl,
+                                controller: emailCtrl,
                                 label: context.tr('email'),
                                 maxLength: 254,
                                 keyboardType: TextInputType.emailAddress,
@@ -216,21 +100,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                               ),
                               const SizedBox(height: AppSpacing.lg),
                               AppTextField(
-                                controller: _passwordCtrl,
+                                controller: passwordCtrl,
                                 label: context.tr('password'),
                                 maxLength: 128,
-                                obscureText: _obscure,
+                                obscureText: obscure,
                                 textInputAction: TextInputAction.done,
                                 validator: passwordValidator,
-                                onFieldSubmitted: (_) => _login(),
-                                errorText: _loginError,
+                                onFieldSubmitted: (_) => login(),
+                                errorText: loginError,
                                 prefixIcon: const Icon(Icons.lock_outlined),
                                 suffixIcon: IconButton(
-                                  icon: Icon(_obscure
+                                  icon: Icon(obscure
                                       ? Icons.visibility_off
                                       : Icons.visibility),
-                                  onPressed: () =>
-                                      setState(() => _obscure = !_obscure),
+                                  onPressed: toggleObscure,
                                 ),
                               ),
                               Align(
@@ -246,27 +129,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                               AppButton(
                                 label: context.tr('login'),
                                 isLoading: isLoading,
-                                onPressed: isLoading ? null : _login,
+                                onPressed: isLoading ? null : login,
                               ),
                               const SizedBox(height: AppSpacing.lg),
                               SocialLoginButtons(
                                 isLoading: isLoading,
-                                onGooglePressed: () => _socialLogin('google'),
-                                onApplePressed: () => _socialLogin('apple'),
+                                onGooglePressed: () => socialLogin('google'),
+                                onApplePressed: () => socialLogin('apple'),
                               ),
                               const SizedBox(height: AppSpacing.xxl),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(context.tr('no_account'),
-                                      style: theme.textTheme.bodyMedium),
-                                  TextButton(
-                                    onPressed: () => ref
-                                        .read(navigationServiceProvider)
-                                        .push(RouteNames.register),
-                                    child: Text(context.tr('register')),
-                                  ),
-                                ],
+                              LoginRegisterPrompt(
+                                onRegisterTap: () => ref
+                                    .read(navigationServiceProvider)
+                                    .push(RouteNames.register),
                               ),
                             ],
                           ),
@@ -282,7 +157,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                       icon: const Icon(Icons.language),
                       color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                       tooltip: context.tr('language'),
-                      onPressed: _showLanguagePicker,
+                      onPressed: showLanguagePicker,
                     ),
                   ),
                   // Powered by + sürüm — alt orta
@@ -290,13 +165,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                     left: 0,
                     right: 0,
                     bottom: AppSpacing.sm,
-                    child: Text(
-                      'Powered by Socrepho${_appVersion.isNotEmpty ? ' • v$_appVersion' : ''}',
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: theme.colorScheme.onSurface.withValues(alpha: 0.38),
-                      ),
-                    ),
+                    child: LoginVersionLabel(appVersion: appVersion),
                   ),
                 ],
               ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:qulo_v2/core/constants/app_assets.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/mixins/loading_mixin.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
@@ -40,8 +41,8 @@ mixin MapConfirmScreenMixin on ConsumerState<MapConfirmScreen>, LoadingMixin<Map
   Future<void> loadMapStyle() async {
     final brightness = Theme.of(context).brightness;
     final path = brightness == Brightness.dark
-        ? 'assets/map/map_style_dark.json'
-        : 'assets/map/map_style_light.json';
+        ? AppAssets.mapStyleDark
+        : AppAssets.mapStyleLight;
     try {
       final style = await rootBundle.loadString(path);
       if (mounted) setState(() => mapStyle = style);

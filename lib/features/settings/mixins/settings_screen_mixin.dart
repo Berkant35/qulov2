@@ -1,11 +1,15 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/widgets/language_picker_sheet.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/features/settings/models/deletion_reason.dart';
 import 'package:qulo_v2/features/settings/screens/settings_screen.dart';
+import 'package:qulo_v2/features/settings/widgets/delete_reason_sheet.dart';
 import 'package:qulo_v2/core/config/env.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
 import 'package:qulo_v2/providers/locale_provider.dart';
@@ -112,6 +116,18 @@ mixin SettingsScreenMixin on ConsumerState<SettingsScreen> {
     final nav = ref.read(navigationServiceProvider);
     final userNotifier = ref.read(userProvider.notifier);
     final authNotifier = ref.read(authProvider.notifier);
+    final locale = ref.read(localeProvider).languageCode;
+
+    // 1) Neden topla (opsiyonel — Atla mümkün). Dismiss → iptal.
+    final reason = await nav.showAppBottomSheet<DeleteReasonResult>(
+      CustomBottomSheet(
+        name: 'delete_reason',
+        builder: (_) => const DeleteReasonSheet(),
+      ),
+    );
+    if (reason == null || !mounted) return;
+
+    // 2) Yıkıcı final onay.
     final confirm = await nav.showAppDialog<bool>(
       ConfirmDialog(
         name: 'delete_account',
@@ -121,9 +137,21 @@ mixin SettingsScreenMixin on ConsumerState<SettingsScreen> {
         isDestructive: true,
       ),
     );
-    if (confirm == true) {
-      await userNotifier.deleteAccount();
-      await authNotifier.logout();
-    }
+    if (confirm != true) return;
+
+    // 3) Analytics (sadece kod — serbest metin PII, gönderilmez) + sil.
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.settingsDeleteAccountReason,
+      params: {AnalyticsEvents.paramReasonCode: reason.reasonCode},
+    );
+    final packageInfo = await PackageInfo.fromPlatform();
+    await userNotifier.deleteAccount(
+      reasonCode: reason.reasonCode,
+      reasonText: reason.reasonText,
+      appVersion: packageInfo.version,
+      platform: Platform.isIOS ? 'ios' : 'android',
+      locale: locale,
+    );
+    await authNotifier.logout();
   }
 }

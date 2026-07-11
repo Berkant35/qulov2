@@ -2,6 +2,7 @@ import 'dart:developer' as dev;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/data/models/user_model.dart';
+import 'package:qulo_v2/data/models/retention_eligibility_model.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/question_provider.dart';
 
@@ -93,8 +94,34 @@ class UserNotifier extends AsyncNotifier<UserModel?> {
     return result;
   }
 
-  Future<Result<void>> deleteAccount() async {
-    return ref.read(userRepositoryProvider).deleteAccount();
+  Future<Result<void>> deleteAccount({
+    String? reasonCode,
+    String? reasonText,
+    String? appVersion,
+    String? platform,
+    String? locale,
+  }) async {
+    return ref.read(userRepositoryProvider).deleteAccount(
+          reasonCode: reasonCode,
+          reasonText: reasonText,
+          appVersion: appVersion,
+          platform: platform,
+          locale: locale,
+        );
+  }
+
+  Future<Result<RetentionEligibilityModel>> checkRetentionEligibility(
+    String reasonCode,
+  ) async {
+    return ref.read(userRepositoryProvider).checkRetentionEligibility(reasonCode);
+  }
+
+  Future<Result<void>> claimRetention(String reasonCode) async {
+    final result = await ref.read(userRepositoryProvider).claimRetention(reasonCode);
+    if (result is Success) {
+      await fetchMe(); // bakiye güncellensin
+    }
+    return result;
   }
 
   Future<Result<Map<String, dynamic>>> claimBadgeReward(String level) async {

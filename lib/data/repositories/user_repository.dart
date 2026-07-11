@@ -6,6 +6,7 @@ import 'package:qulo_v2/core/network/services/user_service.dart';
 import 'package:qulo_v2/data/models/public_profile_model.dart';
 import 'package:qulo_v2/data/models/user_model.dart';
 import 'package:qulo_v2/data/models/notification_preferences_model.dart';
+import 'package:qulo_v2/data/models/retention_eligibility_model.dart';
 import 'package:qulo_v2/data/models/user_details_model.dart';
 import 'package:qulo_v2/data/repositories/interfaces.dart';
 
@@ -104,9 +105,45 @@ class UserRepository implements IUserRepository {
   }
 
   @override
-  Future<Result<void>> deleteAccount() async {
+  Future<Result<void>> deleteAccount({
+    String? reasonCode,
+    String? reasonText,
+    String? appVersion,
+    String? platform,
+    String? locale,
+  }) async {
     try {
-      await _service.deleteAccount();
+      final body = <String, dynamic>{
+        if (reasonCode != null) 'reason_code': reasonCode,
+        if (reasonText != null && reasonText.trim().isNotEmpty)
+          'reason_text': reasonText.trim(),
+        if (appVersion != null) 'app_version': appVersion,
+        if (platform != null) 'platform': platform,
+        if (locale != null) 'locale': locale,
+      };
+      await _service.deleteAccount(body);
+      return const Success(null);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
+
+  Future<Result<RetentionEligibilityModel>> checkRetentionEligibility(
+    String reasonCode,
+  ) async {
+    try {
+      final response = await _service.retentionEligibility(reasonCode);
+      return Success(
+        RetentionEligibilityModel.fromJson(response as Map<String, dynamic>),
+      );
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
+
+  Future<Result<void>> claimRetention(String reasonCode) async {
+    try {
+      await _service.claimRetention({'reason_code': reasonCode});
       return const Success(null);
     } on DioException catch (e) {
       return Failure(e.toAppFailure());

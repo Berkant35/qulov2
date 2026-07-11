@@ -52,6 +52,9 @@ class AppTextField extends StatelessWidget {
         errorText: errorText,
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
+        // Sayac sadece cok satirli (uzun metin) alanlarda anlamli;
+        // tek satirlik inputlarda gizle (maxLength limiti yine uygulanir)
+        counterText: maxLines > 1 ? null : '',
       ),
       keyboardType: keyboardType,
       textInputAction: textInputAction,

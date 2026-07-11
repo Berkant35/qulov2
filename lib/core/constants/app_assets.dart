@@ -8,6 +8,13 @@ abstract final class AppAssets {
   static const purpleDiamondSlideLeft = 'assets/brand/purple_diamond_slide_left.svg';
   static const purpleDiamondSlideRight = 'assets/brand/purple_diamond_slide_right.svg';
 
+  // ─── Videos ───
+  static const videoLoginBg = 'assets/videos/login_bg.mp4';
+
+  // ─── Map Styles ───
+  static const mapStyleDark = 'assets/map/map_style_dark.json';
+  static const mapStyleLight = 'assets/map/map_style_light.json';
+
   // ─── Lottie ───
   static const lottieBoardQuestion = 'assets/lottie/boardQuestion.json';
   static const lottieBuyDiamond = 'assets/lottie/buydiamond.json';

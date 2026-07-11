@@ -241,11 +241,13 @@ abstract class AnalyticsEvents {
   static const String settingsLanguageChange = 'settings_language_change';
   static const String settingsDeleteAccountStart = 'settings_delete_account_start';
   static const String settingsDeleteAccountConfirm = 'settings_delete_account_confirm';
+  static const String settingsDeleteAccountReason = 'settings_delete_account_reason';
 
   // ═══════════════════════════════════════════════════════════════════
   // Parameter Keys
   // ═══════════════════════════════════════════════════════════════════
 
+  static const String paramReasonCode = 'reason_code';
   static const String paramMethod = 'method';
   static const String paramDurationMs = 'duration_ms';
   static const String paramErrorCode = 'error_code';

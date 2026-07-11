@@ -202,7 +202,13 @@ abstract class IUserRepository {
 
   Future<Result<Map<String, dynamic>>> deletePhoto(int index);
 
-  Future<Result<void>> deleteAccount();
+  Future<Result<void>> deleteAccount({
+    String? reasonCode,
+    String? reasonText,
+    String? appVersion,
+    String? platform,
+    String? locale,
+  });
 
   Future<Result<Map<String, dynamic>>> boost();
 

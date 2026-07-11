@@ -29,7 +29,13 @@ abstract class UserService {
   Future<void> heartbeat();
 
   @DELETE('/users/me')
-  Future<void> deleteAccount();
+  Future<void> deleteAccount(@Body() Map<String, dynamic> body);
+
+  @GET('/users/me/retention/eligibility')
+  Future<dynamic> retentionEligibility(@Query('reason_code') String reasonCode);
+
+  @POST('/users/me/retention/claim')
+  Future<void> claimRetention(@Body() Map<String, dynamic> body);
 
   @GET('/users/{id}/profile')
   Future<PublicProfileModel> getPublicProfile(@Path('id') String userId);
