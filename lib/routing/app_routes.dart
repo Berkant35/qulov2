@@ -255,7 +255,7 @@ final _routes = <RouteBase>[
   StatefulShellRoute.indexedStack(
     builder: (context, state, shell) => _MainShell(shell: shell),
     branches: [
-      StatefulShellBranch(routes: [
+      StatefulShellBranch(observers: [RouteChangeObserver()], routes: [
         GoRoute(
           path: '/discover',
           name: RouteNames.discover,
@@ -263,14 +263,14 @@ final _routes = <RouteBase>[
           routes: const [],
         ),
       ]),
-      StatefulShellBranch(routes: [
+      StatefulShellBranch(observers: [RouteChangeObserver()], routes: [
         GoRoute(
           path: '/matches',
           name: RouteNames.matches,
           builder: (context, state) => const MatchesScreen(),
         ),
       ]),
-      StatefulShellBranch(routes: [
+      StatefulShellBranch(observers: [RouteChangeObserver()], routes: [
         GoRoute(
           path: '/profile',
           name: RouteNames.profile,
