@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- TODO(meta-ads): developers.facebook.com'daki Qulo App oluşturulunca
+         gerçek App ID + Client Token (Settings > Advanced) ile değiştirilecek.
+         Placeholder değerlerle build alınır ama event'ler Meta'ya ulaşmaz. -->
+    <string name="facebook_app_id">0000000000000000</string>
+    <string name="facebook_client_token">00000000000000000000000000000000</string>
+</resources>

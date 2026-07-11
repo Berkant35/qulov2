@@ -3,4 +3,4 @@
 "NSPhotoLibraryUsageDescription" = "L'accès à la photothèque est nécessaire pour sélectionner des photos de profil.";
 "NSLocationWhenInUseUsageDescription" = "Qulo utilise votre position pour trouver des personnes dans la distance choisie sur l'écran Discover et afficher votre ville sur votre profil. Par exemple, si vous réglez la distance sur 50 km, Discover liste les utilisateurs dans ce rayon et chaque carte affiche la ville et la distance, comme \"Paris · 2,5 km\".";
 "NSMicrophoneUsageDescription" = "L'accès au microphone est nécessaire pour envoyer des messages vocaux.";
-"NSUserTrackingUsageDescription" = "Qulo utilise cet identifiant pour fournir du contenu personnalisé et améliorer votre expérience. Vos données ne sont pas partagées avec des tiers à des fins publicitaires.";
+"NSUserTrackingUsageDescription" = "Qulo utilise cet identifiant pour : (1) mesurer la performance des publicités (p. ex. savoir que vous avez découvert Qulo via une publicité) et (2) améliorer votre expérience. Il est partagé uniquement avec nos partenaires de mesure publicitaire.";

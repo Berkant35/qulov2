@@ -7,6 +7,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:qulo_v2/core/error/error_manager.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/services/meta_events_manager.dart';
 import 'package:qulo_v2/core/network/network_manager.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/services/revenuecat_service.dart';
@@ -202,6 +203,7 @@ class AuthNotifier extends Notifier<AuthState> {
         AnalyticsManager.instance.logEvent(AnalyticsEvents.authRegisterSuccess, params: {
           AnalyticsEvents.paramMethod: 'email',
         });
+        MetaEventsManager.instance.logCompleteRegistration(method: 'email');
         state = state.copyWith(isLoading: false);
       },
       failure: (f) {
@@ -293,6 +295,8 @@ class AuthNotifier extends Notifier<AuthState> {
   /// Called after social login profile completion.
   /// Re-emits auth state to trigger GoRouter redirect (profile-completion → discover).
   Future<void> onProfileCompleted() async {
+    // Social signup'ta kayıt burada tamamlanır (profil tamamlama adımı sonu)
+    MetaEventsManager.instance.logCompleteRegistration(method: 'social');
     await _postLoginInit();
     // Re-emit authenticated state so GoRouter re-evaluates redirect
     // (user.age is now non-null → profile-completion guard passes)
