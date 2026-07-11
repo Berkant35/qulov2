@@ -8,7 +8,7 @@ import os from 'node:os';
 const KEY_ID = 'B24C75LYRD';
 const ISSUER = process.env.APP_STORE_API_ISSUER;
 const BUNDLE_ID = 'com.wordpress.calikusuberkant.qulorelease';
-const VERSION = '2.0.4';
+const VERSION = '2.0.5';
 const APPLY = process.argv.includes('--apply');
 const P8_PATH = `${os.homedir()}/private_keys/AuthKey_${KEY_ID}.p8`;
 
@@ -39,29 +39,77 @@ async function api(path, opts = {}) {
 
 // App Store Connect locale -> "What's New" metni (16 dil).
 const NOTES = {
-  'tr': `Keşfette artık profiller otomatik yükleniyor — kesintisiz keşfet, "tekrar ara" derdi yok.\n"Bizi nereden duydun?" — bizi nasıl bulduğunu paylaşabilirsin.\nDaha akıcı ipucu ve bildirim deneyimi; üst üste binen pop-up'lar giderildi.\nÇeşitli hata düzeltmeleri ve performans iyileştirmeleri.`,
-  'en-US': `Discover now loads profiles automatically — keep exploring, no more "search again".\n"How did you hear about us?" — tell us how you found Qulo.\nSmoother tips and notifications; overlapping pop-ups are gone.\nVarious bug fixes and performance improvements.`,
-  'de-DE': `Entdecken lädt Profile jetzt automatisch – einfach weiterstöbern, kein "Erneut suchen" mehr.\n"Wie hast du von uns erfahren?" – sag uns, wie du Qulo gefunden hast.\nFlüssigere Tipps und Benachrichtigungen; überlappende Pop-ups wurden behoben.\nDiverse Fehlerbehebungen und Leistungsverbesserungen.`,
-  'fr-FR': `Découvrir charge désormais les profils automatiquement — continue d'explorer, fini le « rechercher à nouveau ».\n« Comment avez-vous entendu parler de nous ? » — dis-nous comment tu as trouvé Qulo.\nConseils et notifications plus fluides ; les pop-ups qui se chevauchaient ont été corrigés.\nCorrections de bugs et améliorations des performances.`,
-  'es-ES': `Descubrir ahora carga los perfiles automáticamente: sigue explorando, sin más "buscar de nuevo".\n"¿Cómo nos conociste?": cuéntanos cómo encontraste Qulo.\nConsejos y notificaciones más fluidos; se eliminaron los pop-ups superpuestos.\nVarias correcciones de errores y mejoras de rendimiento.`,
-  'ar-SA': `أصبح "اكتشف" يحمّل الملفات تلقائيًا — تابع الاستكشاف دون "البحث مجددًا".\n"كيف سمعت عنّا؟" — أخبرنا كيف وجدت Qulo.\nتلميحات وإشعارات أكثر سلاسة، وتم إصلاح النوافذ المنبثقة المتداخلة.\nإصلاحات متنوعة للأخطاء وتحسينات في الأداء.`,
-  'ru': `В «Обзоре» профили теперь загружаются автоматически — продолжайте смотреть, без «искать снова».\n«Откуда вы о нас узнали?» — расскажите, как вы нашли Qulo.\nБолее плавные подсказки и уведомления; перекрывающиеся всплывающие окна исправлены.\nРазличные исправления ошибок и улучшения производительности.`,
-  'pt-PT': `A aba Descobrir agora carrega perfis automaticamente — continue a explorar, sem "procurar novamente".\n"Como ouviu falar de nós?" — conte-nos como encontrou o Qulo.\nDicas e notificações mais fluidas; pop-ups sobrepostos foram corrigidos.\nVárias correções de erros e melhorias de desempenho.`,
-  'it': `Scopri ora carica i profili automaticamente — continua a esplorare, niente più "cerca di nuovo".\n"Come ci hai conosciuti?" — raccontaci come hai trovato Qulo.\nSuggerimenti e notifiche più fluidi; i pop-up sovrapposti sono stati risolti.\nVarie correzioni di bug e miglioramenti delle prestazioni.`,
-  'ja': `「見つける」がプロフィールを自動で読み込むようになりました。「再検索」なしでそのまま探せます。\n「どこで私たちを知りましたか？」— Quloをどう見つけたか教えてください。\nヒントや通知がよりスムーズに。重なって表示されるポップアップを修正しました。\n各種不具合の修正とパフォーマンスの改善。`,
-  'ko': `'탐색'에서 이제 프로필이 자동으로 로드됩니다 — '다시 찾기' 없이 계속 둘러보세요.\n"저희를 어떻게 알게 되셨나요?" — Qulo를 어떻게 찾으셨는지 알려주세요.\n팁과 알림이 더 매끄러워졌고, 겹쳐 보이던 팝업을 수정했습니다.\n다양한 버그 수정 및 성능 개선.`,
-  'zh-Hans': `"发现"现在会自动加载资料——尽情浏览，无需再"重新搜索"。\n"你是怎么知道我们的？"——告诉我们你是如何找到 Qulo 的。\n提示和通知更顺畅，修复了相互重叠的弹窗。\n多项错误修复和性能改进。`,
-  'nl-NL': `Ontdekken laadt nu profielen automatisch — blijf ontdekken, geen "opnieuw zoeken" meer.\n"Hoe heb je over ons gehoord?" — vertel ons hoe je Qulo hebt gevonden.\nSoepelere tips en meldingen; overlappende pop-ups zijn opgelost.\nDiverse bugfixes en prestatieverbeteringen.`,
-  'pl': `Odkrywaj teraz wczytuje profile automatycznie — przeglądaj dalej, koniec z "szukaj ponownie".\n"Skąd o nas wiesz?" — powiedz nam, jak trafiłeś do Qulo.\nPłynniejsze wskazówki i powiadomienia; nakładające się wyskakujące okienka naprawione.\nRóżne poprawki błędów i ulepszenia wydajności.`,
-  'sv': `Upptäck laddar nu profiler automatiskt — fortsätt utforska, inget mer "sök igen".\n"Hur hörde du talas om oss?" — berätta hur du hittade Qulo.\nSmidigare tips och aviseringar; överlappande popup-fönster har åtgärdats.\nDiverse buggfixar och prestandaförbättringar.`,
-  'hi': `डिस्कवर अब प्रोफ़ाइल अपने आप लोड करता है — बिना "फिर से खोजें" के एक्सप्लोर करते रहें।\n"आपने हमारे बारे में कैसे सुना?" — बताएं कि आपने Qulo को कैसे खोजा।\nसहज सुझाव और सूचनाएं; एक-दूसरे पर आते पॉप-अप ठीक किए गए।\nविभिन्न बग फिक्स और प्रदर्शन सुधार।`,
+  'tr': `Uygulama içi rehber turu iyileştirildi — ipuçları artık tam ihtiyacın olan ekranda görünüyor
+Davet bağlantılarıyla ilgili düzeltmeler
+Hesap silme akışına geri bildirim adımı eklendi — ayrılmadan önce nedenini paylaşabilirsin
+Çeşitli hata düzeltmeleri ve performans iyileştirmeleri`,
+  'en-US': `Improved in-app guided tour — tips now show up right where you need them
+Fixes for invite links
+New feedback step when deleting your account — tell us why before you go
+Various bug fixes and performance improvements`,
+  'de-DE': `Verbesserte In-App-Tour — Tipps erscheinen jetzt genau dort, wo du sie brauchst
+Korrekturen bei Einladungslinks
+Neuer Feedback-Schritt beim Löschen des Kontos — sag uns vorher, warum du gehst
+Diverse Fehlerbehebungen und Leistungsverbesserungen`,
+  'fr-FR': `Visite guidée améliorée — les conseils s'affichent désormais exactement là où tu en as besoin
+Corrections des liens d'invitation
+Nouvelle étape de retour lors de la suppression du compte — dis-nous pourquoi avant de partir
+Corrections de bugs et améliorations des performances`,
+  'es-ES': `Tour guiado mejorado — los consejos ahora aparecen justo donde los necesitas
+Correcciones en los enlaces de invitación
+Nuevo paso de comentarios al eliminar tu cuenta — cuéntanos por qué antes de irte
+Varias correcciones de errores y mejoras de rendimiento`,
+  'ar-SA': `تحسين الجولة الإرشادية داخل التطبيق — تظهر التلميحات الآن في المكان الذي تحتاجها فيه تمامًا
+إصلاحات لروابط الدعوة
+خطوة ملاحظات جديدة عند حذف الحساب — أخبرنا بالسبب قبل المغادرة
+إصلاحات متنوعة للأخطاء وتحسينات في الأداء`,
+  'ru': `Улучшен обучающий тур — подсказки теперь появляются именно там, где нужно
+Исправления пригласительных ссылок
+Новый шаг обратной связи при удалении аккаунта — расскажите нам причину перед уходом
+Различные исправления ошибок и улучшения производительности`,
+  'pt-PT': `Tour guiado aprimorado — as dicas agora aparecem exatamente onde você precisa
+Correções nos links de convite
+Nova etapa de feedback ao excluir a conta — conte-nos o motivo antes de sair
+Diversas correções de bugs e melhorias de desempenho`,
+  'it': `Tour guidato migliorato — i suggerimenti ora appaiono esattamente dove ti servono
+Correzioni ai link di invito
+Nuovo passaggio di feedback all'eliminazione dell'account — dicci il motivo prima di andare
+Varie correzioni di bug e miglioramenti delle prestazioni`,
+  'ja': `アプリ内ガイドツアーを改善 — ヒントが必要な画面に正しく表示されるようになりました
+招待リンクに関する修正
+アカウント削除時に新しいフィードバックステップを追加 — 退会前に理由をお聞かせください
+各種バグ修正とパフォーマンス改善`,
+  'ko': `앱 내 가이드 투어 개선 — 이제 팁이 필요한 화면에 정확히 표시됩니다
+초대 링크 관련 수정
+계정 삭제 시 새로운 피드백 단계 추가 — 떠나기 전에 이유를 알려주세요
+다양한 버그 수정 및 성능 개선`,
+  'zh-Hans': `改进了应用内引导教程 — 提示现在会准确显示在你需要的界面上
+修复了邀请链接相关问题
+删除账号时新增反馈步骤 — 离开前告诉我们原因
+各种错误修复和性能优化`,
+  'nl-NL': `Verbeterde rondleiding in de app — tips verschijnen nu precies waar je ze nodig hebt
+Fixes voor uitnodigingslinks
+Nieuwe feedbackstap bij het verwijderen van je account — vertel ons waarom voordat je gaat
+Diverse bugfixes en prestatieverbeteringen`,
+  'pl': `Ulepszony samouczek w aplikacji — wskazówki pojawiają się teraz dokładnie tam, gdzie ich potrzebujesz
+Poprawki linków z zaproszeniami
+Nowy krok opinii przy usuwaniu konta — powiedz nam dlaczego, zanim odejdziesz
+Różne poprawki błędów i ulepszenia wydajności`,
+  'sv': `Förbättrad guidad tur i appen — tips visas nu precis där du behöver dem
+Fixar för inbjudningslänkar
+Nytt feedbacksteg när du raderar ditt konto — berätta varför innan du går
+Diverse buggfixar och prestandaförbättringar`,
+  'hi': `इन-ऐप गाइडेड टूर बेहतर हुआ — सुझाव अब ठीक वहीं दिखते हैं जहाँ आपको चाहिए
+आमंत्रण लिंक से जुड़े सुधार
+खाता हटाते समय नया फ़ीडबैक चरण — जाने से पहले हमें कारण बताएं
+विभिन्न बग समाधान और प्रदर्शन सुधार`,
 };
 
 // App Store Connect submit için zorunlu ek diller:
 NOTES['en-AU'] = NOTES['en-CA'] = NOTES['en-GB'] = NOTES['en-US'];
 NOTES['pt-BR'] = NOTES['pt-PT'];
-NOTES['cs'] = `Objevování teď načítá profily automaticky — prozkoumávejte dál, žádné „hledat znovu".\n„Jak jste se o nás dozvěděli?" — řekněte nám, jak jste našli Qulo.\nPlynulejší tipy a oznámení; překrývající se vyskakovací okna jsou opravena.\nRůzné opravy chyb a vylepšení výkonu.`;
-NOTES['hu'] = `A Felfedezés mostantól automatikusan tölti be a profilokat — fedezz fel tovább, nincs több „újrakeresés".\n„Honnan hallottál rólunk?" — mondd el, hogyan találtad meg a Qulót.\nGördülékenyebb tippek és értesítések; az egymásra csúszó felugró ablakok javítva.\nKülönféle hibajavítások és teljesítményjavítások.`;
+NOTES['cs'] = `Vylepšená průvodcovská prohlídka v aplikaci — tipy se nyní zobrazují přesně tam, kde je potřebujete.\nOpravy odkazů s pozvánkami.\nNový krok zpětné vazby při mazání účtu — řekněte nám proč, než odejdete.\nRůzné opravy chyb a vylepšení výkonu.`;
+NOTES['hu'] = `Továbbfejlesztett alkalmazáson belüli túra — a tippek mostantól pontosan ott jelennek meg, ahol szükséged van rájuk.\nMeghívó linkek javításai.\nÚj visszajelzési lépés a fiók törlésekor — mondd el, miért mész el, mielőtt távozol.\nKülönféle hibajavítások és teljesítményjavítások.`;
 
 const app = (await api(`/v1/apps?filter[bundleId]=${BUNDLE_ID}`)).data?.[0];
 if (!app) throw new Error('App bulunamadı');
