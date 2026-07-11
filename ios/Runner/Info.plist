@@ -60,12 +60,10 @@
 		<string>Qulo uses your microphone to record voice messages you can send to other users in chat conversations.</string>
 		<key>NSUserTrackingUsageDescription</key>
 		<string>Qulo uses this identifier to: (1) measure ad performance (e.g., knowing you discovered Qulo through an ad), and (2) improve your app experience. It is shared only with our advertising measurement partners.</string>
-		<!-- TODO(meta-ads): developers.facebook.com'daki Qulo App oluşturulunca
-		     gerçek App ID + Client Token ile değiştirilecek (android/strings.xml ile birlikte) -->
 		<key>FacebookAppID</key>
-		<string>0000000000000000</string>
+		<string>27752418277726782</string>
 		<key>FacebookClientToken</key>
-		<string>00000000000000000000000000000000</string>
+		<string>99e1593f6ef5ebbb31ff7055abdf248c</string>
 		<key>FacebookDisplayName</key>
 		<string>Qulo</string>
 		<key>FBSDKAutoLogAppEventsEnabled</key>
