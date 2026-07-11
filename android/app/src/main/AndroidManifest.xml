@@ -93,7 +93,6 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="https" android:host="quloapp.com"/>
-                <data android:scheme="https" android:host="www.quloapp.com"/>
                 <data android:pathPrefix="/invite"/>
                 <data android:pathPrefix="/chat"/>
                 <data android:pathPrefix="/matches"/>
