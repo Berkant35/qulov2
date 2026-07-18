@@ -61,14 +61,14 @@ class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const AppLocalizationsDelegate();
 
   /// All 16 supported locales — falls back to TR if translations not yet available
-  static const _supportedCodes = {
+  static const supportedCodes = {
     'tr', 'en', 'de', 'fr', 'es', 'ar', 'ru', 'pt',
     'it', 'ja', 'ko', 'zh', 'nl', 'pl', 'sv', 'hi',
   };
 
   @override
   bool isSupported(Locale locale) =>
-      _supportedCodes.contains(locale.languageCode);
+      supportedCodes.contains(locale.languageCode);
 
   @override
   Future<AppLocalizations> load(Locale locale) async =>
