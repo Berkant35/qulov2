@@ -390,25 +390,6 @@ class _MainShell extends ConsumerStatefulWidget {
 
 class _MainShellState extends ConsumerState<_MainShell> {
   @override
-  void initState() {
-    super.initState();
-    _checkOnboarding();
-  }
-
-  Future<void> _checkOnboarding() async {
-    final prefs = await SharedPreferences.getInstance();
-    final seen = prefs.getBool('onboarding_v2_seen') ?? false;
-    final oldSeen = prefs.getBool('onboarding_questions_seen') ?? false;
-    if (!seen && !oldSeen && mounted) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          ref.read(navigationServiceProvider).push(RouteNames.onboarding);
-        }
-      });
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     final user = ref.watch(userProvider).valueOrNull;
     final showProfileBadge = (user?.questionCount ?? 0) < AppConstants.minQuestions;

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
+import 'package:qulo_v2/providers/onboarding_seen_provider.dart';
 import 'package:qulo_v2/features/splash/splash_screen.dart';
 import 'package:qulo_v2/features/auth/screens/login_screen.dart';
 import 'package:qulo_v2/features/auth/screens/register_screen.dart';
@@ -44,7 +44,6 @@ import 'package:qulo_v2/providers/user_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
-import 'package:qulo_v2/core/navigation/navigation_provider.dart';
 import 'package:qulo_v2/core/navigation/observers/route_change_notifier.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
@@ -64,6 +63,7 @@ final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 class _AuthNotifierListenable extends ChangeNotifier {
   _AuthNotifierListenable(Ref ref) {
     ref.listen<AuthState>(authProvider, (_, __) => notifyListeners());
+    ref.listen<bool>(onboardingSeenProvider, (_, __) => notifyListeners());
   }
 }
 
@@ -116,6 +116,19 @@ final routerProvider = Provider<GoRouter>((ref) {
               '/profile/diamonds?referralCode=$code';
         }
         return '/auth/login';
+      }
+
+      // Faz 1: onboarding carousel AUTH ONCESI. Gorulmemisse ve auth degilse
+      // carousel'e yonlendir (auth/legal/update route'lari haric).
+      final onboardingSeen = ref.read(onboardingSeenProvider);
+      final isOnboardingRoute = state.matchedLocation == '/onboarding';
+      if (!isAuth &&
+          !onboardingSeen &&
+          !isOnboardingRoute &&
+          !isAuthRoute &&
+          !isUpdateRoute &&
+          !isLegalRoute) {
+        return '/onboarding';
       }
 
       // 5. Auth degil → login'e yonlendir (auth, update haric)

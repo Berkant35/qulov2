@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
@@ -8,11 +7,11 @@ import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/services/pending_languages_store.dart';
 import 'package:qulo_v2/features/onboarding/screens/onboarding_screen.dart';
 import 'package:qulo_v2/features/onboarding/widgets/premium_suggestion_sheet.dart';
+import 'package:qulo_v2/providers/onboarding_seen_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 
 mixin OnboardingScreenMixin on ConsumerState<OnboardingScreen>,
     TickerProviderStateMixin<OnboardingScreen> {
-  static const _prefKey = 'onboarding_v2_seen';
   static const _totalPages = 5;
   static const _pageNames = [
     'hook',
@@ -132,9 +131,7 @@ mixin OnboardingScreenMixin on ConsumerState<OnboardingScreen>,
   }
 
   Future<void> _markSeen() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_prefKey, true);
-    await prefs.setBool('onboarding_questions_seen', true);
+    await ref.read(onboardingSeenProvider.notifier).markSeen();
   }
 
   bool get isLastPage => currentPage == _totalPages - 1;
