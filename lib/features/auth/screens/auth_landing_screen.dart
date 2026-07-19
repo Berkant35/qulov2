@@ -37,8 +37,6 @@ class _AuthLandingScreenState extends ConsumerState<AuthLandingScreen>
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      showBackButton: false,
-      isLoading: isLoading,
       body: AuthLandingBody(
         title: context.tr('auth_landing_title'),
         subtitle: context.tr('auth_landing_subtitle'),
