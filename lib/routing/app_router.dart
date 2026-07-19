@@ -132,8 +132,16 @@ final routerProvider = Provider<GoRouter>((ref) {
         return '/onboarding';
       }
 
-      // 5. Auth degil → social-first landing'e yonlendir (auth, update, onboarding haric)
-      if (!isAuth && !isAuthRoute && !isUpdateRoute && !isOnboardingRoute) {
+      // 5. Auth degil → social-first landing'e yonlendir.
+      // /onboarding'i SADECE carousel henuz gorulmemisken haric tut (o zaman
+      // yukaridaki guard onu /onboarding'de tutar). Carousel bitince
+      // (onboardingSeen=true) kullaniciyi /onboarding'den landing'e tasi —
+      // yoksa "Basla" sonrasi markSeen ile onboardingSeen true olur ama
+      // hicbir yere gidilmez, kullanici dil sayfasinda takilir.
+      if (!isAuth &&
+          !isAuthRoute &&
+          !isUpdateRoute &&
+          (!isOnboardingRoute || onboardingSeen)) {
         return '/auth/landing';
       }
 
