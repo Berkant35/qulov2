@@ -1165,4 +1165,9 @@ const enTranslations = <String, String>{
   'acq_thanks': 'Thanks!',
   'acq_error': 'Something went wrong.',
   'chars_remaining': '{count} characters left',
+
+  // Auth Landing
+  'auth_landing_title': 'Welcome to Qulo',
+  'auth_landing_subtitle': 'Match with someone who asks the right questions.',
+  'auth_landing_continue_email': 'Continue with email',
 };

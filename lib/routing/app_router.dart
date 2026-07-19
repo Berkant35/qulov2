@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
 import 'package:qulo_v2/providers/onboarding_seen_provider.dart';
 import 'package:qulo_v2/features/splash/splash_screen.dart';
+import 'package:qulo_v2/features/auth/screens/auth_landing_screen.dart';
 import 'package:qulo_v2/features/auth/screens/login_screen.dart';
 import 'package:qulo_v2/features/auth/screens/register_screen.dart';
 import 'package:qulo_v2/features/auth/screens/forgot_password_screen.dart';
@@ -131,9 +132,9 @@ final routerProvider = Provider<GoRouter>((ref) {
         return '/onboarding';
       }
 
-      // 5. Auth degil → login'e yonlendir (auth, update haric)
+      // 5. Auth degil → social-first landing'e yonlendir (auth, update haric)
       if (!isAuth && !isAuthRoute && !isUpdateRoute) {
-        return '/auth/login';
+        return '/auth/landing';
       }
 
       // 5. Pending deep link replay — login sonrasi deferred link

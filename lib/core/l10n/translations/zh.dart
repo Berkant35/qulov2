@@ -1160,4 +1160,9 @@ const zhTranslations = <String, String>{
   'acq_thanks': '谢谢！',
   'acq_error': '出错了。',
   'chars_remaining': '还剩 {count} 个字符',
+
+  // Auth Landing
+  'auth_landing_title': '欢迎来到 Qulo',
+  'auth_landing_subtitle': '与提出正确问题的人匹配。',
+  'auth_landing_continue_email': '使用邮箱继续',
 };

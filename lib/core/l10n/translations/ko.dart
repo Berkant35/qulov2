@@ -1160,4 +1160,9 @@ const koTranslations = <String, String>{
   'acq_thanks': '감사합니다!',
   'acq_error': '문제가 발생했습니다.',
   'chars_remaining': '{count}자 남음',
+
+  // Auth Landing
+  'auth_landing_title': 'Qulo에 오신 것을 환영합니다',
+  'auth_landing_subtitle': '좋은 질문을 던지는 상대와 매칭해보세요.',
+  'auth_landing_continue_email': '이메일로 계속하기',
 };

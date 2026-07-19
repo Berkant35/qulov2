@@ -1162,4 +1162,9 @@ const svTranslations = <String, String>{
   'acq_thanks': 'Tack!',
   'acq_error': 'Något gick fel.',
   'chars_remaining': '{count} tecken kvar',
+
+  // Auth Landing
+  'auth_landing_title': 'Välkommen till Qulo',
+  'auth_landing_subtitle': 'Matcha med någon som ställer rätt frågor.',
+  'auth_landing_continue_email': 'Fortsätt med e-post',
 };

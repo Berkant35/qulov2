@@ -1162,4 +1162,9 @@ const hiTranslations = <String, String>{
   'acq_thanks': 'धन्यवाद!',
   'acq_error': 'कुछ गलत हो गया।',
   'chars_remaining': '{count} अक्षर शेष',
+
+  // Auth Landing
+  'auth_landing_title': 'Qulo में आपका स्वागत है',
+  'auth_landing_subtitle': 'सही सवाल पूछने वाले किसी के साथ मैच करें।',
+  'auth_landing_continue_email': 'ईमेल से जारी रखें',
 };

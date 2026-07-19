@@ -1162,4 +1162,9 @@ const ptTranslations = <String, String>{
   'acq_thanks': 'Obrigado!',
   'acq_error': 'Algo deu errado.',
   'chars_remaining': '{count} caracteres restantes',
+
+  // Auth Landing
+  'auth_landing_title': 'Bem-vindo ao Qulo',
+  'auth_landing_subtitle': 'Combine com alguém que faz as perguntas certas.',
+  'auth_landing_continue_email': 'Continuar com e-mail',
 };

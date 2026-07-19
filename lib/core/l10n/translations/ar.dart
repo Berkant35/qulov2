@@ -1160,4 +1160,9 @@ const arTranslations = <String, String>{
   'acq_thanks': 'شكرًا!',
   'acq_error': 'حدث خطأ ما.',
   'chars_remaining': 'بقي {count} حرف',
+
+  // Auth Landing
+  'auth_landing_title': 'مرحبًا بك في Qulo',
+  'auth_landing_subtitle': 'تعرّف على شخص يطرح الأسئلة الصحيحة.',
+  'auth_landing_continue_email': 'المتابعة عبر البريد الإلكتروني',
 };

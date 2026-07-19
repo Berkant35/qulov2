@@ -1162,4 +1162,9 @@ const deTranslations = <String, String>{
   'acq_thanks': 'Danke!',
   'acq_error': 'Etwas ist schiefgelaufen.',
   'chars_remaining': 'Noch {count} Zeichen übrig',
+
+  // Auth Landing
+  'auth_landing_title': 'Willkommen bei Qulo',
+  'auth_landing_subtitle': 'Finde ein Match mit jemandem, der die richtigen Fragen stellt.',
+  'auth_landing_continue_email': 'Mit E-Mail fortfahren',
 };

@@ -1165,4 +1165,9 @@ const trTranslations = <String, String>{
   'acq_thanks': 'Teşekkürler!',
   'acq_error': 'Bir şeyler ters gitti.',
   'chars_remaining': 'Son {count} karakter kaldı',
+
+  // Auth Landing
+  'auth_landing_title': 'Qulo\'ya hoş geldin',
+  'auth_landing_subtitle': 'Doğru soruları soran biriyle eşleş.',
+  'auth_landing_continue_email': 'E-posta ile devam et',
 };

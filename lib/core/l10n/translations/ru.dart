@@ -1160,4 +1160,9 @@ const ruTranslations = <String, String>{
   'acq_thanks': 'Спасибо!',
   'acq_error': 'Что-то пошло не так.',
   'chars_remaining': 'Осталось {count} символов',
+
+  // Auth Landing
+  'auth_landing_title': 'Добро пожаловать в Qulo',
+  'auth_landing_subtitle': 'Найди пару с тем, кто задаёт правильные вопросы.',
+  'auth_landing_continue_email': 'Продолжить через email',
 };

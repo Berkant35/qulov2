@@ -1160,4 +1160,9 @@ const nlTranslations = <String, String>{
   'acq_thanks': 'Bedankt!',
   'acq_error': 'Er is iets misgegaan.',
   'chars_remaining': 'Nog {count} tekens over',
+
+  // Auth Landing
+  'auth_landing_title': 'Welkom bij Qulo',
+  'auth_landing_subtitle': 'Match met iemand die de juiste vragen stelt.',
+  'auth_landing_continue_email': 'Doorgaan met e-mail',
 };

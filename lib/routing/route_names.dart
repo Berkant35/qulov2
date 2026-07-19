@@ -1,5 +1,6 @@
 abstract final class RouteNames {
   // Auth
+  static const authLanding = 'auth-landing';
   static const login = 'login';
   static const register = 'register';
   static const forgotPassword = 'forgot-password';

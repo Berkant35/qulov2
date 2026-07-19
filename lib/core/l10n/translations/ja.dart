@@ -1162,4 +1162,9 @@ const jaTranslations = <String, String>{
   'acq_thanks': 'ありがとう！',
   'acq_error': '問題が発生しました。',
   'chars_remaining': '残り{count}文字',
+
+  // Auth Landing
+  'auth_landing_title': 'Qulo へようこそ',
+  'auth_landing_subtitle': '的確な質問をする相手とマッチしよう。',
+  'auth_landing_continue_email': 'メールで続ける',
 };

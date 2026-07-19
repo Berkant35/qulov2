@@ -44,6 +44,17 @@ final _routes = <RouteBase>[
 
   // Auth
   GoRoute(
+    path: '/auth/landing',
+    name: RouteNames.authLanding,
+    pageBuilder: (context, state) => CustomTransitionPage(
+      key: state.pageKey,
+      child: const AuthLandingScreen(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+          FadeTransition(opacity: animation, child: child),
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+  ),
+  GoRoute(
     path: '/auth/login',
     name: RouteNames.login,
     pageBuilder: (context, state) => CustomTransitionPage(

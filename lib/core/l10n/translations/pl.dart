@@ -1160,4 +1160,9 @@ const plTranslations = <String, String>{
   'acq_thanks': 'Dziękujemy!',
   'acq_error': 'Coś poszło nie tak.',
   'chars_remaining': 'Pozostało {count} znaków',
+
+  // Auth Landing
+  'auth_landing_title': 'Witaj w Qulo',
+  'auth_landing_subtitle': 'Dopasuj się z kimś, kto zadaje właściwe pytania.',
+  'auth_landing_continue_email': 'Kontynuuj przez e-mail',
 };

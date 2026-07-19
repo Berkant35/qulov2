@@ -1162,4 +1162,9 @@ const frTranslations = <String, String>{
   'acq_thanks': 'Merci !',
   'acq_error': 'Une erreur est survenue.',
   'chars_remaining': '{count} caractères restants',
+
+  // Auth Landing
+  'auth_landing_title': 'Bienvenue sur Qulo',
+  'auth_landing_subtitle': 'Matche avec quelqu\'un qui pose les bonnes questions.',
+  'auth_landing_continue_email': 'Continuer avec l\'e-mail',
 };
