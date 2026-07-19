@@ -16,6 +16,11 @@ abstract class AnalyticsEvents {
   static const String authLogout = 'auth_logout';
   static const String authForgotPassword = 'auth_forgot_password';
 
+  // ─── Auth Landing (Faz 1) ─
+  static const String authLandingView = 'auth_landing_view';
+  static const String authLandingSocialSelected = 'auth_landing_social_selected';
+  static const String authLandingEmailSelected = 'auth_landing_email_selected';
+
   // ─── Onboarding (10) ───────────────────────────────────────────────
   static const String onboardingStart = 'onboarding_start';
   static const String onboardingStepView = 'onboarding_step_view';
@@ -157,6 +162,11 @@ abstract class AnalyticsEvents {
   static const String upsellTapCta = 'upsell_tap_cta';
   static const String upsellDismiss = 'upsell_dismiss';
   static const String upsellConvert = 'upsell_convert';
+
+  // ─── Funnel milestones (Faz 1 — post-auth) ─
+  static const String paywallShown = 'paywall_shown';
+  static const String firstDiscoverView = 'first_discover_view';
+  static const String firstQuizComplete = 'first_quiz_complete';
 
   // ─── Passport (6) ──────────────────────────────────────────────────
   static const String passportActivate = 'passport_activate';
@@ -372,6 +382,7 @@ abstract class AnalyticsEvents {
   static const String paramLanguages = 'languages';
   static const String paramLanguageCount = 'language_count';
   static const String paramShownCount = 'shown_count';
+  static const String paramProvider = 'provider';
 
   // ─── Profile Setup Gate (13) ───────────────────────────────────────
   static const String setupGateView = 'setup_gate_view';
@@ -402,4 +413,9 @@ abstract class AnalyticsEvents {
   static const String paramUri = 'uri';
   static const String paramTargetPath = 'target_path';
   static const String paramNavType = 'nav_type';
+
+  // ─── Faz 1 SharedPreferences flag key'leri ────────────────────────
+  static const String flagPaywallFirstMatch = 'paywall_after_first_match_shown';
+  static const String flagFirstDiscoverView = 'funnel_first_discover_view_seen';
+  static const String flagFirstQuizComplete = 'funnel_first_quiz_complete_seen';
 }
