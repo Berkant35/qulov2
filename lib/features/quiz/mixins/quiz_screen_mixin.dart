@@ -226,6 +226,11 @@ mixin QuizScreenMixin on ConsumerState<QuizScreen> {
           AnalyticsEvents.paramTotalDurationMs: sessionStopwatch.elapsedMilliseconds,
         },
       );
+      FunnelEvents.logAuthedOnce(
+        AnalyticsEvents.flagFirstQuizComplete,
+        AnalyticsEvents.firstQuizComplete,
+        params: {AnalyticsEvents.paramMatched: true},
+      );
     }
 
     setState(() {
@@ -324,6 +329,11 @@ mixin QuizScreenMixin on ConsumerState<QuizScreen> {
         AnalyticsEvents.paramScore: totalCorrect,
         AnalyticsEvents.paramTotalDurationMs: sessionStopwatch.elapsedMilliseconds,
       },
+    );
+    FunnelEvents.logAuthedOnce(
+      AnalyticsEvents.flagFirstQuizComplete,
+      AnalyticsEvents.firstQuizComplete,
+      params: {AnalyticsEvents.paramMatched: false},
     );
 
     _showGamifiedResult(matched: false, badge: 'none');

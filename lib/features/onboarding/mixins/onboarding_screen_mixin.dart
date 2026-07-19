@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/services/funnel_events.dart';
 import 'package:qulo_v2/core/services/pending_languages_store.dart';
 import 'package:qulo_v2/features/onboarding/screens/onboarding_screen.dart';
 import 'package:qulo_v2/providers/onboarding_seen_provider.dart';
@@ -63,7 +64,7 @@ mixin OnboardingScreenMixin on ConsumerState<OnboardingScreen>,
 
   void onPageChanged(int index) {
     setState(() => currentPage = index);
-    _analytics.logEvent(AnalyticsEvents.onboardingV2PageView, params: {
+    FunnelEvents.logPreAuth(AnalyticsEvents.onboardingV2PageView, params: {
       AnalyticsEvents.paramPageIndex: index,
       AnalyticsEvents.paramPageName: _pageNames[index],
     });
@@ -91,15 +92,15 @@ mixin OnboardingScreenMixin on ConsumerState<OnboardingScreen>,
   }
 
   Future<void> onSkip() async {
-    _analytics.logEvent(AnalyticsEvents.onboardingV2Skip, params: {
+    FunnelEvents.logPreAuth(AnalyticsEvents.onboardingV2Skip, params: {
       AnalyticsEvents.paramFromPage: _pageNames[currentPage],
     });
     await _markSeen();
   }
 
   Future<void> onStart() async {
-    _analytics.logEvent(AnalyticsEvents.onboardingV2Complete);
-    _analytics.logEvent(AnalyticsEvents.onboardingV2LanguagesSelected, params: {
+    FunnelEvents.logPreAuth(AnalyticsEvents.onboardingV2Complete);
+    FunnelEvents.logPreAuth(AnalyticsEvents.onboardingV2LanguagesSelected, params: {
       AnalyticsEvents.paramLanguages: selectedLanguages.join(','),
       AnalyticsEvents.paramLanguageCount: selectedLanguages.length,
     });

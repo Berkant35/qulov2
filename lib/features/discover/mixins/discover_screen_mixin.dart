@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/services/coach_mark_service.dart';
+import 'package:qulo_v2/core/services/funnel_events.dart';
 import 'package:qulo_v2/features/discover/coach/discover_coach_marks.dart';
 import 'package:qulo_v2/features/discover/screens/discover_screen.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
@@ -18,6 +19,10 @@ mixin DiscoverScreenMixin on ConsumerState<DiscoverScreen> {
 
   void initMixin() {
     AnalyticsManager.instance.logEvent(AnalyticsEvents.discoverSessionStart);
+    FunnelEvents.logAuthedOnce(
+      AnalyticsEvents.flagFirstDiscoverView,
+      AnalyticsEvents.firstDiscoverView,
+    );
     Future.microtask(() => initLocationAndDiscover());
     listenLocationRecovery();
   }
