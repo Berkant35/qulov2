@@ -1157,4 +1157,5 @@ const plTranslations = <String, String>{
   'acq_other_hint': 'Powiedz nam coś więcej (opcjonalnie)',
   'acq_thanks': 'Dziękujemy!',
   'acq_error': 'Coś poszło nie tak.',
+  'chars_remaining': 'Pozostało {count} znaków',
 };

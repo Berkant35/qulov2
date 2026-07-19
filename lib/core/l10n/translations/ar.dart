@@ -1157,4 +1157,5 @@ const arTranslations = <String, String>{
   'acq_other_hint': 'أخبرنا المزيد (اختياري)',
   'acq_thanks': 'شكرًا!',
   'acq_error': 'حدث خطأ ما.',
+  'chars_remaining': 'بقي {count} حرف',
 };

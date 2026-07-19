@@ -71,6 +71,22 @@ Video üretim görevleri için: HTML→Puppeteer→ffmpeg pipeline'ını kullan.
 - Screen logic (lifecycle, callbacks, analytics) → `features/<feature>/mixins/<screen>_mixin.dart`
 - Mixin pattern: `mixin XScreenMixin on ConsumerState<XScreen>` → `initMixin()` + `disposeMixin()`
 
+## Widget Logic → Mixin Kuralı (Screen + Stateless Widget)
+- **KURAL:** Widget/page class'ları (screen VE stateless widget dahil) yalnızca UI
+  orchestration içerir (build + widget tree). Çalıştırılan fonksiyonlar (label/veri
+  eşleme, liste kurma, formatlama, hesaplama gibi sunum-dışı logic) widget içinde
+  DEĞİL, ilgili mixin'de toplanır.
+- **Stateful/screen:** `mixin XScreenMixin on ConsumerState<XScreen>` (lifecycle'lı).
+- **Stateless widget (`StatelessWidget`/`ConsumerWidget`):** State olmadığı için
+  `on` kısıtsız plain mixin kullan → `mixin XWidgetMixin { ... }` +
+  `class X extends ConsumerWidget with XWidgetMixin`. `context`/`ref` parametre olarak geçer.
+  Dosya: `features/<feature>/mixins/<widget>_mixin.dart`.
+- **Reactive wiring istisnası:** `ref.watch(...)` çağrıları rebuild için `build` içinde
+  kalır; sonucu mixin fonksiyonuna parametre olarak geçir (logic yine mixin'de).
+- Private sub-widget (`_XItem`) ve view-model/data class'ları ayrı dosyaya çıkar, public yap.
+- Örnek: `DetailChips` → `DetailChipsWidgetMixin` (frequencyLabel + buildChips),
+  `DetailChipItem` + `ChipData` ayrı dosyada; widget 52 satır saf orchestration (2026-07-19).
+
 ## App Resume Permission Re-check Pattern
 - Permission-dependent provider'lara `onAppResumed()` metodu ekle
 - `app.dart` → `didChangeAppLifecycleState(resumed)` içinden çağır
@@ -96,6 +112,15 @@ Video üretim görevleri için: HTML→Puppeteer→ffmpeg pipeline'ını kullan.
   - Admin routes: `/admin/campaigns` (liste, oluştur, detay, gönder, iptal)
   - Analitik: targeted/sent/delivered/opened/clicked + segment breakdown
 - **DB tabloları**: notifications, campaigns, campaign_stats, campaign_events (migration 009)
+
+## Scaffold Kuralı
+- **Screen/page'lerde raw `Scaffold` yerine `AppScaffold` kullan** (`lib/core/widgets/app_scaffold.dart`)
+- AppScaffold sağlar: app background, `title`'dan AppBar, `AppSpacing.pagePadding` padding,
+  tablet `maxWidth`, `isLoading` (Q logo), back button — tutarlılık tek yerden
+- **İstisna (raw Scaffold meşru):** full-bleed / özel chrome gerektiren ekranlar —
+  foto viewer, crop, harita onay, kutlama/animasyon ekranları; ve AppScaffold'un kendi iç Scaffold'u
+- Raw Scaffold kullanılıyorsa nedeni açık olmalı (full-bleed layout); aksi halde AppScaffold'a çevir
+- Kontrol: `grep -rn "return Scaffold(" lib/features --include="*.dart"`
 
 ## Loading Widget Kuralı
 - **ASLA** `CircularProgressIndicator` kullanma — her yerde `AppLoadingWidget` kullan

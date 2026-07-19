@@ -1157,4 +1157,5 @@ const koTranslations = <String, String>{
   'acq_other_hint': '조금 더 알려주세요 (선택)',
   'acq_thanks': '감사합니다!',
   'acq_error': '문제가 발생했습니다.',
+  'chars_remaining': '{count}자 남음',
 };

@@ -1162,4 +1162,5 @@ const enTranslations = <String, String>{
   'acq_other_hint': 'Tell us a bit more (optional)',
   'acq_thanks': 'Thanks!',
   'acq_error': 'Something went wrong.',
+  'chars_remaining': '{count} characters left',
 };

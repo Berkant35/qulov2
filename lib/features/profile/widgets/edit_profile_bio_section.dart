@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/constants/profile_field_limits.dart';
 import 'package:qulo_v2/core/widgets/app_text_field.dart';
 import 'package:qulo_v2/core/widgets/profile_section_card.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
@@ -27,7 +28,7 @@ class EditProfileBioSection extends StatelessWidget {
             label: context.tr('bio'),
             hint: context.tr('bio_hint'),
             maxLines: 4,
-            maxLength: 300,
+            maxLength: ProfileFieldLimits.bio,
             textCapitalization: TextCapitalization.sentences,
           ),
         ],

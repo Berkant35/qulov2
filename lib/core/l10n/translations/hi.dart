@@ -1159,4 +1159,5 @@ const hiTranslations = <String, String>{
   'acq_other_hint': 'थोड़ा और बताएं (वैकल्पिक)',
   'acq_thanks': 'धन्यवाद!',
   'acq_error': 'कुछ गलत हो गया।',
+  'chars_remaining': '{count} अक्षर शेष',
 };

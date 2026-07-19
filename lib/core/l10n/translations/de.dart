@@ -1159,4 +1159,5 @@ const deTranslations = <String, String>{
   'acq_other_hint': 'Erzähl uns etwas mehr (optional)',
   'acq_thanks': 'Danke!',
   'acq_error': 'Etwas ist schiefgelaufen.',
+  'chars_remaining': 'Noch {count} Zeichen übrig',
 };

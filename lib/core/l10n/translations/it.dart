@@ -1159,4 +1159,5 @@ const itTranslations = <String, String>{
   'acq_other_hint': 'Raccontaci qualcosa in più (facoltativo)',
   'acq_thanks': 'Grazie!',
   'acq_error': 'Qualcosa è andato storto.',
+  'chars_remaining': '{count} caratteri rimanenti',
 };

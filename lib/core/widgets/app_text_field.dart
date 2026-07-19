@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:qulo_v2/core/constants/profile_field_limits.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
+
 class AppTextField extends StatelessWidget {
   final TextEditingController? controller;
   final String? label;
@@ -52,9 +55,6 @@ class AppTextField extends StatelessWidget {
         errorText: errorText,
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
-        // Sayac sadece cok satirli (uzun metin) alanlarda anlamli;
-        // tek satirlik inputlarda gizle (maxLength limiti yine uygulanir)
-        counterText: maxLines > 1 ? null : '',
       ),
       keyboardType: keyboardType,
       textInputAction: textInputAction,
@@ -65,7 +65,48 @@ class AppTextField extends StatelessWidget {
       enabled: enabled,
       maxLines: maxLines,
       maxLength: maxLength,
+      // Toplam sayac (12/300) hicbir yerde gosterilmez; sadece limite yaklasinca
+      // (kalan <= esik) "Son X karakter kaldi" uyarisi cikar.
+      buildCounter: (context,
+              {required currentLength, required maxLength, required isFocused}) =>
+          _RemainingCharsCounter(
+        currentLength: currentLength,
+        maxLength: maxLength,
+      ),
       textCapitalization: textCapitalization,
+    );
+  }
+}
+
+/// Input altinda toplam sayac yerine yalnizca "Son X karakter kaldi" uyarisini
+/// gosterir; kalan karakter [ProfileFieldLimits.remainingWarningThreshold]
+/// esiginin uzerindeyse hicbir sey gostermez.
+class _RemainingCharsCounter extends StatelessWidget {
+  final int currentLength;
+  final int? maxLength;
+
+  const _RemainingCharsCounter({
+    required this.currentLength,
+    required this.maxLength,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final max = maxLength;
+    if (max == null) return const SizedBox.shrink();
+
+    final remaining = max - currentLength;
+    if (remaining < 0 ||
+        remaining > ProfileFieldLimits.remainingWarningThreshold) {
+      return const SizedBox.shrink();
+    }
+
+    final theme = Theme.of(context);
+    return Text(
+      context.tr('chars_remaining').replaceAll('{count}', '$remaining'),
+      style: theme.textTheme.bodySmall?.copyWith(
+        color: theme.colorScheme.onSurfaceVariant,
+      ),
     );
   }
 }

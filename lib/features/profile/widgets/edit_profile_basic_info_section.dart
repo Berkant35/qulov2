@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/constants/profile_field_limits.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
@@ -54,7 +55,7 @@ class EditProfileBasicInfoSection extends ConsumerWidget {
                   controller: cityController,
                   label: context.tr('city'),
                   hint: context.tr('city_hint'),
-                  maxLength: 100,
+                  maxLength: ProfileFieldLimits.city,
                   textCapitalization: TextCapitalization.words,
                 ),
               ),
@@ -73,7 +74,7 @@ class EditProfileBasicInfoSection extends ConsumerWidget {
                   controller: heightController,
                   label: context.tr('height'),
                   hint: 'cm',
-                  maxLength: 3,
+                  maxLength: ProfileFieldLimits.height,
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 ),
@@ -84,7 +85,7 @@ class EditProfileBasicInfoSection extends ConsumerWidget {
                   controller: weightController,
                   label: context.tr('weight'),
                   hint: 'kg',
-                  maxLength: 3,
+                  maxLength: ProfileFieldLimits.weight,
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 ),

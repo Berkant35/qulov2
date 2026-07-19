@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/constants/profile_field_limits.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_text_field.dart';
 import 'package:qulo_v2/core/widgets/profile_section_card.dart';
@@ -59,7 +60,7 @@ class EditProfileDetailsSection extends ConsumerWidget {
             controller: jobController,
             label: context.tr('job'),
             hint: context.tr('job_hint'),
-            maxLength: 100,
+            maxLength: ProfileFieldLimits.job,
             textCapitalization: TextCapitalization.words,
           ),
           const SizedBox(height: AppSpacing.itemGap),
@@ -67,7 +68,7 @@ class EditProfileDetailsSection extends ConsumerWidget {
             controller: schoolController,
             label: context.tr('school'),
             hint: context.tr('school_hint'),
-            maxLength: 100,
+            maxLength: ProfileFieldLimits.school,
             textCapitalization: TextCapitalization.words,
           ),
           const SizedBox(height: AppSpacing.itemGap),
@@ -93,7 +94,7 @@ class EditProfileDetailsSection extends ConsumerWidget {
             controller: petsController,
             label: context.tr('pets'),
             hint: context.tr('pets_hint'),
-            maxLength: 100,
+            maxLength: ProfileFieldLimits.pets,
             textCapitalization: TextCapitalization.sentences,
           ),
           const SizedBox(height: AppSpacing.itemGap),
@@ -101,7 +102,7 @@ class EditProfileDetailsSection extends ConsumerWidget {
             controller: musicController,
             label: context.tr('music'),
             hint: context.tr('music_hint'),
-            maxLength: 100,
+            maxLength: ProfileFieldLimits.music,
             textCapitalization: TextCapitalization.words,
           ),
           const SizedBox(height: AppSpacing.itemGap),
@@ -109,7 +110,7 @@ class EditProfileDetailsSection extends ConsumerWidget {
             controller: personalityController,
             label: context.tr('personality'),
             hint: context.tr('personality_hint'),
-            maxLength: 200,
+            maxLength: ProfileFieldLimits.personality,
             textCapitalization: TextCapitalization.sentences,
           ),
         ],
