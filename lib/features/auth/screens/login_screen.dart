@@ -10,6 +10,7 @@ import 'package:qulo_v2/core/widgets/app_button.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/core/widgets/app_text_field.dart';
 import 'package:qulo_v2/features/auth/mixins/login_screen_mixin.dart';
+import 'package:qulo_v2/features/auth/mixins/social_auth_mixin.dart';
 import 'package:qulo_v2/features/auth/widgets/background_video.dart';
 import 'package:qulo_v2/features/auth/widgets/login_header.dart';
 import 'package:qulo_v2/features/auth/widgets/login_register_prompt.dart';
@@ -32,7 +33,7 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen>
-    with FormMixin, LoadingMixin, LoginScreenMixin {
+    with FormMixin, LoadingMixin, SocialAuthMixin, LoginScreenMixin {
   static final _gradientPainter = AppBackgroundPainter();
 
   @override
