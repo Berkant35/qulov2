@@ -106,6 +106,8 @@ class PageMessageBanner extends ConsumerWidget {
   void _onTap(WidgetRef ref) {
     ref.read(pageMessagesProvider.notifier).trackEvent(message.id, 'clicked');
     final url = message.actionUrl;
+    // Navigasyondan önce banner'ı kaldır — sheet ile simetrik (bkz. page_message_content).
+    onDismiss();
     if (url != null) {
       final fullUrl = url.startsWith('/') ? 'https://quloapp.com$url' : url;
       final result = DeepLinkParser.parse(Uri.parse(fullUrl));
@@ -113,6 +115,5 @@ class PageMessageBanner extends ConsumerWidget {
         ref.read(navigationServiceProvider).navigateDeepLink(result);
       }
     }
-    onDismiss();
   }
 }

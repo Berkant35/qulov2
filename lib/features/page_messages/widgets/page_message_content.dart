@@ -56,6 +56,10 @@ class PageMessageContent extends ConsumerWidget {
   void _onCta(WidgetRef ref) {
     ref.read(pageMessagesProvider.notifier).trackEvent(message.id, 'clicked');
     final url = message.actionUrl;
+    // Sheet'i önce kapat: navigasyonun implicit side-effect'ine (go_router'ın
+    // route değişiminde modal temizlemesi) bağlı kalma. Aynı route'a go() no-op
+    // olduğunda sheet aksi halde açık kalır; push'ta ise yanlış route pop edilir.
+    onClose();
     if (url != null) {
       // GÜVENLİK (spec §11 T1): yalnızca parse → navigateDeepLink.
       // handleDeepLink(rawString) KULLANILMAZ — parser'ı atlar, open redirect açığı verir.
@@ -68,6 +72,5 @@ class PageMessageContent extends ConsumerWidget {
       }
       // result == null → parse başarısız / bilinmeyen host → hiçbir şey yapma
     }
-    onClose();
   }
 }
