@@ -19,6 +19,7 @@ import 'package:qulo_v2/providers/auth_provider.dart';
 import 'package:qulo_v2/providers/page_messages_provider.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/services/pending_languages_store.dart';
 import 'package:qulo_v2/core/network/network_manager.dart';
 import 'package:qulo_v2/core/network/interceptors/session_interceptor.dart';
 import 'package:qulo_v2/core/services/analytics_forwarder.dart';
@@ -54,6 +55,8 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
         unawaited(ref.read(userRepositoryProvider).updateProfile({'locale': code}));
         // İlk authenticated anında sayfa mesajlarını çek
         ref.read(pageMessagesProvider.notifier).fetch();
+        // Faz 1: onboarding'de (pre-auth) seçilen dilleri flush et.
+        unawaited(_flushPendingLanguages(ref));
       }
     });
 
@@ -339,4 +342,17 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
       routerConfig: router,
     );
   }
+}
+
+/// Onboarding carousel'de (auth öncesi) seçilen dilleri backend'e flush eder.
+/// Başarısız olursa [PendingLanguagesStore] key'i silinmez; bir sonraki
+/// unauth→auth geçişinde tekrar denenir.
+Future<void> _flushPendingLanguages(WidgetRef ref) async {
+  final pending = await PendingLanguagesStore.read();
+  if (pending.isEmpty) return;
+  final result = await ref.read(userRepositoryProvider).setUserLanguages(pending);
+  result.when(
+    success: (_) => PendingLanguagesStore.clear(),
+    failure: (_) {}, // başarısızsa key kalır, sonraki auth'ta tekrar denenir
+  );
 }

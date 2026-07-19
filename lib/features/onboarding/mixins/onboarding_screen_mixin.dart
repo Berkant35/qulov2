@@ -5,9 +5,9 @@ import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/services/pending_languages_store.dart';
 import 'package:qulo_v2/features/onboarding/screens/onboarding_screen.dart';
 import 'package:qulo_v2/features/onboarding/widgets/premium_suggestion_sheet.dart';
-import 'package:qulo_v2/providers/user_languages_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 
 mixin OnboardingScreenMixin on ConsumerState<OnboardingScreen>,
@@ -111,7 +111,8 @@ mixin OnboardingScreenMixin on ConsumerState<OnboardingScreen>,
     });
     await _markSeen();
     if (!mounted) return;
-    ref.read(userLanguagesProvider.notifier).save(selectedLanguages);
+    // Auth oncesi: secimi local sakla, auth sonrasi app.dart flush eder.
+    PendingLanguagesStore.write(selectedLanguages);
     _showPremiumSuggestion();
   }
 
