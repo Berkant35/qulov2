@@ -203,9 +203,9 @@ const nlTranslations = <String, String>{
 
   // Powers
   'my_powers': 'Mijn krachten',
-  'power_copy': 'Kopi\u00ebren',
+  'power_copy': 'Orakel',
   'power_half': '50/50',
-  'power_skip': 'Overslaan',
+  'power_skip': 'Goed rekenen',
   'power_hint': 'Hint',
   'power_time': '+15s',
   'power_skip_all': 'Alles overslaan',
@@ -585,7 +585,7 @@ const nlTranslations = <String, String>{
   'chat_question_send_failed': 'Vraag kon niet worden verzonden',
   'chat_open_question': 'Open vraag',
   'chat_waiting_answer': 'Wachten op antwoord...',
-  'chat_unmatch_occurred': 'Unmatch opgetreden',
+  'chat_unmatch_occurred': 'Match beëindigd',
   'chat_draft_saved': 'Concept opgeslagen',
   'chat_draft_save_failed': 'Concept kon niet worden opgeslagen',
   'chat_draft_delete_failed': 'Concept kon niet worden verwijderd',
@@ -859,7 +859,7 @@ const nlTranslations = <String, String>{
   // Profiel Instelpoort
   'setup_title': 'Nog een paar stappen',
   'setup_subtitle': 'Maak je profiel af om te matchen',
-  'setup_hint': 'Haast? Tik op Snel Toewijzen',
+  'setup_hint': 'Haast? Tik op "Kies voor mij"',
   'setup_photo_title': 'Voeg je foto toe',
   'setup_photo_subtitle': 'Zonder foto kan niemand je zien',
   'setup_photo_cta': 'Foto toevoegen',
@@ -870,11 +870,11 @@ const nlTranslations = <String, String>{
   'setup_photo_upload_error': 'Uploaden mislukt, probeer opnieuw',
   'setup_question_title': 'Bereid je vragen voor',
   'setup_question_subtitle': '2 vragen nodig om te beginnen met matchen',
-  'setup_question_magic_cta': 'Magisch invullen',
-  'setup_question_quick_cta': 'Snel toewijzen',
-  'setup_question_manual_cta': 'Zelf maken',
+  'setup_question_magic_cta': 'Laat AI het doen',
+  'setup_question_quick_cta': 'Kies voor mij',
+  'setup_question_manual_cta': 'Zelf schrijven',
   'setup_question_done': '2 vragen klaar',
-  'setup_quick_assign_error': 'Kon vragen niet toewijzen',
+  'setup_quick_assign_error': 'Kon vragen niet toevoegen, probeer opnieuw',
   'setup_exit_confirm_title': 'Instelling verlaten?',
   'setup_exit_confirm_body': 'Je wordt uitgelogd. Toegevoegde foto\'s en vragen blijven opgeslagen.',
   'setup_exit_confirm_stay': 'Blijven',
@@ -912,7 +912,7 @@ const nlTranslations = <String, String>{
   'interest_fitness': 'Fitness',
   'interest_personality': 'Persoonlijkheid',
   'preview_sheet_title': 'Hier zijn je 2 vragen',
-  'preview_sheet_assign_cta': 'Mijn vragen toewijzen',
+  'preview_sheet_assign_cta': 'Deze toevoegen',
   'preview_sheet_regen_cta': 'Opnieuw genereren',
   'preview_sheet_skip_link': 'Kies jij maar, ik bemoei me er niet mee',
   'preview_sheet_error': 'Genereren mislukt, probeer opnieuw',
@@ -926,7 +926,7 @@ const nlTranslations = <String, String>{
   'abandon_title': 'You\'re Fleeing!',
   'abandon_question_lock': 'Question Lock',
   'abandon_power_block': 'Power Block',
-  'abandon_unmatch_risk': 'Unmatch Risk',
+  'abandon_unmatch_risk': 'Risico op match verbreken',
   'abandon_features_added': 'The other person added these features to the question:',
   'abandon_flee_warning': 'If you leave without answering, you\'ll be marked as fled.',
   'abandon_unmatch_warning': 'Your match will end!',
@@ -969,7 +969,7 @@ const nlTranslations = <String, String>{
   'media_accept': 'Accept',
 
   // Chat — App Bar
-  'unmatch': 'Unmatch',
+  'unmatch': 'Match verbreken',
 
   // Chat — Create Question
   'create_question': 'Create Question',
@@ -1108,8 +1108,10 @@ const nlTranslations = <String, String>{
   'chat_unmatch_confirm': 'Are you sure you want to unmatch? This action cannot be undone.',
 
   // Power bar labels (short display names)
+  'power_bar_oracle': 'Orakel',
+  'power_bar_time': '+15s',
   'power_bar_half': 'Half',
-  'power_bar_skip': 'Skip',
+  'power_bar_skip': 'Goed rekenen',
   'power_bar_hint': 'Hint',
   'power_bar_skip_all': 'Skip All',
   'power_bar_block': 'Block',
@@ -1142,7 +1144,7 @@ const nlTranslations = <String, String>{
   'coach_quiz_powers_body': 'Vastgelopen bij een vraag? Gebruik krachten voor een voordeel.',
   'coach_quiz_power_oracle': 'Orakel: onthult een sterke hint',
   'coach_quiz_power_half': 'Helft: verwijdert de helft van de foute opties',
-  'coach_quiz_power_skip': 'Overslaan: sla deze vraag over',
+  'coach_quiz_power_skip': 'Goed rekenen: telt deze vraag als goed',
   'coach_quiz_power_hint': 'Hint: toont de vraaghint',
   'coach_quiz_power_time_extend': 'Tijd: voegt extra seconden toe',
   'coach_quiz_power_skip_all': 'Alles overslaan: sla alle resterende vragen over',

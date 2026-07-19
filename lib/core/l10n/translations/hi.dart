@@ -203,9 +203,9 @@ const hiTranslations = <String, String>{
 
   // Powers
   'my_powers': 'मेरी पावर्स',
-  'power_copy': 'कॉपी',
+  'power_copy': 'ओरेकल',
   'power_half': '50/50',
-  'power_skip': 'स्किप',
+  'power_skip': 'सही मानें',
   'power_hint': 'हिंट',
   'power_time': '+15s',
   'power_skip_all': 'सब स्किप',
@@ -861,7 +861,7 @@ const hiTranslations = <String, String>{
   // प्रोफ़ाइल सेटअप गेट
   'setup_title': 'कुछ ही कदम बाकी',
   'setup_subtitle': 'मैचिंग शुरू करने के लिए प्रोफ़ाइल पूरी करें',
-  'setup_hint': 'जल्दी में हैं? क्विक असाइन दबाएँ',
+  'setup_hint': 'जल्दी में हैं? "मेरे लिए चुनें" दबाएँ',
   'setup_photo_title': 'अपनी फ़ोटो जोड़ें',
   'setup_photo_subtitle': 'बिना फ़ोटो कोई आपको नहीं देख सकता',
   'setup_photo_cta': 'फ़ोटो जोड़ें',
@@ -872,11 +872,11 @@ const hiTranslations = <String, String>{
   'setup_photo_upload_error': 'अपलोड नहीं हो सका, फिर कोशिश करें',
   'setup_question_title': 'अपने सवाल तैयार करें',
   'setup_question_subtitle': 'मैचिंग के लिए 2 सवाल ज़रूरी',
-  'setup_question_magic_cta': 'जादुई भरें',
-  'setup_question_quick_cta': 'क्विक असाइन',
-  'setup_question_manual_cta': 'खुद बनाएँ',
+  'setup_question_magic_cta': 'AI से बनवाएँ',
+  'setup_question_quick_cta': 'मेरे लिए चुनें',
+  'setup_question_manual_cta': 'खुद लिखें',
   'setup_question_done': '2 सवाल तैयार',
-  'setup_quick_assign_error': 'सवाल असाइन नहीं हो सके',
+  'setup_quick_assign_error': 'सवाल नहीं जोड़ पाए, फिर कोशिश करें',
   'setup_exit_confirm_title': 'सेटअप छोड़ें?',
   'setup_exit_confirm_body': 'आप लॉग आउट हो जाएँगे। आपके जोड़े फ़ोटो और सवाल सहेजे रहेंगे।',
   'setup_exit_confirm_stay': 'रुकें',
@@ -914,7 +914,7 @@ const hiTranslations = <String, String>{
   'interest_fitness': 'फ़िटनेस',
   'interest_personality': 'व्यक्तित्व',
   'preview_sheet_title': 'यहाँ हैं आपके 2 सवाल',
-  'preview_sheet_assign_cta': 'मेरे सवाल असाइन करें',
+  'preview_sheet_assign_cta': 'ये जोड़ें',
   'preview_sheet_regen_cta': 'फिर बनाएँ',
   'preview_sheet_skip_link': 'आप चुनें, मैं नहीं उलझूँगा',
   'preview_sheet_error': 'बना नहीं सके, फिर कोशिश करें',
@@ -928,7 +928,7 @@ const hiTranslations = <String, String>{
   'abandon_title': 'You\'re Fleeing!',
   'abandon_question_lock': 'Question Lock',
   'abandon_power_block': 'Power Block',
-  'abandon_unmatch_risk': 'Unmatch Risk',
+  'abandon_unmatch_risk': 'मैच खोने का जोखिम',
   'abandon_features_added': 'The other person added these features to the question:',
   'abandon_flee_warning': 'If you leave without answering, you\'ll be marked as fled.',
   'abandon_unmatch_warning': 'Your match will end!',
@@ -971,7 +971,7 @@ const hiTranslations = <String, String>{
   'media_accept': 'Accept',
 
   // Chat — App Bar
-  'unmatch': 'Unmatch',
+  'unmatch': 'अनमैच करें',
 
   // Chat — Create Question
   'create_question': 'Create Question',
@@ -1110,8 +1110,10 @@ const hiTranslations = <String, String>{
   'chat_unmatch_confirm': 'Are you sure you want to unmatch? This action cannot be undone.',
 
   // Power bar labels (short display names)
+  'power_bar_oracle': 'ओरेकल',
+  'power_bar_time': '+15s',
   'power_bar_half': 'Half',
-  'power_bar_skip': 'Skip',
+  'power_bar_skip': 'सही मानें',
   'power_bar_hint': 'Hint',
   'power_bar_skip_all': 'Skip All',
   'power_bar_block': 'Block',
@@ -1144,7 +1146,7 @@ const hiTranslations = <String, String>{
   'coach_quiz_powers_body': 'सवाल में फंसे हो? फायदे के लिए शक्ति खर्च करो।',
   'coach_quiz_power_oracle': 'ओरेकल: एक मज़बूत संकेत देता है',
   'coach_quiz_power_half': 'आधा: गलत विकल्पों का आधा हटा देता है',
-  'coach_quiz_power_skip': 'छोड़ो: इस सवाल को छोड़ देता है',
+  'coach_quiz_power_skip': 'सही मानें: इस सवाल को सही गिनता है',
   'coach_quiz_power_hint': 'संकेत: सवाल का संकेत दिखाता है',
   'coach_quiz_power_time_extend': 'समय: अतिरिक्त सेकंड जोड़ता है',
   'coach_quiz_power_skip_all': 'सब छोड़ो: बाकी सभी सवाल छोड़ देता है',

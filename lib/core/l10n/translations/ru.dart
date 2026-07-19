@@ -203,9 +203,9 @@ const ruTranslations = <String, String>{
 
   // Powers
   'my_powers': 'Мои силы',
-  'power_copy': 'Копия',
+  'power_copy': 'Оракул',
   'power_half': '50/50',
-  'power_skip': 'Пропуск',
+  'power_skip': 'Засчитать верным',
   'power_hint': 'Подсказка',
   'power_time': '+15с',
   'power_skip_all': 'Пропустить все',
@@ -859,7 +859,7 @@ const ruTranslations = <String, String>{
   // Шлюз настройки профиля
   'setup_title': 'Осталось пару шагов',
   'setup_subtitle': 'Заполни профиль, чтобы начать матчиться',
-  'setup_hint': 'Спешишь? Нажми Быстрое назначение',
+  'setup_hint': 'Спешишь? Нажми «Выбрать за меня»',
   'setup_photo_title': 'Добавь фото',
   'setup_photo_subtitle': 'Без фото тебя никто не увидит',
   'setup_photo_cta': 'Добавить фото',
@@ -870,11 +870,11 @@ const ruTranslations = <String, String>{
   'setup_photo_upload_error': 'Не удалось загрузить, попробуй ещё раз',
   'setup_question_title': 'Подготовь свои вопросы',
   'setup_question_subtitle': 'Для матчей нужно 2 вопроса',
-  'setup_question_magic_cta': 'Магическое заполнение',
-  'setup_question_quick_cta': 'Быстрое назначение',
-  'setup_question_manual_cta': 'Создам сам',
+  'setup_question_magic_cta': 'Доверить ИИ',
+  'setup_question_quick_cta': 'Выбрать за меня',
+  'setup_question_manual_cta': 'Напишу сам',
   'setup_question_done': '2 вопроса готовы',
-  'setup_quick_assign_error': 'Не удалось назначить вопросы',
+  'setup_quick_assign_error': 'Не удалось добавить вопросы, попробуй ещё раз',
   'setup_exit_confirm_title': 'Выйти из настройки?',
   'setup_exit_confirm_body': 'Ты выйдешь из аккаунта. Добавленные фото и вопросы сохранятся.',
   'setup_exit_confirm_stay': 'Остаться',
@@ -912,7 +912,7 @@ const ruTranslations = <String, String>{
   'interest_fitness': 'Фитнес',
   'interest_personality': 'Характер',
   'preview_sheet_title': 'Вот твои 2 вопроса',
-  'preview_sheet_assign_cta': 'Назначить вопросы',
+  'preview_sheet_assign_cta': 'Добавить эти',
   'preview_sheet_regen_cta': 'Сгенерировать заново',
   'preview_sheet_skip_link': 'Выбери сам, я не буду лезть',
   'preview_sheet_error': 'Не удалось сгенерировать, попробуй ещё раз',
@@ -926,7 +926,7 @@ const ruTranslations = <String, String>{
   'abandon_title': 'You\'re Fleeing!',
   'abandon_question_lock': 'Question Lock',
   'abandon_power_block': 'Power Block',
-  'abandon_unmatch_risk': 'Unmatch Risk',
+  'abandon_unmatch_risk': 'Риск потерять совпадение',
   'abandon_features_added': 'The other person added these features to the question:',
   'abandon_flee_warning': 'If you leave without answering, you\'ll be marked as fled.',
   'abandon_unmatch_warning': 'Your match will end!',
@@ -969,7 +969,7 @@ const ruTranslations = <String, String>{
   'media_accept': 'Accept',
 
   // Chat — App Bar
-  'unmatch': 'Unmatch',
+  'unmatch': 'Отменить совпадение',
 
   // Chat — Create Question
   'create_question': 'Create Question',
@@ -1108,8 +1108,10 @@ const ruTranslations = <String, String>{
   'chat_unmatch_confirm': 'Are you sure you want to unmatch? This action cannot be undone.',
 
   // Power bar labels (short display names)
+  'power_bar_oracle': 'Оракул',
+  'power_bar_time': '+15с',
   'power_bar_half': 'Half',
-  'power_bar_skip': 'Skip',
+  'power_bar_skip': 'Засчитать верным',
   'power_bar_hint': 'Hint',
   'power_bar_skip_all': 'Skip All',
   'power_bar_block': 'Block',
@@ -1142,7 +1144,7 @@ const ruTranslations = <String, String>{
   'coach_quiz_powers_body': 'Застрял на вопросе? Потрать силы, чтобы получить преимущество.',
   'coach_quiz_power_oracle': 'Оракул: открывает сильную подсказку',
   'coach_quiz_power_half': 'Половина: убирает половину неверных вариантов',
-  'coach_quiz_power_skip': 'Пропустить: пропускает этот вопрос',
+  'coach_quiz_power_skip': 'Засчитать верным: засчитывает вопрос как верный',
   'coach_quiz_power_hint': 'Подсказка: показывает подсказку к вопросу',
   'coach_quiz_power_time_extend': 'Время: добавляет дополнительные секунды',
   'coach_quiz_power_skip_all': 'Пропустить всё: пропускает все оставшиеся вопросы',

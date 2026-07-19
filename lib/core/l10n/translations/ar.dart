@@ -203,9 +203,9 @@ const arTranslations = <String, String>{
 
   // Powers
   'my_powers': 'قواي',
-  'power_copy': 'نسخ',
+  'power_copy': 'العرّاف',
   'power_half': '50/50',
-  'power_skip': 'تخطي',
+  'power_skip': 'اعتبرها صحيحة',
   'power_hint': 'تلميح',
   'power_time': '+15ث',
   'power_skip_all': 'تخطي الكل',
@@ -859,7 +859,7 @@ const arTranslations = <String, String>{
   // بوابة إعداد الملف الشخصي
   'setup_title': 'بقيت خطوات قليلة',
   'setup_subtitle': 'أكمل ملفك الشخصي لبدء المطابقة',
-  'setup_hint': 'في عجلة؟ اضغط على التعيين السريع',
+  'setup_hint': 'في عجلة؟ اضغط على "اختر لي"',
   'setup_photo_title': 'أضف صورتك',
   'setup_photo_subtitle': 'لن يراك أحد بدون صورة',
   'setup_photo_cta': 'إضافة صورة',
@@ -870,11 +870,11 @@ const arTranslations = <String, String>{
   'setup_photo_upload_error': 'تعذّر الرفع، حاول مرة أخرى',
   'setup_question_title': 'حضّر أسئلتك',
   'setup_question_subtitle': 'سؤالان مطلوبان لبدء المطابقة',
-  'setup_question_magic_cta': 'تعبئة سحرية',
-  'setup_question_quick_cta': 'تعيين سريع',
-  'setup_question_manual_cta': 'أنشئ بنفسي',
+  'setup_question_magic_cta': 'دع الذكاء يجهّز',
+  'setup_question_quick_cta': 'اختر لي',
+  'setup_question_manual_cta': 'أكتب بنفسي',
   'setup_question_done': 'سؤالان جاهزان',
-  'setup_quick_assign_error': 'تعذّر تعيين الأسئلة',
+  'setup_quick_assign_error': 'تعذّر إضافة الأسئلة، حاول مرة أخرى',
   'setup_exit_confirm_title': 'الخروج من الإعداد؟',
   'setup_exit_confirm_body': 'سيتم تسجيل خروجك. الصور والأسئلة التي أضفتها ستبقى محفوظة.',
   'setup_exit_confirm_stay': 'البقاء',
@@ -912,7 +912,7 @@ const arTranslations = <String, String>{
   'interest_fitness': 'لياقة',
   'interest_personality': 'شخصية',
   'preview_sheet_title': 'إليك سؤاليك',
-  'preview_sheet_assign_cta': 'عيّن أسئلتي',
+  'preview_sheet_assign_cta': 'أضف هذه',
   'preview_sheet_regen_cta': 'إعادة التوليد',
   'preview_sheet_skip_link': 'اختر أنت، لن أتدخل',
   'preview_sheet_error': 'تعذّر التوليد، حاول مرة أخرى',
@@ -926,7 +926,7 @@ const arTranslations = <String, String>{
   'abandon_title': 'You\'re Fleeing!',
   'abandon_question_lock': 'Question Lock',
   'abandon_power_block': 'Power Block',
-  'abandon_unmatch_risk': 'Unmatch Risk',
+  'abandon_unmatch_risk': 'خطر إلغاء التوافق',
   'abandon_features_added': 'The other person added these features to the question:',
   'abandon_flee_warning': 'If you leave without answering, you\'ll be marked as fled.',
   'abandon_unmatch_warning': 'Your match will end!',
@@ -969,7 +969,7 @@ const arTranslations = <String, String>{
   'media_accept': 'Accept',
 
   // Chat — App Bar
-  'unmatch': 'Unmatch',
+  'unmatch': 'إلغاء التوافق',
 
   // Chat — Create Question
   'create_question': 'Create Question',
@@ -1108,8 +1108,10 @@ const arTranslations = <String, String>{
   'chat_unmatch_confirm': 'Are you sure you want to unmatch? This action cannot be undone.',
 
   // Power bar labels (short display names)
+  'power_bar_oracle': 'العرّاف',
+  'power_bar_time': '+15ث',
   'power_bar_half': 'Half',
-  'power_bar_skip': 'Skip',
+  'power_bar_skip': 'اعتبرها صحيحة',
   'power_bar_hint': 'Hint',
   'power_bar_skip_all': 'Skip All',
   'power_bar_block': 'Block',
@@ -1142,7 +1144,7 @@ const arTranslations = <String, String>{
   'coach_quiz_powers_body': 'عالق في سؤال؟ استخدم القوى للحصول على ميزة.',
   'coach_quiz_power_oracle': 'الأوراكل: يكشف تلميحًا قويًا',
   'coach_quiz_power_half': 'النصف: يزيل نصف الخيارات الخاطئة',
-  'coach_quiz_power_skip': 'تخطي: يتخطى هذا السؤال',
+  'coach_quiz_power_skip': 'اعتبرها صحيحة: يحتسب هذا السؤال صحيحًا',
   'coach_quiz_power_hint': 'تلميح: يعرض تلميح السؤال',
   'coach_quiz_power_time_extend': 'الوقت: يضيف ثوانٍ إضافية',
   'coach_quiz_power_skip_all': 'تخطي الكل: يتخطى جميع الأسئلة المتبقية',

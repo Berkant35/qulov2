@@ -203,9 +203,9 @@ const deTranslations = <String, String>{
 
   // Powers
   'my_powers': 'Meine Kräfte',
-  'power_copy': 'Kopieren',
+  'power_copy': 'Orakel',
   'power_half': '50/50',
-  'power_skip': 'Überspringen',
+  'power_skip': 'Als richtig werten',
   'power_hint': 'Hinweis',
   'power_time': '+15s',
   'power_skip_all': 'Alle überspringen',
@@ -587,7 +587,7 @@ const deTranslations = <String, String>{
   'chat_question_send_failed': 'Frage konnte nicht gesendet werden',
   'chat_open_question': 'Frage öffnen',
   'chat_waiting_answer': 'Warte auf Antwort...',
-  'chat_unmatch_occurred': 'Unmatch aufgetreten',
+  'chat_unmatch_occurred': 'Match beendet',
   'chat_draft_saved': 'Entwurf gespeichert',
   'chat_draft_save_failed': 'Entwurf konnte nicht gespeichert werden',
   'chat_draft_delete_failed': 'Entwurf konnte nicht gelöscht werden',
@@ -861,7 +861,7 @@ const deTranslations = <String, String>{
   // Profileinrichtungstor
   'setup_title': 'Nur noch ein paar Schritte',
   'setup_subtitle': 'Vervollständige dein Profil, um Matches zu starten',
-  'setup_hint': 'In Eile? Tippe auf Schnellzuweisung',
+  'setup_hint': 'In Eile? Tippe auf „Für mich auswählen“',
   'setup_photo_title': 'Foto hinzufügen',
   'setup_photo_subtitle': 'Ohne Foto kann dich niemand sehen',
   'setup_photo_cta': 'Foto hinzufügen',
@@ -872,11 +872,11 @@ const deTranslations = <String, String>{
   'setup_photo_upload_error': 'Upload fehlgeschlagen, versuche es erneut',
   'setup_question_title': 'Bereite deine Fragen vor',
   'setup_question_subtitle': '2 Fragen zum Start der Matches nötig',
-  'setup_question_magic_cta': 'Magisches Ausfüllen',
-  'setup_question_quick_cta': 'Schnellzuweisung',
-  'setup_question_manual_cta': 'Selbst erstellen',
+  'setup_question_magic_cta': 'Von KI erstellen',
+  'setup_question_quick_cta': 'Für mich auswählen',
+  'setup_question_manual_cta': 'Selbst schreiben',
   'setup_question_done': '2 Fragen bereit',
-  'setup_quick_assign_error': 'Fragen konnten nicht zugewiesen werden',
+  'setup_quick_assign_error': 'Fragen konnten nicht hinzugefügt werden, versuch es nochmal',
   'setup_exit_confirm_title': 'Einrichtung verlassen?',
   'setup_exit_confirm_body': 'Du wirst abgemeldet. Hinzugefügte Fotos und Fragen bleiben gespeichert.',
   'setup_exit_confirm_stay': 'Bleiben',
@@ -914,7 +914,7 @@ const deTranslations = <String, String>{
   'interest_fitness': 'Fitness',
   'interest_personality': 'Persönlichkeit',
   'preview_sheet_title': 'Hier sind deine 2 Fragen',
-  'preview_sheet_assign_cta': 'Meine Fragen zuweisen',
+  'preview_sheet_assign_cta': 'Diese hinzufügen',
   'preview_sheet_regen_cta': 'Neu generieren',
   'preview_sheet_skip_link': 'Wähl du, ich misch mich nicht ein',
   'preview_sheet_error': 'Generierung fehlgeschlagen, versuche es erneut',
@@ -928,7 +928,7 @@ const deTranslations = <String, String>{
   'abandon_title': 'You\'re Fleeing!',
   'abandon_question_lock': 'Question Lock',
   'abandon_power_block': 'Power Block',
-  'abandon_unmatch_risk': 'Unmatch Risk',
+  'abandon_unmatch_risk': 'Match-Verlust-Risiko',
   'abandon_features_added': 'The other person added these features to the question:',
   'abandon_flee_warning': 'If you leave without answering, you\'ll be marked as fled.',
   'abandon_unmatch_warning': 'Your match will end!',
@@ -971,7 +971,7 @@ const deTranslations = <String, String>{
   'media_accept': 'Accept',
 
   // Chat — App Bar
-  'unmatch': 'Unmatch',
+  'unmatch': 'Match auflösen',
 
   // Chat — Create Question
   'create_question': 'Create Question',
@@ -1110,8 +1110,10 @@ const deTranslations = <String, String>{
   'chat_unmatch_confirm': 'Are you sure you want to unmatch? This action cannot be undone.',
 
   // Power bar labels (short display names)
+  'power_bar_oracle': 'Orakel',
+  'power_bar_time': '+15s',
   'power_bar_half': 'Half',
-  'power_bar_skip': 'Skip',
+  'power_bar_skip': 'Als richtig werten',
   'power_bar_hint': 'Hint',
   'power_bar_skip_all': 'Skip All',
   'power_bar_block': 'Block',
@@ -1144,7 +1146,7 @@ const deTranslations = <String, String>{
   'coach_quiz_powers_body': 'Steckst du fest? Setze Kräfte ein, um einen Vorteil zu erhalten.',
   'coach_quiz_power_oracle': 'Orakel: enthüllt einen starken Hinweis',
   'coach_quiz_power_half': 'Halb: entfernt die Hälfte der falschen Optionen',
-  'coach_quiz_power_skip': 'Überspringen: überspringt diese Frage',
+  'coach_quiz_power_skip': 'Als richtig werten: zählt diese Frage als richtig',
   'coach_quiz_power_hint': 'Hinweis: zeigt den Fragehinweis',
   'coach_quiz_power_time_extend': 'Zeit: fügt zusätzliche Sekunden hinzu',
   'coach_quiz_power_skip_all': 'Alle überspringen: überspringt alle verbleibenden Fragen',

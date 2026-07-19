@@ -203,9 +203,9 @@ const svTranslations = <String, String>{
 
   // Powers
   'my_powers': 'Mina krafter',
-  'power_copy': 'Kopiera',
+  'power_copy': 'Orakel',
   'power_half': '50/50',
-  'power_skip': 'Hoppa över',
+  'power_skip': 'Räkna som rätt',
   'power_hint': 'Ledtråd',
   'power_time': '+15s',
   'power_skip_all': 'Hoppa över alla',
@@ -861,7 +861,7 @@ const svTranslations = <String, String>{
   // Profilinställningsport
   'setup_title': 'Bara några steg kvar',
   'setup_subtitle': 'Slutför din profil för att börja matcha',
-  'setup_hint': 'Bråttom? Tryck på Snabbtilldela',
+  'setup_hint': 'Bråttom? Tryck på "Välj åt mig"',
   'setup_photo_title': 'Lägg till ditt foto',
   'setup_photo_subtitle': 'Utan foto kan ingen se dig',
   'setup_photo_cta': 'Lägg till foto',
@@ -872,11 +872,11 @@ const svTranslations = <String, String>{
   'setup_photo_upload_error': 'Kunde inte ladda upp, försök igen',
   'setup_question_title': 'Förbered dina frågor',
   'setup_question_subtitle': '2 frågor behövs för att börja matcha',
-  'setup_question_magic_cta': 'Magisk fyllning',
-  'setup_question_quick_cta': 'Snabbtilldela',
-  'setup_question_manual_cta': 'Skapa själv',
+  'setup_question_magic_cta': 'Låt AI göra det',
+  'setup_question_quick_cta': 'Välj åt mig',
+  'setup_question_manual_cta': 'Skriv själv',
   'setup_question_done': '2 frågor klara',
-  'setup_quick_assign_error': 'Kunde inte tilldela frågor',
+  'setup_quick_assign_error': 'Kunde inte lägga till frågorna, försök igen',
   'setup_exit_confirm_title': 'Avsluta installationen?',
   'setup_exit_confirm_body': 'Du loggas ut. Foton och frågor du lagt till sparas.',
   'setup_exit_confirm_stay': 'Stanna',
@@ -914,7 +914,7 @@ const svTranslations = <String, String>{
   'interest_fitness': 'Träning',
   'interest_personality': 'Personlighet',
   'preview_sheet_title': 'Här är dina 2 frågor',
-  'preview_sheet_assign_cta': 'Tilldela mina frågor',
+  'preview_sheet_assign_cta': 'Lägg till dessa',
   'preview_sheet_regen_cta': 'Generera om',
   'preview_sheet_skip_link': 'Välj du, jag lägger mig inte i',
   'preview_sheet_error': 'Kunde inte generera, försök igen',
@@ -928,7 +928,7 @@ const svTranslations = <String, String>{
   'abandon_title': 'You\'re Fleeing!',
   'abandon_question_lock': 'Question Lock',
   'abandon_power_block': 'Power Block',
-  'abandon_unmatch_risk': 'Unmatch Risk',
+  'abandon_unmatch_risk': 'Risk att förlora matchen',
   'abandon_features_added': 'The other person added these features to the question:',
   'abandon_flee_warning': 'If you leave without answering, you\'ll be marked as fled.',
   'abandon_unmatch_warning': 'Your match will end!',
@@ -971,7 +971,7 @@ const svTranslations = <String, String>{
   'media_accept': 'Accept',
 
   // Chat — App Bar
-  'unmatch': 'Unmatch',
+  'unmatch': 'Avmatcha',
 
   // Chat — Create Question
   'create_question': 'Create Question',
@@ -1110,8 +1110,10 @@ const svTranslations = <String, String>{
   'chat_unmatch_confirm': 'Are you sure you want to unmatch? This action cannot be undone.',
 
   // Power bar labels (short display names)
+  'power_bar_oracle': 'Orakel',
+  'power_bar_time': '+15s',
   'power_bar_half': 'Half',
-  'power_bar_skip': 'Skip',
+  'power_bar_skip': 'Räkna som rätt',
   'power_bar_hint': 'Hint',
   'power_bar_skip_all': 'Skip All',
   'power_bar_block': 'Block',
@@ -1144,7 +1146,7 @@ const svTranslations = <String, String>{
   'coach_quiz_powers_body': 'Fastnat på en fråga? Använd krafter för att få ett övertag.',
   'coach_quiz_power_oracle': 'Orakel: avslöjar en stark ledtråd',
   'coach_quiz_power_half': 'Halva: tar bort hälften av de felaktiga alternativen',
-  'coach_quiz_power_skip': 'Skippa: hoppar över den här frågan',
+  'coach_quiz_power_skip': 'Räkna som rätt: räknar frågan som rätt',
   'coach_quiz_power_hint': 'Tips: visar frågans ledtråd',
   'coach_quiz_power_time_extend': 'Tid: lägger till extra sekunder',
   'coach_quiz_power_skip_all': 'Skippa allt: hoppar över alla återstående frågor',

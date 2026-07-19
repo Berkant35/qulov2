@@ -203,9 +203,9 @@ const jaTranslations = <String, String>{
 
   // Powers
   'my_powers': 'マイパワー',
-  'power_copy': 'コピー',
+  'power_copy': 'オラクル',
   'power_half': '50/50',
-  'power_skip': 'スキップ',
+  'power_skip': '正解にする',
   'power_hint': 'ヒント',
   'power_time': '+15秒',
   'power_skip_all': '全スキップ',
@@ -861,7 +861,7 @@ const jaTranslations = <String, String>{
   // プロフィール設定ゲート
   'setup_title': 'あと少しです',
   'setup_subtitle': 'プロフィールを完成させてマッチを始めよう',
-  'setup_hint': '急いでる？クイック割当をタップ',
+  'setup_hint': '急いでる？「おまかせで選ぶ」をタップ',
   'setup_photo_title': '写真を追加',
   'setup_photo_subtitle': '写真がないと誰にも見えません',
   'setup_photo_cta': '写真を追加',
@@ -872,11 +872,11 @@ const jaTranslations = <String, String>{
   'setup_photo_upload_error': 'アップロードできませんでした、もう一度お試しください',
   'setup_question_title': '質問を準備',
   'setup_question_subtitle': 'マッチには2つの質問が必要です',
-  'setup_question_magic_cta': 'マジック入力',
-  'setup_question_quick_cta': 'クイック割当',
-  'setup_question_manual_cta': '自分で作る',
+  'setup_question_magic_cta': 'AIにおまかせ',
+  'setup_question_quick_cta': 'おまかせで選ぶ',
+  'setup_question_manual_cta': '自分で書く',
   'setup_question_done': '2つの質問が準備完了',
-  'setup_quick_assign_error': '質問を割り当てられませんでした',
+  'setup_quick_assign_error': '質問を追加できませんでした。もう一度お試しください',
   'setup_exit_confirm_title': '設定を終了？',
   'setup_exit_confirm_body': 'ログアウトされます。追加した写真と質問は保存されます。',
   'setup_exit_confirm_stay': 'とどまる',
@@ -914,7 +914,7 @@ const jaTranslations = <String, String>{
   'interest_fitness': 'フィットネス',
   'interest_personality': '性格',
   'preview_sheet_title': 'あなたの2つの質問です',
-  'preview_sheet_assign_cta': '質問を割り当てる',
+  'preview_sheet_assign_cta': 'これらを追加',
   'preview_sheet_regen_cta': '再生成',
   'preview_sheet_skip_link': 'あなたが選んで、私は手を出しません',
   'preview_sheet_error': '生成できませんでした、もう一度お試しください',
@@ -928,7 +928,7 @@ const jaTranslations = <String, String>{
   'abandon_title': 'You\'re Fleeing!',
   'abandon_question_lock': 'Question Lock',
   'abandon_power_block': 'Power Block',
-  'abandon_unmatch_risk': 'Unmatch Risk',
+  'abandon_unmatch_risk': 'マッチ解除のリスク',
   'abandon_features_added': 'The other person added these features to the question:',
   'abandon_flee_warning': 'If you leave without answering, you\'ll be marked as fled.',
   'abandon_unmatch_warning': 'Your match will end!',
@@ -971,7 +971,7 @@ const jaTranslations = <String, String>{
   'media_accept': 'Accept',
 
   // Chat — App Bar
-  'unmatch': 'Unmatch',
+  'unmatch': 'マッチ解除',
 
   // Chat — Create Question
   'create_question': 'Create Question',
@@ -1110,8 +1110,10 @@ const jaTranslations = <String, String>{
   'chat_unmatch_confirm': 'Are you sure you want to unmatch? This action cannot be undone.',
 
   // Power bar labels (short display names)
+  'power_bar_oracle': 'オラクル',
+  'power_bar_time': '+15秒',
   'power_bar_half': 'Half',
-  'power_bar_skip': 'Skip',
+  'power_bar_skip': '正解にする',
   'power_bar_hint': 'Hint',
   'power_bar_skip_all': 'Skip All',
   'power_bar_block': 'Block',
@@ -1144,7 +1146,7 @@ const jaTranslations = <String, String>{
   'coach_quiz_powers_body': '問題で詰まった？パワーを使って有利に進もう。',
   'coach_quiz_power_oracle': 'オラクル：強力なヒントを公開',
   'coach_quiz_power_half': 'ハーフ：誤答の半分を消去',
-  'coach_quiz_power_skip': 'スキップ：この問題をとばす',
+  'coach_quiz_power_skip': '正解にする：この問題を正解として扱う',
   'coach_quiz_power_hint': 'ヒント：問題のヒントを表示',
   'coach_quiz_power_time_extend': 'タイム：追加秒数を付与',
   'coach_quiz_power_skip_all': '全スキップ：残りの問題をすべてとばす',

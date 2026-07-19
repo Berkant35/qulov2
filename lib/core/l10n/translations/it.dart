@@ -203,9 +203,9 @@ const itTranslations = <String, String>{
 
   // Powers
   'my_powers': 'I miei poteri',
-  'power_copy': 'Copia',
+  'power_copy': 'Oracolo',
   'power_half': '50/50',
-  'power_skip': 'Salta',
+  'power_skip': 'Segna corretta',
   'power_hint': 'Suggerimento',
   'power_time': '+15s',
   'power_skip_all': 'Salta tutto',
@@ -861,7 +861,7 @@ const itTranslations = <String, String>{
   // Configurazione del profilo
   'setup_title': 'Mancano pochi passi',
   'setup_subtitle': 'Completa il profilo per iniziare a fare match',
-  'setup_hint': 'Di fretta? Tocca Assegnazione rapida',
+  'setup_hint': 'Di fretta? Tocca "Scegli per me"',
   'setup_photo_title': 'Aggiungi la tua foto',
   'setup_photo_subtitle': 'Senza foto nessuno può vederti',
   'setup_photo_cta': 'Aggiungi foto',
@@ -872,11 +872,11 @@ const itTranslations = <String, String>{
   'setup_photo_upload_error': 'Caricamento fallito, riprova',
   'setup_question_title': 'Prepara le tue domande',
   'setup_question_subtitle': 'Servono 2 domande per iniziare a fare match',
-  'setup_question_magic_cta': 'Compilazione magica',
-  'setup_question_quick_cta': 'Assegnazione rapida',
-  'setup_question_manual_cta': 'Crea da solo',
+  'setup_question_magic_cta': "Fai fare all'IA",
+  'setup_question_quick_cta': 'Scegli per me',
+  'setup_question_manual_cta': 'Scrivo io',
   'setup_question_done': '2 domande pronte',
-  'setup_quick_assign_error': 'Non riesco ad assegnare le domande',
+  'setup_quick_assign_error': 'Impossibile aggiungere le domande, riprova',
   'setup_exit_confirm_title': 'Uscire dalla configurazione?',
   'setup_exit_confirm_body': 'Verrai disconnesso. Foto e domande aggiunte restano salvate.',
   'setup_exit_confirm_stay': 'Resta',
@@ -914,7 +914,7 @@ const itTranslations = <String, String>{
   'interest_fitness': 'Fitness',
   'interest_personality': 'Personalità',
   'preview_sheet_title': 'Ecco le tue 2 domande',
-  'preview_sheet_assign_cta': 'Assegna le mie domande',
+  'preview_sheet_assign_cta': 'Aggiungi queste',
   'preview_sheet_regen_cta': 'Rigenera',
   'preview_sheet_skip_link': 'Scegli tu, non insisto',
   'preview_sheet_error': 'Generazione fallita, riprova',
@@ -928,7 +928,7 @@ const itTranslations = <String, String>{
   'abandon_title': 'You\'re Fleeing!',
   'abandon_question_lock': 'Question Lock',
   'abandon_power_block': 'Power Block',
-  'abandon_unmatch_risk': 'Unmatch Risk',
+  'abandon_unmatch_risk': 'Rischio di perdere il match',
   'abandon_features_added': 'The other person added these features to the question:',
   'abandon_flee_warning': 'If you leave without answering, you\'ll be marked as fled.',
   'abandon_unmatch_warning': 'Your match will end!',
@@ -971,7 +971,7 @@ const itTranslations = <String, String>{
   'media_accept': 'Accept',
 
   // Chat — App Bar
-  'unmatch': 'Unmatch',
+  'unmatch': 'Annulla match',
 
   // Chat — Create Question
   'create_question': 'Create Question',
@@ -1110,8 +1110,10 @@ const itTranslations = <String, String>{
   'chat_unmatch_confirm': 'Are you sure you want to unmatch? This action cannot be undone.',
 
   // Power bar labels (short display names)
+  'power_bar_oracle': 'Oracolo',
+  'power_bar_time': '+15s',
   'power_bar_half': 'Half',
-  'power_bar_skip': 'Skip',
+  'power_bar_skip': 'Segna corretta',
   'power_bar_hint': 'Hint',
   'power_bar_skip_all': 'Skip All',
   'power_bar_block': 'Block',
@@ -1144,7 +1146,7 @@ const itTranslations = <String, String>{
   'coach_quiz_powers_body': 'Bloccato su una domanda? Usa i poteri per avere un vantaggio.',
   'coach_quiz_power_oracle': 'Oracolo: rivela un indizio potente',
   'coach_quiz_power_half': 'Metà: elimina metà delle opzioni sbagliate',
-  'coach_quiz_power_skip': 'Salta: salta questa domanda',
+  'coach_quiz_power_skip': 'Segna corretta: conta questa domanda come giusta',
   'coach_quiz_power_hint': 'Suggerimento: mostra il suggerimento della domanda',
   'coach_quiz_power_time_extend': 'Tempo: aggiunge secondi extra',
   'coach_quiz_power_skip_all': 'Salta tutto: salta tutte le domande rimanenti',

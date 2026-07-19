@@ -203,9 +203,9 @@ const koTranslations = <String, String>{
 
   // Powers
   'my_powers': '내 파워',
-  'power_copy': '복사',
+  'power_copy': '오라클',
   'power_half': '50/50',
-  'power_skip': '건너뛰기',
+  'power_skip': '정답 처리',
   'power_hint': '힌트',
   'power_time': '+15초',
   'power_skip_all': '모두 건너뛰기',
@@ -859,7 +859,7 @@ const koTranslations = <String, String>{
   // 프로필 설정 게이트
   'setup_title': '몇 단계 남았어요',
   'setup_subtitle': '매칭을 시작하려면 프로필을 완성하세요',
-  'setup_hint': '급하신가요? 빠른 할당을 누르세요',
+  'setup_hint': '급하신가요? "알아서 골라줘"를 누르세요',
   'setup_photo_title': '사진을 추가하세요',
   'setup_photo_subtitle': '사진 없이는 아무도 볼 수 없어요',
   'setup_photo_cta': '사진 추가',
@@ -870,11 +870,11 @@ const koTranslations = <String, String>{
   'setup_photo_upload_error': '업로드 실패, 다시 시도하세요',
   'setup_question_title': '질문을 준비하세요',
   'setup_question_subtitle': '매칭을 시작하려면 질문 2개가 필요해요',
-  'setup_question_magic_cta': '매직 채우기',
-  'setup_question_quick_cta': '빠른 할당',
-  'setup_question_manual_cta': '직접 만들기',
+  'setup_question_magic_cta': 'AI에게 맡기기',
+  'setup_question_quick_cta': '알아서 골라줘',
+  'setup_question_manual_cta': '직접 작성',
   'setup_question_done': '질문 2개 준비 완료',
-  'setup_quick_assign_error': '질문을 할당할 수 없어요',
+  'setup_quick_assign_error': '질문을 추가하지 못했어요. 다시 시도해 주세요',
   'setup_exit_confirm_title': '설정을 종료할까요?',
   'setup_exit_confirm_body': '로그아웃됩니다. 추가한 사진과 질문은 저장된 채로 남아요.',
   'setup_exit_confirm_stay': '머무르기',
@@ -912,7 +912,7 @@ const koTranslations = <String, String>{
   'interest_fitness': '피트니스',
   'interest_personality': '성격',
   'preview_sheet_title': '당신의 질문 2개입니다',
-  'preview_sheet_assign_cta': '내 질문 할당하기',
+  'preview_sheet_assign_cta': '이 질문 추가',
   'preview_sheet_regen_cta': '다시 생성',
   'preview_sheet_skip_link': '당신이 골라요, 저는 빠질게요',
   'preview_sheet_error': '생성 실패, 다시 시도하세요',
@@ -926,7 +926,7 @@ const koTranslations = <String, String>{
   'abandon_title': 'You\'re Fleeing!',
   'abandon_question_lock': 'Question Lock',
   'abandon_power_block': 'Power Block',
-  'abandon_unmatch_risk': 'Unmatch Risk',
+  'abandon_unmatch_risk': '매칭 해제 위험',
   'abandon_features_added': 'The other person added these features to the question:',
   'abandon_flee_warning': 'If you leave without answering, you\'ll be marked as fled.',
   'abandon_unmatch_warning': 'Your match will end!',
@@ -969,7 +969,7 @@ const koTranslations = <String, String>{
   'media_accept': 'Accept',
 
   // Chat — App Bar
-  'unmatch': 'Unmatch',
+  'unmatch': '매칭 해제',
 
   // Chat — Create Question
   'create_question': 'Create Question',
@@ -1108,8 +1108,10 @@ const koTranslations = <String, String>{
   'chat_unmatch_confirm': 'Are you sure you want to unmatch? This action cannot be undone.',
 
   // Power bar labels (short display names)
+  'power_bar_oracle': '오라클',
+  'power_bar_time': '+15초',
   'power_bar_half': 'Half',
-  'power_bar_skip': 'Skip',
+  'power_bar_skip': '정답 처리',
   'power_bar_hint': 'Hint',
   'power_bar_skip_all': 'Skip All',
   'power_bar_block': 'Block',
@@ -1142,7 +1144,7 @@ const koTranslations = <String, String>{
   'coach_quiz_powers_body': '질문에 막혔나요? 파워를 써서 유리하게 진행하세요.',
   'coach_quiz_power_oracle': '오라클: 강력한 힌트 공개',
   'coach_quiz_power_half': '절반: 오답 절반 제거',
-  'coach_quiz_power_skip': '건너뛰기: 이 질문 스킵',
+  'coach_quiz_power_skip': '정답 처리: 이 질문을 정답으로 처리',
   'coach_quiz_power_hint': '힌트: 질문 힌트 표시',
   'coach_quiz_power_time_extend': '시간: 추가 초 부여',
   'coach_quiz_power_skip_all': '모두 건너뛰기: 남은 질문 전부 스킵',

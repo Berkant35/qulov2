@@ -203,9 +203,9 @@ const esTranslations = <String, String>{
 
   // Powers
   'my_powers': 'Mis poderes',
-  'power_copy': 'Copiar',
+  'power_copy': 'Oráculo',
   'power_half': '50/50',
-  'power_skip': 'Saltar',
+  'power_skip': 'Marcar correcta',
   'power_hint': 'Pista',
   'power_time': '+15s',
   'power_skip_all': 'Saltar todo',
@@ -861,7 +861,7 @@ const esTranslations = <String, String>{
   // Configuración del perfil
   'setup_title': 'Faltan unos pocos pasos',
   'setup_subtitle': 'Completa tu perfil para empezar a hacer match',
-  'setup_hint': '¿Con prisa? Toca Asignación Rápida',
+  'setup_hint': '¿Con prisa? Toca "Elige por mí"',
   'setup_photo_title': 'Añade tu foto',
   'setup_photo_subtitle': 'Sin foto nadie puede verte',
   'setup_photo_cta': 'Añadir foto',
@@ -872,11 +872,11 @@ const esTranslations = <String, String>{
   'setup_photo_upload_error': 'No se pudo subir, inténtalo de nuevo',
   'setup_question_title': 'Prepara tus preguntas',
   'setup_question_subtitle': 'Necesitas 2 preguntas para empezar a hacer match',
-  'setup_question_magic_cta': 'Relleno mágico',
-  'setup_question_quick_cta': 'Asignación rápida',
-  'setup_question_manual_cta': 'Crear yo mismo',
+  'setup_question_magic_cta': 'Que la IA lo haga',
+  'setup_question_quick_cta': 'Elige por mí',
+  'setup_question_manual_cta': 'Escribir yo mismo',
   'setup_question_done': '2 preguntas listas',
-  'setup_quick_assign_error': 'No pudimos asignar las preguntas',
+  'setup_quick_assign_error': 'No pudimos añadir las preguntas, inténtalo de nuevo',
   'setup_exit_confirm_title': '¿Salir de la configuración?',
   'setup_exit_confirm_body': 'Cerrarás sesión. Las fotos y preguntas que añadiste quedan guardadas.',
   'setup_exit_confirm_stay': 'Quedarse',
@@ -914,7 +914,7 @@ const esTranslations = <String, String>{
   'interest_fitness': 'Fitness',
   'interest_personality': 'Personalidad',
   'preview_sheet_title': 'Aquí están tus 2 preguntas',
-  'preview_sheet_assign_cta': 'Asignar mis preguntas',
+  'preview_sheet_assign_cta': 'Añadir estas',
   'preview_sheet_regen_cta': 'Regenerar',
   'preview_sheet_skip_link': 'Elige tú, yo no me meto',
   'preview_sheet_error': 'No se pudo generar, inténtalo de nuevo',
@@ -928,7 +928,7 @@ const esTranslations = <String, String>{
   'abandon_title': 'You\'re Fleeing!',
   'abandon_question_lock': 'Question Lock',
   'abandon_power_block': 'Power Block',
-  'abandon_unmatch_risk': 'Unmatch Risk',
+  'abandon_unmatch_risk': 'Riesgo de perder el match',
   'abandon_features_added': 'The other person added these features to the question:',
   'abandon_flee_warning': 'If you leave without answering, you\'ll be marked as fled.',
   'abandon_unmatch_warning': 'Your match will end!',
@@ -971,7 +971,7 @@ const esTranslations = <String, String>{
   'media_accept': 'Accept',
 
   // Chat — App Bar
-  'unmatch': 'Unmatch',
+  'unmatch': 'Deshacer match',
 
   // Chat — Create Question
   'create_question': 'Create Question',
@@ -1110,8 +1110,10 @@ const esTranslations = <String, String>{
   'chat_unmatch_confirm': 'Are you sure you want to unmatch? This action cannot be undone.',
 
   // Power bar labels (short display names)
+  'power_bar_oracle': 'Oráculo',
+  'power_bar_time': '+15s',
   'power_bar_half': 'Half',
-  'power_bar_skip': 'Skip',
+  'power_bar_skip': 'Marcar correcta',
   'power_bar_hint': 'Hint',
   'power_bar_skip_all': 'Skip All',
   'power_bar_block': 'Block',
@@ -1144,7 +1146,7 @@ const esTranslations = <String, String>{
   'coach_quiz_powers_body': '¿Atascado en una pregunta? Gasta poderes para obtener ventaja.',
   'coach_quiz_power_oracle': 'Oráculo: revela una pista importante',
   'coach_quiz_power_half': 'Mitad: elimina la mitad de las opciones incorrectas',
-  'coach_quiz_power_skip': 'Saltar: omite esta pregunta',
+  'coach_quiz_power_skip': 'Marcar correcta: cuenta esta pregunta como acierto',
   'coach_quiz_power_hint': 'Pista: muestra la pista de la pregunta',
   'coach_quiz_power_time_extend': 'Tiempo: añade segundos extra',
   'coach_quiz_power_skip_all': 'Saltar todo: omite todas las preguntas restantes',

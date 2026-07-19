@@ -203,9 +203,9 @@ const plTranslations = <String, String>{
 
   // Powers
   'my_powers': 'Moje moce',
-  'power_copy': 'Kopiuj',
+  'power_copy': 'Wyrocznia',
   'power_half': '50/50',
-  'power_skip': 'Pomi\u0144',
+  'power_skip': 'Zalicz jako poprawn\u0105',
   'power_hint': 'Wskaz\u00f3wka',
   'power_time': '+15s',
   'power_skip_all': 'Pomi\u0144 wszystko',
@@ -859,7 +859,7 @@ const plTranslations = <String, String>{
   // Brama konfiguracji profilu
   'setup_title': 'Zostało kilka kroków',
   'setup_subtitle': 'Uzupełnij profil, by zacząć dopasowywać',
-  'setup_hint': 'Spieszysz się? Stuknij Szybkie Przypisanie',
+  'setup_hint': 'Spieszysz się? Stuknij „Wybierz za mnie"',
   'setup_photo_title': 'Dodaj zdjęcie',
   'setup_photo_subtitle': 'Bez zdjęcia nikt cię nie zobaczy',
   'setup_photo_cta': 'Dodaj zdjęcie',
@@ -870,11 +870,11 @@ const plTranslations = <String, String>{
   'setup_photo_upload_error': 'Nie udało się przesłać, spróbuj ponownie',
   'setup_question_title': 'Przygotuj swoje pytania',
   'setup_question_subtitle': 'Potrzebne 2 pytania, by zacząć dopasowywać',
-  'setup_question_magic_cta': 'Magiczne wypełnienie',
-  'setup_question_quick_cta': 'Szybkie przypisanie',
-  'setup_question_manual_cta': 'Stworzę sam',
+  'setup_question_magic_cta': 'Niech AI zrobi',
+  'setup_question_quick_cta': 'Wybierz za mnie',
+  'setup_question_manual_cta': 'Napiszę sam',
   'setup_question_done': '2 pytania gotowe',
-  'setup_quick_assign_error': 'Nie udało się przypisać pytań',
+  'setup_quick_assign_error': 'Nie udało się dodać pytań, spróbuj ponownie',
   'setup_exit_confirm_title': 'Wyjść z konfiguracji?',
   'setup_exit_confirm_body': 'Zostaniesz wylogowany. Dodane zdjęcia i pytania pozostaną zapisane.',
   'setup_exit_confirm_stay': 'Zostań',
@@ -912,7 +912,7 @@ const plTranslations = <String, String>{
   'interest_fitness': 'Fitness',
   'interest_personality': 'Osobowość',
   'preview_sheet_title': 'Oto twoje 2 pytania',
-  'preview_sheet_assign_cta': 'Przypisz moje pytania',
+  'preview_sheet_assign_cta': 'Dodaj te',
   'preview_sheet_regen_cta': 'Wygeneruj ponownie',
   'preview_sheet_skip_link': 'Wybierz sam, nie będę się wtrącać',
   'preview_sheet_error': 'Nie udało się wygenerować, spróbuj ponownie',
@@ -926,7 +926,7 @@ const plTranslations = <String, String>{
   'abandon_title': 'You\'re Fleeing!',
   'abandon_question_lock': 'Question Lock',
   'abandon_power_block': 'Power Block',
-  'abandon_unmatch_risk': 'Unmatch Risk',
+  'abandon_unmatch_risk': 'Ryzyko utraty dopasowania',
   'abandon_features_added': 'The other person added these features to the question:',
   'abandon_flee_warning': 'If you leave without answering, you\'ll be marked as fled.',
   'abandon_unmatch_warning': 'Your match will end!',
@@ -969,7 +969,7 @@ const plTranslations = <String, String>{
   'media_accept': 'Accept',
 
   // Chat — App Bar
-  'unmatch': 'Unmatch',
+  'unmatch': 'Cofnij dopasowanie',
 
   // Chat — Create Question
   'create_question': 'Create Question',
@@ -1108,8 +1108,10 @@ const plTranslations = <String, String>{
   'chat_unmatch_confirm': 'Are you sure you want to unmatch? This action cannot be undone.',
 
   // Power bar labels (short display names)
+  'power_bar_oracle': 'Wyrocznia',
+  'power_bar_time': '+15s',
   'power_bar_half': 'Half',
-  'power_bar_skip': 'Skip',
+  'power_bar_skip': 'Zalicz jako poprawną',
   'power_bar_hint': 'Hint',
   'power_bar_skip_all': 'Skip All',
   'power_bar_block': 'Block',
@@ -1142,7 +1144,7 @@ const plTranslations = <String, String>{
   'coach_quiz_powers_body': 'Utknąłeś na pytaniu? Wydaj moce, by zyskać przewagę.',
   'coach_quiz_power_oracle': 'Wyrocznia: ujawnia silną wskazówkę',
   'coach_quiz_power_half': 'Połowa: usuwa połowę złych opcji',
-  'coach_quiz_power_skip': 'Pomiń: pomija to pytanie',
+  'coach_quiz_power_skip': 'Zalicz jako poprawną: liczy to pytanie jako dobre',
   'coach_quiz_power_hint': 'Wskazówka: pokazuje wskazówkę pytania',
   'coach_quiz_power_time_extend': 'Czas: dodaje dodatkowe sekundy',
   'coach_quiz_power_skip_all': 'Pomiń wszystko: pomija wszystkie pozostałe pytania',

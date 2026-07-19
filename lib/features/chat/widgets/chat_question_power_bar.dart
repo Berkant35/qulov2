@@ -218,11 +218,11 @@ class _ChatPowerButton extends StatelessWidget {
   }
 
   String _powerLabel(BuildContext context, PowerType type) => switch (type) {
-        PowerType.oracle => 'Oracle',
+        PowerType.oracle => context.tr('power_bar_oracle'),
         PowerType.half => context.tr('power_bar_half'),
         PowerType.skip => context.tr('power_bar_skip'),
         PowerType.hint => context.tr('power_bar_hint'),
-        PowerType.timeExtend => '+15s',
+        PowerType.timeExtend => context.tr('power_bar_time'),
         PowerType.skipAll => context.tr('power_bar_skip_all'),
         PowerType.powerBlock => context.tr('power_bar_block'),
         PowerType.powerUnblock => context.tr('power_bar_unlock'),

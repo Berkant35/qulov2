@@ -203,9 +203,9 @@ const frTranslations = <String, String>{
 
   // Powers
   'my_powers': 'Mes pouvoirs',
-  'power_copy': 'Copier',
+  'power_copy': 'Oracle',
   'power_half': '50/50',
-  'power_skip': 'Passer',
+  'power_skip': 'Compter juste',
   'power_hint': 'Indice',
   'power_time': '+15s',
   'power_skip_all': 'Tout passer',
@@ -587,7 +587,7 @@ const frTranslations = <String, String>{
   'chat_question_send_failed': 'La question n\'a pas pu être envoyée',
   'chat_open_question': 'Ouvrir la question',
   'chat_waiting_answer': 'En attente de réponse...',
-  'chat_unmatch_occurred': 'Unmatch effectué',
+  'chat_unmatch_occurred': 'Match annulé',
   'chat_draft_saved': 'Brouillon enregistré',
   'chat_draft_save_failed': 'Le brouillon n\'a pas pu être enregistré',
   'chat_draft_delete_failed': 'Le brouillon n\'a pas pu être supprimé',
@@ -861,7 +861,7 @@ const frTranslations = <String, String>{
   // Porte de configuration du profil
   'setup_title': 'Encore quelques étapes',
   'setup_subtitle': 'Complète ton profil pour commencer à matcher',
-  'setup_hint': 'Pressé ? Appuie sur Attribution rapide',
+  'setup_hint': 'Pressé ? Appuie sur « Choisir pour moi »',
   'setup_photo_title': 'Ajoute ta photo',
   'setup_photo_subtitle': 'Sans photo, personne ne peut te voir',
   'setup_photo_cta': 'Ajouter une photo',
@@ -872,11 +872,11 @@ const frTranslations = <String, String>{
   'setup_photo_upload_error': "Échec de l'envoi, réessaie",
   'setup_question_title': 'Prépare tes questions',
   'setup_question_subtitle': '2 questions nécessaires pour matcher',
-  'setup_question_magic_cta': 'Remplissage magique',
-  'setup_question_quick_cta': 'Attribution rapide',
-  'setup_question_manual_cta': 'Créer moi-même',
+  'setup_question_magic_cta': "Laisser l'IA faire",
+  'setup_question_quick_cta': 'Choisir pour moi',
+  'setup_question_manual_cta': 'Écrire moi-même',
   'setup_question_done': '2 questions prêtes',
-  'setup_quick_assign_error': "Impossible d'attribuer les questions",
+  'setup_quick_assign_error': "Impossible d'ajouter les questions, réessaie",
   'setup_exit_confirm_title': 'Quitter la configuration ?',
   'setup_exit_confirm_body': 'Tu seras déconnecté. Photos et questions ajoutées restent enregistrées.',
   'setup_exit_confirm_stay': 'Rester',
@@ -914,7 +914,7 @@ const frTranslations = <String, String>{
   'interest_fitness': 'Fitness',
   'interest_personality': 'Personnalité',
   'preview_sheet_title': 'Voici tes 2 questions',
-  'preview_sheet_assign_cta': 'Attribuer mes questions',
+  'preview_sheet_assign_cta': 'Ajouter celles-ci',
   'preview_sheet_regen_cta': 'Regénérer',
   'preview_sheet_skip_link': "Choisis toi, je n'insiste pas",
   'preview_sheet_error': 'Échec de génération, réessaie',
@@ -928,7 +928,7 @@ const frTranslations = <String, String>{
   'abandon_title': 'You\'re Fleeing!',
   'abandon_question_lock': 'Question Lock',
   'abandon_power_block': 'Power Block',
-  'abandon_unmatch_risk': 'Unmatch Risk',
+  'abandon_unmatch_risk': 'Risque de perdre le match',
   'abandon_features_added': 'The other person added these features to the question:',
   'abandon_flee_warning': 'If you leave without answering, you\'ll be marked as fled.',
   'abandon_unmatch_warning': 'Your match will end!',
@@ -971,7 +971,7 @@ const frTranslations = <String, String>{
   'media_accept': 'Accept',
 
   // Chat — App Bar
-  'unmatch': 'Unmatch',
+  'unmatch': 'Annuler le match',
 
   // Chat — Create Question
   'create_question': 'Create Question',
@@ -1110,8 +1110,10 @@ const frTranslations = <String, String>{
   'chat_unmatch_confirm': 'Are you sure you want to unmatch? This action cannot be undone.',
 
   // Power bar labels (short display names)
+  'power_bar_oracle': 'Oracle',
+  'power_bar_time': '+15s',
   'power_bar_half': 'Half',
-  'power_bar_skip': 'Skip',
+  'power_bar_skip': 'Compter juste',
   'power_bar_hint': 'Hint',
   'power_bar_skip_all': 'Skip All',
   'power_bar_block': 'Block',
@@ -1144,7 +1146,7 @@ const frTranslations = <String, String>{
   'coach_quiz_powers_body': 'Bloqué sur une question ? Dépense des pouvoirs pour avoir un avantage.',
   'coach_quiz_power_oracle': 'Oracle : révèle un indice fort',
   'coach_quiz_power_half': 'Moitié : supprime la moitié des mauvaises options',
-  'coach_quiz_power_skip': 'Passer : ignore cette question',
+  'coach_quiz_power_skip': 'Compter juste : compte cette question comme réussie',
   'coach_quiz_power_hint': 'Indice : affiche l\'indice de la question',
   'coach_quiz_power_time_extend': 'Temps : ajoute des secondes supplémentaires',
   'coach_quiz_power_skip_all': 'Tout passer : ignore toutes les questions restantes',

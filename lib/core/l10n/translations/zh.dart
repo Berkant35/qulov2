@@ -203,9 +203,9 @@ const zhTranslations = <String, String>{
 
   // Powers
   'my_powers': '我的道具',
-  'power_copy': '抄袭',
+  'power_copy': '神谕',
   'power_half': '50/50',
-  'power_skip': '跳过',
+  'power_skip': '算作答对',
   'power_hint': '提示',
   'power_time': '+15秒',
   'power_skip_all': '全部跳过',
@@ -859,7 +859,7 @@ const zhTranslations = <String, String>{
   // 个人资料设置入口
   'setup_title': '还差几步',
   'setup_subtitle': '完成资料即可开始匹配',
-  'setup_hint': '赶时间？点击快速分配',
+  'setup_hint': '赶时间？点击"帮我选"',
   'setup_photo_title': '添加你的照片',
   'setup_photo_subtitle': '没有照片别人看不到你',
   'setup_photo_cta': '添加照片',
@@ -870,11 +870,11 @@ const zhTranslations = <String, String>{
   'setup_photo_upload_error': '上传失败,请重试',
   'setup_question_title': '准备你的问题',
   'setup_question_subtitle': '开始匹配需要2个问题',
-  'setup_question_magic_cta': '魔法填充',
-  'setup_question_quick_cta': '快速分配',
-  'setup_question_manual_cta': '自己创建',
+  'setup_question_magic_cta': '交给AI',
+  'setup_question_quick_cta': '帮我选',
+  'setup_question_manual_cta': '自己写',
   'setup_question_done': '2个问题已就绪',
-  'setup_quick_assign_error': '无法分配问题',
+  'setup_quick_assign_error': '无法添加问题，请重试',
   'setup_exit_confirm_title': '退出设置？',
   'setup_exit_confirm_body': '你将被登出。已添加的照片和问题会保留。',
   'setup_exit_confirm_stay': '留下',
@@ -912,7 +912,7 @@ const zhTranslations = <String, String>{
   'interest_fitness': '健身',
   'interest_personality': '性格',
   'preview_sheet_title': '这是你的2个问题',
-  'preview_sheet_assign_cta': '分配我的问题',
+  'preview_sheet_assign_cta': '添加这些',
   'preview_sheet_regen_cta': '重新生成',
   'preview_sheet_skip_link': '你选吧,我不操心',
   'preview_sheet_error': '生成失败,请重试',
@@ -926,7 +926,7 @@ const zhTranslations = <String, String>{
   'abandon_title': 'You\'re Fleeing!',
   'abandon_question_lock': 'Question Lock',
   'abandon_power_block': 'Power Block',
-  'abandon_unmatch_risk': 'Unmatch Risk',
+  'abandon_unmatch_risk': '取消匹配的风险',
   'abandon_features_added': 'The other person added these features to the question:',
   'abandon_flee_warning': 'If you leave without answering, you\'ll be marked as fled.',
   'abandon_unmatch_warning': 'Your match will end!',
@@ -969,7 +969,7 @@ const zhTranslations = <String, String>{
   'media_accept': 'Accept',
 
   // Chat — App Bar
-  'unmatch': 'Unmatch',
+  'unmatch': '取消匹配',
 
   // Chat — Create Question
   'create_question': 'Create Question',
@@ -1108,8 +1108,10 @@ const zhTranslations = <String, String>{
   'chat_unmatch_confirm': 'Are you sure you want to unmatch? This action cannot be undone.',
 
   // Power bar labels (short display names)
+  'power_bar_oracle': '神谕',
+  'power_bar_time': '+15秒',
   'power_bar_half': 'Half',
-  'power_bar_skip': 'Skip',
+  'power_bar_skip': '算作答对',
   'power_bar_hint': 'Hint',
   'power_bar_skip_all': 'Skip All',
   'power_bar_block': 'Block',
@@ -1142,7 +1144,7 @@ const zhTranslations = <String, String>{
   'coach_quiz_powers_body': '题目卡住了？使用能力来获得优势。',
   'coach_quiz_power_oracle': '神谕：揭示强力提示',
   'coach_quiz_power_half': '减半：去掉一半错误选项',
-  'coach_quiz_power_skip': '跳过：跳过这道题',
+  'coach_quiz_power_skip': '算作答对：将此题记为答对',
   'coach_quiz_power_hint': '提示：显示题目提示',
   'coach_quiz_power_time_extend': '加时：增加额外秒数',
   'coach_quiz_power_skip_all': '全部跳过：跳过所有剩余题目',
