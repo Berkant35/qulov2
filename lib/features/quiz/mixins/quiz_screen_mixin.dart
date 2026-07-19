@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/services/app_review_manager.dart';
+import 'package:qulo_v2/core/services/funnel_events.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/services/haptic_manager.dart';
@@ -10,6 +12,7 @@ import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/data/models/quiz_model.dart';
 import 'package:qulo_v2/features/diamonds/widgets/paywall_bottom_sheet.dart';
+import 'package:qulo_v2/features/onboarding/widgets/premium_suggestion_sheet.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
 import 'package:qulo_v2/providers/quiz_provider.dart';
 import 'package:qulo_v2/providers/exchange_provider.dart';
@@ -380,13 +383,50 @@ mixin QuizScreenMixin on ConsumerState<QuizScreen> {
 
   void onStartChat() {
     ref.invalidate(matchListProvider);
-    ref.read(navigationServiceProvider).go(RouteNames.matches);
-    AppReviewManager.instance.tryShowReview(trigger: 'match_celebration');
+    _maybeShowFirstMatchPaywall(nextRoute: RouteNames.matches);
   }
 
   void onGoBack() {
-    ref.read(navigationServiceProvider).go(RouteNames.discover);
-    AppReviewManager.instance.tryShowReview(trigger: 'match_celebration');
+    if (celebrationMatched) {
+      _maybeShowFirstMatchPaywall(nextRoute: RouteNames.discover);
+    } else {
+      ref.read(navigationServiceProvider).go(RouteNames.discover);
+      AppReviewManager.instance.tryShowReview(trigger: 'match_celebration');
+    }
+  }
+
+  // Ilk eslesme celebration cikisinda paywall'i bir kez goster (onboarding
+  // yerine buraya ertelendi — carousel artik auth oncesi). Flag zaten set ise
+  // (2. + eslesme) dogrudan yonlendir + mevcut review davranisini koru; ayni
+  // turda paywall + review birlikte acilmasin diye review'i sadece bu dalda cagir.
+  Future<void> _maybeShowFirstMatchPaywall({required String nextRoute}) async {
+    final nav = ref.read(navigationServiceProvider);
+    final prefs = await SharedPreferences.getInstance();
+    final alreadyShown =
+        prefs.getBool(AnalyticsEvents.flagPaywallFirstMatch) ?? false;
+
+    if (alreadyShown) {
+      nav.go(nextRoute);
+      AppReviewManager.instance.tryShowReview(trigger: 'match_celebration');
+      return;
+    }
+
+    await prefs.setBool(AnalyticsEvents.flagPaywallFirstMatch, true);
+    FunnelEvents.logAuthed(
+      AnalyticsEvents.paywallShown,
+      params: {AnalyticsEvents.paramTrigger: 'first_match'},
+    );
+
+    if (!mounted) return;
+    nav.showAppBottomSheet(
+      CustomBottomSheet(
+        name: 'premium_suggestion',
+        maxHeightFactor: 0.85,
+        builder: (context) => const PremiumSuggestionSheet(),
+      ),
+    ).then((_) {
+      if (mounted) nav.go(nextRoute);
+    });
   }
 
   void _handleSessionTransition(String? status, String? badge) {
