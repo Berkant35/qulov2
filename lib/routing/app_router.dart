@@ -132,8 +132,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         return '/onboarding';
       }
 
-      // 5. Auth degil → social-first landing'e yonlendir (auth, update haric)
-      if (!isAuth && !isAuthRoute && !isUpdateRoute) {
+      // 5. Auth degil → social-first landing'e yonlendir (auth, update, onboarding haric)
+      if (!isAuth && !isAuthRoute && !isUpdateRoute && !isOnboardingRoute) {
         return '/auth/landing';
       }
 

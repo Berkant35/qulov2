@@ -104,10 +104,12 @@ mixin OnboardingScreenMixin on ConsumerState<OnboardingScreen>,
       AnalyticsEvents.paramLanguages: selectedLanguages.join(','),
       AnalyticsEvents.paramLanguageCount: selectedLanguages.length,
     });
-    await _markSeen();
-    if (!mounted) return;
     // Auth oncesi: secimi local sakla, auth sonrasi app.dart flush eder.
-    PendingLanguagesStore.write(selectedLanguages);
+    // markSeen'den ONCE ve await'li olmali: markSeen notifier state'ini
+    // senkron degistirir → router refresh → /onboarding'den redirect →
+    // widget dispose olabilir → !mounted → write atlanir → dil secimi kaybolur.
+    await PendingLanguagesStore.write(selectedLanguages);
+    await _markSeen();
   }
 
   Future<void> _markSeen() async {
