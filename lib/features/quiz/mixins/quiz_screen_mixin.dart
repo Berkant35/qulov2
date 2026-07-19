@@ -272,6 +272,11 @@ mixin QuizScreenMixin on ConsumerState<QuizScreen> {
         _resetQuestionState();
 
         if (data.sessionStatus == 'COMPLETED') {
+          FunnelEvents.logAuthedOnce(
+            AnalyticsEvents.flagFirstQuizComplete,
+            AnalyticsEvents.firstQuizComplete,
+            params: {AnalyticsEvents.paramMatched: true},
+          );
           _showGamifiedResult(matched: true, badge: data.badge ?? 'none');
         } else {
           ref.read(quizProvider.notifier).fetchCurrentQuestion();
@@ -441,6 +446,11 @@ mixin QuizScreenMixin on ConsumerState<QuizScreen> {
 
   void _handleSessionTransition(String? status, String? badge) {
     if (status == 'COMPLETED') {
+      FunnelEvents.logAuthedOnce(
+        AnalyticsEvents.flagFirstQuizComplete,
+        AnalyticsEvents.firstQuizComplete,
+        params: {AnalyticsEvents.paramMatched: true},
+      );
       _showGamifiedResult(matched: true, badge: badge ?? 'none');
     } else if (status == 'FAILED') {
       _showGamifiedResult(matched: false, badge: 'none');
