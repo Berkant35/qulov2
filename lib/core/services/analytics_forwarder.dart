@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:qulo_v2/core/network/network_manager.dart';
 import 'package:qulo_v2/core/network/result.dart';
 
@@ -19,6 +20,8 @@ class AnalyticsForwarder {
   final List<Map<String, dynamic>> _buffer = [];
   Timer? _flushTimer;
   bool _enabled = true;
+
+  static const _storage = FlutterSecureStorage();
 
   static const int _maxBatchSize = 25;
   static const Duration _flushInterval = Duration(seconds: 15);
@@ -66,6 +69,17 @@ class AnalyticsForwarder {
     _flushTimer = null;
 
     if (_buffer.isEmpty) return;
+
+    // Server /analytics/track JWT gerektirir. Auth yoksa (pre-auth ekranlar
+    // carousel/landing, veya logout sonrasi) POST 401 verir ve NetworkManager
+    // interceptor'i her seferinde Crashlytics'e raporlar. Token yoksa event'ler
+    // zaten forward EDILEMEZ (user_id yok) → dusur, POST etme; enabled kal,
+    // auth olununca normal calisir.
+    final token = await _storage.read(key: 'access_token');
+    if (token == null) {
+      _buffer.clear();
+      return;
+    }
 
     final batch = List<Map<String, dynamic>>.from(_buffer);
     _buffer.clear();
