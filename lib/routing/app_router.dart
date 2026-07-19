@@ -122,12 +122,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       // carousel'e yonlendir (auth/legal/update route'lari haric).
       final onboardingSeen = ref.read(onboardingSeenProvider);
       final isOnboardingRoute = state.matchedLocation == '/onboarding';
+      // isUpdateRoute/isLegalRoute burada kontrol edilmez — ikisi de yukarida
+      // (satir 96, 109) zaten erken return etti, buraya ulasilmis olmalari imkansiz.
       if (!isAuth &&
           !onboardingSeen &&
           !isOnboardingRoute &&
-          !isAuthRoute &&
-          !isUpdateRoute &&
-          !isLegalRoute) {
+          !isAuthRoute) {
         return '/onboarding';
       }
 

@@ -35,4 +35,14 @@ void main() {
     expect(container.read(onboardingSeenProvider), isTrue);
     expect(prefs.getBool('onboarding_v2_seen'), isTrue);
   });
+
+  test('legacy onboarding_questions_seen true ise initial state true', () async {
+    SharedPreferences.setMockInitialValues({'onboarding_questions_seen': true});
+    final prefs = await SharedPreferences.getInstance();
+    final container = ProviderContainer(overrides: [
+      onboardingSeenPrefsProvider.overrideWithValue(prefs),
+    ]);
+    addTearDown(container.dispose);
+    expect(container.read(onboardingSeenProvider), isTrue);
+  });
 }

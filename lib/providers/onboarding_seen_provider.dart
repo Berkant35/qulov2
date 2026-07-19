@@ -16,7 +16,8 @@ class OnboardingSeenNotifier extends Notifier<bool> {
   @override
   bool build() {
     final prefs = ref.read(onboardingSeenPrefsProvider);
-    return prefs.getBool(key) ?? false;
+    return (prefs.getBool(key) ?? false) ||
+        (prefs.getBool('onboarding_questions_seen') ?? false);
   }
 
   Future<void> markSeen() async {
