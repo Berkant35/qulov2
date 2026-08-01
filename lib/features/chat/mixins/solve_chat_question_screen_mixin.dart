@@ -10,7 +10,6 @@ import 'package:qulo_v2/features/chat/widgets/abandon_warning_dialog.dart';
 import 'package:qulo_v2/features/diamonds/widgets/paywall_bottom_sheet.dart';
 import 'package:qulo_v2/features/quiz/widgets/quiz_timer.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
-import 'package:qulo_v2/providers/diamond_provider.dart';
 import 'package:qulo_v2/providers/exchange_provider.dart';
 
 mixin SolveChatQuestionScreenMixin
@@ -48,6 +47,10 @@ mixin SolveChatQuestionScreenMixin
 
   void initMixin() {
     powerBlockActive = widget.question.isPowerBlocked;
+
+    // Sunucudan gelen durumu hidrate et — ekran yeniden acildiginda kullanilmis
+    // gucler acik gorunmesin (quiz'de `used_powers` ile ayni is).
+    usedPowers.addAll(widget.question.powersUsed.map((p) => p.toString()));
 
     // Guard: don't allow re-solving answered questions
     if (widget.question.isAnswered) {
@@ -180,21 +183,31 @@ mixin SolveChatQuestionScreenMixin
 
     if (!mounted) return;
 
-    apiResult.when(
-      success: (response) {
-        ref.invalidate(diamondProvider);
+    await apiResult.when(
+      success: (response) async {
+        // `ref.invalidate(diamondProvider)` DEGIL — build() sabit sifir donuyor,
+        // invalidate refetch degil SIFIRLAMA olur ve bakiyeyi izleyen tum ekranlar
+        // 0 gorur. SKIP burada gercek mor elmas harciyor.
+        await refreshBalances();
+        if (!mounted) return;
         setState(() {
           answered = true;
           result = response;
         });
       },
-      failure: (f) {
+      failure: (f) async {
         setState(() => isSubmitting = false);
         if (f is ServerFailure && f.code == 'INSUFFICIENT_DIAMONDS') {
-          PaywallBottomSheetContent.show(ref, trigger: 'chat_question_skip');
+          await PaywallBottomSheetContent.show(ref, trigger: 'chat_question_skip');
+          if (!mounted) return;
+          // RevenueCat webhook tamponu — yoksa satin alma sonrasi bakiye eski
+          // gorunur ve paywall loop'a girer (usePower ile simetrik).
+          await Future.delayed(const Duration(milliseconds: 1500));
+          if (!mounted) return;
+          await refreshBalances();
           return;
         }
-        // DIAMOND_COOLDOWN ve diğer hatalar — snackbar.
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(f.message ?? context.tr('error_general'))),
         );

@@ -29,13 +29,23 @@ mixin ChatQuestionPowerMixin on SolveChatQuestionScreenMixin {
   /// mor elmas artik gercekten hareket ediyor.
   @override
   Future<void> refreshBalances() async {
+    // mounted kontrolleri sart: kullanici guce basip ekrani hemen kapatirsa
+    // ardisik await'lerden sonraki ref.read dispose edilmis container'a duser.
+    if (!mounted) return;
     await ref.read(exchangeProvider.notifier).fetchAll();
+    if (!mounted) return;
     await ref.read(diamondProvider.notifier).fetchBalance();
+    if (!mounted) return;
     await ref.read(userProvider.notifier).fetchMe();
   }
 
 
   Future<void> usePower(String powerName) async {
+    // In-flight guard: SafeTapButton yalnizca KENDI butonunu kilitliyor, farkli
+    // guclere ayni anda basmak iki es zamanli istek uretebiliyordu (quiz ile simetrik).
+    if (isSubmitting || usedPowers.contains(powerName)) return;
+    setState(() => isSubmitting = true);
+
     timerKey.currentState?.pause();
 
     // Envanter kapisi YOK — envanterde hak varsa sunucu oradan duser, yoksa
@@ -60,8 +70,13 @@ mixin ChatQuestionPowerMixin on SolveChatQuestionScreenMixin {
 
     apiResult.when(
       success: (data) {
+        // Buton durumu ANINDA kapansin — refreshBalances bir ag round-trip'i
+        // suruyor, o sure boyunca buton acik kalmamali.
+        setState(() {
+          isSubmitting = false;
+          usedPowers.add(powerName);
+        });
         refreshBalances();
-        usedPowers.add(powerName);
 
         AnalyticsManager.instance.logEvent(
           AnalyticsEvents.chatPowerUsed,
@@ -104,7 +119,7 @@ mixin ChatQuestionPowerMixin on SolveChatQuestionScreenMixin {
             });
           case 'TIME_EXTEND':
             final extraSec = data.extraSeconds ?? 15;
-            extraTimeAdded += extraSec;
+            setState(() => extraTimeAdded += extraSec);
             timerKey.currentState?.addSeconds(extraSec);
           case 'SKIP':
             setState(() {
@@ -127,6 +142,7 @@ mixin ChatQuestionPowerMixin on SolveChatQuestionScreenMixin {
         timerKey.currentState?.resume();
       },
       failure: (f) async {
+        setState(() => isSubmitting = false);
         AnalyticsManager.instance.logEvent(
           AnalyticsEvents.chatPowerFailed,
           params: {
@@ -247,20 +263,26 @@ mixin ChatQuestionPowerMixin on SolveChatQuestionScreenMixin {
 
     if (!mounted) return;
 
-    apiResult.when(
-      success: (response) {
-        refreshBalances();
+    await apiResult.when(
+      success: (response) async {
+        await refreshBalances();
+        if (!mounted) return;
         setState(() {
           result = response;
         });
       },
-      failure: (f) {
+      failure: (f) async {
         if (f is ServerFailure && f.code == 'INSUFFICIENT_DIAMONDS') {
-          PaywallBottomSheetContent.show(ref,
+          await PaywallBottomSheetContent.show(ref,
               trigger: 'chat_question_rescue');
+          if (!mounted) return;
+          // RevenueCat webhook tamponu — usePower/submitWithSkip ile simetrik.
+          await Future.delayed(const Duration(milliseconds: 1500));
+          if (!mounted) return;
+          await refreshBalances();
           return;
         }
-        // DIAMOND_COOLDOWN ve diğer hatalar — snackbar (paywall cooldown'u atlayamaz).
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(f.message ?? context.tr('error_rescue_failed'))),
         );
