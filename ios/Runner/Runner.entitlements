@@ -10,8 +10,10 @@
 	</array>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
+		<!-- SADECE apex. www.quloapp.com EKLEME: Netlify www -> apex 301 yapiyor,
+		     Apple ise AASA cekerken redirect TAKIP ETMIYOR — dogrulama sessizce
+		     basarisiz oluyor. Android/Google tarafinda ayni tuzaga dusulmustu. -->
 		<string>applinks:quloapp.com</string>
-		<string>applinks:www.quloapp.com</string>
 	</array>
 </dict>
 </plist>
