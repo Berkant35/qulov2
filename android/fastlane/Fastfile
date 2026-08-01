@@ -57,7 +57,7 @@ platform :android do
     )
   end
 
-  desc "Production'a taslak olarak yukle — Play Console'dan elle yayina alinir"
+  desc "Production'a taslak olarak YENI aab yukle (henuz hicbir track'te yoksa)"
   lane :production_draft do
     ensure_key!
     upload_to_play_store(
@@ -69,6 +69,33 @@ platform :android do
       release_status: "draft",
     )
     UI.important("Taslak yuklendi. Yayina almak icin Play Console'dan onayla.")
+  end
+
+  desc "internal'daki mevcut build'i production'a TASLAK olarak terfi ettir"
+  lane :promote_to_production do
+    ensure_key!
+    info = version_info
+    # Ayni versionCode iki kez YUKLENEMEZ — build zaten internal'da oldugu icin
+    # yeniden yuklemek yerine terfi ettiriyoruz (skip_upload_* hepsi acik).
+    #
+    # DIKKAT: `release_status` YUKLEMELER icin gecerli, terfi icin DEGIL.
+    # Terfinin kendi parametresi var ve varsayilani "completed" — yani onu
+    # vermezsen build DOGRUDAN YAYINA CIKAR. 2026-08-01'de tam olarak bu oldu:
+    # taslak beklenirken 2.0.7 production'a canli gitti.
+    upload_to_play_store(
+      track: "internal",
+      track_promote_to: "production",
+      track_promote_release_status: "draft", # <-- kritik, silme
+      version_code: info[:code].to_i,
+      skip_upload_aab: true,
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      skip_upload_changelogs: true,
+    )
+    UI.important("versionCode #{info[:code]} production'a TASLAK olarak terfi etti.")
+    UI.important("Yayina almak icin Play Console > Uretim > 'Surumu incele' > 'Kullanima sunmayi baslat'.")
   end
 
   desc "Sadece release notlarini guncelle (yeni build yuklemeden)"
