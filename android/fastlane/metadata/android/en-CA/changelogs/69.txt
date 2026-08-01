@@ -1,0 +1,5 @@
+• Powers now work straight from your diamonds — no need to buy them first
+• Welcome gift for new members: 2 Oracle powers
+• The price is right on the button — see what you'll spend before you spend it
+• Better question creation: we flag duplicate options and help keep your questions guessable
+• Various bug fixes and performance improvements

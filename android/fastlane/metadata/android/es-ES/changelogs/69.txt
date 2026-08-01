@@ -1,5 +1,0 @@
-• Los poderes ahora se usan directamente con tus diamantes — no hace falta comprarlos antes
-• Regalo de bienvenida para nuevos miembros: 2 poderes Oráculo
-• El precio está en el botón — ves lo que gastarás antes de gastarlo
-• Creación de preguntas mejorada: avisamos si repites opciones y te ayudamos a que sean adivinables
-• Varias correcciones de errores y mejoras de rendimiento

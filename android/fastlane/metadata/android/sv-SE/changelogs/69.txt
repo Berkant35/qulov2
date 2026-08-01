@@ -1,5 +1,0 @@
-• Krafter fungerar nu direkt med dina diamanter — du behöver inte köpa dem först
-• Välkomstgåva till nya medlemmar: 2 Orakel-krafter
-• Priset står på knappen — du ser kostnaden innan du spenderar
-• Bättre frågeskapande: vi flaggar dubbla svarsalternativ och hjälper dig hålla frågorna gissningsbara
-• Diverse buggfixar och prestandaförbättringar
