@@ -59,12 +59,14 @@ class RevenueCatService {
   static Future<CustomerInfo> purchasePackage(Package package) async {
     _ensureConfigured();
     try {
-      final info = await Purchases.purchasePackage(package);
+      // purchases_flutter 9+ ile `purchasePackage` deprecated; yeni API
+      // PurchaseResult donuyor (customerInfo + storeTransaction).
+      final result = await Purchases.purchase(PurchaseParams.package(package));
       AnalyticsManager.instance.logEvent(
         AnalyticsEvents.diamondsPurchaseSuccess,
         params: {AnalyticsEvents.paramProductId: package.storeProduct.identifier},
       );
-      return info;
+      return result.customerInfo;
     } catch (e) {
       AnalyticsManager.instance.logEvent(
         AnalyticsEvents.diamondsPurchaseFail,
@@ -92,12 +94,14 @@ class RevenueCatService {
       if (products.isEmpty) {
         throw Exception('Product not found: $productId');
       }
-      final info = await Purchases.purchaseStoreProduct(products.first);
+      final result = await Purchases.purchase(
+        PurchaseParams.storeProduct(products.first),
+      );
       AnalyticsManager.instance.logEvent(
         AnalyticsEvents.diamondsPurchaseSuccess,
         params: {AnalyticsEvents.paramProductId: productId},
       );
-      return info;
+      return result.customerInfo;
     } catch (e) {
       AnalyticsManager.instance.logEvent(
         AnalyticsEvents.diamondsPurchaseFail,

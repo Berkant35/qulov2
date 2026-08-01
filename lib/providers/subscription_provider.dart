@@ -1,7 +1,10 @@
 import 'dart:developer' as dev;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:purchases_flutter/purchases_flutter.dart';
+// purchases_flutter 9+ kendi `SubscriptionInfo`unu export ediyor ve bizimkiyle
+// (data/models/subscription_model.dart) cakisiyor. Buradaki her kullanim BIZIM
+// modelimiz — SDK'ninkini gizliyoruz.
+import 'package:purchases_flutter/purchases_flutter.dart' hide SubscriptionInfo;
 import 'package:qulo_v2/core/services/revenuecat_service.dart';
 import 'package:qulo_v2/data/models/subscription_model.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
