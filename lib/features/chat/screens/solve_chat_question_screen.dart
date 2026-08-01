@@ -5,6 +5,7 @@ import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/core/widgets/diamond_icon.dart';
 import 'package:qulo_v2/data/models/chat_question_model.dart';
+import 'package:qulo_v2/features/chat/mixins/chat_question_power_mixin.dart';
 import 'package:qulo_v2/features/chat/mixins/solve_chat_question_screen_mixin.dart';
 import 'package:qulo_v2/features/chat/widgets/chat_question_result.dart';
 import 'package:qulo_v2/features/chat/widgets/solve_question_body.dart';
@@ -30,7 +31,7 @@ class SolveChatQuestionScreen extends ConsumerStatefulWidget {
 
 class _SolveChatQuestionScreenState
     extends ConsumerState<SolveChatQuestionScreen>
-    with SolveChatQuestionScreenMixin {
+    with SolveChatQuestionScreenMixin, ChatQuestionPowerMixin {
   @override
   void initState() {
     super.initState();
@@ -124,6 +125,7 @@ class _SolveChatQuestionScreenState
               removedOptions: removedOptions,
               suggestedOption: suggestedOption,
               hintVisible: hintVisible,
+              usedPowers: usedPowers,
               hintText: hintText,
               powerBlockActive: powerBlockActive,
               onTimeout: onTimeout,

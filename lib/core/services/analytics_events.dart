@@ -113,6 +113,23 @@ abstract class AnalyticsEvents {
   static const String quizTimerCritical = 'quiz_timer_critical';
   static const String quizStartFailed = 'quiz_start_failed';
 
+  // ─── Guc hunisi (Faz 2 / 2.5) ──────────────────────────────────────
+  // Guc kullanimi envanter kapisi yuzunden prod'da 0 idi ve bu ancak DB'den
+  // fark edilebildi — huninin her adimi artik olculuyor.
+  static const String quizPowerTap = 'quiz_power_tap';
+  static const String quizPowerUsed = 'quiz_power_used';
+  static const String quizPowerFailed = 'quiz_power_failed';
+  static const String quizRescueShown = 'quiz_rescue_shown';
+  static const String quizRescueAccepted = 'quiz_rescue_accepted';
+  static const String quizRescueDeclined = 'quiz_rescue_declined';
+
+  static const String chatPowerTap = 'chat_power_tap';
+  static const String chatPowerUsed = 'chat_power_used';
+  static const String chatPowerFailed = 'chat_power_failed';
+  static const String chatRescueShown = 'chat_rescue_shown';
+  static const String chatRescueAccepted = 'chat_rescue_accepted';
+  static const String chatRescueDeclined = 'chat_rescue_declined';
+
   // ─── Questions (8) ─────────────────────────────────────────────────
   static const String questionCreateStart = 'question_create_start';
   static const String questionCreateComplete = 'question_create_complete';
@@ -266,6 +283,13 @@ abstract class AnalyticsEvents {
   static const String paramStepIndex = 'step_index';
   static const String paramPhotoIndex = 'photo_index';
   static const String paramSource = 'source';
+  static const String paramPower = 'power';
+  static const String paramHasInventory = 'has_inventory';
+  static const String paramCost = 'cost';
+  static const String paramPurpleSpent = 'purple_spent';
+  /// `quiz_power_used` / `chat_power_used` icin `paramSource` degerleri.
+  static const String sourceInventory = 'inventory';
+  static const String sourceDiamond = 'diamond';
   static const String paramGender = 'gender';
   static const String paramAge = 'age';
   static const String paramGranted = 'granted';

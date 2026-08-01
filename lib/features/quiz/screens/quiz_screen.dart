@@ -9,7 +9,11 @@ import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/providers/quiz_provider.dart';
 import 'package:qulo_v2/providers/exchange_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
-import 'package:qulo_v2/features/quiz/mixins/quiz_screen_mixin.dart';
+import 'package:qulo_v2/features/quiz/quiz_power_rules.dart';
+import 'package:qulo_v2/features/quiz/mixins/quiz_answer_mixin.dart';
+import 'package:qulo_v2/features/quiz/mixins/quiz_flow_mixin.dart';
+import 'package:qulo_v2/features/quiz/mixins/quiz_power_mixin.dart';
+import 'package:qulo_v2/features/quiz/mixins/quiz_screen_state_mixin.dart';
 import 'package:qulo_v2/features/quiz/widgets/answer_feedback_overlay.dart';
 import 'package:qulo_v2/features/quiz/widgets/quiz_error_view.dart';
 import 'package:qulo_v2/features/quiz/widgets/quiz_question_content.dart';
@@ -25,7 +29,7 @@ class QuizScreen extends ConsumerStatefulWidget {
 }
 
 class _QuizScreenState extends ConsumerState<QuizScreen>
-    with QuizScreenMixin {
+    with QuizScreenStateMixin, QuizAnswerMixin, QuizPowerMixin, QuizFlowMixin {
   @override
   void initState() {
     super.initState();
@@ -97,14 +101,6 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
                     onSelectAnswer: selectAnswer,
                     onSubmitAnswer: submitAnswer,
                     onPowerUsed: usePower,
-                    onSheetOpening: () {
-                      timerKey.currentState?.pause();
-                      setState(() => isSheetOpen = true);
-                    },
-                    onSheetClosed: () {
-                      timerKey.currentState?.resume();
-                      setState(() => isSheetOpen = false);
-                    },
                   ),
                   if (isSheetOpen)
                     Positioned.fill(
@@ -123,13 +119,18 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
                       skipOption: RescuePowerOption(
                         type: PowerType.skip,
                         inventoryCount: ref.read(exchangeProvider).getCount('SKIP'),
-                        diamondCost: getPowerCost('SKIP'),
+                        diamondCost: quiz.purpleCostOf('SKIP'),
                       ),
-                      skipAllOption: RescuePowerOption(
-                        type: PowerType.skipAll,
-                        inventoryCount: ref.read(exchangeProvider).getCount('SKIP_ALL'),
-                        diamondCost: getPowerCost('SKIP_ALL'),
-                      ),
+                      // SKIP_ALL sadece kalan sorulari tek tek gecmekten UCUZ ise
+                      // teklif edilir — 2 soruluk quizde 2xSKIP=20 iken SKIP_ALL=30.
+                      skipAllOption: shouldOfferSkipAll(quiz)
+                          ? RescuePowerOption(
+                              type: PowerType.skipAll,
+                              inventoryCount:
+                                  ref.read(exchangeProvider).getCount('SKIP_ALL'),
+                              diamondCost: quiz.purpleCostOf('SKIP_ALL'),
+                            )
+                          : null,
                       onRescue: onRescue,
                       onDeclineRescue: onDeclineRescue,
                     ),

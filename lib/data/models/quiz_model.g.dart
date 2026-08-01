@@ -6,16 +6,34 @@ part of 'quiz_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+SessionPowerCost _$SessionPowerCostFromJson(Map<String, dynamic> json) =>
+    SessionPowerCost(
+      purple: (json['purple'] as num).toInt(),
+      green: (json['green'] as num).toInt(),
+    );
+
+Map<String, dynamic> _$SessionPowerCostToJson(SessionPowerCost instance) =>
+    <String, dynamic>{'purple': instance.purple, 'green': instance.green};
+
 QuizStartResponse _$QuizStartResponseFromJson(Map<String, dynamic> json) =>
     QuizStartResponse(
       sessionId: json['session_id'] as String,
       totalQuestions: (json['total_questions'] as num).toInt(),
+      powerCosts:
+          (json['power_costs'] as Map<String, dynamic>?)?.map(
+            (k, e) => MapEntry(
+              k,
+              SessionPowerCost.fromJson(e as Map<String, dynamic>),
+            ),
+          ) ??
+          const {},
     );
 
 Map<String, dynamic> _$QuizStartResponseToJson(QuizStartResponse instance) =>
     <String, dynamic>{
       'session_id': instance.sessionId,
       'total_questions': instance.totalQuestions,
+      'power_costs': instance.powerCosts,
     };
 
 QuizQuestionModel _$QuizQuestionModelFromJson(Map<String, dynamic> json) =>
@@ -30,6 +48,11 @@ QuizQuestionModel _$QuizQuestionModelFromJson(Map<String, dynamic> json) =>
           .toList(),
       hasHint: json['has_hint'] as bool? ?? false,
       timeLimitSeconds: (json['time_limit_seconds'] as num?)?.toInt() ?? 30,
+      usedPowers:
+          (json['used_powers'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$QuizQuestionModelToJson(QuizQuestionModel instance) =>
@@ -42,6 +65,7 @@ Map<String, dynamic> _$QuizQuestionModelToJson(QuizQuestionModel instance) =>
       'answers': instance.answers,
       'has_hint': instance.hasHint,
       'time_limit_seconds': instance.timeLimitSeconds,
+      'used_powers': instance.usedPowers,
     };
 
 QuizAnswerOption _$QuizAnswerOptionFromJson(Map<String, dynamic> json) =>

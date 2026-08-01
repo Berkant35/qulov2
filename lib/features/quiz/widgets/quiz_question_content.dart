@@ -32,8 +32,6 @@ class QuizQuestionContent extends StatefulWidget {
   final ValueChanged<int> onSelectAnswer;
   final Future<void> Function() onSubmitAnswer;
   final Future<void> Function(String power) onPowerUsed;
-  final VoidCallback onSheetOpening;
-  final VoidCallback onSheetClosed;
 
   const QuizQuestionContent({
     super.key,
@@ -49,8 +47,6 @@ class QuizQuestionContent extends StatefulWidget {
     required this.onSelectAnswer,
     required this.onSubmitAnswer,
     required this.onPowerUsed,
-    required this.onSheetOpening,
-    required this.onSheetClosed,
   });
 
   @override
@@ -169,8 +165,6 @@ class _QuizQuestionContentState extends State<QuizQuestionContent> {
             sessionId: widget.sessionId,
             hasHint: widget.question.hasHint,
             onPowerUsed: widget.onPowerUsed,
-            onSheetOpening: widget.onSheetOpening,
-            onSheetClosed: widget.onSheetClosed,
           ),
         ],
       ),

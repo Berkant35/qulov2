@@ -4,17 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/network/result.dart';
-import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/data/models/chat_question_model.dart';
 import 'package:qulo_v2/features/chat/screens/solve_chat_question_screen.dart';
 import 'package:qulo_v2/features/chat/widgets/abandon_warning_dialog.dart';
-import 'package:qulo_v2/features/chat/widgets/chat_question_rescue.dart';
 import 'package:qulo_v2/features/diamonds/widgets/paywall_bottom_sheet.dart';
-import 'package:qulo_v2/features/quiz/widgets/power_purchase_sheet.dart';
 import 'package:qulo_v2/features/quiz/widgets/quiz_timer.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
-import 'package:qulo_v2/providers/economy_config_provider.dart';
 import 'package:qulo_v2/providers/exchange_provider.dart';
 
 mixin SolveChatQuestionScreenMixin
@@ -33,10 +29,22 @@ mixin SolveChatQuestionScreenMixin
 
   ChatQuestionAnswerResponse? result;
 
-  int _extraTimeAdded = 0;
+  /// TIME_EXTEND ile eklenen toplam sure — sonuc ekraninda gosteriliyor.
+  /// `ChatQuestionPowerMixin` (ayri dosya) yazdigi icin public.
+  int extraTimeAdded = 0;
   List<PowerUsageRecord> powerUsages = [];
 
+  /// Bu soruda kullanilmis gucler — butonu kapatir. Sunucu ikinci kullanimi zaten
+  /// POWER_ALREADY_USED ile reddediyor; bu gorsel geri bildirim.
+  final Set<String> usedPowers = {};
+
   int get startTime => widget.question.timeLimitSeconds;
+
+  /// `ChatQuestionPowerMixin` saglar — timeout akisi rescue sheet'ini aciyor.
+  void showRescueSheet();
+
+  /// `ChatQuestionPowerMixin` saglar — envanter/elmas/kullanici tazeleme.
+  Future<void> refreshBalances();
 
   void initMixin() {
     powerBlockActive = widget.question.isPowerBlocked;
@@ -72,7 +80,7 @@ mixin SolveChatQuestionScreenMixin
     setState(() => isSubmitting = true);
 
     final remaining = timerKey.currentState?.remainingSeconds ?? 0;
-    final totalTime = startTime + _extraTimeAdded;
+    final totalTime = startTime + extraTimeAdded;
     final timeSpent = (totalTime - remaining).clamp(0, totalTime);
 
     final apiResult = await ref.read(chatRepositoryProvider).answerQuestion(
@@ -116,7 +124,7 @@ mixin SolveChatQuestionScreenMixin
     setState(() => isSubmitting = true);
 
     final remaining = timerKey.currentState?.remainingSeconds ?? 0;
-    final totalTime = startTime + _extraTimeAdded;
+    final totalTime = startTime + extraTimeAdded;
     final timeSpent = (totalTime - remaining).clamp(0, totalTime);
 
     final apiResult = await ref.read(chatRepositoryProvider).answerQuestion(
@@ -163,121 +171,6 @@ mixin SolveChatQuestionScreenMixin
 
   // ── Power ──────────────────────────────────────────────────
 
-  Future<void> usePower(String powerName) async {
-    timerKey.currentState?.pause();
-
-    // Envanter kontrolü — yoksa PowerPurchaseSheet aç
-    final exchange = ref.read(exchangeProvider);
-    final inventoryCount = exchange.inventory
-        .where((e) => e.powerName == powerName)
-        .fold<int>(0, (sum, e) => sum + e.count);
-
-    if (inventoryCount <= 0) {
-      await showModalBottomSheet<void>(
-        context: context,
-        isScrollControlled: true,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(24),
-          ),
-        ),
-        builder: (_) => const PowerPurchaseSheet(),
-      );
-      if (mounted) timerKey.currentState?.resume();
-      return;
-    }
-
-    final apiResult = await ref.read(chatRepositoryProvider).usePower(
-      widget.question.id,
-      powerName,
-    );
-
-    if (!mounted) return;
-
-    apiResult.when(
-      success: (data) {
-        ref.invalidate(diamondProvider);
-        ref.read(exchangeProvider.notifier).fetchAll();
-
-        // Track power usage for result screen
-        if (data.cost != null && data.cost! > 0) {
-          powerUsages.add(PowerUsageRecord(
-            powerName: powerName,
-            purpleSpent: data.cost!,
-            greenEarned: data.greenReward ?? 0,
-          ));
-        }
-
-        switch (powerName) {
-          case 'ORACLE':
-            if (data.suggestedOption != null &&
-                !removedOptions.contains(data.suggestedOption)) {
-              setState(() => suggestedOption = data.suggestedOption);
-            }
-          case 'HALF':
-            setState(() =>
-                removedOptions = data.eliminatedOptions?.toSet() ?? {});
-          case 'HINT':
-            setState(() {
-              hintVisible = true;
-              hintText = data.hintText ?? widget.question.hintText;
-            });
-          case 'TIME_EXTEND':
-            final extraSec = data.extraSeconds ?? 15;
-            _extraTimeAdded += extraSec;
-            timerKey.currentState?.addSeconds(extraSec);
-          case 'SKIP':
-            setState(() {
-              answered = true;
-              result = ChatQuestionAnswerResponse(
-                isCorrect: true,
-                unmatched: false,
-                rewardMediaUrl: widget.question.rewardMediaUrl,
-                greenReward: data.greenReward ?? 0,
-                powersUsed: const ['SKIP'],
-                correctOption: data.question?.answeredOption,
-                answeredOption: data.question?.answeredOption,
-              );
-            });
-            return;
-          case 'POWER_UNBLOCK':
-            setState(() => powerBlockActive = false);
-        }
-
-        timerKey.currentState?.resume();
-      },
-      failure: (f) async {
-        if (f is ServerFailure && f.code == 'INSUFFICIENT_DIAMONDS') {
-          await PaywallBottomSheetContent.show(ref,
-              trigger: 'chat_question_power');
-          if (mounted) timerKey.currentState?.resume();
-        } else if (f is ServerFailure && f.code == 'DIAMOND_COOLDOWN') {
-          // 24h social-signup cooldown — paywall bypass etmez; mesaj göster.
-          timerKey.currentState?.resume();
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(f.message ?? context.tr('error_general'))),
-            );
-          }
-        } else if (f is ServerFailure && f.code == 'RATE_LIMITED') {
-          timerKey.currentState?.resume();
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(context.tr('error_rate_limit'))),
-            );
-          }
-        } else {
-          timerKey.currentState?.resume();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                content: Text(f.message ?? context.tr('error_general'))),
-          );
-        }
-      },
-    );
-  }
-
   Future<void> submitWithSkip() async {
     setState(() => isSubmitting = true);
     final apiResult = await ref.read(chatRepositoryProvider).answerQuestion(
@@ -316,49 +209,6 @@ mixin SolveChatQuestionScreenMixin
     showRescueSheet();
   }
 
-  void showRescueSheet() {
-    showModalBottomSheet<void>(
-      context: context,
-      isDismissible: false,
-      enableDrag: false,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(AppSpacing.radiusXl),
-        ),
-      ),
-      builder: (_) {
-        final exchange = ref.read(exchangeProvider);
-        final economyConfig = ref.read(economyConfigProvider);
-        final skipCount = exchange.getCount('SKIP');
-        final skipCost = economyConfig.powerCosts.skip.purpleCost;
-        final unblockCount = exchange.getCount('POWER_UNBLOCK');
-        final unblockCost = economyConfig.powerCosts.powerUnblock.purpleCost;
-
-        return ChatQuestionRescue(
-        isPowerBlocked: powerBlockActive,
-        skipCost: skipCost,
-        skipCount: skipCount,
-        unblockCost: unblockCost,
-        unblockCount: unblockCount,
-        onSkip: () {
-          Navigator.of(context).pop();
-          submitWithSkip();
-        },
-        onPowerUnblock: () async {
-          Navigator.of(context).pop();
-          await usePower('POWER_UNBLOCK');
-          if (mounted && timedOut) showRescueSheet();
-        },
-        onGiveUp: () {
-          Navigator.of(context).pop();
-          submitGiveUp();
-        },
-      );
-      },
-    );
-  }
-
   Future<void> submitGiveUp() async {
     setState(() => isSubmitting = true);
     final apiResult = await ref.read(chatRepositoryProvider).handleTimeout(
@@ -381,42 +231,6 @@ mixin SolveChatQuestionScreenMixin
         setState(() => isSubmitting = false);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(f.message ?? context.tr('error_chat_generic'))),
-        );
-      },
-    );
-  }
-
-  // ── Rescue (after wrong answer) ────────────────────────────
-
-  Future<void> handleRescue() async {
-    // If power block is still active, show rescue sheet instead of calling API
-    if (powerBlockActive) {
-      showRescueSheet();
-      return;
-    }
-
-    final apiResult = await ref.read(chatRepositoryProvider).rescueQuestion(
-      widget.question.id,
-    );
-
-    if (!mounted) return;
-
-    apiResult.when(
-      success: (response) {
-        ref.invalidate(diamondProvider);
-        setState(() {
-          result = response;
-        });
-      },
-      failure: (f) {
-        if (f is ServerFailure && f.code == 'INSUFFICIENT_DIAMONDS') {
-          PaywallBottomSheetContent.show(ref,
-              trigger: 'chat_question_rescue');
-          return;
-        }
-        // DIAMOND_COOLDOWN ve diğer hatalar — snackbar (paywall cooldown'u atlayamaz).
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(f.message ?? context.tr('error_rescue_failed'))),
         );
       },
     );

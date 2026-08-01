@@ -66,6 +66,16 @@ class QuestionStepQuestion extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
+                // Zorluk rehberligi — cevap dogruluk orani prod'da %35 ve
+                // 67/67 fail yanlis cevaptan geliyordu; sorular fazla zordu.
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  context.tr('question_create_difficulty_tip'),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: context.appColors.warning,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ],
             ),
           ),

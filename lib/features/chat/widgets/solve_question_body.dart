@@ -28,6 +28,10 @@ class SolveQuestionBody extends StatelessWidget {
   final Future<void> Function(String) onPowerTap;
   final Map<String, int> powerCounts;
   final PowerCostsConfig powerCosts;
+
+  /// Bu soruda kullanilmis gucler. Envanter kapisi kalkinca tekrar tap = tekrar
+  /// ucret riski dogdu; TIME_EXTEND ve SKIP eskiden hic kapatilmiyordu.
+  final Set<String> usedPowers;
   final String? senderPhotoUrl;
   final String? senderName;
 
@@ -48,6 +52,7 @@ class SolveQuestionBody extends StatelessWidget {
     required this.onPowerTap,
     this.powerCounts = const {},
     this.powerCosts = PowerCostsConfig.fallback,
+    this.usedPowers = const {},
     this.senderPhotoUrl,
     this.senderName,
   });
@@ -149,6 +154,7 @@ class SolveQuestionBody extends StatelessWidget {
             onPowerTap: onPowerTap,
             powerCosts: powerCosts,
             disabledPowers: {
+              ...usedPowers,
               if (suggestedOption != null) 'ORACLE',
               if (removedOptions.isNotEmpty) 'HALF',
               if (hintVisible) 'HINT',

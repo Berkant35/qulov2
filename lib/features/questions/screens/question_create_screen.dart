@@ -93,6 +93,7 @@ class _QuestionCreateScreenState extends ConsumerState<QuestionCreateScreen>
                   correctAnswer: correctAnswer,
                   onCorrectAnswerChanged: (v) =>
                       setState(() => correctAnswer = v),
+                  duplicateIndices: duplicateAnswerIndices(),
                 ),
                 QuestionStepSettings(
                   selectedTimeLimit: selectedTimeLimit,

@@ -15,6 +15,9 @@ class QuestionStepAnswers extends StatelessWidget {
   final int correctAnswer;
   final ValueChanged<int> onCorrectAnswerChanged;
 
+  /// Birbirinin ayni olan siklarin 0-tabanli indeksleri — inline hata gosterilir.
+  final Set<int> duplicateIndices;
+
   const QuestionStepAnswers({
     super.key,
     required this.answer1Controller,
@@ -24,6 +27,7 @@ class QuestionStepAnswers extends StatelessWidget {
     required this.hintController,
     required this.correctAnswer,
     required this.onCorrectAnswerChanged,
+    this.duplicateIndices = const {},
   });
 
   @override
@@ -82,6 +86,9 @@ class QuestionStepAnswers extends StatelessWidget {
                           .replaceAll('{n}', '$num'),
                       maxLength: 200,
                       textCapitalization: TextCapitalization.sentences,
+                      errorText: duplicateIndices.contains(i)
+                          ? context.tr('question_answers_must_differ')
+                          : null,
                       textInputAction: i < 3
                           ? TextInputAction.next
                           : TextInputAction.done,

@@ -3,16 +3,36 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'quiz_model.g.dart';
 
+/// Oturuma ozel efektif guc fiyati — soru sayisi carpani SUNUCUDA uygulanmis hali.
+/// Client hesap yapmaz; eskiden carpani atlayip 2 soruluk quizde 2x fiyat gosteriyordu.
+@JsonSerializable()
+class SessionPowerCost extends Equatable {
+  final int purple;
+  final int green;
+
+  const SessionPowerCost({required this.purple, required this.green});
+
+  factory SessionPowerCost.fromJson(Map<String, dynamic> json) =>
+      _$SessionPowerCostFromJson(json);
+  Map<String, dynamic> toJson() => _$SessionPowerCostToJson(this);
+
+  @override
+  List<Object?> get props => [purple, green];
+}
+
 @JsonSerializable()
 class QuizStartResponse extends Equatable {
   @JsonKey(name: 'session_id')
   final String sessionId;
   @JsonKey(name: 'total_questions')
   final int totalQuestions;
+  @JsonKey(name: 'power_costs')
+  final Map<String, SessionPowerCost> powerCosts;
 
   const QuizStartResponse({
     required this.sessionId,
     required this.totalQuestions,
+    this.powerCosts = const {},
   });
 
   factory QuizStartResponse.fromJson(Map<String, dynamic> json) =>
@@ -41,6 +61,11 @@ class QuizQuestionModel extends Equatable {
   @JsonKey(name: 'time_limit_seconds')
   final int timeLimitSeconds;
 
+  /// Bu soruda zaten kullanilmis gucler — uygulama yeniden baslatilsa da
+  /// buton durumu dogru kurulsun diye sunucudan geliyor.
+  @JsonKey(name: 'used_powers')
+  final List<String> usedPowers;
+
   const QuizQuestionModel({
     required this.sessionId,
     required this.questionNumber,
@@ -50,6 +75,7 @@ class QuizQuestionModel extends Equatable {
     required this.answers,
     this.hasHint = false,
     this.timeLimitSeconds = 30,
+    this.usedPowers = const [],
   });
 
   factory QuizQuestionModel.fromJson(Map<String, dynamic> json) =>

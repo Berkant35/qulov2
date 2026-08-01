@@ -11,6 +11,14 @@ class QuizState {
   final bool isLoading;
   final AppFailure? failure;
 
+  /// Sunucudan gelen efektif guc fiyatlari (soru sayisi carpani uygulanmis).
+  /// TEK DOGRU KAYNAK — client burada hesap yapmaz.
+  final Map<String, SessionPowerCost> powerCosts;
+
+  /// Su anki soruda kullanilmis gucler. Sunucu ucretlendirmeyi zaten reddediyor;
+  /// bu, butonu kapatarak kullaniciya geri bildirim veriyor.
+  final Set<String> usedPowers;
+
   const QuizState({
     this.sessionId,
     this.totalQuestions = 0,
@@ -18,7 +26,14 @@ class QuizState {
     this.lastAnswer,
     this.isLoading = false,
     this.failure,
+    this.powerCosts = const {},
+    this.usedPowers = const {},
   });
+
+  /// Guc icin efektif mor elmas maliyeti. Bilinmiyorsa 0 (fiyat gosterilmez).
+  int purpleCostOf(String powerName) => powerCosts[powerName]?.purple ?? 0;
+
+  int greenCostOf(String powerName) => powerCosts[powerName]?.green ?? 0;
 
   QuizState copyWith({
     String? sessionId,
@@ -27,6 +42,8 @@ class QuizState {
     QuizAnswerResponse? lastAnswer,
     bool? isLoading,
     AppFailure? failure,
+    Map<String, SessionPowerCost>? powerCosts,
+    Set<String>? usedPowers,
   }) {
     return QuizState(
       sessionId: sessionId ?? this.sessionId,
@@ -35,6 +52,8 @@ class QuizState {
       lastAnswer: lastAnswer,
       isLoading: isLoading ?? this.isLoading,
       failure: failure,
+      powerCosts: powerCosts ?? this.powerCosts,
+      usedPowers: usedPowers ?? this.usedPowers,
     );
   }
 }
@@ -51,6 +70,7 @@ class QuizNotifier extends Notifier<QuizState> {
         state = state.copyWith(
           sessionId: data.sessionId,
           totalQuestions: data.totalQuestions,
+          powerCosts: data.powerCosts,
           isLoading: false,
         );
         await fetchCurrentQuestion();
@@ -66,9 +86,20 @@ class QuizNotifier extends Notifier<QuizState> {
     state = state.copyWith(isLoading: true, failure: null);
     final result = await ref.read(quizRepositoryProvider).getCurrentQuestion(sessionId);
     result.when(
-      success: (question) => state = state.copyWith(currentQuestion: question, isLoading: false),
+      // usedPowers sunucudan gelir — uygulama yeniden baslatilsa da buton durumu dogru.
+      success: (question) => state = state.copyWith(
+        currentQuestion: question,
+        usedPowers: question.usedPowers.toSet(),
+        isLoading: false,
+      ),
       failure: (f) => state = state.copyWith(isLoading: false, failure: f),
     );
+  }
+
+  /// Guc kullanildi — butonu kapat. Sunucu ikinci kullanimi zaten reddediyor
+  /// (POWER_ALREADY_USED), bu yalnizca gorsel geri bildirim.
+  void markPowerUsed(String powerName) {
+    state = state.copyWith(usedPowers: {...state.usedPowers, powerName});
   }
 
   Future<Result<QuizAnswerResponse>> answer(int? selectedAnswer, {String? powerUsed, int? timeSpent}) async {

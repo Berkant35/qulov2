@@ -28,8 +28,29 @@ mixin QuestionCreateScreenMixin on ConsumerState<QuestionCreateScreen> {
   bool get isEditMode => widget.editQuestion != null;
   bool didComplete = false;
 
+  List<TextEditingController> get _answerControllers => [
+        answer1Controller,
+        answer2Controller,
+        answer3Controller,
+        answer4Controller,
+      ];
+
+  /// Metin degistikce yeniden ciz. Bu listener yoktu: yazarken ne onizleme karti
+  /// ne de "Ileri" butonu guncelleniyordu — sadece dogru cevap radio'suna basinca
+  /// (setState) tazeleniyordu. Sik tekillik hatasi da bu olmadan gorunmezdi.
+  void _onFieldChanged() {
+    if (mounted) setState(() {});
+  }
+
   void initMixin() {
     AnalyticsManager.instance.logEvent(AnalyticsEvents.questionCreateStart);
+
+    questionTextController.addListener(_onFieldChanged);
+    hintController.addListener(_onFieldChanged);
+    for (final c in _answerControllers) {
+      c.addListener(_onFieldChanged);
+    }
+
     if (isEditMode) {
       final q = widget.editQuestion!;
       questionTextController.text = q.questionText;
@@ -63,6 +84,11 @@ mixin QuestionCreateScreenMixin on ConsumerState<QuestionCreateScreen> {
       AnalyticsManager.instance
           .logEvent(AnalyticsEvents.questionCreateAbandon);
     }
+    questionTextController.removeListener(_onFieldChanged);
+    hintController.removeListener(_onFieldChanged);
+    for (final c in _answerControllers) {
+      c.removeListener(_onFieldChanged);
+    }
     pageController.dispose();
     questionTextController.dispose();
     answer1Controller.dispose();
@@ -86,15 +112,38 @@ mixin QuestionCreateScreenMixin on ConsumerState<QuestionCreateScreen> {
       case 0:
         return questionTextController.text.trim().isNotEmpty;
       case 1:
-        return answer1Controller.text.trim().isNotEmpty &&
-            answer2Controller.text.trim().isNotEmpty &&
-            answer3Controller.text.trim().isNotEmpty &&
-            answer4Controller.text.trim().isNotEmpty;
+        return _answerControllers.every((c) => c.text.trim().isNotEmpty) &&
+            duplicateAnswerIndices().isEmpty;
       case 2:
         return true;
       default:
         return false;
     }
+  }
+
+  /// Ayni metni tasiyan siklarin 0-tabanli indeksleri.
+  ///
+  /// Ayni sik iki kez girilirse soru ya cozulemez hale geliyor ya da tahmin
+  /// edilebilirligi bozuluyor — hicbir katmanda kontrol yoktu. Karsilastirma
+  /// trim + kucuk harf (sunucudaki Zod refine ile ayni kural).
+  Set<int> duplicateAnswerIndices() {
+    final seen = <String, int>{};
+    final duplicates = <int>{};
+
+    for (var i = 0; i < _answerControllers.length; i++) {
+      final value = _answerControllers[i].text.trim().toLowerCase();
+      if (value.isEmpty) continue;
+
+      final firstIndex = seen[value];
+      if (firstIndex != null) {
+        duplicates
+          ..add(firstIndex)
+          ..add(i);
+      } else {
+        seen[value] = i;
+      }
+    }
+    return duplicates;
   }
 
   void goNext() {
