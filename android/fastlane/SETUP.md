@@ -16,19 +16,27 @@ brew install fastlane
 export LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8   # fastlane UTF-8 locale ister
 ```
 
-**Google Play service account** — henuz YOK, yukleme yapmadan once gerekli:
+**Google Play service account — KURULDU** (2026-08-01):
 
-1. Play Console → Setup → API access
-2. Google Cloud projesinde service account olustur
-3. Play Console'da o hesaba **Release manager** yetkisi ver
-4. JSON anahtarini indir → `~/private_keys/qulo-play-service-account.json`
-   (ya da `PLAY_JSON_KEY_FILE` ile baska yol ver)
+- GCP projesi: `qulo-b2f1a` (uygulamanin Firebase projesi)
+- Service account: `qulo-play-publisher@qulo-b2f1a.iam.gserviceaccount.com`
+- Anahtar: `~/private_keys/qulo-play-service-account.json` (izin `600`)
+- Play yetkisi **sadece Qulo uygulamasina** verildi (hesap geneli DEGIL):
+  uygulama bilgisi (salt okunur) · uretim surumune yayinlama · test kanallarina
+  yayinlama · magazadaki varligi yonetme.
+  **Verilmedi:** yonetici, finansal veri, siparis/abonelik yonetimi.
+
+> Play Console'da artik "API erisimi" sayfasi YOK (Ayarlar altinda arama, bulamazsin).
+> Guncel akis: GCP'de service account olustur → Play Console → Kullanicilar ve
+> izinler → **Yeni kullanicilar davet et** → SA e-postasini gir → uygulama bazli
+> izinleri sec.
 
 Dogrula:
 
 ```bash
 cd android
 fastlane run validate_play_store_json_key json_key:$HOME/private_keys/qulo-play-service-account.json
+# beklenen: "Successfully established connection to Google Play Store."
 ```
 
 Anahtar yoksa lane'ler yuklemeye kalkismadan once net bir mesajla duruyor.
@@ -52,12 +60,21 @@ Ayni dosyayi App Store ve TestFlight de kullaniyor — metni orada degistir, son
 
 ```bash
 node scripts/sync_play_changelogs.mjs        # versionCode pubspec.yaml'dan
-node scripts/sync_play_changelogs.mjs 68     # elle versionCode
+node scripts/sync_play_changelogs.mjs 69     # elle versionCode
 ```
 
-Bu, `metadata/android/<locale>/changelogs/<versionCode>.txt` dosyalarini uretir.
-Script Play'in **500 karakter/dil** sinirini kontrol eder; asilirsa dosya yazmadan
-hata verir.
+**Hedef diller sabit DEGIL** — script Play Developer API'sinden magaza listelemesi
+dillerini canli ceker. Sebep: sabit liste ilk denemede patladi
+(`Invalid request - This app has no title for language fr-FR`). Play, magaza
+listelemesi olmayan dile release notu kabul etmiyor.
+
+Su an Play'de **10 dil** var: `ar de-DE en-AU en-CA en-GB en-IN en-SG en-US en-ZA tr-TR`.
+16 dilin kalani (fr, es, it, pt, nl, pl, ru, sv, hi, ja, ko, zh) Play'de magaza
+listelemesi olmadigi icin atlanir; Ingilizce varyantlari (`en-*`) `en` metnini alir.
+Play'e dil eklenir/cikarilirsa script kendini duzeltir.
+
+Script Play'in **500 karakter/dil** sinirini de kontrol eder; asilirsa dosya
+yazmadan hata verir.
 
 ## Dikkat
 
