@@ -1,4 +1,4 @@
-# Qulo 2.0.7 (build 68) — Release Notes / What's New
+# Qulo 2.0.7 (build 69) — Release Notes / What's New
 
 **Faz 2 — Eşleşme Motoru.** Bu sürümün tek konusu var: quiz'i geçilebilir kılmak.
 
