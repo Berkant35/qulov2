@@ -1,0 +1,5 @@
+• Güçler artık doğrudan elmasla kullanılabiliyor — önceden satın almana gerek yok
+• Yeni üyelere hoş geldin hediyesi: 2 Kâhin gücü
+• Fiyat butonun altında — harcamadan önce ne kadar elmas gideceğini görüyorsun
+• Soru oluşturma iyileştirildi: aynı şıklar uyarılıyor, soruların tahmin edilebilir kalması için ipucu veriliyor
+• Çeşitli hata düzeltmeleri ve performans iyileştirmeleri

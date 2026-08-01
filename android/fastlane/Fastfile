@@ -1,0 +1,114 @@
+# Qulo — Google Play deploy (fastlane supply)
+#
+# Neden: iOS tarafinda calisan bir zincir vardi (deploy_testflight.sh +
+# scripts/push_testflight_notes.mjs), Android tarafinda hicbir sey yoktu — AAB
+# elle build edilip Play Console'a elle yukleniyordu ve release notlari elle
+# 16 dile yapistiriliyordu. Bu lane'ler o bosluğu kapatiyor.
+#
+# Release notlari `metadata/android/<locale>/changelogs/<versionCode>.txt`
+# dosyalarindan okunur. Tek kaynak yine `scripts/testflight_release_notes.json`;
+# `fastlane android sync_changelogs` ile buraya uretilir.
+#
+# NOT: fastlane UTF-8 locale ister. Kabuğunda yoksa:
+#   export LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
+
+default_platform(:android)
+
+FLUTTER_ROOT = File.expand_path("../..", __dir__)
+AAB_PATH = File.join(FLUTTER_ROOT, "build/app/outputs/bundle/release/app-release.aab")
+API_BASE_URL = ENV["API_BASE_URL"] || "https://qulo-server-production.up.railway.app/api/v1"
+
+platform :android do
+  desc "pubspec.yaml'dan surum bilgisini oku"
+  lane :version_info do
+    pubspec = File.read(File.join(FLUTTER_ROOT, "pubspec.yaml"))
+    line = pubspec[/^version:\s*(.+)$/, 1].strip
+    name, code = line.split("+")
+    UI.message("Surum: #{name} (versionCode #{code})")
+    { name: name, code: code }
+  end
+
+  desc "AAB uret (release, prod API)"
+  lane :build_aab do
+    Dir.chdir(FLUTTER_ROOT) do
+      sh("fvm flutter build appbundle --release --dart-define=API_BASE_URL=#{API_BASE_URL}")
+    end
+    UI.success("AAB: #{AAB_PATH}")
+  end
+
+  desc "Release notlarini testflight_release_notes.json'dan changelogs/'a uret"
+  lane :sync_changelogs do
+    info = version_info
+    Dir.chdir(FLUTTER_ROOT) do
+      sh("node scripts/sync_play_changelogs.mjs #{info[:code]}")
+    end
+  end
+
+  desc "Internal test track'e yukle (varsayilan gunluk akis)"
+  lane :internal do
+    ensure_key!
+    upload_to_play_store(
+      track: "internal",
+      aab: AAB_PATH,
+      skip_upload_apk: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      release_status: "completed",
+    )
+  end
+
+  desc "Production'a taslak olarak yukle — Play Console'dan elle yayina alinir"
+  lane :production_draft do
+    ensure_key!
+    upload_to_play_store(
+      track: "production",
+      aab: AAB_PATH,
+      skip_upload_apk: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      release_status: "draft",
+    )
+    UI.important("Taslak yuklendi. Yayina almak icin Play Console'dan onayla.")
+  end
+
+  desc "Sadece release notlarini guncelle (yeni build yuklemeden)"
+  lane :notes_only do
+    ensure_key!
+    upload_to_play_store(
+      track: "production",
+      skip_upload_aab: true,
+      skip_upload_apk: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      skip_upload_metadata: false,
+    )
+  end
+
+  desc "Tam akis: notlari uret -> AAB build -> internal track"
+  lane :ship_internal do
+    sync_changelogs
+    build_aab
+    internal
+  end
+
+  # ── Yardimci ──
+  # supply, anahtar yoksa anlasilmasi zor bir hata veriyor; erken ve net patlat.
+  def ensure_key!
+    path = ENV["PLAY_JSON_KEY_FILE"] || File.expand_path("~/private_keys/qulo-play-service-account.json")
+    return if File.exist?(path)
+
+    UI.user_error!(<<~MSG)
+      Google Play service account JSON bulunamadi: #{path}
+
+      Olusturma adimlari:
+        1. Play Console > Setup > API access
+        2. Google Cloud projesinde service account olustur
+        3. Play Console'da o hesaba "Release manager" yetkisi ver
+        4. JSON anahtarini indir, yukaridaki yola koy
+           (veya PLAY_JSON_KEY_FILE ile baska yol ver)
+
+      Dogrulama:
+        cd android && fastlane run validate_play_store_json_key json_key:#{path}
+    MSG
+  end
+end

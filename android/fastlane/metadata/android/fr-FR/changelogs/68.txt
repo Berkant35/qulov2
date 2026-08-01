@@ -1,0 +1,5 @@
+• Les pouvoirs s'utilisent désormais directement avec tes diamants — plus besoin de les acheter d'abord
+• Cadeau de bienvenue pour les nouveaux membres : 2 pouvoirs Oracle
+• Le prix est affiché sur le bouton — tu vois ce que ça coûte avant de dépenser
+• Création de questions améliorée : on repère les réponses identiques et on t'aide à garder tes questions devinables
+• Corrections de bugs et améliorations des performances
