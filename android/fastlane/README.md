@@ -53,7 +53,15 @@ Internal test track'e yukle (varsayilan gunluk akis)
 [bundle exec] fastlane android production_draft
 ```
 
-Production'a taslak olarak yukle — Play Console'dan elle yayina alinir
+Production'a taslak olarak YENI aab yukle (henuz hicbir track'te yoksa)
+
+### android promote_to_production
+
+```sh
+[bundle exec] fastlane android promote_to_production
+```
+
+internal'daki mevcut build'i production'a TASLAK olarak terfi ettir
 
 ### android notes_only
 
