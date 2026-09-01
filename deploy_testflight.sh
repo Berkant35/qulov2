@@ -85,18 +85,17 @@ log "IPA ready: $IPA_FILE"
 # ─── 6. Upload to TestFlight ───
 log "Uploading to TestFlight..."
 
+# Apple'in hata mesaji tek teshis kaynagimiz — stderr'i YUTMA.
+# (Bir kez "Failed to upload package." disinda hicbir sey gormeden saatler kaybedildi.)
 xcrun altool --upload-app \
   --type ios \
   --file "$IPA_FILE" \
   --apiKey "${APP_STORE_API_KEY:-}" \
-  --apiIssuer "${APP_STORE_API_ISSUER:-}" \
-  2>/dev/null || {
-    warn "altool upload failed — trying xcrun notarytool / Transporter"
-    warn "You can manually upload: $IPA_FILE"
-    warn "Open Transporter.app and drag the IPA, or use:"
-    echo ""
-    echo "  xcrun altool --upload-app --type ios --file \"$IPA_FILE\" --apiKey YOUR_KEY --apiIssuer YOUR_ISSUER"
-    echo ""
+  --apiIssuer "${APP_STORE_API_ISSUER:-}" || {
+    warn "altool upload failed — Apple'in yukaridaki hata mesajini oku"
+    warn "Sik gorulenler: 90186/90062 = surum hatti kapali, pubspec'te version'i yukselt"
+    warn "Manuel yukleme: Transporter.app'e su dosyayi surukle → $IPA_FILE"
+    err "TestFlight yuklemesi basarisiz — build $NEW_BUILD_NUMBER gonderilmedi"
 }
 
-log "Done! Version $VERSION_NAME+$NEW_BUILD_NUMBER"
+log "Done! Version $VERSION_NAME+$NEW_BUILD_NUMBER TestFlight'a yuklendi"
