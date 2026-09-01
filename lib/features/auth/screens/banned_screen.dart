@@ -42,7 +42,7 @@ class BannedScreen extends ConsumerWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
-            'support@quloapp.com',
+            'info@socrepho.com',
             style: theme.textTheme.bodyMedium?.copyWith(
               color: context.appColors.primary,
               fontWeight: FontWeight.w600,
