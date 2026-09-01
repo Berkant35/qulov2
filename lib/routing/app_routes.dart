@@ -173,6 +173,30 @@ final _routes = <RouteBase>[
   ),
   GoRoute(
     parentNavigatorKey: rootNavigatorKey,
+    path: '/community-guidelines',
+    name: RouteNames.communityGuidelines,
+    builder: (context, state) {
+      final locale = AppLocalizations.of(context).locale.languageCode;
+      return LegalWebViewScreen(
+        title: AppLocalizations.of(context).get('community_guidelines'),
+        url: '${Env.legalBaseUrl}/$locale/community-guidelines/',
+      );
+    },
+  ),
+  GoRoute(
+    parentNavigatorKey: rootNavigatorKey,
+    path: '/safety-tips',
+    name: RouteNames.safetyTips,
+    builder: (context, state) {
+      final locale = AppLocalizations.of(context).locale.languageCode;
+      return LegalWebViewScreen(
+        title: AppLocalizations.of(context).get('safety_tips'),
+        url: '${Env.legalBaseUrl}/$locale/safety-tips/',
+      );
+    },
+  ),
+  GoRoute(
+    parentNavigatorKey: rootNavigatorKey,
     path: '/help',
     name: RouteNames.help,
     builder: (context, state) {

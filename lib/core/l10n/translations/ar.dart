@@ -235,6 +235,8 @@ const arTranslations = <String, String>{
   'accept_terms': 'أوافق على',
   'terms_of_service': 'شروط الخدمة',
   'privacy_policy': 'سياسة الخصوصية',
+  'community_guidelines': 'إرشادات المجتمع',
+  'safety_tips': 'نصائح السلامة',
   'legal': 'قانوني',
   'and_word': 'و',
   'must_accept_terms': 'يجب الموافقة على الشروط للمتابعة',

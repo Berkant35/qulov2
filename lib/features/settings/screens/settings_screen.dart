@@ -58,6 +58,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
           SettingsLegalSection(
             onTerms: onOpenTerms,
             onPrivacy: onOpenPrivacy,
+            onCommunityGuidelines: onOpenCommunityGuidelines,
+            onSafetyTips: onOpenSafetyTips,
           ),
           SettingsActionTile(
             icon: Icons.star_rate_rounded,

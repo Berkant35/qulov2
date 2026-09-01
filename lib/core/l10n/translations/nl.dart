@@ -235,6 +235,8 @@ const nlTranslations = <String, String>{
   'accept_terms': 'Ik accepteer de',
   'terms_of_service': 'Servicevoorwaarden',
   'privacy_policy': 'Privacybeleid',
+  'community_guidelines': 'Communityrichtlijnen',
+  'safety_tips': 'Veiligheidstips',
   'legal': 'Juridisch',
   'and_word': 'en',
   'must_accept_terms': 'Je moet de voorwaarden accepteren om door te gaan',

@@ -235,6 +235,8 @@ const koTranslations = <String, String>{
   'accept_terms': '동의합니다',
   'terms_of_service': '이용약관',
   'privacy_policy': '개인정보처리방침',
+  'community_guidelines': '커뮤니티 가이드라인',
+  'safety_tips': '안전 수칙',
   'legal': '법적 정보',
   'and_word': '및',
   'must_accept_terms': '계속하려면 약관에 동의해야 해요',

@@ -235,6 +235,8 @@ const trTranslations = <String, String>{
   'accept_terms': 'Kabul ediyorum:',
   'terms_of_service': 'Kullanım Koşulları',
   'privacy_policy': 'Gizlilik Politikası',
+  'community_guidelines': 'Topluluk Kuralları',
+  'safety_tips': 'Güvenlik İpuçları',
   'legal': 'Yasal',
   'and_word': 've',
   'must_accept_terms': 'Devam etmek için koşulları kabul etmelisiniz',

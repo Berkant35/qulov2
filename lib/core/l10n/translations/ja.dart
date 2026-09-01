@@ -235,6 +235,8 @@ const jaTranslations = <String, String>{
   'accept_terms': '同意します',
   'terms_of_service': '利用規約',
   'privacy_policy': 'プライバシーポリシー',
+  'community_guidelines': 'コミュニティガイドライン',
+  'safety_tips': '安全のヒント',
   'legal': '法的情報',
   'and_word': 'と',
   'must_accept_terms': '続けるには利用規約に同意してください',

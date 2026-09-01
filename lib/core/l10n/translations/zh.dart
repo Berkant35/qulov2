@@ -235,6 +235,8 @@ const zhTranslations = <String, String>{
   'accept_terms': '我接受',
   'terms_of_service': '服务条款',
   'privacy_policy': '隐私政策',
+  'community_guidelines': '社区准则',
+  'safety_tips': '安全提示',
   'legal': '法律信息',
   'and_word': '和',
   'must_accept_terms': '你必须接受条款才能继续',

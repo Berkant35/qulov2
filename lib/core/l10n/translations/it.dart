@@ -235,6 +235,8 @@ const itTranslations = <String, String>{
   'accept_terms': 'Accetto i',
   'terms_of_service': 'Termini di servizio',
   'privacy_policy': 'Informativa sulla privacy',
+  'community_guidelines': 'Linee guida',
+  'safety_tips': 'Consigli di sicurezza',
   'legal': 'Legale',
   'and_word': 'e',
   'must_accept_terms': 'Devi accettare i termini per continuare',

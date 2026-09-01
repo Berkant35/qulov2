@@ -79,6 +79,14 @@ mixin SettingsScreenMixin on ConsumerState<SettingsScreen> {
     ref.read(navigationServiceProvider).push(RouteNames.privacyPolicy);
   }
 
+  Future<void> onOpenCommunityGuidelines() async {
+    ref.read(navigationServiceProvider).push(RouteNames.communityGuidelines);
+  }
+
+  Future<void> onOpenSafetyTips() async {
+    ref.read(navigationServiceProvider).push(RouteNames.safetyTips);
+  }
+
   Future<void> onBlockedUsers() async {
     ref.read(navigationServiceProvider).push(RouteNames.blockedUsers);
   }

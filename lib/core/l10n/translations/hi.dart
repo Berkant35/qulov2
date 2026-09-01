@@ -235,6 +235,8 @@ const hiTranslations = <String, String>{
   'accept_terms': 'मैं स्वीकार करता/करती हूँ',
   'terms_of_service': 'सेवा की शर्तें',
   'privacy_policy': 'गोपनीयता नीति',
+  'community_guidelines': 'कम्युनिटी दिशानिर्देश',
+  'safety_tips': 'सुरक्षा सुझाव',
   'legal': 'कानूनी',
   'and_word': 'और',
   'must_accept_terms': 'जारी रखने के लिए शर्तें स्वीकार करें',

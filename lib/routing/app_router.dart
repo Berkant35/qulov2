@@ -106,6 +106,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       // 4. Legal route'lar — her zaman izin ver (kayit ekranindan erisilebilir)
       final isLegalRoute = state.matchedLocation == '/terms' ||
           state.matchedLocation == '/privacy-policy' ||
+          state.matchedLocation == '/community-guidelines' ||
+          state.matchedLocation == '/safety-tips' ||
           state.matchedLocation == '/help';
       if (isLegalRoute) return null;
 

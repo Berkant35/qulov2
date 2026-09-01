@@ -235,6 +235,8 @@ const plTranslations = <String, String>{
   'accept_terms': 'Akceptuj\u0119',
   'terms_of_service': 'Regulamin',
   'privacy_policy': 'Polityk\u0119 prywatno\u015bci',
+  'community_guidelines': 'Zasady społeczności',
+  'safety_tips': 'Wskazówki bezpieczeństwa',
   'legal': 'Informacje prawne',
   'and_word': 'i',
   'must_accept_terms': 'Musisz zaakceptowa\u0107 regulamin, aby kontynuowa\u0107',

@@ -235,6 +235,8 @@ const svTranslations = <String, String>{
   'accept_terms': 'Jag godkänner',
   'terms_of_service': 'Användarvillkor',
   'privacy_policy': 'Integritetspolicy',
+  'community_guidelines': 'Communityregler',
+  'safety_tips': 'Säkerhetstips',
   'legal': 'Juridisk',
   'and_word': 'och',
   'must_accept_terms': 'Du måste godkänna villkoren för att fortsätta',

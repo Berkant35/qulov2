@@ -39,6 +39,8 @@ abstract final class RouteNames {
   // Legal
   static const terms = 'terms';
   static const privacyPolicy = 'privacy-policy';
+  static const communityGuidelines = 'community-guidelines';
+  static const safetyTips = 'safety-tips';
   static const help = 'help';
 
   // Settings sub-screens

@@ -235,6 +235,8 @@ const deTranslations = <String, String>{
   'accept_terms': 'Ich akzeptiere die',
   'terms_of_service': 'Nutzungsbedingungen',
   'privacy_policy': 'Datenschutzrichtlinie',
+  'community_guidelines': 'Community-Richtlinien',
+  'safety_tips': 'Sicherheitstipps',
   'legal': 'Rechtliches',
   'and_word': 'und',
   'must_accept_terms': 'Du musst die Bedingungen akzeptieren, um fortzufahren',

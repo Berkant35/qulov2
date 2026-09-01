@@ -235,6 +235,8 @@ const frTranslations = <String, String>{
   'accept_terms': 'J\'accepte les',
   'terms_of_service': 'Conditions d\'utilisation',
   'privacy_policy': 'Politique de confidentialité',
+  'community_guidelines': 'Règles de la communauté',
+  'safety_tips': 'Conseils de sécurité',
   'legal': 'Mentions légales',
   'and_word': 'et',
   'must_accept_terms': 'Tu dois accepter les conditions pour continuer',

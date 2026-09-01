@@ -235,6 +235,8 @@ const ptTranslations = <String, String>{
   'accept_terms': 'Eu aceito os',
   'terms_of_service': 'Termos de Serviço',
   'privacy_policy': 'Política de Privacidade',
+  'community_guidelines': 'Regras da comunidade',
+  'safety_tips': 'Dicas de segurança',
   'legal': 'Jurídico',
   'and_word': 'e',
   'must_accept_terms': 'Você deve aceitar os termos para continuar',

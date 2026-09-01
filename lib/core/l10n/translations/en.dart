@@ -235,6 +235,8 @@ const enTranslations = <String, String>{
   'accept_terms': 'I accept the',
   'terms_of_service': 'Terms of Service',
   'privacy_policy': 'Privacy Policy',
+  'community_guidelines': 'Community Guidelines',
+  'safety_tips': 'Safety Tips',
   'legal': 'Legal',
   'and_word': 'and',
   'must_accept_terms': 'You must accept the terms to continue',

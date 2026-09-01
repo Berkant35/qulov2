@@ -235,6 +235,8 @@ const ruTranslations = <String, String>{
   'accept_terms': 'Я принимаю',
   'terms_of_service': 'Условия использования',
   'privacy_policy': 'Политику конфиденциальности',
+  'community_guidelines': 'Правила сообщества',
+  'safety_tips': 'Советы по безопасности',
   'legal': 'Правовая информация',
   'and_word': 'и',
   'must_accept_terms': 'Необходимо принять условия для продолжения',
