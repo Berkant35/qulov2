@@ -1,4 +1,3 @@
-import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:qulo_v2/core/coach_mark/coach_mark_registry.dart';
 

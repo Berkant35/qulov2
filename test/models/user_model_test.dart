@@ -13,25 +13,33 @@ void main() {
       final user = UserModel.fromJson(_baseJson());
       expect(user.interests, isEmpty);
     });
+  });
 
-    test('setupComplete is true when has 1+ photo AND 2+ questions', () {
-      final user = UserModel.fromJson(_baseJson()
-        ..['photos'] = ['url1']
-        ..['question_count'] = 2);
+  // Profile Setup Gate'in üç kartı: foto, 2 soru, gender pref.
+  // Üçü de tamamlanmadan setupComplete true olmamalı (a6b78d3).
+  group('UserModel.setupComplete', () {
+    test('is true when photo AND 2+ questions AND gender pref are all set', () {
+      final user = UserModel.fromJson(_setupJson());
       expect(user.setupComplete, true);
     });
 
-    test('setupComplete is false when missing photo', () {
-      final user = UserModel.fromJson(_baseJson()
-        ..['photos'] = <String>[]
-        ..['question_count'] = 2);
+    test('is false when photos is empty', () {
+      final user = UserModel.fromJson(_setupJson()..['photos'] = <String>[]);
       expect(user.setupComplete, false);
     });
 
-    test('setupComplete is false when questions < 2', () {
-      final user = UserModel.fromJson(_baseJson()
-        ..['photos'] = ['url1']
-        ..['question_count'] = 1);
+    test('is false when photos is missing entirely', () {
+      final user = UserModel.fromJson(_setupJson()..remove('photos'));
+      expect(user.setupComplete, false);
+    });
+
+    test('is false when questions < 2', () {
+      final user = UserModel.fromJson(_setupJson()..['question_count'] = 1);
+      expect(user.setupComplete, false);
+    });
+
+    test('is false when gender pref was never set', () {
+      final user = UserModel.fromJson(_setupJson()..remove('gender_pref_set_at'));
       expect(user.setupComplete, false);
     });
   });
@@ -43,3 +51,9 @@ Map<String, dynamic> _baseJson() => {
       'profile_completion': 50,
       'question_count': 0,
     };
+
+/// Üç setup kapısı da açık bir kullanıcı — testler tek tek bozarak doğrular.
+Map<String, dynamic> _setupJson() => _baseJson()
+  ..['photos'] = ['url1']
+  ..['question_count'] = 2
+  ..['gender_pref_set_at'] = '2026-06-13T10:00:00.000Z';

@@ -1168,4 +1168,14 @@ const jaTranslations = <String, String>{
   'auth_landing_title': 'Qulo へようこそ',
   'auth_landing_subtitle': '的確な質問をする相手とマッチしよう。',
   'auth_landing_continue_email': 'メールで続ける',
+
+  // Subscription legal links
+  'sub_terms_of_use': '利用規約 (EULA)',
+  'sub_privacy_policy': 'プライバシーポリシー',
+
+  // Image picker permissions
+  'camera_permission_denied_title': 'カメラへのアクセス許可が必要です',
+  'camera_permission_denied_message': '写真を撮るには、設定 > Qulo でカメラへのアクセスを許可してください。',
+  'photo_permission_denied_title': '写真へのアクセス許可が必要です',
+  'photo_permission_denied_message': 'ライブラリから写真を選ぶには、設定 > Qulo で写真へのアクセスを許可してください。',
 };

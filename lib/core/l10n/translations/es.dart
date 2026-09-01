@@ -1168,4 +1168,14 @@ const esTranslations = <String, String>{
   'auth_landing_title': 'Bienvenido a Qulo',
   'auth_landing_subtitle': 'Conecta con alguien que hace las preguntas correctas.',
   'auth_landing_continue_email': 'Continuar con correo electrónico',
+
+  // Subscription legal links
+  'sub_terms_of_use': 'Términos de uso (EULA)',
+  'sub_privacy_policy': 'Política de privacidad',
+
+  // Image picker permissions
+  'camera_permission_denied_title': 'Se requiere permiso de cámara',
+  'camera_permission_denied_message': 'Para hacer una foto, activa el acceso a la cámara en Ajustes > Qulo.',
+  'photo_permission_denied_title': 'Se requiere permiso de fotos',
+  'photo_permission_denied_message': 'Para elegir una foto de tu galería, activa el acceso a fotos en Ajustes > Qulo.',
 };

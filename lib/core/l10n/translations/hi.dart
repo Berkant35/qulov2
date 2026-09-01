@@ -1168,4 +1168,14 @@ const hiTranslations = <String, String>{
   'auth_landing_title': 'Qulo में आपका स्वागत है',
   'auth_landing_subtitle': 'सही सवाल पूछने वाले किसी के साथ मैच करें।',
   'auth_landing_continue_email': 'ईमेल से जारी रखें',
+
+  // Subscription legal links
+  'sub_terms_of_use': 'उपयोग की शर्तें (EULA)',
+  'sub_privacy_policy': 'गोपनीयता नीति',
+
+  // Image picker permissions
+  'camera_permission_denied_title': 'कैमरा अनुमति आवश्यक है',
+  'camera_permission_denied_message': 'फ़ोटो लेने के लिए, सेटिंग्स > Qulo में कैमरा एक्सेस चालू करें।',
+  'photo_permission_denied_title': 'फ़ोटो अनुमति आवश्यक है',
+  'photo_permission_denied_message': 'अपनी लाइब्रेरी से फ़ोटो चुनने के लिए, सेटिंग्स > Qulo में फ़ोटो एक्सेस चालू करें।',
 };

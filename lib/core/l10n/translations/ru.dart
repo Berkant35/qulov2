@@ -1166,4 +1166,14 @@ const ruTranslations = <String, String>{
   'auth_landing_title': 'Добро пожаловать в Qulo',
   'auth_landing_subtitle': 'Найди пару с тем, кто задаёт правильные вопросы.',
   'auth_landing_continue_email': 'Продолжить через email',
+
+  // Subscription legal links
+  'sub_terms_of_use': 'Условия использования (EULA)',
+  'sub_privacy_policy': 'Политика конфиденциальности',
+
+  // Image picker permissions
+  'camera_permission_denied_title': 'Требуется доступ к камере',
+  'camera_permission_denied_message': 'Чтобы сделать фото, включи доступ к камере в «Настройки > Qulo».',
+  'photo_permission_denied_title': 'Требуется доступ к фото',
+  'photo_permission_denied_message': 'Чтобы выбрать фото из галереи, включи доступ к фото в «Настройки > Qulo».',
 };

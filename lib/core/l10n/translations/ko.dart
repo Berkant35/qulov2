@@ -1166,4 +1166,14 @@ const koTranslations = <String, String>{
   'auth_landing_title': 'Qulo에 오신 것을 환영합니다',
   'auth_landing_subtitle': '좋은 질문을 던지는 상대와 매칭해보세요.',
   'auth_landing_continue_email': '이메일로 계속하기',
+
+  // Subscription legal links
+  'sub_terms_of_use': '이용약관 (EULA)',
+  'sub_privacy_policy': '개인정보 처리방침',
+
+  // Image picker permissions
+  'camera_permission_denied_title': '카메라 권한이 필요합니다',
+  'camera_permission_denied_message': '사진을 찍으려면 설정 > Qulo에서 카메라 접근을 허용해 주세요.',
+  'photo_permission_denied_title': '사진 권한이 필요합니다',
+  'photo_permission_denied_message': '라이브러리에서 사진을 선택하려면 설정 > Qulo에서 사진 접근을 허용해 주세요.',
 };

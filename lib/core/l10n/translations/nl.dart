@@ -1166,4 +1166,14 @@ const nlTranslations = <String, String>{
   'auth_landing_title': 'Welkom bij Qulo',
   'auth_landing_subtitle': 'Match met iemand die de juiste vragen stelt.',
   'auth_landing_continue_email': 'Doorgaan met e-mail',
+
+  // Subscription legal links
+  'sub_terms_of_use': 'Gebruiksvoorwaarden (EULA)',
+  'sub_privacy_policy': 'Privacybeleid',
+
+  // Image picker permissions
+  'camera_permission_denied_title': 'Cameratoegang vereist',
+  'camera_permission_denied_message': 'Om een foto te maken, schakel cameratoegang in bij Instellingen > Qulo.',
+  'photo_permission_denied_title': 'Fototoegang vereist',
+  'photo_permission_denied_message': 'Om een foto uit je bibliotheek te kiezen, schakel fototoegang in bij Instellingen > Qulo.',
 };

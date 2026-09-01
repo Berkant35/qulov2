@@ -1168,4 +1168,14 @@ const svTranslations = <String, String>{
   'auth_landing_title': 'Välkommen till Qulo',
   'auth_landing_subtitle': 'Matcha med någon som ställer rätt frågor.',
   'auth_landing_continue_email': 'Fortsätt med e-post',
+
+  // Subscription legal links
+  'sub_terms_of_use': 'Användarvillkor (EULA)',
+  'sub_privacy_policy': 'Integritetspolicy',
+
+  // Image picker permissions
+  'camera_permission_denied_title': 'Kameraåtkomst krävs',
+  'camera_permission_denied_message': 'För att ta ett foto, aktivera kameraåtkomst i Inställningar > Qulo.',
+  'photo_permission_denied_title': 'Fotoåtkomst krävs',
+  'photo_permission_denied_message': 'För att välja ett foto från ditt bibliotek, aktivera fotoåtkomst i Inställningar > Qulo.',
 };

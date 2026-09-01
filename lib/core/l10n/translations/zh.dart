@@ -1166,4 +1166,14 @@ const zhTranslations = <String, String>{
   'auth_landing_title': '欢迎来到 Qulo',
   'auth_landing_subtitle': '与提出正确问题的人匹配。',
   'auth_landing_continue_email': '使用邮箱继续',
+
+  // Subscription legal links
+  'sub_terms_of_use': '使用条款 (EULA)',
+  'sub_privacy_policy': '隐私政策',
+
+  // Image picker permissions
+  'camera_permission_denied_title': '需要相机权限',
+  'camera_permission_denied_message': '要拍照，请在「设置 > Qulo」中开启相机权限。',
+  'photo_permission_denied_title': '需要照片权限',
+  'photo_permission_denied_message': '要从相册中选择照片，请在「设置 > Qulo」中开启照片权限。',
 };
