@@ -15,6 +15,26 @@ Yeni ortam yapılandırmaları eklerken, kod tabanındaki mevcut kalıbı tam ol
 ## Kalite Kontrolleri
 Herhangi bir kod değişikliğinden sonra, tamamlandığını bildirmeden önce sıfır analizci hatası olduğundan emin olmak için `flutter analyze` çalıştır. Sunucu değişiklikleri için sunucunun hatasız başladığını doğrula.
 
+**Test zorunlu:** `flutter test` değişiklikten ÖNCE ve SONRA çalıştırılır. Yeni davranış
+eklediysen testi aynı PR'da yazılır — test yoksa iş bitmemiştir. Detaylı kural ve case
+envanteri: root `CLAUDE.md` → "Test Disiplini" + `tasks/test-cases.md`.
+
+### Flutter test kuralları
+- **Konum:** `test/` altında `lib/` ile aynı ağaç yapısı
+  (`lib/data/repositories/x.dart` → `test/data/repositories/x_test.dart`)
+- **Offline:** emülatör/cihaz/network YOK. `flutter test` ile koşmalı.
+- **Repository testi:** `Result<T>` dönüşünü doğrula — `Success` payload'ı ve
+  `Failure` tipi (DioException → `toAppFailure()` eşlemesi). Retrofit servisi fake'lenir.
+- **Provider testi:** `ProviderContainer` + `overrideWith` ile fake repository ver.
+  Gerçek ağ/prefs kullanma; `SharedPreferences.setMockInitialValues` kullan.
+- **Model testi:** `fromJson` eksik/null alanlarla çökmemeli; computed getter'ların
+  (örn. `setupComplete`) HER koşulu ayrı test edilir.
+- **i18n:** yeni locale key eklenince 16 dile de eklenir —
+  `test/l10n/translation_parity_test.dart` key seti, boş çeviri, placeholder ve
+  snake_case kontrolü yapar. Sadece `tr`+`en` yazıp geçme.
+- **Widget testi:** sadece kritik akışlar (paywall, soru çözme, setup gate, boş discover).
+  Her ekran için widget testi yazma.
+
 ## Otomatik Review Kuralları
 - **Feature geliştirmesi öncesi (brainstorming)**: `/chat-flow-guard` skill'ini çalıştır. Chat akışına etkisi BLOCKER ise plana geçme. Ayrıca `/economy-impact` skill'ini çalıştır. Ekonomi etki analizi zorunlu.
 - **Sunucu geliştirmesi sonrası**: qulo-server'da herhangi bir feature/bugfix tamamlandığında, commit öncesi `/server-review` skill'ini çalıştır. SOLID + Security analizi zorunlu.
@@ -48,6 +68,7 @@ Video üretim görevleri için: HTML→Puppeteer→ffmpeg pipeline'ını kullan.
 - **Flutter run**: `flutter run`
 - **Flutter analyze**: `flutter analyze`
 - **Tests**: `cd server && npm test` (vitest)
+- **Flutter test**: `flutter test`  |  tek dosya: `flutter test test/<yol>_test.dart`
 
 ## Conventions
 - Language: Turkish for communication, English for code
