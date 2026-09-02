@@ -170,6 +170,7 @@ class _NotifLeading extends StatelessWidget {
               width: 48,
               height: 48,
               fit: BoxFit.cover,
+              memCacheWidth: 144,
               placeholder: (_, __) => Container(
                 width: 48,
                 height: 48,

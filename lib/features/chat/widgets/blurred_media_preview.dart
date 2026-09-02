@@ -53,6 +53,7 @@ class BlurredMediaPreview extends StatelessWidget {
                 imageUrl: mediaUrl!,
                 width: double.infinity,
                 fit: BoxFit.contain,
+                memCacheWidth: 1080,
                 errorWidget: (context, __, ___) => Container(
                   height: height,
                   color: context.appColors.surfaceElevated,
@@ -77,6 +78,8 @@ class BlurredMediaPreview extends StatelessWidget {
             CachedNetworkImage(
               imageUrl: mediaUrl!,
               fit: BoxFit.cover,
+              // Uzerine blur biniyor — dusuk cozunurluk gorsel olarak farksiz
+              memCacheWidth: 360,
               errorWidget: (context, __, ___) => Container(
                 color: context.appColors.surfaceElevated,
                 child: Icon(Icons.image, color: context.appColors.textHint),

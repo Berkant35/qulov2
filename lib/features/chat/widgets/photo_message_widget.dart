@@ -35,6 +35,7 @@ class PhotoMessageWidget extends StatelessWidget {
           child: CachedNetworkImage(
             imageUrl: imageUrl,
             fit: BoxFit.cover,
+            memCacheWidth: 600,
             placeholder: (context, url) => Container(
               width: 200,
               height: 200,

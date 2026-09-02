@@ -113,6 +113,8 @@ class _SolveChatQuestionScreenState
                   child: CachedNetworkImage(
                     imageUrl: senderPhotoUrl,
                     fit: BoxFit.cover,
+                    // %8 opaklikta arka plan — tam cozunurluk bellekte bosuna durur
+                    memCacheWidth: 540,
                   ),
                 ),
               ),

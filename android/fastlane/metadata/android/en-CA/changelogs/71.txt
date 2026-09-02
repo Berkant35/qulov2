@@ -1,0 +1,3 @@
+• Two new pages in Settings: Community Guidelines and Safety Tips — what we expect from everyone here, and how to stay safe when you meet someone
+• Photos now use far less memory, so chats, profiles and notifications feel smoother
+• Bug fixes and performance improvements

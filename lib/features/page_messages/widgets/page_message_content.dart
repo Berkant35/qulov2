@@ -35,6 +35,7 @@ class PageMessageContent extends ConsumerWidget {
               width: double.infinity,
               height: 160,
               fit: BoxFit.cover,
+              memCacheWidth: 1080,
             ),
           ),
           const SizedBox(height: AppSpacing.md),

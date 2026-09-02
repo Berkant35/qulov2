@@ -1,0 +1,3 @@
+• Ayarlar'a iki yeni sayfa: Topluluk Kuralları ve Güvenlik İpuçları — burada herkesten ne beklediğimiz ve biriyle buluşurken nelere dikkat etmen gerektiği
+• Fotoğraflar çok daha az bellek kullanıyor; sohbetler, profiller ve bildirimler daha akıcı
+• Hata düzeltmeleri ve performans iyileştirmeleri

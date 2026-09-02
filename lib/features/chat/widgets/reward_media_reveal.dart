@@ -98,6 +98,7 @@ class _RewardMediaRevealState extends State<RewardMediaReveal>
               imageUrl: widget.mediaUrl,
               width: double.infinity,
               fit: BoxFit.contain,
+              memCacheWidth: 1080,
               placeholder: (ctx, __) => Container(
                 height: 200,
                 color: context.appColors.surfaceElevated,

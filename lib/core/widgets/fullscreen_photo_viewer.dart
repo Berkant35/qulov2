@@ -31,6 +31,9 @@ class FullscreenPhotoViewer extends StatelessWidget {
         child: Hero(
           tag: tag,
           child: InteractiveViewer(
+            // memCacheWidth BILEREK yok: InteractiveViewer yakinlastirma yapiyor,
+            // alt orneklenmis bitmap zoom'da bulanik gorunur. Uygulamadaki tek
+            // tam cozunurluk istisnasi burasi.
             child: CachedNetworkImage(
               imageUrl: imageUrl,
               fit: BoxFit.contain,

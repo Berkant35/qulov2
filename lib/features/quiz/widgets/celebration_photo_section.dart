@@ -72,6 +72,7 @@ class CelebrationPhotoCircle extends StatelessWidget {
             ? CachedNetworkImage(
                 imageUrl: photoUrl!,
                 fit: BoxFit.cover,
+                memCacheWidth: 240,
                 placeholder: (ctx, __) => Container(
                   color: context.appColors.surfaceElevated,
                   child: AppLoadingWidget.small(),

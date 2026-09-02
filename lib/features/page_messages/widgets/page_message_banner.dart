@@ -55,6 +55,7 @@ class PageMessageBanner extends ConsumerWidget {
                       width: 44,
                       height: 44,
                       fit: BoxFit.cover,
+                      memCacheWidth: 132,
                     ),
                   ),
                   const SizedBox(width: AppSpacing.sm),
