@@ -64,6 +64,19 @@ class FormatManager {
   UnitSystem _units = UnitSystem.metric;
   AppLocalizations _l10n = AppLocalizations(const Locale('en'));
 
+  // Bicimleyiciler her cagride degil, sadece configure()'da yeniden kurulur
+  // (spec 2.1 adim 4). Baslangic degerleri tam kod 'en_US': intl'in
+  // initializeDateFormatting cagrilmadan da cozdugu tek fallback tam olarak
+  // budur (UninitializedLocaleData._isFallback == 'en_US'; bare 'en' bile
+  // canonicalize sonrasi eslesmez ve throw eder) — o yuzden configure()
+  // calismadan hicbir formatlama patlamaz.
+  NumberFormat _decimalFormat = NumberFormat.decimalPattern('en_US');
+  NumberFormat _percentFormat = NumberFormat.percentPattern('en_US');
+  NumberFormat _oneDecimalFormat = NumberFormat('0.0', 'en_US');
+  DateFormat _dateFormat = DateFormat.yMMMd('en_US');
+  DateFormat _dateShortFormat = DateFormat.MMMd('en_US');
+  DateFormat _timeFormat = DateFormat.jm('en_US');
+
   Locale get locale => _locale;
   UnitSystem get units => _units;
   String get _tag => _locale.toString();
@@ -74,6 +87,17 @@ class FormatManager {
     _l10n = AppLocalizations(locale);
     Intl.defaultLocale = _tag;
     await _initDateSymbols();
+    _rebuildFormatters();
+  }
+
+  /// Yeni locale icin sayi/tarih bicimleyicilerini bir kez kurar (bkz. spec 2.1.4).
+  void _rebuildFormatters() {
+    _decimalFormat = NumberFormat.decimalPattern(_tag);
+    _percentFormat = NumberFormat.percentPattern(_tag);
+    _oneDecimalFormat = NumberFormat('0.0', _tag);
+    _dateFormat = DateFormat.yMMMd(_tag);
+    _dateShortFormat = DateFormat.MMMd(_tag);
+    _timeFormat = DateFormat.jm(_tag);
   }
 
   /// intl tarih sembolleri: once tam locale, olmazsa dil, o da olmazsa en.
@@ -89,11 +113,11 @@ class FormatManager {
   }
 
   // ── Sayi ──────────────────────────────────────────────────────────
-  String integer(int n) => NumberFormat.decimalPattern(_tag).format(n);
+  String integer(int n) => _decimalFormat.format(n);
 
-  String percent(int p) => NumberFormat.percentPattern(_tag).format(p / 100);
+  String percent(int p) => _percentFormat.format(p / 100);
 
-  String _oneDecimal(double v) => NumberFormat('0.0', _tag).format(v);
+  String _oneDecimal(double v) => _oneDecimalFormat.format(v);
 
   String _withN(String key, int n) => _l10n.get(key).replaceAll('{n}', integer(n));
 
@@ -151,13 +175,13 @@ class FormatManager {
 
   // ── Tarih / saat ──────────────────────────────────────────────────
   /// `Sep 4, 2026` / `4 Eyl 2026` — bolgeler arasi belirsizlik yok.
-  String date(DateTime dt) => DateFormat.yMMMd(_tag).format(dt.toLocal());
+  String date(DateTime dt) => _dateFormat.format(dt.toLocal());
 
   /// `Sep 4` / `4 Eyl` — yil olmadan (7+ gun eski rozetler).
-  String dateShort(DateTime dt) => DateFormat.MMMd(_tag).format(dt.toLocal());
+  String dateShort(DateTime dt) => _dateShortFormat.format(dt.toLocal());
 
   /// `11:45 PM` / `23:45` — 12/24 saat locale'den.
-  String time(DateTime dt) => DateFormat.jm(_tag).format(dt.toLocal());
+  String time(DateTime dt) => _timeFormat.format(dt.toLocal());
 
   /// Bugun / Dun / tarih — yerel takvim gunune gore.
   String dayLabel(DateTime dt, {DateTime? now}) {
