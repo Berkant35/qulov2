@@ -1,26 +1,27 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/diamond_icon.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/providers/store_prices_provider.dart';
 
 enum DiamondTier {
-  starter(amount: 50, price: '\$0.99', diamondCount: 1, productId: 'qulopurple50'),
-  popular(amount: 150, price: '\$2.49', diamondCount: 2, productId: 'qulopurple150'),
-  bestValue(amount: 400, price: '\$4.99', diamondCount: 3, productId: 'qulopurple400'),
-  mega(amount: 1000, price: '\$9.99', diamondCount: 4, productId: 'qulopurple1000'),
-  ultra(amount: 2500, price: '\$19.99', diamondCount: 5, productId: 'qulopurple2500'),
-  vip(amount: 6000, price: '\$39.99', diamondCount: 6, productId: 'qulopurple6000');
+  starter(amount: 50, diamondCount: 1, productId: 'qulopurple50'),
+  popular(amount: 150, diamondCount: 2, productId: 'qulopurple150'),
+  bestValue(amount: 400, diamondCount: 3, productId: 'qulopurple400'),
+  mega(amount: 1000, diamondCount: 4, productId: 'qulopurple1000'),
+  ultra(amount: 2500, diamondCount: 5, productId: 'qulopurple2500'),
+  vip(amount: 6000, diamondCount: 6, productId: 'qulopurple6000');
 
   final int amount;
-  final String price;
   final int diamondCount;
   final String productId;
 
   const DiamondTier({
     required this.amount,
-    required this.price,
     required this.diamondCount,
     required this.productId,
   });
@@ -32,17 +33,17 @@ class PurchasePackage {
   const PurchasePackage({required this.tier});
 
   int get amount => tier.amount;
-  String get price => tier.price;
 }
 
-class PurchaseGrid extends StatelessWidget {
+class PurchaseGrid extends ConsumerWidget {
   final ValueChanged<PurchasePackage>? onPurchase;
   final bool isLoading;
 
   const PurchaseGrid({super.key, this.onPurchase, this.isLoading = false});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final prices = ref.watch(storePricesProvider).valueOrNull ?? const <String, String>{};
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -62,6 +63,7 @@ class PurchaseGrid extends StatelessWidget {
             opacity: isLoading ? 0.5 : 1.0,
             child: _PackageCard(
               tier: tier,
+              price: prices[tier.productId],
               isBestValue: isBestValue,
               onTap: () => onPurchase?.call(PurchasePackage(tier: tier)),
             ),
@@ -74,11 +76,13 @@ class PurchaseGrid extends StatelessWidget {
 
 class _PackageCard extends StatelessWidget {
   final DiamondTier tier;
+  final String? price;
   final bool isBestValue;
   final VoidCallback onTap;
 
   const _PackageCard({
     required this.tier,
+    required this.price,
     required this.isBestValue,
     required this.onTap,
   });
@@ -120,13 +124,16 @@ class _PackageCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xs),
-                    Text(
-                      tier.price,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: context.appColors.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    if (price case final price?)
+                      Text(
+                        price,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: context.appColors.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      )
+                    else
+                      const AppLoadingWidget.small(),
                   ],
                 ),
               ),

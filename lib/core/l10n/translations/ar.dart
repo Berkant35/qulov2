@@ -346,8 +346,6 @@ const arTranslations = <String, String>{
   'sub_plan_plus': 'Qulo Plus',
   'sub_plan_premium': 'Qulo Premium',
   'sub_price_free': 'مجاني',
-  'sub_price_plus': '\$4.99/شهر',
-  'sub_price_premium': '\$9.99/شهر',
   'sub_recommended': 'مُوصى به',
   'sub_current_plan': 'الخطة الحالية',
   'sub_restore_purchases': 'استعادة المشتريات',

@@ -346,8 +346,6 @@ const ruTranslations = <String, String>{
   'sub_plan_plus': 'Qulo Plus',
   'sub_plan_premium': 'Qulo Premium',
   'sub_price_free': 'Бесплатно',
-  'sub_price_plus': '\$4.99/мес',
-  'sub_price_premium': '\$9.99/мес',
   'sub_recommended': 'РЕКОМЕНДУЕМ',
   'sub_current_plan': 'Текущий план',
   'sub_restore_purchases': 'Восстановить покупки',

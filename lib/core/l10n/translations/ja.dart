@@ -348,8 +348,6 @@ const jaTranslations = <String, String>{
   'sub_plan_plus': 'Qulo Plus',
   'sub_plan_premium': 'Qulo Premium',
   'sub_price_free': '無料',
-  'sub_price_plus': '\$4.99/月',
-  'sub_price_premium': '\$9.99/月',
   'sub_recommended': 'おすすめ',
   'sub_current_plan': '現在のプラン',
   'sub_restore_purchases': '購入を復元',

@@ -349,8 +349,6 @@ const trTranslations = <String, String>{
   'sub_plan_plus': 'Qulo Plus',
   'sub_plan_premium': 'Qulo Premium',
   'sub_price_free': 'Ücretsiz',
-  'sub_price_plus': '\$4.99/ay',
-  'sub_price_premium': '\$9.99/ay',
   'paywall_onboarding_title': 'Daha fazlasını keşfet',
   'paywall_maybe_later': 'Daha sonra',
   'sub_recommended': 'ÖNERİLEN',

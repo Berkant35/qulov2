@@ -346,8 +346,6 @@ const zhTranslations = <String, String>{
   'sub_plan_plus': 'Qulo Plus',
   'sub_plan_premium': 'Qulo Premium',
   'sub_price_free': '免费',
-  'sub_price_plus': '\$4.99/月',
-  'sub_price_premium': '\$9.99/月',
   'sub_recommended': '推荐',
   'sub_current_plan': '当前方案',
   'sub_restore_purchases': '恢复购买',

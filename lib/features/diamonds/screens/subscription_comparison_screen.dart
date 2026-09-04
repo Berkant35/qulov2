@@ -8,11 +8,13 @@ import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/providers/subscription_provider.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
 import 'package:qulo_v2/providers/daily_stats_provider.dart';
+import 'package:qulo_v2/providers/store_prices_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/features/diamonds/widgets/celebration_dialog.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/services/revenuecat_service.dart';
 import 'package:qulo_v2/features/diamonds/models/plan_feature.dart';
 import 'package:qulo_v2/features/diamonds/widgets/compact_plan_row.dart';
 import 'package:qulo_v2/features/diamonds/widgets/subscription_plan_card.dart';
@@ -39,6 +41,11 @@ class _SubscriptionComparisonScreenState
     final subAsync = ref.watch(subscriptionProvider);
     final currentPlan = subAsync.valueOrNull;
     final theme = Theme.of(context);
+    final prices = ref.watch(storePricesProvider).valueOrNull ?? const <String, String>{};
+    String monthly(String productId) => switch (prices[productId]) {
+          final p? => '$p${context.tr('sub_price_period_month')}',
+          null => '—',
+        };
 
     return AppScaffold(
       title: context.tr('sub_choose_plan'),
@@ -58,7 +65,7 @@ class _SubscriptionComparisonScreenState
             // Plus plan
             SubscriptionPlanCard(
               name: context.tr('sub_plan_plus'),
-              price: context.tr('sub_price_plus'),
+              price: monthly(RevenueCatService.plusProductId),
               features: [
                 PlanFeature(QIcons.icCompass, context.tr('sub_plus_discovers')),
                 PlanFeature(QIcons.helpCircle.outlined, context.tr('sub_plus_questions')),
@@ -75,7 +82,7 @@ class _SubscriptionComparisonScreenState
             // Premium plan
             SubscriptionPlanCard(
               name: context.tr('sub_plan_premium'),
-              price: context.tr('sub_price_premium'),
+              price: monthly(RevenueCatService.premiumProductId),
               features: [
                 PlanFeature(QIcons.icCompass, context.tr('sub_premium_discovers')),
                 PlanFeature(QIcons.helpCircle.outlined, context.tr('sub_premium_questions')),
@@ -121,7 +128,9 @@ class _SubscriptionComparisonScreenState
       params: {AnalyticsEvents.paramTier: plan},
     );
 
-    final productId = plan == 'premium' ? 'qulopremiummonthly2' : 'quloplusmonthly2';
+    final productId = plan == 'premium'
+        ? RevenueCatService.premiumProductId
+        : RevenueCatService.plusProductId;
     final success = await ref
         .read(subscriptionProvider.notifier)
         .purchaseByProductId(productId);

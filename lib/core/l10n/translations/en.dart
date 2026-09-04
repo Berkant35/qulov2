@@ -349,8 +349,6 @@ const enTranslations = <String, String>{
   'sub_plan_plus': 'Qulo Plus',
   'sub_plan_premium': 'Qulo Premium',
   'sub_price_free': 'Free',
-  'sub_price_plus': '\$4.99/mo',
-  'sub_price_premium': '\$9.99/mo',
   'paywall_onboarding_title': 'Discover more',
   'paywall_maybe_later': 'Maybe later',
   'sub_recommended': 'RECOMMENDED',

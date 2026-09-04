@@ -4,6 +4,7 @@ import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/services/revenuecat_service.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_button.dart';
@@ -13,6 +14,7 @@ import 'package:qulo_v2/features/diamonds/widgets/purchase_grid.dart';
 import 'package:qulo_v2/providers/daily_stats_provider.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
 import 'package:qulo_v2/providers/economy_config_provider.dart';
+import 'package:qulo_v2/providers/store_prices_provider.dart';
 import 'package:qulo_v2/providers/subscription_provider.dart';
 import 'package:qulo_v2/features/diamonds/widgets/subscription_legal_links.dart';
 
@@ -68,8 +70,9 @@ class _PaywallBottomSheetContentState
       },
     );
 
-    final productId =
-        plan == 'premium' ? 'qulopremiummonthly2' : 'quloplusmonthly2';
+    final productId = plan == 'premium'
+        ? RevenueCatService.premiumProductId
+        : RevenueCatService.plusProductId;
     final success = await ref
         .read(subscriptionProvider.notifier)
         .purchaseByProductId(productId);
@@ -162,6 +165,11 @@ class _PaywallBottomSheetContentState
     final isFree = currentPlan?.isFree ?? true;
     final isPlus = currentPlan?.isPlus ?? false;
     final isPremium = currentPlan?.isPremium ?? false;
+    final prices = ref.watch(storePricesProvider).valueOrNull ?? const <String, String>{};
+    String monthly(String productId) => switch (prices[productId]) {
+          final p? => '$p${context.tr('sub_price_period_month')}',
+          null => '—',
+        };
 
     return PopScope(
       canPop: !_isPurchasing,
@@ -244,7 +252,7 @@ class _PaywallBottomSheetContentState
               Padding(
                 padding: const EdgeInsets.only(bottom: AppSpacing.md),
                 child: AppButton(
-                  label: '${context.tr('sub_plan_plus')} — ${context.tr('sub_price_plus')}',
+                  label: '${context.tr('sub_plan_plus')} — ${monthly(RevenueCatService.plusProductId)}',
                   variant: AppButtonVariant.secondary,
                   isLoading: _isPurchasing,
                   onPressed: () => _handlePurchase('plus'),
@@ -261,7 +269,7 @@ class _PaywallBottomSheetContentState
 
             if (!isPremium)
               AppButton(
-                label: '${context.tr('sub_plan_premium')} — ${context.tr('sub_price_premium')}',
+                label: '${context.tr('sub_plan_premium')} — ${monthly(RevenueCatService.premiumProductId)}',
                 isLoading: _isPurchasing,
                 onPressed: () => _handlePurchase('premium'),
               ),

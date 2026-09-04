@@ -348,8 +348,6 @@ const deTranslations = <String, String>{
   'sub_plan_plus': 'Qulo Plus',
   'sub_plan_premium': 'Qulo Premium',
   'sub_price_free': 'Kostenlos',
-  'sub_price_plus': '\$4.99/Mo.',
-  'sub_price_premium': '\$9.99/Mo.',
   'sub_recommended': 'EMPFOHLEN',
   'sub_current_plan': 'Aktueller Plan',
   'sub_restore_purchases': 'Käufe wiederherstellen',

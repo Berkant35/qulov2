@@ -346,8 +346,6 @@ const plTranslations = <String, String>{
   'sub_plan_plus': 'Qulo Plus',
   'sub_plan_premium': 'Qulo Premium',
   'sub_price_free': 'Za darmo',
-  'sub_price_plus': '\$4.99/mies.',
-  'sub_price_premium': '\$9.99/mies.',
   'sub_recommended': 'POLECANY',
   'sub_current_plan': 'Aktualny plan',
   'sub_restore_purchases': 'Przywr\u00f3\u0107 zakupy',

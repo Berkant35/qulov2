@@ -348,8 +348,6 @@ const svTranslations = <String, String>{
   'sub_plan_plus': 'Qulo Plus',
   'sub_plan_premium': 'Qulo Premium',
   'sub_price_free': 'Gratis',
-  'sub_price_plus': '\$4.99/mån',
-  'sub_price_premium': '\$9.99/mån',
   'sub_recommended': 'REKOMMENDERAT',
   'sub_current_plan': 'Nuvarande plan',
   'sub_restore_purchases': 'Återställ köp',

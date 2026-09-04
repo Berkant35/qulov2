@@ -348,8 +348,6 @@ const hiTranslations = <String, String>{
   'sub_plan_plus': 'Qulo Plus',
   'sub_plan_premium': 'Qulo Premium',
   'sub_price_free': 'फ़्री',
-  'sub_price_plus': '\$4.99/महीना',
-  'sub_price_premium': '\$9.99/महीना',
   'sub_recommended': 'अनुशंसित',
   'sub_current_plan': 'मौजूदा प्लान',
   'sub_restore_purchases': 'खरीदारी रिस्टोर करें',
