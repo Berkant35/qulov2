@@ -340,9 +340,9 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
     final confirm = await nav.showAppDialog<bool>(
       ConfirmDialog(
         name: 'unmatch',
-        title: 'Unmatch',
+        title: context.tr('unmatch'),
         message: context.tr('chat_unmatch_confirm'),
-        confirmText: 'Unmatch',
+        confirmText: context.tr('unmatch'),
         isDestructive: true,
       ),
     );

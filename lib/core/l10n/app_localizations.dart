@@ -47,6 +47,9 @@ class AppLocalizations {
         _strings['${key}_other'] ??
         _localizedValues['en']?['${key}_other'] ??
         key;
+    // Bilincli tercih: FormatManager.instance.integer() yerine burada dogrudan
+    // NumberFormat kullanilir — AppLocalizations -> FormatManager dongusunden
+    // kacinir ve plural()'i singleton'a bagimli olmadan test edilebilir tutar.
     return text.replaceAll(
       '{count}',
       NumberFormat.decimalPattern(locale.toString()).format(count),

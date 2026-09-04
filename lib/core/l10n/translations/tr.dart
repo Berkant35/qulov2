@@ -81,8 +81,8 @@ const trTranslations = <String, String>{
   'solve_to_meet': 'Sorulari Coz',
   'online': 'Cevrimici',
   'offline': 'Cevrimdisi',
-  'now': 'Simdi',
-  'yesterday': 'Dun',
+  'now': 'Şimdi',
+  'yesterday': 'Dün',
 
   // Profile
   'profile': 'Profil',

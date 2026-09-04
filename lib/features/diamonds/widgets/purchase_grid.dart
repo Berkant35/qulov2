@@ -118,7 +118,7 @@ class _PackageCard extends StatelessWidget {
                     _DiamondPile(tier: tier),
                     const SizedBox(height: AppSpacing.sm),
                     Text(
-                      '${tier.amount}',
+                      context.fmt.integer(tier.amount),
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
