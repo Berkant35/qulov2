@@ -13,7 +13,9 @@ import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/services/revenuecat_service.dart';
 import 'package:qulo_v2/core/services/social_auth_service.dart';
 import 'package:qulo_v2/data/models/auth_model.dart';
+import 'package:qulo_v2/data/models/social_login_body.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
+import 'package:qulo_v2/providers/locale_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
@@ -324,13 +326,16 @@ class AuthNotifier extends Notifier<AuthState> {
       }
 
       final authService = ref.read(authServiceProvider);
-      final response = await authService.socialLogin({
-        'provider': signInResult.provider,
-        'id_token': signInResult.idToken,
-        if (signInResult.name != null) 'name': signInResult.name,
-        if (signInResult.surname != null) 'surname': signInResult.surname,
-        if (signInResult.nonce != null) 'nonce': signInResult.nonce,
-      });
+      final response = await authService.socialLogin(buildSocialLoginBody(
+        provider: signInResult.provider,
+        idToken: signInResult.idToken,
+        name: signInResult.name,
+        surname: signInResult.surname,
+        nonce: signInResult.nonce,
+        // Register akisiyla ayni kaynak: app.dart:67'de de auth sync'inde
+        // ref.read(localeProvider) kullanilir (Localizations.localeOf context'siz burada).
+        locale: ref.read(localeProvider).languageCode,
+      ));
 
       await _saveTokens(AuthTokens(
         accessToken: response.accessToken,
