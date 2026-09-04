@@ -82,7 +82,7 @@ class _QuestionVitrinCardState extends ConsumerState<QuestionVitrinCard> {
                           size: 20,
                           color: context.appColors.warning,
                         ),
-                        value: '%${totals.overallSuccessRate}',
+                        value: context.fmt.percent(totals.overallSuccessRate),
                         label: context.tr('profile_vitrin_success'),
                       ),
                     ),
@@ -90,7 +90,7 @@ class _QuestionVitrinCardState extends ConsumerState<QuestionVitrinCard> {
                     Expanded(
                       child: _VitrinStat(
                         icon: const DiamondIcon.green(size: 20, showGlow: false),
-                        value: '${totals.totalGreenEarned}',
+                        value: context.fmt.integer(totals.totalGreenEarned),
                         label: context.tr('profile_vitrin_green'),
                       ),
                     ),

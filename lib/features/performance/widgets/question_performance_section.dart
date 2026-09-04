@@ -94,7 +94,7 @@ class QuestionPerformanceSection extends StatelessWidget {
           runSpacing: AppSpacing.xs,
           children: diffCounts.entries.map((e) {
             return Chip(
-              label: Text('${_difficultyLabel(context, e.key)} (${e.value})'),
+              label: Text('${_difficultyLabel(context, e.key)} (${context.fmt.integer(e.value)})'),
               visualDensity: VisualDensity.compact,
             );
           }).toList(),
@@ -152,7 +152,7 @@ class _QuestionHighlight extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
             Text(
-              '%${question.stats.successRate} • ${question.stats.greenEarned} ${context.tr('green_earned')}',
+              '${context.fmt.percent(question.stats.successRate)} • ${context.fmt.integer(question.stats.greenEarned)} ${context.tr('green_earned')}',
               style: theme.textTheme.bodySmall?.copyWith(color: context.appColors.textSecondary),
             ),
           ],

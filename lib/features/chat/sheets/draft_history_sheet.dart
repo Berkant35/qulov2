@@ -344,7 +344,7 @@ class _DraftItem extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
               ),
               child: Text(
-                '${draft.optionCount}',
+                context.fmt.integer(draft.optionCount),
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: context.appColors.primary,
                   fontWeight: FontWeight.w600,

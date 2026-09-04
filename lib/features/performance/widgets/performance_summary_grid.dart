@@ -29,12 +29,12 @@ class PerformanceSummaryGrid extends StatelessWidget {
         _StatCard(
           icon: Icons.trending_up,
           iconColor: context.appColors.primary,
-          value: '%${totals.overallSuccessRate}',
+          value: context.fmt.percent(totals.overallSuccessRate),
           label: context.tr('success_rate'),
         ),
         _StatCard(
           iconWidget: const DiamondIcon.green(size: 20),
-          value: '${totals.totalGreenEarned}',
+          value: context.fmt.integer(totals.totalGreenEarned),
           label: context.tr('green_earned'),
         ),
         _StatCard(

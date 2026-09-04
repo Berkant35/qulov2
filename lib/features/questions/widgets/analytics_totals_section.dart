@@ -31,14 +31,14 @@ class AnalyticsTotalsSection extends StatelessWidget {
         const SizedBox(width: AppSpacing.sm),
         AnalyticsStatCard(
           label: context.tr('analytics_success_rate'),
-          value: '%${totals.overallSuccessRate}',
+          value: context.fmt.percent(totals.overallSuccessRate),
           valueColor: _successRateColor(context, totals.overallSuccessRate),
           icon: QIcon(QIcons.icChart, size: 24, color: context.appColors.warning),
         ),
         const SizedBox(width: AppSpacing.sm),
         AnalyticsStatCard(
           label: context.tr('analytics_green_earned'),
-          value: '${totals.totalGreenEarned}',
+          value: context.fmt.integer(totals.totalGreenEarned),
           valueColor: context.appColors.secondary,
           icon: const DiamondIcon.green(size: 24, showGlow: false),
         ),
