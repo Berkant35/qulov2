@@ -20,6 +20,18 @@ void main() {
     });
   });
 
+  group('acceptLanguageTag', () {
+    test('bolge kodu varsa dil-BOLGE etiketi doner', () async {
+      await fm.configure(const Locale('tr', 'TR'));
+      expect(fm.acceptLanguageTag, 'tr-TR');
+    });
+
+    test('bolge kodu yoksa sadece dil kodu doner', () async {
+      await fm.configure(const Locale('en'));
+      expect(fm.acceptLanguageTag, 'en');
+    });
+  });
+
   group('configure', () {
     test('ülke kodu yoksa profil ülkesine düşer', () async {
       await fm.configure(const Locale('en'), profileCountry: 'US');

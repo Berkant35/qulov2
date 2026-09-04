@@ -81,6 +81,13 @@ class FormatManager {
   UnitSystem get units => _units;
   String get _tag => _locale.toString();
 
+  /// Accept-Language basligi icin `dil-BOLGE` etiketi (bolge yoksa yalniz dil).
+  String get acceptLanguageTag {
+    final country = _locale.countryCode;
+    if (country == null || country.isEmpty) return _locale.languageCode;
+    return '${_locale.languageCode}-$country';
+  }
+
   Future<void> configure(Locale locale, {String? profileCountry}) async {
     _locale = locale;
     _units = UnitSystem.resolve(locale.countryCode ?? profileCountry);
