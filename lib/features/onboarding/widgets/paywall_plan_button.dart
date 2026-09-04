@@ -12,15 +12,19 @@ class PaywallPlanButton extends StatelessWidget {
 
   final String label;
   final bool isPrimary;
-  final VoidCallback onTap;
+  // null: fiyat henuz bilinmiyor — buton disabled render edilir (bkz. review I2).
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: isPrimary
-          ? _PrimaryButton(label: label)
-          : _SecondaryButton(label: label),
+    return Opacity(
+      opacity: onTap == null ? 0.5 : 1.0,
+      child: GestureDetector(
+        onTap: onTap,
+        child: isPrimary
+            ? _PrimaryButton(label: label)
+            : _SecondaryButton(label: label),
+      ),
     );
   }
 }

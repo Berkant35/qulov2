@@ -16,6 +16,7 @@ import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/services/revenuecat_service.dart';
 import 'package:qulo_v2/features/diamonds/models/plan_feature.dart';
+import 'package:qulo_v2/features/diamonds/utils/monthly_price_label.dart';
 import 'package:qulo_v2/features/diamonds/widgets/compact_plan_row.dart';
 import 'package:qulo_v2/features/diamonds/widgets/subscription_plan_card.dart';
 import 'package:qulo_v2/features/diamonds/widgets/subscription_legal_links.dart';
@@ -42,10 +43,17 @@ class _SubscriptionComparisonScreenState
     final currentPlan = subAsync.valueOrNull;
     final theme = Theme.of(context);
     final prices = ref.watch(storePricesProvider).valueOrNull ?? const <String, String>{};
-    String monthly(String productId) => switch (prices[productId]) {
-          final p? => '$p${context.tr('sub_price_period_month')}',
-          null => '—',
-        };
+    final periodSuffix = context.tr('sub_price_period_month');
+    final plusPrice = monthlyPriceLabel(
+      prices: prices,
+      productId: RevenueCatService.plusProductId,
+      periodSuffix: periodSuffix,
+    );
+    final premiumPrice = monthlyPriceLabel(
+      prices: prices,
+      productId: RevenueCatService.premiumProductId,
+      periodSuffix: periodSuffix,
+    );
 
     return AppScaffold(
       title: context.tr('sub_choose_plan'),
@@ -65,7 +73,7 @@ class _SubscriptionComparisonScreenState
             // Plus plan
             SubscriptionPlanCard(
               name: context.tr('sub_plan_plus'),
-              price: monthly(RevenueCatService.plusProductId),
+              price: plusPrice ?? unknownPriceLabel,
               features: [
                 PlanFeature(QIcons.icCompass, context.tr('sub_plus_discovers')),
                 PlanFeature(QIcons.helpCircle.outlined, context.tr('sub_plus_questions')),
@@ -75,14 +83,14 @@ class _SubscriptionComparisonScreenState
               ],
               isRecommended: false,
               isCurrent: currentPlan?.isPlus ?? false,
-              onSubscribe: () => _handlePurchase(context, 'plus'),
+              onSubscribe: plusPrice == null ? null : () => _handlePurchase(context, 'plus'),
             ),
             const SizedBox(height: AppSpacing.md),
 
             // Premium plan
             SubscriptionPlanCard(
               name: context.tr('sub_plan_premium'),
-              price: monthly(RevenueCatService.premiumProductId),
+              price: premiumPrice ?? unknownPriceLabel,
               features: [
                 PlanFeature(QIcons.icCompass, context.tr('sub_premium_discovers')),
                 PlanFeature(QIcons.helpCircle.outlined, context.tr('sub_premium_questions')),
@@ -93,7 +101,7 @@ class _SubscriptionComparisonScreenState
               ],
               isRecommended: true,
               isCurrent: currentPlan?.isPremium ?? false,
-              onSubscribe: () => _handlePurchase(context, 'premium'),
+              onSubscribe: premiumPrice == null ? null : () => _handlePurchase(context, 'premium'),
             ),
             const SizedBox(height: AppSpacing.xxl),
 

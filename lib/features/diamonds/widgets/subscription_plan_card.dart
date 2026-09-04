@@ -139,7 +139,9 @@ class SubscriptionPlanCard extends StatelessWidget {
                       ),
                     ),
                   )
-                else if (onSubscribe != null)
+                else
+                  // onSubscribe null: fiyat henuz bilinmiyor — AppButton kendi
+                  // disabled gorunumunu uygular (bkz. review I2), buton kaybolmaz.
                   AppButton(
                     label: context.tr('get_started'),
                     onPressed: onSubscribe,

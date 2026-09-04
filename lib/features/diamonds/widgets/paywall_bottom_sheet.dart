@@ -9,6 +9,7 @@ import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_button.dart';
 import 'package:qulo_v2/core/widgets/diamond_icon.dart';
+import 'package:qulo_v2/features/diamonds/utils/monthly_price_label.dart';
 import 'package:qulo_v2/features/diamonds/widgets/celebration_dialog.dart';
 import 'package:qulo_v2/features/diamonds/widgets/purchase_grid.dart';
 import 'package:qulo_v2/providers/daily_stats_provider.dart';
@@ -166,10 +167,17 @@ class _PaywallBottomSheetContentState
     final isPlus = currentPlan?.isPlus ?? false;
     final isPremium = currentPlan?.isPremium ?? false;
     final prices = ref.watch(storePricesProvider).valueOrNull ?? const <String, String>{};
-    String monthly(String productId) => switch (prices[productId]) {
-          final p? => '$p${context.tr('sub_price_period_month')}',
-          null => '—',
-        };
+    final periodSuffix = context.tr('sub_price_period_month');
+    final plusPrice = monthlyPriceLabel(
+      prices: prices,
+      productId: RevenueCatService.plusProductId,
+      periodSuffix: periodSuffix,
+    );
+    final premiumPrice = monthlyPriceLabel(
+      prices: prices,
+      productId: RevenueCatService.premiumProductId,
+      periodSuffix: periodSuffix,
+    );
 
     return PopScope(
       canPop: !_isPurchasing,
@@ -252,10 +260,10 @@ class _PaywallBottomSheetContentState
               Padding(
                 padding: const EdgeInsets.only(bottom: AppSpacing.md),
                 child: AppButton(
-                  label: '${context.tr('sub_plan_plus')} — ${monthly(RevenueCatService.plusProductId)}',
+                  label: '${context.tr('sub_plan_plus')} — ${plusPrice ?? unknownPriceLabel}',
                   variant: AppButtonVariant.secondary,
                   isLoading: _isPurchasing,
-                  onPressed: () => _handlePurchase('plus'),
+                  onPressed: plusPrice == null ? null : () => _handlePurchase('plus'),
                 ),
               ),
 
@@ -269,9 +277,9 @@ class _PaywallBottomSheetContentState
 
             if (!isPremium)
               AppButton(
-                label: '${context.tr('sub_plan_premium')} — ${monthly(RevenueCatService.premiumProductId)}',
+                label: '${context.tr('sub_plan_premium')} — ${premiumPrice ?? unknownPriceLabel}',
                 isLoading: _isPurchasing,
-                onPressed: () => _handlePurchase('premium'),
+                onPressed: premiumPrice == null ? null : () => _handlePurchase('premium'),
               ),
 
             if (isPremium)

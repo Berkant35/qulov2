@@ -6,6 +6,7 @@ import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/revenuecat_service.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/diamond_icon.dart';
+import 'package:qulo_v2/features/diamonds/utils/monthly_price_label.dart';
 import 'package:qulo_v2/features/diamonds/widgets/celebration_dialog.dart';
 import 'package:qulo_v2/features/onboarding/widgets/paywall_comparison_table.dart';
 import 'package:qulo_v2/features/onboarding/widgets/paywall_plan_button.dart';
@@ -20,10 +21,17 @@ class PremiumSuggestionSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final prices = ref.watch(storePricesProvider).valueOrNull ?? const <String, String>{};
-    String monthly(String productId) => switch (prices[productId]) {
-          final p? => '$p${context.tr('sub_price_period_month')}',
-          null => '—',
-        };
+    final periodSuffix = context.tr('sub_price_period_month');
+    final premiumPrice = monthlyPriceLabel(
+      prices: prices,
+      productId: RevenueCatService.premiumProductId,
+      periodSuffix: periodSuffix,
+    );
+    final plusPrice = monthlyPriceLabel(
+      prices: prices,
+      productId: RevenueCatService.plusProductId,
+      periodSuffix: periodSuffix,
+    );
     return SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(
@@ -90,15 +98,15 @@ class PremiumSuggestionSheet extends ConsumerWidget {
 
             // CTA buttons
             PaywallPlanButton(
-              label: '${context.tr('sub_plan_premium')} · ${monthly(RevenueCatService.premiumProductId)}',
+              label: '${context.tr('sub_plan_premium')} · ${premiumPrice ?? unknownPriceLabel}',
               isPrimary: true,
-              onTap: () => _handlePurchase(context, ref, 'premium'),
+              onTap: premiumPrice == null ? null : () => _handlePurchase(context, ref, 'premium'),
             ),
             const SizedBox(height: AppSpacing.sm + 2),
             PaywallPlanButton(
-              label: '${context.tr('sub_plan_plus')} · ${monthly(RevenueCatService.plusProductId)}',
+              label: '${context.tr('sub_plan_plus')} · ${plusPrice ?? unknownPriceLabel}',
               isPrimary: false,
-              onTap: () => _handlePurchase(context, ref, 'plus'),
+              onTap: plusPrice == null ? null : () => _handlePurchase(context, ref, 'plus'),
             ),
             const SizedBox(height: AppSpacing.md),
 
@@ -173,6 +181,11 @@ class PremiumSuggestionSheet extends ConsumerWidget {
       ref.invalidate(dailyStatsProvider);
 
       Navigator.of(context).pop(); // Close the sheet
+    } else {
+      // Diger iki satis ekraniyla ayni mekanizma/anahtar (bkz. review I2).
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.tr('purchase_failed'))),
+      );
     }
   }
 }
