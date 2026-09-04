@@ -19,10 +19,18 @@ final storePricesLoaderProvider =
     Provider<StorePricesLoader>((_) => loadStorePricesFromRevenueCat);
 
 /// Fiyat koda gomulu DEGIL: magaza yoksa bos map, ekran iskelet gosterir.
-final storePricesProvider = FutureProvider<Map<String, String>>((ref) async {
+/// `autoDispose` + kosullu `keepAlive`: bos sonuc (magaza henuz hazir degil)
+/// kalici cache'lenmez — dinleyicisiz kalinca dusurulur ve bir sonraki
+/// okumada tekrar denenir. Dolu sonuc `keepAlive()` ile oturum boyunca sabit kalir.
+final storePricesProvider = FutureProvider.autoDispose<Map<String, String>>((ref) async {
+  Map<String, String> prices;
   try {
-    return await ref.read(storePricesLoaderProvider)();
+    prices = await ref.read(storePricesLoaderProvider)();
   } catch (_) {
-    return const {};
+    prices = const {};
   }
+  if (prices.isNotEmpty) {
+    ref.keepAlive();
+  }
+  return prices;
 });
