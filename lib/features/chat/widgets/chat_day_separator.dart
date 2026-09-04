@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 
@@ -10,19 +11,7 @@ class ChatDaySeparator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final yesterday = today.subtract(const Duration(days: 1));
-
-    String label;
-    if (day == today) {
-      label = 'Bugun';
-    } else if (day == yesterday) {
-      label = 'Dun';
-    } else {
-      label =
-          '${day.day}.${day.month.toString().padLeft(2, '0')}.${day.year}';
-    }
+    final label = context.fmt.dayLabel(day);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),

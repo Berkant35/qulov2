@@ -75,11 +75,6 @@ const trTranslations = <String, String>{
   'say_hello': 'Merhaba de!',
   'message_hint': 'Mesaj...',
   'type_message': 'Mesaj yaz...',
-  'last_seen_just_now': 'Son görülme: az önce',
-  'last_seen_minutes': 'Son görülme: {count} dk önce',
-  'last_seen_hours': 'Son görülme: {count} saat önce',
-  'last_seen_days': 'Son görülme: {count} gün önce',
-  'last_seen_weeks': 'Son görülme: {count} hafta önce',
 
   // Matches extras
   'new_matches': 'Yeni Eslesmeler',
@@ -439,10 +434,6 @@ const trTranslations = <String, String>{
   'mark_all_read': 'Tümünü Okundu Yap',
   'no_notifications': 'Henüz bildirim yok',
   'no_notifications_desc': 'Eşleşmeler ve mesajlar geldiğinde burada göreceksin',
-  'time_just_now': 'Az önce',
-  'time_minutes_ago': '{n} dk önce',
-  'time_hours_ago': '{n} saat önce',
-  'time_days_ago': '{n} gün önce',
   'just_now': 'Az önce',
   'minutes_ago': '{} dk önce',
   'hours_ago': '{} saat önce',

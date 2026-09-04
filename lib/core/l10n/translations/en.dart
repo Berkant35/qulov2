@@ -75,11 +75,6 @@ const enTranslations = <String, String>{
   'say_hello': 'Say hello!',
   'message_hint': 'Message...',
   'type_message': 'Type a message...',
-  'last_seen_just_now': 'Last seen: just now',
-  'last_seen_minutes': 'Last seen: {count} min ago',
-  'last_seen_hours': 'Last seen: {count}h ago',
-  'last_seen_days': 'Last seen: {count}d ago',
-  'last_seen_weeks': 'Last seen: {count}w ago',
 
   // Matches extras
   'new_matches': 'New Matches',
@@ -439,10 +434,6 @@ const enTranslations = <String, String>{
   'mark_all_read': 'Mark All Read',
   'no_notifications': 'No notifications yet',
   'no_notifications_desc': 'You\'ll see matches and messages here',
-  'time_just_now': 'Just now',
-  'time_minutes_ago': '{n}m ago',
-  'time_hours_ago': '{n}h ago',
-  'time_days_ago': '{n}d ago',
   'just_now': 'Just now',
   'minutes_ago': '{} min ago',
   'hours_ago': '{} hours ago',

@@ -75,11 +75,6 @@ const itTranslations = <String, String>{
   'say_hello': 'Saluta!',
   'message_hint': 'Messaggio...',
   'type_message': 'Scrivi un messaggio...',
-  'last_seen_just_now': 'Ultimo accesso: adesso',
-  'last_seen_minutes': 'Ultimo accesso: {count} min fa',
-  'last_seen_hours': 'Ultimo accesso: {count}h fa',
-  'last_seen_days': 'Ultimo accesso: {count}g fa',
-  'last_seen_weeks': 'Ultimo accesso: {count}s fa',
 
   // Matches extras
   'new_matches': 'Nuovi match',
@@ -434,10 +429,6 @@ const itTranslations = <String, String>{
   'mark_all_read': 'Segna tutto come letto',
   'no_notifications': 'Nessuna notifica',
   'no_notifications_desc': 'Qui vedrai match e messaggi',
-  'time_just_now': 'Adesso',
-  'time_minutes_ago': '{n} min fa',
-  'time_hours_ago': '{n}h fa',
-  'time_days_ago': '{n}g fa',
   'just_now': 'Adesso',
   'minutes_ago': '{} min fa',
   'hours_ago': '{} ore fa',

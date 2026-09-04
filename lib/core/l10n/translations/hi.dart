@@ -75,11 +75,6 @@ const hiTranslations = <String, String>{
   'say_hello': 'हेलो बोलो!',
   'message_hint': 'मैसेज...',
   'type_message': 'मैसेज लिखें...',
-  'last_seen_just_now': 'आखिरी बार: अभी',
-  'last_seen_minutes': 'आखिरी बार: {count} मिनट पहले',
-  'last_seen_hours': 'आखिरी बार: {count} घंटे पहले',
-  'last_seen_days': 'आखिरी बार: {count} दिन पहले',
-  'last_seen_weeks': 'आखिरी बार: {count} हफ़्ते पहले',
 
   // Matches extras
   'new_matches': 'नए मैचेस',
@@ -434,10 +429,6 @@ const hiTranslations = <String, String>{
   'mark_all_read': 'सभी पढ़ा गया',
   'no_notifications': 'अभी कोई नोटिफ़िकेशन नहीं',
   'no_notifications_desc': 'यहाँ आपके मैच और मैसेज दिखेंगे',
-  'time_just_now': 'अभी',
-  'time_minutes_ago': '{n} मिनट पहले',
-  'time_hours_ago': '{n} घंटे पहले',
-  'time_days_ago': '{n} दिन पहले',
   'just_now': 'अभी',
   'minutes_ago': '{} मिनट पहले',
   'hours_ago': '{} घंटे पहले',

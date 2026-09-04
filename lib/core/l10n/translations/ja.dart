@@ -75,11 +75,6 @@ const jaTranslations = <String, String>{
   'say_hello': 'あいさつしましょう！',
   'message_hint': 'メッセージ...',
   'type_message': 'メッセージを入力...',
-  'last_seen_just_now': '最終オンライン：たった今',
-  'last_seen_minutes': '最終オンライン：{count}分前',
-  'last_seen_hours': '最終オンライン：{count}時間前',
-  'last_seen_days': '最終オンライン：{count}日前',
-  'last_seen_weeks': '最終オンライン：{count}週間前',
 
   // Matches extras
   'new_matches': '新しいマッチ',
@@ -434,10 +429,6 @@ const jaTranslations = <String, String>{
   'mark_all_read': 'すべて既読にする',
   'no_notifications': '通知はまだありません',
   'no_notifications_desc': 'ここにマッチやメッセージが表示されます',
-  'time_just_now': 'たった今',
-  'time_minutes_ago': '{n}分前',
-  'time_hours_ago': '{n}時間前',
-  'time_days_ago': '{n}日前',
   'just_now': 'たった今',
   'minutes_ago': '{}分前',
   'hours_ago': '{}時間前',

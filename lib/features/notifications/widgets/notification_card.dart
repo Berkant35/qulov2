@@ -136,16 +136,8 @@ class NotificationCard extends StatelessWidget {
   }
 
   String _timeAgo(BuildContext context, String isoDate) {
-    final date = DateTime.parse(isoDate);
-    final diff = DateTime.now().toUtc().difference(date);
-    if (diff.inMinutes < 1) return context.tr('time_just_now');
-    if (diff.inHours < 1) {
-      return context.tr('time_minutes_ago').replaceAll('{n}', '${diff.inMinutes}');
-    }
-    if (diff.inDays < 1) {
-      return context.tr('time_hours_ago').replaceAll('{n}', '${diff.inHours}');
-    }
-    return context.tr('time_days_ago').replaceAll('{n}', '${diff.inDays}');
+    final dt = DateTime.tryParse(isoDate);
+    return dt == null ? '' : context.fmt.relative(dt);
   }
 }
 

@@ -75,11 +75,6 @@ const ruTranslations = <String, String>{
   'say_hello': 'Скажите привет!',
   'message_hint': 'Сообщение...',
   'type_message': 'Введите сообщение...',
-  'last_seen_just_now': 'Был(а): только что',
-  'last_seen_minutes': 'Был(а): {count} мин назад',
-  'last_seen_hours': 'Был(а): {count}ч назад',
-  'last_seen_days': 'Был(а): {count}д назад',
-  'last_seen_weeks': 'Был(а): {count}н назад',
 
   // Matches extras
   'new_matches': 'Новые совпадения',
@@ -432,10 +427,6 @@ const ruTranslations = <String, String>{
   'mark_all_read': 'Прочитать все',
   'no_notifications': 'Пока нет уведомлений',
   'no_notifications_desc': 'Здесь появятся совпадения и сообщения',
-  'time_just_now': 'Только что',
-  'time_minutes_ago': '{n} мин назад',
-  'time_hours_ago': '{n} ч назад',
-  'time_days_ago': '{n} дн назад',
   'just_now': 'Только что',
   'minutes_ago': '{} мин назад',
   'hours_ago': '{} ч назад',

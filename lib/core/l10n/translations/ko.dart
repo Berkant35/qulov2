@@ -75,11 +75,6 @@ const koTranslations = <String, String>{
   'say_hello': '인사해보세요!',
   'message_hint': '메시지...',
   'type_message': '메시지를 입력하세요...',
-  'last_seen_just_now': '마지막 접속: 방금',
-  'last_seen_minutes': '마지막 접속: {count}분 전',
-  'last_seen_hours': '마지막 접속: {count}시간 전',
-  'last_seen_days': '마지막 접속: {count}일 전',
-  'last_seen_weeks': '마지막 접속: {count}주 전',
 
   // Matches extras
   'new_matches': '새로운 매칭',
@@ -432,10 +427,6 @@ const koTranslations = <String, String>{
   'mark_all_read': '모두 읽음 처리',
   'no_notifications': '아직 알림이 없어요',
   'no_notifications_desc': '매칭과 메시지가 여기에 표시돼요',
-  'time_just_now': '방금',
-  'time_minutes_ago': '{n}분 전',
-  'time_hours_ago': '{n}시간 전',
-  'time_days_ago': '{n}일 전',
   'just_now': '방금',
   'minutes_ago': '{}분 전',
   'hours_ago': '{}시간 전',

@@ -174,23 +174,14 @@ class _OnlineStatusChip extends StatelessWidget {
       );
     }
 
-    if (lastSeen != null) {
-      final dt = DateTime.tryParse(lastSeen!);
-      if (dt != null) {
-        final diff = DateTime.now().toUtc().difference(dt);
-        final label = diff.inMinutes < 60
-            ? '${diff.inMinutes}m'
-            : diff.inHours < 24
-                ? '${diff.inHours}h'
-                : '${diff.inDays}d';
-        return Text(
-          '${context.tr('last_seen')} $label',
-          style: TextStyle(
-            color: context.appColors.textSecondary,
-            fontSize: 12,
-          ),
-        );
-      }
+    final dt = lastSeen == null ? null : DateTime.tryParse(lastSeen!);
+    if (dt != null) {
+      return Text(
+        '${context.tr('last_seen')} ${context.fmt.relative(dt)}',
+        style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: context.appColors.textSecondary,
+            ),
+      );
     }
     return const SizedBox.shrink();
   }

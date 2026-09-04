@@ -75,11 +75,6 @@ const nlTranslations = <String, String>{
   'say_hello': 'Zeg hallo!',
   'message_hint': 'Bericht...',
   'type_message': 'Typ een bericht...',
-  'last_seen_just_now': 'Laatst gezien: zojuist',
-  'last_seen_minutes': 'Laatst gezien: {count} min geleden',
-  'last_seen_hours': 'Laatst gezien: {count}u geleden',
-  'last_seen_days': 'Laatst gezien: {count}d geleden',
-  'last_seen_weeks': 'Laatst gezien: {count}w geleden',
 
   // Matches extras
   'new_matches': 'Nieuwe matches',
@@ -432,10 +427,6 @@ const nlTranslations = <String, String>{
   'mark_all_read': 'Alles als gelezen markeren',
   'no_notifications': 'Nog geen meldingen',
   'no_notifications_desc': 'Je ziet hier matches en berichten',
-  'time_just_now': 'Zojuist',
-  'time_minutes_ago': '{n} min geleden',
-  'time_hours_ago': '{n}u geleden',
-  'time_days_ago': '{n}d geleden',
   'just_now': 'Zojuist',
   'minutes_ago': '{} min geleden',
   'hours_ago': '{} uur geleden',

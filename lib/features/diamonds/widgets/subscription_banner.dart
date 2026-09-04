@@ -182,7 +182,7 @@ class _ActivePlanBadge extends StatelessWidget {
                   Text(
                     context.tr('expires_at').replaceAll(
                           '{date}',
-                          _formatDate(subscription.expiresAt!),
+                          _formatDate(context, subscription.expiresAt!),
                         ),
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
@@ -196,12 +196,8 @@ class _ActivePlanBadge extends StatelessWidget {
     );
   }
 
-  String _formatDate(String dateStr) {
-    try {
-      final date = DateTime.parse(dateStr).toLocal();
-      return '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year}';
-    } catch (_) {
-      return dateStr;
-    }
+  String _formatDate(BuildContext context, String dateStr) {
+    final d = DateTime.tryParse(dateStr);
+    return d == null ? dateStr : context.fmt.date(d);
   }
 }

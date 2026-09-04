@@ -75,11 +75,6 @@ const esTranslations = <String, String>{
   'say_hello': '¡Di hola!',
   'message_hint': 'Mensaje...',
   'type_message': 'Escribe un mensaje...',
-  'last_seen_just_now': 'Visto: hace un momento',
-  'last_seen_minutes': 'Visto: hace {count} min',
-  'last_seen_hours': 'Visto: hace {count}h',
-  'last_seen_days': 'Visto: hace {count}d',
-  'last_seen_weeks': 'Visto: hace {count}sem',
 
   // Matches extras
   'new_matches': 'Nuevos matches',
@@ -434,10 +429,6 @@ const esTranslations = <String, String>{
   'mark_all_read': 'Marcar todo como leído',
   'no_notifications': 'Aún no hay notificaciones',
   'no_notifications_desc': 'Aquí verás tus matches y mensajes',
-  'time_just_now': 'Justo ahora',
-  'time_minutes_ago': 'Hace {n} min',
-  'time_hours_ago': 'Hace {n}h',
-  'time_days_ago': 'Hace {n}d',
   'just_now': 'Ahora mismo',
   'minutes_ago': 'hace {} min',
   'hours_ago': 'hace {} horas',

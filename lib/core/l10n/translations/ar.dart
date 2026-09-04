@@ -75,11 +75,6 @@ const arTranslations = <String, String>{
   'say_hello': 'قل مرحباً!',
   'message_hint': 'رسالة...',
   'type_message': 'اكتب رسالة...',
-  'last_seen_just_now': 'آخر ظهور: الآن',
-  'last_seen_minutes': 'آخر ظهور: قبل {count} دقيقة',
-  'last_seen_hours': 'آخر ظهور: قبل {count} ساعة',
-  'last_seen_days': 'آخر ظهور: قبل {count} يوم',
-  'last_seen_weeks': 'آخر ظهور: قبل {count} أسبوع',
 
   // Matches extras
   'new_matches': 'توافقات جديدة',
@@ -432,10 +427,6 @@ const arTranslations = <String, String>{
   'mark_all_read': 'تعيين الكل كمقروء',
   'no_notifications': 'لا توجد إشعارات بعد',
   'no_notifications_desc': 'ستظهر التوافقات والرسائل هنا',
-  'time_just_now': 'الآن',
-  'time_minutes_ago': 'منذ {n} د',
-  'time_hours_ago': 'منذ {n} س',
-  'time_days_ago': 'منذ {n} ي',
   'just_now': 'الآن',
   'minutes_ago': 'قبل {} دقيقة',
   'hours_ago': 'قبل {} ساعة',

@@ -75,11 +75,6 @@ const deTranslations = <String, String>{
   'say_hello': 'Sag Hallo!',
   'message_hint': 'Nachricht...',
   'type_message': 'Schreibe eine Nachricht...',
-  'last_seen_just_now': 'Zuletzt gesehen: gerade eben',
-  'last_seen_minutes': 'Zuletzt gesehen: vor {count} Min.',
-  'last_seen_hours': 'Zuletzt gesehen: vor {count} Std.',
-  'last_seen_days': 'Zuletzt gesehen: vor {count} T.',
-  'last_seen_weeks': 'Zuletzt gesehen: vor {count} W.',
 
   // Matches extras
   'new_matches': 'Neue Matches',
@@ -434,10 +429,6 @@ const deTranslations = <String, String>{
   'mark_all_read': 'Alle als gelesen markieren',
   'no_notifications': 'Noch keine Benachrichtigungen',
   'no_notifications_desc': 'Hier siehst du Matches und Nachrichten',
-  'time_just_now': 'Gerade eben',
-  'time_minutes_ago': '{n} Min.',
-  'time_hours_ago': 'Vor {n} Std.',
-  'time_days_ago': 'Vor {n} T.',
   'just_now': 'Gerade eben',
   'minutes_ago': 'vor {} Min.',
   'hours_ago': 'vor {} Std.',

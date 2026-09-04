@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/data/models/message_model.dart';
@@ -49,9 +50,7 @@ class ChatMessageItem extends StatelessWidget {
     final hasReactions =
         message.reactions != null && message.reactions!.isNotEmpty;
     final msgTime = DateTime.tryParse(message.createdAt ?? '');
-    final timeStr = msgTime != null
-        ? '${msgTime.toLocal().hour.toString().padLeft(2, '0')}:${msgTime.toLocal().minute.toString().padLeft(2, '0')}'
-        : '';
+    final timeStr = msgTime != null ? context.fmt.time(msgTime) : '';
 
     // Day separator logic (reverse list: check if next item is different day)
     Widget? daySeparator;

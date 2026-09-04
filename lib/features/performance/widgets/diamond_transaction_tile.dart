@@ -34,7 +34,7 @@ class DiamondTransactionTile extends StatelessWidget {
                 ),
                 if (transaction.createdAt != null)
                   Text(
-                    _formatDate(transaction.createdAt!),
+                    _formatDate(context, transaction.createdAt!),
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: context.appColors.textSecondary,
                     ),
@@ -68,9 +68,8 @@ class DiamondTransactionTile extends StatelessWidget {
     };
   }
 
-  String _formatDate(String dateStr) {
-    final dt = DateTime.tryParse(dateStr)?.toLocal();
-    if (dt == null) return '';
-    return '${dt.day.toString().padLeft(2, '0')}.${dt.month.toString().padLeft(2, '0')}.${dt.year}';
+  String _formatDate(BuildContext context, String dateStr) {
+    final dt = DateTime.tryParse(dateStr);
+    return dt == null ? '' : context.fmt.date(dt);
   }
 }

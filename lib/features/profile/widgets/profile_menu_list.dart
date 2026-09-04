@@ -104,8 +104,7 @@ class ProfileMenuList extends ConsumerWidget {
     if (sub.expiresAt != null) {
       final date = DateTime.tryParse(sub.expiresAt!)?.toLocal();
       if (date != null) {
-        final formatted =
-            '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year}';
+        final formatted = context.fmt.date(date);
         return '$planLabel • $formatted';
       }
     }

@@ -75,11 +75,6 @@ const frTranslations = <String, String>{
   'say_hello': 'Dis bonjour !',
   'message_hint': 'Message...',
   'type_message': 'Écrire un message...',
-  'last_seen_just_now': 'Vu : à l\'instant',
-  'last_seen_minutes': 'Vu : il y a {count} min',
-  'last_seen_hours': 'Vu : il y a {count}h',
-  'last_seen_days': 'Vu : il y a {count}j',
-  'last_seen_weeks': 'Vu : il y a {count}sem',
 
   // Matches extras
   'new_matches': 'Nouveaux matchs',
@@ -434,10 +429,6 @@ const frTranslations = <String, String>{
   'mark_all_read': 'Tout marquer comme lu',
   'no_notifications': 'Pas encore de notifications',
   'no_notifications_desc': 'Tu verras tes matchs et messages ici',
-  'time_just_now': 'À l\'instant',
-  'time_minutes_ago': '{n} min',
-  'time_hours_ago': 'Il y a {n}h',
-  'time_days_ago': 'Il y a {n}j',
   'just_now': 'À l\'instant',
   'minutes_ago': 'il y a {} min',
   'hours_ago': 'il y a {} heures',

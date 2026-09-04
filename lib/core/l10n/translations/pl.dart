@@ -75,11 +75,6 @@ const plTranslations = <String, String>{
   'say_hello': 'Powiedz cze\u015b\u0107!',
   'message_hint': 'Wiadomo\u015b\u0107...',
   'type_message': 'Napisz wiadomo\u015b\u0107...',
-  'last_seen_just_now': 'Ostatnio widziany: w\u0142a\u015bnie',
-  'last_seen_minutes': 'Ostatnio widziany: {count} min temu',
-  'last_seen_hours': 'Ostatnio widziany: {count} godz. temu',
-  'last_seen_days': 'Ostatnio widziany: {count} dni temu',
-  'last_seen_weeks': 'Ostatnio widziany: {count} tyg. temu',
 
   // Matches extras
   'new_matches': 'Nowe dopasowania',
@@ -432,10 +427,6 @@ const plTranslations = <String, String>{
   'mark_all_read': 'Oznacz wszystkie jako przeczytane',
   'no_notifications': 'Brak powiadomie\u0144',
   'no_notifications_desc': 'Tutaj zobaczysz dopasowania i wiadomo\u015bci',
-  'time_just_now': 'Przed chwilą',
-  'time_minutes_ago': '{n} min temu',
-  'time_hours_ago': '{n} godz. temu',
-  'time_days_ago': '{n} dni temu',
   'just_now': 'W\u0142a\u015bnie',
   'minutes_ago': '{} min temu',
   'hours_ago': '{} godz. temu',

@@ -75,11 +75,6 @@ const svTranslations = <String, String>{
   'say_hello': 'Säg hej!',
   'message_hint': 'Meddelande...',
   'type_message': 'Skriv ett meddelande...',
-  'last_seen_just_now': 'Senast sedd: just nu',
-  'last_seen_minutes': 'Senast sedd: {count} min sedan',
-  'last_seen_hours': 'Senast sedd: {count}t sedan',
-  'last_seen_days': 'Senast sedd: {count}d sedan',
-  'last_seen_weeks': 'Senast sedd: {count}v sedan',
 
   // Matches extras
   'new_matches': 'Nya matchningar',
@@ -434,10 +429,6 @@ const svTranslations = <String, String>{
   'mark_all_read': 'Markera alla som lästa',
   'no_notifications': 'Inga aviseringar ännu',
   'no_notifications_desc': 'Här ser du matchningar och meddelanden',
-  'time_just_now': 'Nyss',
-  'time_minutes_ago': '{n} min sedan',
-  'time_hours_ago': '{n}h sedan',
-  'time_days_ago': '{n}d sedan',
   'just_now': 'Just nu',
   'minutes_ago': '{} min sedan',
   'hours_ago': '{} timmar sedan',

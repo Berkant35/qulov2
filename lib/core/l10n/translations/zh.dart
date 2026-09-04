@@ -75,11 +75,6 @@ const zhTranslations = <String, String>{
   'say_hello': '打个招呼吧！',
   'message_hint': '消息...',
   'type_message': '输入消息...',
-  'last_seen_just_now': '最近在线：刚刚',
-  'last_seen_minutes': '最近在线：{count}分钟前',
-  'last_seen_hours': '最近在线：{count}小时前',
-  'last_seen_days': '最近在线：{count}天前',
-  'last_seen_weeks': '最近在线：{count}周前',
 
   // Matches extras
   'new_matches': '新匹配',
@@ -432,10 +427,6 @@ const zhTranslations = <String, String>{
   'mark_all_read': '全部标为已读',
   'no_notifications': '暂无通知',
   'no_notifications_desc': '匹配和消息会显示在这里',
-  'time_just_now': '刚刚',
-  'time_minutes_ago': '{n}分钟前',
-  'time_hours_ago': '{n}小时前',
-  'time_days_ago': '{n}天前',
   'just_now': '刚刚',
   'minutes_ago': '{}分钟前',
   'hours_ago': '{}小时前',

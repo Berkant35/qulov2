@@ -75,11 +75,6 @@ const ptTranslations = <String, String>{
   'say_hello': 'Diga olá!',
   'message_hint': 'Mensagem...',
   'type_message': 'Digite uma mensagem...',
-  'last_seen_just_now': 'Visto por último: agora',
-  'last_seen_minutes': 'Visto por último: {count} min atrás',
-  'last_seen_hours': 'Visto por último: {count}h atrás',
-  'last_seen_days': 'Visto por último: {count}d atrás',
-  'last_seen_weeks': 'Visto por último: {count}sem atrás',
 
   // Matches extras
   'new_matches': 'Novos Matches',
@@ -434,10 +429,6 @@ const ptTranslations = <String, String>{
   'mark_all_read': 'Marcar Tudo como Lido',
   'no_notifications': 'Nenhuma notificação ainda',
   'no_notifications_desc': 'Você verá matches e mensagens aqui',
-  'time_just_now': 'Agora',
-  'time_minutes_ago': '{n} min atrás',
-  'time_hours_ago': '{n}h atrás',
-  'time_days_ago': '{n}d atrás',
   'just_now': 'Agora mesmo',
   'minutes_ago': '{} min atrás',
   'hours_ago': '{} horas atrás',
