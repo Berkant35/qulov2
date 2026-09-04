@@ -138,5 +138,9 @@ void main() {
       expect(fm.relativeShort(now.subtract(const Duration(hours: 3)), now: now), '3h');
       expect(fm.relativeShort(now.subtract(const Duration(days: 4)), now: now), '4d');
     });
+    test('gelecek damga (saat kayması) just now sayılır', () {
+      expect(fm.relative(now.add(const Duration(days: 30)), now: now), 'Just now');
+      expect(fm.relativeShort(now.add(const Duration(days: 2)), now: now), 'Now');
+    });
   });
 }

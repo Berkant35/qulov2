@@ -171,7 +171,7 @@ class FormatManager {
 
   /// `Just now` / `5 minutes ago` / `3 hours ago` / `4 days ago` / `Aug 25`.
   String relative(DateTime dt, {DateTime? now}) {
-    final diff = (now ?? DateTime.now()).difference(dt);
+    final diff = _elapsedSince(dt, now);
     if (diff.inSeconds < 60) return _l10n.get('just_now');
     if (diff.inMinutes < 60) return _l10n.plural('time_minutes_ago', diff.inMinutes);
     if (diff.inHours < 24) return _l10n.plural('time_hours_ago', diff.inHours);
@@ -181,12 +181,19 @@ class FormatManager {
 
   /// Rozet bicimi: `Now` / `5m` / `3h` / `4d` / `Aug 25`.
   String relativeShort(DateTime dt, {DateTime? now}) {
-    final diff = (now ?? DateTime.now()).difference(dt);
+    final diff = _elapsedSince(dt, now);
     if (diff.inSeconds < 60) return _l10n.get('now');
     if (diff.inMinutes < 60) return _withN('time_minutes_short', diff.inMinutes);
     if (diff.inHours < 24) return _withN('time_hours_short', diff.inHours);
     if (diff.inDays < 7) return _withN('time_days_short', diff.inDays);
     return dateShort(dt);
+  }
+
+  /// `relative`/`relativeShort` icin gecen sureyi hesaplar.
+  Duration _elapsedSince(DateTime dt, DateTime? now) {
+    final raw = (now ?? DateTime.now()).difference(dt);
+    // Gelecek damga = cihaz saat kaymasi; sunucu damgalari gecmiste. "Az once" kabul.
+    return raw.isNegative ? Duration.zero : raw;
   }
 
   static DateTime _dayOf(DateTime d) => DateTime(d.year, d.month, d.day);
