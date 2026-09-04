@@ -93,7 +93,7 @@ class MatchCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
-                  match.unreadCount > 99 ? '99+' : '${match.unreadCount}',
+                  match.unreadCount > 99 ? '99+' : context.fmt.integer(match.unreadCount),
                   style: theme.textTheme.labelSmall?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,

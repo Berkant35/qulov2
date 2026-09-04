@@ -182,7 +182,7 @@ class _TimeBadge extends StatelessWidget {
           QIcon(QIcons.icClock, size: 10, color: context.appColors.textSecondary),
           const SizedBox(width: 3),
           Text(
-            '${timeLimit}s',
+            context.fmt.seconds(timeLimit),
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
               color: context.appColors.textSecondary,
               fontSize: 10,

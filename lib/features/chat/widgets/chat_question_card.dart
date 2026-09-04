@@ -123,7 +123,7 @@ class _BadgesRow extends StatelessWidget {
     if (question.timeLimitSeconds > 0) {
       badges.add(_Badge(
         icon: '\u23f1',
-        label: '${question.timeLimitSeconds}s',
+        label: context.fmt.seconds(question.timeLimitSeconds),
         color: context.appColors.textSecondary,
       ));
     }

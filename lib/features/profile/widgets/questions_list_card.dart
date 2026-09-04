@@ -120,7 +120,7 @@ class QuestionsListCard extends StatelessWidget {
                               size: 10, color: context.appColors.textSecondary),
                           const SizedBox(width: 3),
                           Text(
-                            '${question.timeLimit}s',
+                            context.fmt.seconds(question.timeLimit),
                             style: theme.textTheme.labelSmall?.copyWith(
                               color: context.appColors.textSecondary,
                               fontSize: 10,

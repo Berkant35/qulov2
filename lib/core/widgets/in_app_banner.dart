@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/utils/text_utils.dart';
 import 'package:qulo_v2/core/widgets/app_icon.dart';
 
@@ -110,7 +111,10 @@ class _InAppBannerState extends State<InAppBanner>
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
-                        sanitizeNotificationBody(widget.body),
+                        sanitizeNotificationBody(
+                          widget.body,
+                          fallback: context.tr('notification_default_body'),
+                        ),
                         style: TextStyle(
                           fontSize: 12,
                           color: context.appColors.textSecondary,

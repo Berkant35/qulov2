@@ -82,7 +82,7 @@ class QuestionPerformanceSection extends StatelessWidget {
           ),
         ],
         const SizedBox(height: AppSpacing.lg),
-        _InfoRow(label: context.tr('avg_solve_time'), value: '${overallAvgTime}s'),
+        _InfoRow(label: context.tr('avg_solve_time'), value: context.fmt.seconds(overallAvgTime)),
         const SizedBox(height: AppSpacing.lg),
         Text(
           context.tr('difficulty_distribution'),

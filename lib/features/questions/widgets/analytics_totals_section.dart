@@ -25,7 +25,7 @@ class AnalyticsTotalsSection extends StatelessWidget {
       children: [
         AnalyticsStatCard(
           label: context.tr('analytics_total_solves'),
-          value: '${totals.totalSolveCount}',
+          value: context.fmt.integer(totals.totalSolveCount),
           icon: QIcon(QIcons.icTarget, size: 24, color: context.appColors.info),
         ),
         const SizedBox(width: AppSpacing.sm),

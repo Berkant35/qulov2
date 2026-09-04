@@ -326,7 +326,7 @@ class _DraftItem extends StatelessWidget {
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
-                    '${draft.optionCount} sik',
+                    context.trPlural('option_count', draft.optionCount),
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: context.appColors.textHint,
                     ),
@@ -392,7 +392,7 @@ class _HistoryItem extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
-                  '$optionCount sik',
+                  context.trPlural('option_count', optionCount),
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: context.appColors.textHint,
                   ),

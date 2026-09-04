@@ -264,7 +264,7 @@ class _TimerChips extends StatelessWidget {
       children: options.map((seconds) {
         final isSelected = selectedSeconds == seconds;
         return ChoiceChip(
-          label: Text('${seconds}s'),
+          label: Text(context.fmt.seconds(seconds)),
           selected: isSelected,
           onSelected: (_) => onChanged(seconds),
           selectedColor: context.appColors.primarySurface,

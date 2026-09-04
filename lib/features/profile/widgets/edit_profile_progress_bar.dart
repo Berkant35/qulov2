@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 
@@ -30,7 +31,7 @@ class EditProfileProgressBar extends StatelessWidget {
               ),
             ),
             Text(
-              '%$percentage',
+              context.fmt.percent(percentage),
               style: theme.textTheme.titleSmall?.copyWith(
                 color: context.appColors.primary,
                 fontWeight: FontWeight.bold,

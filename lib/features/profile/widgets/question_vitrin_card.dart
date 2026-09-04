@@ -70,7 +70,7 @@ class _QuestionVitrinCardState extends ConsumerState<QuestionVitrinCard> {
                           size: 20,
                           color: context.appColors.primary,
                         ),
-                        value: '${totals.totalSolveCount}',
+                        value: context.fmt.integer(totals.totalSolveCount),
                         label: context.tr('profile_vitrin_solves'),
                       ),
                     ),

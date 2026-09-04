@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 
@@ -38,7 +39,7 @@ class TimePresetCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              '${seconds}s',
+              context.fmt.seconds(seconds),
               style: theme.textTheme.headlineSmall?.copyWith(
                 color: isSelected ? context.appColors.primary : context.appColors.textPrimary,
                 fontWeight: FontWeight.bold,

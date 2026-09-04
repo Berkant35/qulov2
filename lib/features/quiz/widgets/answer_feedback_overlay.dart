@@ -311,7 +311,7 @@ class _CostBadge extends StatelessWidget {
           ),
         ),
         child: Text(
-          '${option.inventoryCount}',
+          context.fmt.integer(option.inventoryCount),
           style: theme.textTheme.labelSmall?.copyWith(
             color: context.appColors.success,
             fontWeight: FontWeight.bold,

@@ -23,7 +23,7 @@ class PerformanceSummaryGrid extends StatelessWidget {
         _StatCard(
           icon: Icons.check_circle_outline,
           iconColor: context.appColors.secondary,
-          value: '${totals.totalSolveCount}',
+          value: context.fmt.integer(totals.totalSolveCount),
           label: context.tr('total_solves'),
         ),
         _StatCard(

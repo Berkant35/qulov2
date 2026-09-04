@@ -86,7 +86,10 @@ class NotificationCard extends StatelessWidget {
                   const SizedBox(height: 3),
                   // Body
                   Text(
-                    sanitizeNotificationBody(notification.body),
+                    sanitizeNotificationBody(
+                      notification.body,
+                      fallback: context.tr('notification_default_body'),
+                    ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.bodySmall?.copyWith(

@@ -49,7 +49,7 @@ class ProfileCompletionBar extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '$completionPercent%',
+                  context.fmt.percent(completionPercent),
                   style: theme.textTheme.labelMedium?.copyWith(
                     color: color,
                     fontWeight: FontWeight.bold,

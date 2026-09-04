@@ -638,7 +638,7 @@ class _AnswerDetailsCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    '${timeSpent}s',
+                    context.fmt.seconds(timeSpent!),
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
