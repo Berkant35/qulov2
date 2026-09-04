@@ -1,6 +1,6 @@
 /// `/auth/social-login` govde haritasi — saf fonksiyon, test edilebilir.
 /// Opsiyonel alanlar (name/surname/nonce) yalnizca doluysa haritaya eklenir;
-/// `locale` her zaman zorunlu (I4 — sosyal girişte cihaz/uygulama dili artik
+/// `locale` her zaman zorunlu (I4 — sosyal giriste cihaz/uygulama dili artik
 /// sunucuya gonderilir, register akisiyla ayni davranis).
 Map<String, dynamic> buildSocialLoginBody({
   required String provider,
