@@ -26,6 +26,8 @@ import 'package:qulo_v2/core/services/analytics_forwarder.dart';
 import 'package:qulo_v2/core/services/overlay_queue_service.dart';
 import 'package:qulo_v2/core/services/overlay_request.dart';
 import 'package:qulo_v2/routing/app_router.dart';
+import 'package:qulo_v2/core/services/format_manager.dart';
+import 'package:qulo_v2/providers/user_provider.dart';
 
 class QuloApp extends ConsumerStatefulWidget {
   const QuloApp({super.key});
@@ -42,6 +44,17 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+
+    // Bicimlendirme: locale (bolge dahil) ve profil ulkesi degisince manager yeniden kurulur.
+    ref.listenManual<Locale>(
+      localeProvider,
+      (_, next) => _configureFormat(next),
+      fireImmediately: true,
+    );
+    ref.listenManual<String?>(
+      userProvider.select((u) => u.valueOrNull?.country),
+      (_, __) => _configureFormat(ref.read(localeProvider)),
+    );
 
     // Force logout callback — refresh token expire olduğunda tetiklenir
     NetworkManager.instance.onForceLogout =
@@ -72,6 +85,11 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  void _configureFormat(Locale locale) {
+    final country = ref.read(userProvider).valueOrNull?.country;
+    unawaited(FormatManager.instance.configure(locale, profileCountry: country));
   }
 
   @override
@@ -327,6 +345,8 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
       darkTheme: AppTheme.dark,
       themeMode: themeMode,
       locale: locale,
+      // Bolge korunsun: `Locale('en','US')` desteklenen `Locale('en')`'e indirgenmesin.
+      localeResolutionCallback: (locale, _) => locale ?? const Locale('en'),
       supportedLocales: const [
             Locale('tr'), Locale('en'), Locale('de'), Locale('fr'),
             Locale('es'), Locale('ar'), Locale('ru'), Locale('pt'),

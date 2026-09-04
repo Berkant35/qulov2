@@ -10,6 +10,7 @@ import 'package:qulo_v2/core/services/audio_player_manager.dart';
 import 'package:qulo_v2/core/services/share_manager.dart';
 import 'package:qulo_v2/core/services/audio_recorder_manager.dart';
 import 'package:qulo_v2/core/services/haptic_manager.dart';
+import 'package:qulo_v2/core/services/format_manager.dart';
 import 'package:qulo_v2/core/services/teleport_service.dart';
 import 'package:qulo_v2/core/services/att_manager.dart';
 import 'package:qulo_v2/core/services/meta_events_manager.dart';
@@ -71,6 +72,9 @@ final audioRecorderManagerProvider = Provider<AudioRecorderManager>(
 );
 final hapticManagerProvider = Provider<HapticManager>(
   (_) => HapticManager.instance,
+);
+final formatManagerProvider = Provider<FormatManager>(
+  (_) => FormatManager.instance,
 );
 final attManagerProvider = Provider<AttManager>(
   (_) => AttManager.instance,
