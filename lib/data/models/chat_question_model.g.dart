@@ -32,6 +32,10 @@ ChatQuestionModel _$ChatQuestionModelFromJson(Map<String, dynamic> json) =>
       powerBlockRemoved: json['power_block_removed'] as bool? ?? false,
       powersUsed: json['powers_used'] as List<dynamic>? ?? const [],
       isAbandoned: json['is_abandoned'] as bool? ?? false,
+      eliminatedOptions: (json['eliminated_options'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      oracleSuggestedOption: json['oracle_suggested_option'] as String?,
     );
 
 Map<String, dynamic> _$ChatQuestionModelToJson(ChatQuestionModel instance) =>
@@ -60,6 +64,8 @@ Map<String, dynamic> _$ChatQuestionModelToJson(ChatQuestionModel instance) =>
       'power_block_removed': instance.powerBlockRemoved,
       'powers_used': instance.powersUsed,
       'is_abandoned': instance.isAbandoned,
+      'eliminated_options': instance.eliminatedOptions,
+      'oracle_suggested_option': instance.oracleSuggestedOption,
     };
 
 ChatQuestionAnswerResponse _$ChatQuestionAnswerResponseFromJson(

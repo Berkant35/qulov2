@@ -53,6 +53,16 @@ class ChatQuestionModel extends Equatable {
   @JsonKey(name: 'is_abandoned')
   final bool isAbandoned;
 
+  /// HALF'in eledigi sik harfleri (sunucu kalici yazar). Ekran yeniden acilinca
+  /// `removedOptions` buradan hidre edilir; null = HALF kullanilmadi.
+  @JsonKey(name: 'eliminated_options')
+  final List<String>? eliminatedOptions;
+
+  /// ORACLE'in onerdigi sik harfi (sunucu kalici yazar). Ekran yeniden acilinca
+  /// `suggestedOption` buradan hidre edilir; null = ORACLE kullanilmadi.
+  @JsonKey(name: 'oracle_suggested_option')
+  final String? oracleSuggestedOption;
+
   const ChatQuestionModel({
     required this.id,
     required this.matchId,
@@ -78,6 +88,8 @@ class ChatQuestionModel extends Equatable {
     this.powerBlockRemoved = false,
     this.powersUsed = const [],
     this.isAbandoned = false,
+    this.eliminatedOptions,
+    this.oracleSuggestedOption,
   });
 
   factory ChatQuestionModel.fromJson(Map<String, dynamic> json) =>

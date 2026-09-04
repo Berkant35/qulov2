@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
+import 'package:qulo_v2/core/widgets/compact_diamond_balance.dart';
 import 'package:qulo_v2/core/widgets/power_icon.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/providers/quiz_provider.dart';
@@ -82,6 +83,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
           icon: QIcon(QIcons.icX, size: 24),
           onPressed: confirmExit,
         ),
+        actions: const [CompactDiamondBalance()],
         padding: EdgeInsets.zero,
         isLoading: question == null,
         body: question == null

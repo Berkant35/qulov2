@@ -51,6 +51,10 @@ mixin SolveChatQuestionScreenMixin
     // Sunucudan gelen durumu hidrate et — ekran yeniden acildiginda kullanilmis
     // gucler acik gorunmesin (quiz'de `used_powers` ile ayni is).
     usedPowers.addAll(widget.question.powersUsed.map((p) => p.toString()));
+    // HALF/ORACLE sonuclari da sunucudan gelir — yoksa guc "kullanildi" gorunur
+    // ama hicbir sik elenmez / onerilmez (odenen guc bosa giderdi).
+    removedOptions = widget.question.eliminatedOptions?.toSet() ?? {};
+    suggestedOption = widget.question.oracleSuggestedOption;
 
     // Guard: don't allow re-solving answered questions
     if (widget.question.isAnswered) {

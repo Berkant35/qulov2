@@ -1,4 +1,5 @@
 import 'dart:developer' as dev;
+import 'dart:math' as math;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/data/models/user_model.dart';
@@ -20,6 +21,21 @@ class UserNotifier extends AsyncNotifier<UserModel?> {
     state = result.when(
       success: (data) => AsyncData(data),
       failure: (f) => AsyncError(f, StackTrace.current),
+    );
+  }
+
+  /// Guc harcamasini sunucuya gitmeden yerel duser — AppBar bakiyesi aninda guncellenir.
+  /// Sunucu ucreti zaten aldi (basari yanitindan sonra cagrilir); burasi sadece aynadir.
+  void spendPurpleLocally(int amount) {
+    final user = state.valueOrNull;
+    if (user == null) return;
+    if (amount <= 0) {
+      // Maliyet bilinmiyor (config yuklenmemis) — bakiye sessizce bayat kalmasin, iz birak.
+      dev.log('spendPurpleLocally: maliyet $amount, bakiye dusulmedi', name: 'UserNotifier');
+      return;
+    }
+    state = AsyncData(
+      user.withPurpleDiamonds(math.max(0, user.purpleDiamonds - amount)),
     );
   }
 

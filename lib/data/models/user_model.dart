@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -131,6 +133,16 @@ class UserModel extends Equatable {
   factory UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
+
+  /// Mor bakiyesi degistirilmis kopya — guc harcamasi yerel dusulurken kullanilir.
+  ///
+  /// 43 alanlik elle `copyWith` yerine JSON round-trip: `toJson`/`fromJson` simetrik
+  /// kaldigi surece yeni alanlar otomatik korunur; ic ice modeller (`details`)
+  /// `jsonEncode` ile map'e iner. Nadir cagrilir (guc basina bir kez).
+  UserModel withPurpleDiamonds(int purple) {
+    final json = jsonDecode(jsonEncode(this)) as Map<String, dynamic>;
+    return UserModel.fromJson(json..['purple_diamonds'] = purple);
+  }
 
   bool get setupComplete =>
       (photos?.isNotEmpty ?? false) &&

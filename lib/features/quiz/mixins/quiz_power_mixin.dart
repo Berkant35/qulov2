@@ -50,16 +50,18 @@ mixin QuizPowerMixin on QuizScreenStateMixin {
       success: (data) {
         powersUsed++;
         ref.read(quizProvider.notifier).markPowerUsed(power);
-        refreshBalances();
+        // Bakiye yerel dusulur — sunucu ucreti zaten aldi, tekrar sormaya gerek yok.
+        final fromInventory =
+            ref.read(exchangeProvider.notifier).settlePowerSpend(power, cost);
 
         AnalyticsManager.instance.logEvent(
           AnalyticsEvents.quizPowerUsed,
           params: {
             AnalyticsEvents.paramPower: power,
-            AnalyticsEvents.paramSource: hadInventory
+            AnalyticsEvents.paramSource: fromInventory
                 ? AnalyticsEvents.sourceInventory
                 : AnalyticsEvents.sourceDiamond,
-            AnalyticsEvents.paramPurpleSpent: hadInventory ? 0 : cost,
+            AnalyticsEvents.paramPurpleSpent: fromInventory ? 0 : cost,
           },
         );
 
@@ -107,7 +109,7 @@ mixin QuizPowerMixin on QuizScreenStateMixin {
   Future<void> onRescue(String powerType) async {
     setState(() => isSubmitting = true);
 
-    final hadInventory = ref.read(exchangeProvider).getCount(powerType) > 0;
+    final cost = ref.read(quizProvider).purpleCostOf(powerType);
     AnalyticsManager.instance.logEvent(
       AnalyticsEvents.quizRescueAccepted,
       params: {AnalyticsEvents.paramPower: powerType},
@@ -123,18 +125,18 @@ mixin QuizPowerMixin on QuizScreenStateMixin {
       success: (data) {
         powersUsed++;
         totalCorrect++;
-        refreshBalances();
+        final fromInventory =
+            ref.read(exchangeProvider.notifier).settlePowerSpend(powerType, cost);
         resetQuestionState();
 
         AnalyticsManager.instance.logEvent(
           AnalyticsEvents.quizPowerUsed,
           params: {
             AnalyticsEvents.paramPower: powerType,
-            AnalyticsEvents.paramSource: hadInventory
+            AnalyticsEvents.paramSource: fromInventory
                 ? AnalyticsEvents.sourceInventory
                 : AnalyticsEvents.sourceDiamond,
-            AnalyticsEvents.paramPurpleSpent:
-                hadInventory ? 0 : ref.read(quizProvider).purpleCostOf(powerType),
+            AnalyticsEvents.paramPurpleSpent: fromInventory ? 0 : cost,
           },
         );
 
@@ -216,13 +218,20 @@ mixin QuizPowerMixin on QuizScreenStateMixin {
     );
   }
 
-  /// Envanter + elmas bakiyesi + kullanici (baslik gostergesi) tazele.
+  /// Envanter + elmas bakiyesi + kullanici tazele — SADECE paywall satin alma
+  /// sonrasinda (sunucu bakiyeyi bizim bilmedigimiz sekilde degistirdi).
+  /// Guc kullanimi `settlePowerSpend` ile yerel dusulur, buraya gelmez.
   ///
   /// `ref.invalidate(diamondProvider)` KULLANMA — `DiamondNotifier.build()` sabit
   /// `DiamondBalance(0, 0)` donuyor, yani invalidate refetch degil SIFIRLAMA olur.
   Future<void> refreshBalances() async {
+    // mounted kontrolleri sart: paywall + 1.5s tampon sonrasi kullanici quiz'den
+    // cikmis olabilir; ardisik await'ler dispose edilmis container'a duser (chat ile simetrik).
+    if (!mounted) return;
     await ref.read(exchangeProvider.notifier).fetchAll();
+    if (!mounted) return;
     await ref.read(diamondProvider.notifier).fetchBalance();
+    if (!mounted) return;
     await ref.read(userProvider.notifier).fetchMe();
   }
 }

@@ -43,6 +43,38 @@ void main() {
       expect(user.setupComplete, false);
     });
   });
+
+  // Güç harcaması sunucuda başarılıysa bakiye yerel düşülür; 43 alanlı modelde
+  // elle copyWith yerine serializasyon round-trip'i kullanılıyor. İç içe `details`
+  // ve DateTime alanları bu yolda kaybolmamalı.
+  group('UserModel.withPurpleDiamonds', () {
+    test('sadece mor bakiyeyi değiştirir, iç içe alanları korur', () {
+      final user = UserModel.fromJson(_fullJson());
+
+      final copy = user.withPurpleDiamonds(35);
+
+      expect(copy.purpleDiamonds, 35);
+      expect(copy.greenDiamonds, 7);
+      expect(copy.genderPrefSetAt, user.genderPrefSetAt);
+      expect(copy.details?.height, 180);
+      expect(copy.details?.musicType, 'jazz');
+    });
+
+    test('aynı bakiyeyle kopya modele eşittir — round-trip kayıpsız', () {
+      final user = UserModel.fromJson(_fullJson());
+
+      final copy = user.withPurpleDiamonds(user.purpleDiamonds);
+
+      // Equatable eşitliği props'taki alanları kapsar...
+      expect(copy, user);
+      // ...props dışında kalanlar ayrıca (pushToken, passport*, createdAt, details).
+      expect(copy.pushToken, 'tok-1');
+      expect(copy.passportLat, 41.0);
+      expect(copy.passportLng, 29.0);
+      expect(copy.createdAt, '2026-01-01T00:00:00Z');
+      expect(copy.details?.zodiac, 'leo');
+    });
+  });
 }
 
 Map<String, dynamic> _baseJson() => {
@@ -51,6 +83,19 @@ Map<String, dynamic> _baseJson() => {
       'profile_completion': 50,
       'question_count': 0,
     };
+
+/// Round-trip testleri için dolu kullanıcı: iç içe model, DateTime, props dışı alanlar.
+Map<String, dynamic> _fullJson() => _setupJson()
+  ..['name'] = 'Ada'
+  ..['purple_diamonds'] = 50
+  ..['green_diamonds'] = 7
+  ..['push_token'] = 'tok-1'
+  ..['passport_lat'] = 41.0
+  ..['passport_lng'] = 29.0
+  ..['created_at'] = '2026-01-01T00:00:00Z'
+  ..['interests'] = ['music']
+  ..['completion_rewards_claimed'] = {'25': true}
+  ..['details'] = {'height': 180, 'music_type': 'jazz', 'zodiac': 'leo'};
 
 /// Üç setup kapısı da açık bir kullanıcı — testler tek tek bozarak doğrular.
 Map<String, dynamic> _setupJson() => _baseJson()

@@ -3,6 +3,7 @@ import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/data/models/exchange_model.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
+import 'package:qulo_v2/providers/user_provider.dart';
 
 class ExchangeState {
   final List<PowerInventoryItem> inventory;
@@ -58,6 +59,24 @@ class ExchangeNotifier extends Notifier<ExchangeState> {
           : state.rates,
       isLoading: false,
     );
+  }
+
+  /// Basarili guc kullanimindan sonra bakiyeyi YEREL duser — sunucu round-trip'i yok.
+  /// Oncelik sunucudakiyle ayni: envanterde hak varsa oradan (`tryUseInventory`),
+  /// yoksa mor elmastan (`spendPurple`). Sunucu ucreti zaten aldi; burasi aynadir.
+  /// Bayat envanter (baska cihaz) kozmetik sapma yaratir, sonraki fetch'te duzelir.
+  ///
+  /// Doner: envanterden dustuyse true — analytics de bu tek karari kullanir.
+  bool settlePowerSpend(String powerName, int purpleCost) {
+    final inventory = List.of(state.inventory);
+    final i = inventory.indexWhere((it) => it.powerName == powerName && it.count > 0);
+    if (i >= 0) {
+      inventory[i] = PowerInventoryItem(powerName: powerName, count: inventory[i].count - 1);
+      state = state.copyWith(inventory: inventory);
+      return true;
+    }
+    ref.read(userProvider.notifier).spendPurpleLocally(purpleCost);
+    return false;
   }
 
   Future<bool> convert(int greenAmount) async {

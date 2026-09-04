@@ -21,7 +21,9 @@ import 'package:qulo_v2/providers/user_provider.dart';
 /// alan buyudu ve tek dosya 480 satira ciktu (limit 300). Quiz tarafinda da ayni
 /// bolme yapildi (`QuizPowerMixin`).
 mixin ChatQuestionPowerMixin on SolveChatQuestionScreenMixin {
-  /// Envanter + elmas bakiyesi + kullanici tazele.
+  /// Envanter + elmas bakiyesi + kullanici tazele — SADECE sunucunun bakiyeyi
+  /// bizim bilmedigimiz sekilde degistirdigi yollarda (paywall satin alma, rescue).
+  /// Guc kullanimi `settlePowerSpend` ile yerel dusulur, buraya gelmez.
   ///
   /// `ref.invalidate(diamondProvider)` KULLANMA — `DiamondNotifier.build()` sabit
   /// `DiamondBalance(0, 0)` donuyor, invalidate refetch degil SIFIRLAMA olur.
@@ -70,19 +72,21 @@ mixin ChatQuestionPowerMixin on SolveChatQuestionScreenMixin {
 
     apiResult.when(
       success: (data) {
-        // Buton durumu ANINDA kapansin — refreshBalances bir ag round-trip'i
-        // suruyor, o sure boyunca buton acik kalmamali.
         setState(() {
           isSubmitting = false;
           usedPowers.add(powerName);
         });
-        refreshBalances();
+        // Bakiye yerel dusulur — sunucu ucreti zaten aldi, tekrar sormaya gerek yok.
+        // Switch'ten ONCE: SKIP dali erken `return` ediyor.
+        final fromInventory = ref
+            .read(exchangeProvider.notifier)
+            .settlePowerSpend(powerName, data.cost ?? 0);
 
         AnalyticsManager.instance.logEvent(
           AnalyticsEvents.chatPowerUsed,
           params: {
             AnalyticsEvents.paramPower: powerName,
-            AnalyticsEvents.paramSource: hadInventory
+            AnalyticsEvents.paramSource: fromInventory
                 ? AnalyticsEvents.sourceInventory
                 : AnalyticsEvents.sourceDiamond,
             AnalyticsEvents.paramPurpleSpent: data.cost ?? 0,

@@ -1,9 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
-import 'package:qulo_v2/core/widgets/diamond_icon.dart';
+import 'package:qulo_v2/core/widgets/compact_diamond_balance.dart';
 import 'package:qulo_v2/data/models/chat_question_model.dart';
 import 'package:qulo_v2/features/chat/mixins/chat_question_power_mixin.dart';
 import 'package:qulo_v2/features/chat/mixins/solve_chat_question_screen_mixin.dart';
@@ -12,7 +11,6 @@ import 'package:qulo_v2/features/chat/widgets/solve_question_body.dart';
 import 'package:qulo_v2/providers/economy_config_provider.dart';
 import 'package:qulo_v2/providers/exchange_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
-import 'package:qulo_v2/providers/user_provider.dart';
 
 class SolveChatQuestionScreen extends ConsumerStatefulWidget {
   final ChatQuestionModel question;
@@ -68,9 +66,6 @@ class _SolveChatQuestionScreenState
     final economyConfig = ref.watch(economyConfigProvider);
     final powerCosts = economyConfig.powerCosts;
 
-    // Diamond balance from user singleton
-    final user = ref.watch(userProvider).valueOrNull;
-
     // Sender profile info
     final matchUser = ref.watch(matchListProvider).whenData((matches) {
       try {
@@ -95,13 +90,7 @@ class _SolveChatQuestionScreenState
           icon: const Icon(Icons.close),
           onPressed: handleBackPress,
         ),
-        actions: [
-          if (user != null)
-            _CompactDiamondBalance(
-              purple: user.purpleDiamonds,
-              green: user.greenDiamonds,
-            ),
-        ],
+        actions: const [CompactDiamondBalance()],
         padding: EdgeInsets.zero,
         body: Stack(
           children: [
@@ -141,41 +130,6 @@ class _SolveChatQuestionScreenState
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _CompactDiamondBalance extends StatelessWidget {
-  final int purple;
-  final int green;
-
-  const _CompactDiamondBalance({
-    required this.purple,
-    required this.green,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: AppSpacing.sm),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const DiamondIcon.purple(size: 14, showGlow: false),
-          const SizedBox(width: 2),
-          Text(
-            '$purple',
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-          ),
-          const SizedBox(width: AppSpacing.sm),
-          const DiamondIcon.green(size: 14, showGlow: false),
-          const SizedBox(width: 2),
-          Text(
-            '$green',
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-          ),
-        ],
       ),
     );
   }
