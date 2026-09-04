@@ -12,12 +12,20 @@ class EditProfileUnits {
   final heightInches = TextEditingController();
   final weight = TextEditingController();
 
+  // load()'da gelen cm ve ondan turetilen ft/in cifti — kullanici dokunmadan
+  // kaydederse cm/inch/cm gidis-donusu yuvarlama kaymasi yaratmasin (I6).
+  int? _loadedHeightCm;
+  ({int feet, int inches})? _derivedFeetInches;
+
   bool get isImperial => _fmt.units == UnitSystem.imperial;
 
   void load({required int? heightCm, required int? weightKg}) {
+    _loadedHeightCm = heightCm;
+    _derivedFeetInches = null;
     if (heightCm != null) {
       if (isImperial) {
         final h = _fmt.heightToImperial(heightCm);
+        _derivedFeetInches = h;
         heightFeet.text = '${h.feet}';
         heightInches.text = '${h.inches}';
       } else {
@@ -33,7 +41,15 @@ class EditProfileUnits {
     if (!isImperial) return int.tryParse(heightCmField.text);
     final feet = int.tryParse(heightFeet.text);
     final inches = int.tryParse(heightInches.text) ?? 0;
-    return feet == null ? null : _fmt.heightToCm(feet: feet, inches: inches);
+    if (feet == null) return null;
+    // Alanlar load()'dan beri degismediyse yuklenen cm'i aynen don — kullanici
+    // dokunmadiysa 177 -> 178 gibi yuvarlama kaymasi olmasin.
+    final derived = _derivedFeetInches;
+    if (_loadedHeightCm != null && derived != null &&
+        derived.feet == feet && derived.inches == inches) {
+      return _loadedHeightCm;
+    }
+    return _fmt.heightToCm(feet: feet, inches: inches);
   }
 
   int? weightKg() {

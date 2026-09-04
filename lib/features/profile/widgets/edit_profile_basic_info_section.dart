@@ -83,7 +83,7 @@ class EditProfileBasicInfoSection extends ConsumerWidget {
                 Expanded(
                   child: AppTextField(
                     controller: units.heightInches,
-                    label: '',
+                    label: null,
                     hint: 'in',
                     maxLength: 2,
                     keyboardType: TextInputType.number,
