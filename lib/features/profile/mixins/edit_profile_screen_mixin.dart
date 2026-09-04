@@ -13,6 +13,7 @@ import 'package:qulo_v2/providers/edit_profile_provider.dart';
 import 'package:qulo_v2/providers/user_languages_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
+import 'package:qulo_v2/features/profile/mixins/edit_profile_units.dart';
 import 'package:qulo_v2/features/profile/screens/edit_profile_screen.dart';
 import 'package:qulo_v2/features/profile/widgets/profile_save_success_sheet.dart';
 import 'package:qulo_v2/routing/route_names.dart';
@@ -22,13 +23,14 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
   final bioController = TextEditingController();
   final nameController = TextEditingController();
   final cityController = TextEditingController();
-  final heightController = TextEditingController();
-  final weightController = TextEditingController();
   final jobController = TextEditingController();
   final schoolController = TextEditingController();
   final petsController = TextEditingController();
   final musicController = TextEditingController();
   final personalityController = TextEditingController();
+
+  // ─── Birimler (boy/kilo) ───
+  late final units = EditProfileUnits(ref.read(formatManagerProvider));
 
   void initMixin() {
     _loadControllers();
@@ -43,21 +45,22 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
     bioController.dispose();
     nameController.dispose();
     cityController.dispose();
-    heightController.dispose();
-    weightController.dispose();
     jobController.dispose();
     schoolController.dispose();
     petsController.dispose();
     musicController.dispose();
     personalityController.dispose();
+    units.dispose();
   }
 
   List<TextEditingController> get _completionControllers => [
         bioController,
         nameController,
         cityController,
-        heightController,
-        weightController,
+        units.heightCmField,
+        units.heightFeet,
+        units.heightInches,
+        units.weight,
         jobController,
         schoolController,
         petsController,
@@ -84,8 +87,7 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
     bioController.text = user.bio ?? '';
     nameController.text = user.name ?? '';
     cityController.text = user.city ?? '';
-    heightController.text = user.details?.height?.toString() ?? '';
-    weightController.text = user.details?.weight?.toString() ?? '';
+    units.load(heightCm: user.details?.height, weightKg: user.details?.weight);
     jobController.text = user.details?.job ?? '';
     schoolController.text = user.details?.school ?? '';
     petsController.text = user.details?.pets ?? '';
@@ -286,8 +288,8 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
     };
 
     final detailsData = <String, dynamic>{
-      'height': int.tryParse(heightController.text),
-      'weight': int.tryParse(weightController.text),
+      'height': units.heightCm(),
+      'weight': units.weightKg(),
       'zodiac': epState.selectedZodiac,
       'job': jobController.text.trim(),
       'school': schoolController.text.trim(),
@@ -367,8 +369,8 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
     int filled = 0;
     if (nameController.text.trim().isNotEmpty) filled++;
     if (cityController.text.trim().isNotEmpty) filled++;
-    if (heightController.text.trim().isNotEmpty) filled++;
-    if (weightController.text.trim().isNotEmpty) filled++;
+    if (units.heightCm() != null) filled++;
+    if (units.weightKg() != null) filled++;
     return '$filled/4';
   }
 

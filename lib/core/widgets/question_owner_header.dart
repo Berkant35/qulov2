@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
-import 'package:qulo_v2/core/utils/location_format.dart';
 
 /// Soru cozerken karsi kisinin kimligi: avatar + "Isim • 3.2 km".
 /// Chat sorusu ve quiz ekrani ayni satiri kullanir; isim yoksa hic cizilmez.
@@ -25,9 +24,7 @@ class QuestionOwnerHeader extends StatelessWidget {
     if (name == null) return const SizedBox.shrink();
 
     final distance = distanceKm;
-    final label = distance == null
-        ? name
-        : '$name • ${distanceLabel(distance, nearbyLabel: context.tr('nearby'))}';
+    final label = distance == null ? name : '$name • ${context.fmt.distance(distance)}';
 
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.lg),

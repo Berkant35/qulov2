@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/data/models/user_model.dart';
 import 'package:qulo_v2/features/profile/widgets/pref_chip.dart';
@@ -36,7 +37,7 @@ class ProfilePreferencesSection extends StatelessWidget {
           ),
         PrefChip(
           iconPath: QIcons.mapPin,
-          label: '${user.matchRadiusKm} km',
+          label: context.fmt.radius(user.matchRadiusKm.toDouble()),
         ),
         if (user.relationshipGoal != null && user.relationshipGoal != 'NOT_SURE')
           PrefChip(

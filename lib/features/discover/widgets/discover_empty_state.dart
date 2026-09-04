@@ -49,6 +49,7 @@ class _DiscoverEmptyStateState extends ConsumerState<DiscoverEmptyState> {
     final passport = ref.watch(passportProvider);
     final subscription = ref.watch(subscriptionProvider);
     final isPremium = subscription.valueOrNull?.isPremium ?? false;
+    final scale = context.fmt.radiusScale;
 
     return Center(
       child: Padding(
@@ -96,7 +97,7 @@ class _DiscoverEmptyStateState extends ConsumerState<DiscoverEmptyState> {
                         ),
                       ),
                       Text(
-                        '${_radius.round()} km',
+                        scale.label(scale.fromKm(_radius)),
                         style: theme.textTheme.titleSmall?.copyWith(
                           color: context.appColors.primary,
                           fontWeight: FontWeight.bold,
@@ -105,24 +106,24 @@ class _DiscoverEmptyStateState extends ConsumerState<DiscoverEmptyState> {
                     ],
                   ),
                   Slider(
-                    value: _radius,
-                    min: 5,
-                    max: 500,
-                    divisions: 99,
+                    value: scale.fromKm(_radius),
+                    min: scale.min,
+                    max: scale.max,
+                    divisions: scale.divisions,
                     activeColor: context.appColors.primary,
-                    onChanged: (val) => setState(() => _radius = val),
+                    onChanged: (val) => setState(() => _radius = scale.toKm(val)),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '5 km',
+                        scale.label(scale.min),
                         style: theme.textTheme.labelSmall?.copyWith(
                           color: context.appColors.textHint,
                         ),
                       ),
                       Text(
-                        '500 km',
+                        scale.label(scale.max),
                         style: theme.textTheme.labelSmall?.copyWith(
                           color: context.appColors.textHint,
                         ),

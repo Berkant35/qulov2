@@ -10,13 +10,13 @@ import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/app_text_field.dart';
 import 'package:qulo_v2/core/widgets/profile_section_card.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/features/profile/mixins/edit_profile_units.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
 
 class EditProfileBasicInfoSection extends ConsumerWidget {
   final TextEditingController nameController;
   final TextEditingController cityController;
-  final TextEditingController heightController;
-  final TextEditingController weightController;
+  final EditProfileUnits units;
   final String completionText;
   final VoidCallback onUpdateLocation;
 
@@ -24,8 +24,7 @@ class EditProfileBasicInfoSection extends ConsumerWidget {
     super.key,
     required this.nameController,
     required this.cityController,
-    required this.heightController,
-    required this.weightController,
+    required this.units,
     required this.completionText,
     required this.onUpdateLocation,
   });
@@ -69,22 +68,45 @@ class EditProfileBasicInfoSection extends ConsumerWidget {
           const SizedBox(height: AppSpacing.itemGap),
           Row(
             children: [
-              Expanded(
-                child: AppTextField(
-                  controller: heightController,
-                  label: context.tr('height'),
-                  hint: 'cm',
-                  maxLength: ProfileFieldLimits.height,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              if (units.isImperial) ...[
+                Expanded(
+                  child: AppTextField(
+                    controller: units.heightFeet,
+                    label: context.tr('height'),
+                    hint: 'ft',
+                    maxLength: 1,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  ),
                 ),
-              ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: AppTextField(
+                    controller: units.heightInches,
+                    label: '',
+                    hint: 'in',
+                    maxLength: 2,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  ),
+                ),
+              ] else
+                Expanded(
+                  child: AppTextField(
+                    controller: units.heightCmField,
+                    label: context.tr('height'),
+                    hint: context.tr('cm'),
+                    maxLength: ProfileFieldLimits.height,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  ),
+                ),
               const SizedBox(width: AppSpacing.itemGap),
               Expanded(
                 child: AppTextField(
-                  controller: weightController,
+                  controller: units.weight,
                   label: context.tr('weight'),
-                  hint: 'kg',
+                  hint: units.isImperial ? context.tr('lbs') : context.tr('kg'),
                   maxLength: ProfileFieldLimits.weight,
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
-import 'package:qulo_v2/core/utils/location_format.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/widgets/app_icon.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
@@ -67,10 +66,9 @@ class _ProfileCardState extends State<ProfileCard> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     // Sehir yokken de mesafe gorunur; mesafe bilinmiyorsa (null) yazilmaz.
-    final locationText = locationLine(
+    final locationText = context.fmt.locationLine(
       city: widget.card.city,
       distanceKm: widget.card.distanceKm,
-      nearbyLabel: context.tr('nearby'),
     );
 
     return ClipRRect(

@@ -44,7 +44,7 @@ class ProfileDetailsGrid extends StatelessWidget {
     if (details.height != null) {
       items.add(_DetailChip(
         iconAsset: QIcons.icHeight,
-        label: '${details.height} cm',
+        label: context.fmt.height(details.height!),
       ));
     }
     if (details.zodiac != null && details.zodiac!.isNotEmpty) {

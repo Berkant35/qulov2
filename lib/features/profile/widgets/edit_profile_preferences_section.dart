@@ -19,6 +19,7 @@ class EditProfilePreferencesSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final epState = ref.watch(editProfileProvider);
     final theme = Theme.of(context);
+    final scale = context.fmt.radiusScale;
 
     return ProfileSectionCard(
       icon: Icons.tune,
@@ -98,21 +99,22 @@ class EditProfilePreferencesSection extends ConsumerWidget {
 
           // Distance slider
           Text(
-            '${context.tr('distance')}: ${epState.distanceKm.round()} km',
+            '${context.tr('distance')}: ${context.fmt.radius(epState.distanceKm)}',
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
           Slider(
-            value: epState.distanceKm,
-            min: 5,
-            max: 500,
-            divisions: 99,
-            label: '${epState.distanceKm.round()} km',
+            value: scale.fromKm(epState.distanceKm),
+            min: scale.min,
+            max: scale.max,
+            divisions: scale.divisions,
+            label: scale.label(scale.fromKm(epState.distanceKm)),
             activeColor: context.appColors.primary,
             inactiveColor: theme.colorScheme.surfaceContainerHigh,
-            onChanged: (value) =>
-                ref.read(editProfileProvider.notifier).setDistanceKm(value),
+            onChanged: (value) => ref
+                .read(editProfileProvider.notifier)
+                .setDistanceKm(scale.toKm(value)),
           ),
           const SizedBox(height: AppSpacing.lg),
 

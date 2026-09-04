@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:qulo_v2/core/l10n/app_localizations.dart';
+import 'package:qulo_v2/core/services/format_manager.dart';
 import 'package:qulo_v2/core/theme/app_theme.dart';
 import 'package:qulo_v2/core/widgets/question_owner_header.dart';
 
@@ -14,6 +15,8 @@ Widget _wrap(Widget child) => MaterialApp(
 
 /// Soru çözerken karşı kişinin kimliği: chat ve quiz ekranları aynı satırı kullanır.
 void main() {
+  setUp(() => FormatManager.instance.configure(const Locale('en')));
+
   testWidgets('isim ve mesafe tek satırda, fotoğraf yoksa kişi ikonu', (tester) async {
     await tester.pumpWidget(_wrap(
       const QuestionOwnerHeader(name: 'Ada', distanceKm: 3.2),
@@ -47,5 +50,15 @@ void main() {
 
     expect(find.byType(CircleAvatar), findsNothing);
     expect(find.byType(Text), findsNothing);
+  });
+
+  testWidgets('imperial bölgede mesafe mil', (tester) async {
+    await FormatManager.instance.configure(const Locale('en', 'US'));
+    addTearDown(() => FormatManager.instance.configure(const Locale('en')));
+
+    await tester.pumpWidget(_wrap(const QuestionOwnerHeader(name: 'Ada', distanceKm: 3.2)));
+    await tester.pump();
+
+    expect(find.text('Ada • 2.0 mi'), findsOneWidget);
   });
 }

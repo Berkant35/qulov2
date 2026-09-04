@@ -95,8 +95,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
             EditProfileBasicInfoSection(
               nameController: nameController,
               cityController: cityController,
-              heightController: heightController,
-              weightController: weightController,
+              units: units,
               completionText: basicInfoCompletionText(),
               onUpdateLocation: updateLocation,
             ),
