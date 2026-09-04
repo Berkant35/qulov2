@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:qulo_v2/core/l10n/translations/tr.dart';
 import 'package:qulo_v2/core/l10n/translations/en.dart';
 import 'package:qulo_v2/core/l10n/translations/de.dart';
@@ -31,6 +32,26 @@ class AppLocalizations {
 
   String get(String key) =>
       _strings[key] ?? _localizedValues['en']?[key] ?? key;
+
+  /// Cogul: intl'in CLDR kurali kategoriyi secer (one/few/many/other), anahtar
+  /// `key_<kategori>`; yoksa `key_other`. `{count}` yerellestirilmis sayiyla dolar.
+  /// Tum dillerde `_one` ve `_other` tanimli (parite testi); ru/pl/ar'in few/many
+  /// kategorileri `_other`'a duser.
+  String plural(String key, int count) {
+    final category = Intl.pluralLogic<String>(
+      count,
+      locale: locale.toString(),
+      zero: 'zero', one: 'one', two: 'two', few: 'few', many: 'many', other: 'other',
+    );
+    final text = _strings['${key}_$category'] ??
+        _strings['${key}_other'] ??
+        _localizedValues['en']?['${key}_other'] ??
+        key;
+    return text.replaceAll(
+      '{count}',
+      NumberFormat.decimalPattern(locale.toString()).format(count),
+    );
+  }
 
   String errorMessage(String code) {
     final key = 'error_${code.toLowerCase()}';
