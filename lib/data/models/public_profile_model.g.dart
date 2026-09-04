@@ -19,7 +19,7 @@ PublicProfileModel _$PublicProfileModelFromJson(Map<String, dynamic> json) =>
               ?.map((e) => e as String)
               .toList() ??
           const [],
-      distanceKm: (json['distance_km'] as num?)?.toDouble() ?? 0,
+      distanceKm: (json['distance_km'] as num?)?.toDouble(),
       relationshipGoal: json['relationship_goal'] as String?,
       isOnline: json['is_online'] as bool?,
       lastSeen: json['last_seen'] as String?,

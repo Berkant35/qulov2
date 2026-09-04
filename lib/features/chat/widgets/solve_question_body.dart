@@ -3,11 +3,11 @@ import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
+import 'package:qulo_v2/core/widgets/question_owner_header.dart';
 import 'package:qulo_v2/core/widgets/safe_tap_button.dart';
 import 'package:qulo_v2/data/models/chat_question_model.dart';
 import 'package:qulo_v2/data/models/economy_config_model.dart';
 import 'package:qulo_v2/features/chat/widgets/chat_question_power_bar.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:qulo_v2/features/quiz/widgets/answer_button.dart';
 import 'package:qulo_v2/features/quiz/widgets/power_banner.dart';
 import 'package:qulo_v2/features/quiz/widgets/quiz_timer.dart';
@@ -69,34 +69,7 @@ class SolveQuestionBody extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // ── Sender info ──
-          if (senderName != null)
-            Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacing.lg),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircleAvatar(
-                    radius: 20,
-                    backgroundColor: context.appColors.surfaceElevated,
-                    backgroundImage: senderPhotoUrl != null
-                        ? CachedNetworkImageProvider(senderPhotoUrl!)
-                        : null,
-                    child: senderPhotoUrl == null
-                        ? Icon(Icons.person, size: 20, color: context.appColors.textSecondary)
-                        : null,
-                  ),
-                  const SizedBox(width: AppSpacing.sm),
-                  Text(
-                    senderName!,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: context.appColors.textSecondary,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          QuestionOwnerHeader(name: senderName, photoUrl: senderPhotoUrl),
           QuizTimer(
             key: timerKey,
             seconds: question.timeLimitSeconds,

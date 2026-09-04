@@ -129,7 +129,7 @@ final _routes = <RouteBase>[
       key: state.pageKey,
       child: QuizScreen(
         targetId: state.pathParameters['targetId']!,
-        targetPhotoUrl: state.extra is String ? state.extra as String : null,
+        target: state.extra is QuizTargetArgs ? state.extra as QuizTargetArgs : null,
       ),
       transitionDuration: const Duration(milliseconds: 500),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {

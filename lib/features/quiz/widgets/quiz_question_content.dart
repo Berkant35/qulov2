@@ -13,6 +13,8 @@ import 'package:qulo_v2/features/quiz/widgets/answer_button.dart';
 import 'package:qulo_v2/features/quiz/widgets/power_banner.dart';
 import 'package:qulo_v2/features/quiz/widgets/power_bar.dart';
 import 'package:qulo_v2/features/quiz/widgets/quiz_timer.dart';
+import 'package:qulo_v2/core/widgets/question_owner_header.dart';
+import 'package:qulo_v2/features/quiz/models/quiz_target_args.dart';
 
 /// Displays the active quiz question, timer, answers, and power bar.
 ///
@@ -21,6 +23,8 @@ import 'package:qulo_v2/features/quiz/widgets/quiz_timer.dart';
 /// on the first build. All rendering behaviour is unchanged.
 class QuizQuestionContent extends StatefulWidget {
   final QuizQuestionModel question;
+  /// Sorusu cozulen kisi — isim/foto/mesafe (yoksa satir gizlenir).
+  final QuizTargetArgs? target;
   final GlobalKey<QuizTimerState> timerKey;
   final String sessionId;
   final int? selectedAnswerIndex;
@@ -36,6 +40,7 @@ class QuizQuestionContent extends StatefulWidget {
   const QuizQuestionContent({
     super.key,
     required this.question,
+    this.target,
     required this.timerKey,
     required this.sessionId,
     required this.selectedAnswerIndex,
@@ -96,6 +101,11 @@ class _QuizQuestionContentState extends State<QuizQuestionContent> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          QuestionOwnerHeader(
+            name: widget.target?.name,
+            photoUrl: widget.target?.photoUrl,
+            distanceKm: widget.target?.distanceKm,
+          ),
           QuizTimer(
             key: widget.timerKey,
             seconds: widget.question.timeLimitSeconds,

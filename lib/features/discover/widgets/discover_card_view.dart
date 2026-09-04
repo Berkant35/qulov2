@@ -19,6 +19,7 @@ import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/features/discover/widgets/profile_card.dart';
 import 'package:qulo_v2/core/coach_mark/coach_mark_anchor.dart';
 import 'package:qulo_v2/features/profile_detail/models/profile_detail_args.dart';
+import 'package:qulo_v2/features/quiz/models/quiz_target_args.dart';
 
 class DiscoverCardView extends ConsumerStatefulWidget {
   final ProfileCardModel card;
@@ -261,7 +262,11 @@ class _DiscoverCardViewState extends ConsumerState<DiscoverCardView>
         ref.read(navigationServiceProvider).push(
           RouteNames.quiz,
           params: {'targetId': widget.card.userId},
-          extra: widget.card.photos?.isNotEmpty == true ? widget.card.photos!.first : null,
+          extra: QuizTargetArgs(
+            name: widget.card.name,
+            photoUrl: widget.card.photos?.firstOrNull,
+            distanceKm: widget.card.distanceKm,
+          ),
         );
         _resetState();
       },

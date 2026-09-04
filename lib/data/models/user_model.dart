@@ -173,7 +173,7 @@ extension UserModelToPublicProfile on UserModel {
       city: city,
       country: country,
       photos: photos ?? [],
-      distanceKm: 0,
+      distanceKm: null,
       relationshipGoal: relationshipGoal,
       isOnline: false,
       lastSeen: null,

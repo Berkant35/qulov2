@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/utils/location_format.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/widgets/app_icon.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
@@ -65,6 +66,12 @@ class _ProfileCardState extends State<ProfileCard> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    // Sehir yokken de mesafe gorunur; mesafe bilinmiyorsa (null) yazilmaz.
+    final locationText = locationLine(
+      city: widget.card.city,
+      distanceKm: widget.card.distanceKm,
+      nearbyLabel: context.tr('nearby'),
+    );
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
@@ -184,13 +191,13 @@ class _ProfileCardState extends State<ProfileCard> {
                     ],
                   ),
                   const SizedBox(height: AppSpacing.xs),
-                  if (widget.card.city != null)
+                  if (locationText != null)
                     Row(
                       children: [
                         AppIcon(QIcons.mapPin, color: Colors.white70, size: 16),
                         const SizedBox(width: AppSpacing.xs),
                         Text(
-                          '${widget.card.city} • ${widget.card.distanceKm < 1.0 ? context.tr('nearby') : '${widget.card.distanceKm.toStringAsFixed(1)} km'}',
+                          locationText,
                           style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white70),
                         ),
                       ],

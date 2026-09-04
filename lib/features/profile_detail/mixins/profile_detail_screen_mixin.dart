@@ -12,6 +12,8 @@ import 'package:qulo_v2/features/profile_detail/widgets/report_category_sheet.da
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
+import 'package:qulo_v2/features/profile_detail/providers/profile_detail_provider.dart';
+import 'package:qulo_v2/features/quiz/models/quiz_target_args.dart';
 
 mixin ProfileDetailScreenMixin on ConsumerState<ProfileDetailScreen> {
   void initMixin() {
@@ -72,10 +74,26 @@ mixin ProfileDetailScreenMixin on ConsumerState<ProfileDetailScreen> {
     }
 
     if (!mounted) return;
+    // Kimlik TEK kaynaktan: yuklu profil varsa o (mesafesi null olsa bile — bilinmiyor
+    // demektir, kartin degeriyle ezilmez), yoksa discover'dan gelen on yuklenmis kart.
+    final profile = ref.read(profileDetailProvider(widget.userId)).valueOrNull;
+    final card = widget.args?.preloadedCard;
+    final target = profile != null
+        ? QuizTargetArgs(
+            name: profile.name,
+            photoUrl: profile.photos.firstOrNull,
+            distanceKm: profile.distanceKm,
+          )
+        : QuizTargetArgs(
+            name: card?.name,
+            photoUrl: card?.photos?.firstOrNull,
+            distanceKm: card?.distanceKm,
+          );
     nav.pop();
     nav.push(
       RouteNames.quiz,
       params: {'targetId': widget.userId},
+      extra: target,
     );
   }
 

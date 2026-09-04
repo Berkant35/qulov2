@@ -15,8 +15,9 @@ class PublicProfileModel extends Equatable {
   final String? city;
   final String? country;
   final List<String> photos;
+  /// Sunucu hesaplayamadiysa null (iki tarafin da koordinati yoksa); 0 DEGIL.
   @JsonKey(name: 'distance_km')
-  final double distanceKm;
+  final double? distanceKm;
   @JsonKey(name: 'relationship_goal')
   final String? relationshipGoal;
   @JsonKey(name: 'is_online')
@@ -39,7 +40,7 @@ class PublicProfileModel extends Equatable {
     this.city,
     this.country,
     this.photos = const [],
-    this.distanceKm = 0,
+    this.distanceKm,
     this.relationshipGoal,
     this.isOnline,
     this.lastSeen,

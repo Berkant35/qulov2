@@ -19,11 +19,12 @@ import 'package:qulo_v2/features/quiz/widgets/answer_feedback_overlay.dart';
 import 'package:qulo_v2/features/quiz/widgets/quiz_error_view.dart';
 import 'package:qulo_v2/features/quiz/widgets/quiz_question_content.dart';
 import 'package:qulo_v2/features/quiz/screens/match_celebration_screen.dart';
+import 'package:qulo_v2/features/quiz/models/quiz_target_args.dart';
 
 class QuizScreen extends ConsumerStatefulWidget {
   final String targetId;
-  final String? targetPhotoUrl;
-  const QuizScreen({super.key, required this.targetId, this.targetPhotoUrl});
+  final QuizTargetArgs? target;
+  const QuizScreen({super.key, required this.targetId, this.target});
 
   @override
   ConsumerState<QuizScreen> createState() => _QuizScreenState();
@@ -59,7 +60,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
         powersUsed: powersUsed,
         performanceBadge: celebrationBadge,
         myPhotoUrl: myPhoto,
-        targetPhotoUrl: widget.targetPhotoUrl,
+        targetPhotoUrl: widget.target?.photoUrl,
         onStartChat: celebrationMatched ? onStartChat : null,
         onGoBack: onGoBack,
       );
@@ -92,6 +93,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
                 children: [
                   QuizQuestionContent(
                     question: question,
+                    target: widget.target,
                     timerKey: timerKey,
                     sessionId: quiz.sessionId!,
                     selectedAnswerIndex: selectedAnswerIndex,

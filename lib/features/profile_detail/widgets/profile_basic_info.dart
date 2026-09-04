@@ -3,6 +3,7 @@ import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/utils/location_format.dart';
 import 'package:qulo_v2/core/widgets/app_icon.dart';
 import 'package:qulo_v2/data/models/public_profile_model.dart';
 
@@ -20,6 +21,13 @@ class ProfileBasicInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Sehir yokken de mesafe gorunur; mesafe bilinmiyorsa (null) yazilmaz.
+    final locationText = locationLine(
+      city: profile.city,
+      distanceKm: showDistance ? profile.distanceKm : null,
+      nearbyLabel: context.tr('nearby'),
+    );
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.pagePadding),
       child: Column(
@@ -58,7 +66,7 @@ class ProfileBasicInfo extends StatelessWidget {
           const SizedBox(height: AppSpacing.xs),
 
           // Location + Distance
-          if (profile.city != null)
+          if (locationText != null)
             Row(
               children: [
                 AppIcon(
@@ -68,7 +76,7 @@ class ProfileBasicInfo extends StatelessWidget {
                 ),
                 const SizedBox(width: AppSpacing.xs),
                 Text(
-                  '${profile.city}${showDistance ? ' ${_formatDistance(context)}' : ''}',
+                  locationText,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: context.appColors.textSecondary,
                   ),
@@ -94,13 +102,6 @@ class ProfileBasicInfo extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String _formatDistance(BuildContext context) {
-    if (profile.distanceKm < 1.0) {
-      return '• ${context.tr('nearby')}';
-    }
-    return '• ${profile.distanceKm.toStringAsFixed(1)} km';
   }
 }
 
@@ -162,7 +163,7 @@ class _OnlineStatusChip extends StatelessWidget {
           ),
           const SizedBox(width: AppSpacing.xs),
           Text(
-            'Online',
+            context.tr('online'),
             style: TextStyle(
               color: context.appColors.secondary,
               fontSize: 12,

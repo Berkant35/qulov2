@@ -56,7 +56,7 @@ ProfileCardModel _$ProfileCardModelFromJson(Map<String, dynamic> json) =>
       photos: (json['photos'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
-      distanceKm: (json['distance_km'] as num).toDouble(),
+      distanceKm: (json['distance_km'] as num?)?.toDouble(),
       questionCount: (json['question_count'] as num).toInt(),
       profileCompletion: (json['profile_completion'] as num?)?.toInt() ?? 0,
       isBoosted: json['is_boosted'] as bool? ?? false,
