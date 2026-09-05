@@ -12,7 +12,6 @@ import 'package:qulo_v2/features/onboarding/widgets/paywall_comparison_table.dar
 import 'package:qulo_v2/features/onboarding/widgets/paywall_plan_button.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
 import 'package:qulo_v2/providers/daily_stats_provider.dart';
-import 'package:qulo_v2/providers/store_prices_provider.dart';
 import 'package:qulo_v2/providers/subscription_provider.dart';
 
 class PremiumSuggestionSheet extends ConsumerWidget {
@@ -20,18 +19,9 @@ class PremiumSuggestionSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final prices = ref.watch(storePricesProvider).valueOrNull ?? const <String, String>{};
-    final periodSuffix = context.tr('sub_price_period_month');
-    final premiumPrice = monthlyPriceLabel(
-      prices: prices,
-      productId: RevenueCatService.premiumProductId,
-      periodSuffix: periodSuffix,
-    );
-    final plusPrice = monthlyPriceLabel(
-      prices: prices,
-      productId: RevenueCatService.plusProductId,
-      periodSuffix: periodSuffix,
-    );
+    final planPrices = watchPlanPriceLabels(context, ref);
+    final plusPrice = planPrices.plus;
+    final premiumPrice = planPrices.premium;
     return SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(

@@ -15,7 +15,6 @@ import 'package:qulo_v2/features/diamonds/widgets/purchase_grid.dart';
 import 'package:qulo_v2/providers/daily_stats_provider.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
 import 'package:qulo_v2/providers/economy_config_provider.dart';
-import 'package:qulo_v2/providers/store_prices_provider.dart';
 import 'package:qulo_v2/providers/subscription_provider.dart';
 import 'package:qulo_v2/features/diamonds/widgets/subscription_legal_links.dart';
 
@@ -166,18 +165,9 @@ class _PaywallBottomSheetContentState
     final isFree = currentPlan?.isFree ?? true;
     final isPlus = currentPlan?.isPlus ?? false;
     final isPremium = currentPlan?.isPremium ?? false;
-    final prices = ref.watch(storePricesProvider).valueOrNull ?? const <String, String>{};
-    final periodSuffix = context.tr('sub_price_period_month');
-    final plusPrice = monthlyPriceLabel(
-      prices: prices,
-      productId: RevenueCatService.plusProductId,
-      periodSuffix: periodSuffix,
-    );
-    final premiumPrice = monthlyPriceLabel(
-      prices: prices,
-      productId: RevenueCatService.premiumProductId,
-      periodSuffix: periodSuffix,
-    );
+    final planPrices = watchPlanPriceLabels(context, ref);
+    final plusPrice = planPrices.plus;
+    final premiumPrice = planPrices.premium;
 
     return PopScope(
       canPop: !_isPurchasing,

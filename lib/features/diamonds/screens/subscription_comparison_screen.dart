@@ -8,7 +8,6 @@ import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/providers/subscription_provider.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
 import 'package:qulo_v2/providers/daily_stats_provider.dart';
-import 'package:qulo_v2/providers/store_prices_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/features/diamonds/widgets/celebration_dialog.dart';
@@ -42,18 +41,9 @@ class _SubscriptionComparisonScreenState
     final subAsync = ref.watch(subscriptionProvider);
     final currentPlan = subAsync.valueOrNull;
     final theme = Theme.of(context);
-    final prices = ref.watch(storePricesProvider).valueOrNull ?? const <String, String>{};
-    final periodSuffix = context.tr('sub_price_period_month');
-    final plusPrice = monthlyPriceLabel(
-      prices: prices,
-      productId: RevenueCatService.plusProductId,
-      periodSuffix: periodSuffix,
-    );
-    final premiumPrice = monthlyPriceLabel(
-      prices: prices,
-      productId: RevenueCatService.premiumProductId,
-      periodSuffix: periodSuffix,
-    );
+    final planPrices = watchPlanPriceLabels(context, ref);
+    final plusPrice = planPrices.plus;
+    final premiumPrice = planPrices.premium;
 
     return AppScaffold(
       title: context.tr('sub_choose_plan'),
