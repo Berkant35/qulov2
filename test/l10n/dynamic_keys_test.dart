@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/constants/power_labels.dart';
 import 'package:qulo_v2/core/l10n/translations/en.dart';
-import 'package:qulo_v2/features/settings/screens/create_ticket_screen.dart';
 
 /// `context.tr('prefix_$deger')` ile kurulan dinamik anahtarlar: her deger
 /// kumesinin tum elemanlari en.dart'ta olmali (parite testi 16 dile yayar).
@@ -25,7 +24,7 @@ void main() {
   });
 
   test('ticket_cat_<kategori>', () {
-    expectKeys('ticket_cat', ticketCategories.map((c) => 'ticket_cat_${c.toLowerCase()}'));
+    expectKeys('ticket_cat', AppConstants.ticketCategories.map((c) => 'ticket_cat_${c.toLowerCase()}'));
   });
 
   test('quiz_result_<rozet> — sunucu quiz.service performanceBadge değerleri', () {
