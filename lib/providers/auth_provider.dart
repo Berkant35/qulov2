@@ -15,7 +15,6 @@ import 'package:qulo_v2/core/services/social_auth_service.dart';
 import 'package:qulo_v2/data/models/auth_model.dart';
 import 'package:qulo_v2/data/models/social_login_body.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
-import 'package:qulo_v2/providers/locale_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
@@ -333,8 +332,9 @@ class AuthNotifier extends Notifier<AuthState> {
         surname: signInResult.surname,
         nonce: signInResult.nonce,
         // Register akisiyla ayni kaynak: app.dart:67'de de auth sync'inde
-        // ref.read(localeProvider) kullanilir (Localizations.localeOf context'siz burada).
-        locale: ref.read(localeProvider).languageCode,
+        // Aktif UI dili FormatManager'da (app.dart configure eder); locale_provider
+        // importu auth<->locale dongusu yaratirdi.
+        locale: ref.read(formatManagerProvider).locale.languageCode,
       ));
 
       await _saveTokens(AuthTokens(
