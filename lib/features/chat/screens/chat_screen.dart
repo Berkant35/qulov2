@@ -7,6 +7,9 @@ import 'package:qulo_v2/providers/auth_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/providers/quiz_summary_provider.dart';
 import 'package:qulo_v2/features/chat/mixins/chat_screen_mixin.dart';
+import 'package:qulo_v2/features/chat/mixins/chat_realtime_mixin.dart';
+import 'package:qulo_v2/features/chat/mixins/chat_media_mixin.dart';
+import 'package:qulo_v2/features/chat/mixins/chat_moderation_mixin.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/features/profile_detail/models/profile_detail_args.dart';
@@ -27,7 +30,8 @@ class ChatScreen extends ConsumerStatefulWidget {
   ConsumerState<ChatScreen> createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends ConsumerState<ChatScreen> with ChatScreenMixin {
+class _ChatScreenState extends ConsumerState<ChatScreen>
+    with ChatScreenMixin, ChatRealtimeMixin, ChatMediaMixin, ChatModerationMixin {
   @override
   void initState() {
     super.initState();
