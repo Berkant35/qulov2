@@ -13,7 +13,7 @@ import 'package:qulo_v2/providers/edit_profile_provider.dart';
 import 'package:qulo_v2/providers/user_languages_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
-import 'package:qulo_v2/features/profile/mixins/edit_profile_units.dart';
+import 'package:qulo_v2/features/profile/models/edit_profile_units.dart';
 import 'package:qulo_v2/features/profile/screens/edit_profile_screen.dart';
 import 'package:qulo_v2/features/profile/widgets/profile_save_success_sheet.dart';
 import 'package:qulo_v2/routing/route_names.dart';

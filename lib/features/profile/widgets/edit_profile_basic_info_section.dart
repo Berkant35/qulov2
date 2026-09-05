@@ -10,7 +10,7 @@ import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/app_text_field.dart';
 import 'package:qulo_v2/core/widgets/profile_section_card.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
-import 'package:qulo_v2/features/profile/mixins/edit_profile_units.dart';
+import 'package:qulo_v2/features/profile/models/edit_profile_units.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
 
 class EditProfileBasicInfoSection extends ConsumerWidget {

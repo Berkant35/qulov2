@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:qulo_v2/core/services/format_manager.dart';
-import 'package:qulo_v2/features/profile/mixins/edit_profile_units.dart';
+import 'package:qulo_v2/features/profile/models/edit_profile_units.dart';
 
 /// Düzenleme alanları cihaz biriminde, kayıt her zaman cm/kg.
 void main() {
