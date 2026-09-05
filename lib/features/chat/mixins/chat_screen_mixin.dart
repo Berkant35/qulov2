@@ -664,7 +664,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
   String formatLastSeen(String? lastSeen) {
     final dt = lastSeen == null ? null : DateTime.tryParse(lastSeen);
     if (dt == null) return '';
-    return '${context.tr('last_seen')}: ${ref.read(formatManagerProvider).relative(dt)}';
+    return context.fmt.lastSeen(dt);
   }
 
   Map<String, int> groupReactions(List<MessageReaction> reactions) {
