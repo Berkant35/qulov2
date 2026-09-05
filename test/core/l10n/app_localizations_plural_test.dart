@@ -30,6 +30,6 @@ void main() {
 
   test('bilinmeyen anahtar anahtarın kendisini döner (crash yok)', () {
     final l10n = AppLocalizations(const Locale('en'));
-    expect(l10n.plural('yok_boyle_key', 2), 'yok_boyle_key');
+    expect(l10n.plural('yok_boyle_key', 2), 'Yok boyle key');
   });
 }

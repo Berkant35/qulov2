@@ -113,6 +113,9 @@ class _PerformanceBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Sunucu rozet kazanilmadiginda 'none' gonderir: cip cizilmez
+    // (aksi halde 'quiz_result_none' ham anahtari gorunuyordu).
+    if (badge == 'none') return const SizedBox.shrink();
     final theme = Theme.of(context);
     final config = _badgeConfig(context, badge);
 

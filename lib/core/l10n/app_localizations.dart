@@ -31,7 +31,19 @@ class AppLocalizations {
   }
 
   String get(String key) =>
-      _strings[key] ?? _localizedValues['en']?[key] ?? key;
+      _strings[key] ?? _localizedValues['en']?[key] ?? _missing(key);
+
+  /// Emniyet agi: anahtar hicbir dilde yoksa ham anahtar (alt cizgili) yerine
+  /// okunabilir metin doner; debug'da eksik anahtari loglar.
+  static String _missing(String key) {
+    assert(() {
+      debugPrint('[l10n] eksik ceviri anahtari: $key');
+      return true;
+    }());
+    final words = key.replaceAll('_', ' ').trim().toLowerCase();
+    if (words.isEmpty) return key;
+    return words[0].toUpperCase() + words.substring(1);
+  }
 
   /// Cogul: intl'in CLDR kurali kategoriyi secer (one/few/many/other), anahtar
   /// `key_<kategori>`; yoksa `key_other`. `{count}` yerellestirilmis sayiyla dolar.
@@ -46,7 +58,7 @@ class AppLocalizations {
     final text = _strings['${key}_$category'] ??
         _strings['${key}_other'] ??
         _localizedValues['en']?['${key}_other'] ??
-        key;
+        _missing(key);
     // Bilincli tercih: FormatManager.instance.integer() yerine burada dogrudan
     // NumberFormat kullanilir — AppLocalizations -> FormatManager dongusunden
     // kacinir ve plural()'i singleton'a bagimli olmadan test edilebilir tutar.

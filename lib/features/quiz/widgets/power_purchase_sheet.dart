@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/constants/power_labels.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
@@ -249,35 +250,11 @@ class _PowerRowState extends State<_PowerRow>
     super.dispose();
   }
 
-  String _powerLabel(BuildContext context) {
-    final key = switch (widget.power.name) {
-      'ORACLE' => 'power_oracle',
-      'HALF' => 'power_half',
-      'SKIP' => 'power_skip',
-      'SKIP_ALL' => 'power_skip_all',
-      'TIME_EXTEND' => 'power_time',
-      'HINT' => 'power_hint',
-      'POWER_BLOCK' => 'power_block',
-      'POWER_UNBLOCK' => 'power_unblock',
-      _ => widget.power.name,
-    };
-    return context.tr(key);
-  }
+  String _powerLabel(BuildContext context) =>
+      context.tr(powerLabelKey(widget.power.name));
 
-  String _powerDesc(BuildContext context) {
-    final key = switch (widget.power.name) {
-      'ORACLE' => 'power_oracle_desc',
-      'HALF' => 'power_half_desc',
-      'SKIP' => 'power_skip_desc',
-      'SKIP_ALL' => 'power_skip_all_desc',
-      'TIME_EXTEND' => 'power_time_extend_desc',
-      'HINT' => 'power_hint_desc',
-      'POWER_BLOCK' => 'power_block_desc',
-      'POWER_UNBLOCK' => 'power_unblock_desc',
-      _ => '',
-    };
-    return key.isEmpty ? '' : context.tr(key);
-  }
+  String _powerDesc(BuildContext context) =>
+      context.tr(powerDescKey(widget.power.name));
 
   @override
   Widget build(BuildContext context) {

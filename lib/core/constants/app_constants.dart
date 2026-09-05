@@ -6,6 +6,12 @@ abstract final class AppConstants {
   static const int minQuestions = 2;
   static const int maxQuestions = 6;
 
+  /// Burc dropdown'u ve `zodiac_<burc>` ceviri anahtarlari icin tek kaynak.
+  static const List<String> zodiacSigns = [
+    'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
+    'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
+  ];
+
   static const List<String> questionCategories = [
     'personality', 'music', 'film', 'sports', 'travel',
     'food', 'technology', 'fun', 'lifestyle', 'humor',

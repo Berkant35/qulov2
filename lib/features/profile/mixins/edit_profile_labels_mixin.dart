@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/providers/economy_config_provider.dart';
 import 'package:qulo_v2/providers/edit_profile_provider.dart';
@@ -79,11 +80,7 @@ mixin EditProfileLabelsMixin on EditProfileScreenMixin {
   // ─── Dropdown Helpers ───
 
   List<DropdownMenuItem<String>> zodiacItems() {
-    const signs = [
-      'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
-      'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
-    ];
-    return signs
+    return AppConstants.zodiacSigns
         .map((s) => DropdownMenuItem(
               value: s,
               child: Text(context.tr('zodiac_$s')),
