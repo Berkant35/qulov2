@@ -406,9 +406,11 @@ class AuthNotifier extends Notifier<AuthState> {
     // Clean up notification listeners before invalidation
     ref.read(notificationManagerProvider).dispose();
 
-    _invalidateAllProviders();
-
+    // Once durum degisir: invalidate edilen notifier'lar (match/subscription)
+    // kimliksiz oldugunu gorup aga cikmaz.
     state = const AuthState(status: AuthStatus.unauthenticated);
+
+    _invalidateAllProviders();
   }
 
   Future<Result<void>> forgotPassword(String email) async {
@@ -487,9 +489,10 @@ class AuthNotifier extends Notifier<AuthState> {
 
     ref.read(notificationManagerProvider).dispose();
 
-    _invalidateAllProviders();
-
+    // Once durum degisir (bkz. logout): guard'lar aga cikmasin.
     state = const AuthState(status: AuthStatus.unauthenticated);
+
+    _invalidateAllProviders();
   }
 
   /// Invalidate all auth-dependent providers to prevent stale data crashes

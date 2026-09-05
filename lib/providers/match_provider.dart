@@ -213,6 +213,11 @@ class MatchListNotifier extends AsyncNotifier<List<MatchModel>> {
 
   @override
   Future<List<MatchModel>> build() async {
+    // Logout'ta invalidate edilirken alttaki ekranlar hala dinliyor; kimliksizken
+    // aga cikma (token'siz istek → 401 → Crashlytics gurultusu).
+    final authStatus = ref.watch(authProvider.select((s) => s.status));
+    if (authStatus != AuthStatus.authenticated) return const [];
+
     _generation++;
     _retryCount = 0;
 

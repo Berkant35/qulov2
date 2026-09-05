@@ -9,10 +9,15 @@ import 'package:qulo_v2/core/services/revenuecat_service.dart';
 import 'package:qulo_v2/data/models/subscription_model.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
+import 'package:qulo_v2/providers/auth_provider.dart';
 
 class SubscriptionNotifier extends AsyncNotifier<SubscriptionInfo> {
   @override
   Future<SubscriptionInfo> build() async {
+    // Logout'ta invalidate edilirken alttaki ekranlar hala dinliyor; kimliksizken
+    // aga cikma (token'siz istek → 401 → Crashlytics gurultusu).
+    final authStatus = ref.watch(authProvider.select((s) => s.status));
+    if (authStatus != AuthStatus.authenticated) return SubscriptionInfo.free();
     return await fetchStatus();
   }
 
