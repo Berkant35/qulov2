@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
+import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -68,20 +68,10 @@ class _LegalWebViewScreenState extends State<LegalWebViewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            if (context.canPop()) {
-              context.pop();
-            } else {
-              Navigator.of(context).maybePop();
-            }
-          },
-        ),
-        title: Text(widget.title),
-      ),
+    return AppScaffold(
+      title: widget.title,
+      padding: EdgeInsets.zero,
+      showBackground: false,
       body: Stack(
         children: [
           WebViewWidget(controller: _controller),

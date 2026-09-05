@@ -52,6 +52,8 @@ import 'package:qulo_v2/providers/deep_link_provider.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/features/legal/screens/legal_web_view_screen.dart';
 import 'package:qulo_v2/features/settings/screens/blocked_users_screen.dart';
+import 'package:qulo_v2/core/widgets/fullscreen_photo_viewer.dart';
+import 'package:qulo_v2/features/settings/screens/create_ticket_screen.dart';
 import 'package:qulo_v2/features/settings/screens/my_tickets_screen.dart';
 import 'package:qulo_v2/features/auth/screens/banned_screen.dart';
 import 'package:qulo_v2/features/auth/screens/profile_completion_screen.dart';

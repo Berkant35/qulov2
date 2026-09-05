@@ -61,6 +61,10 @@ mixin DiamondsScreenMixin on ConsumerState<DiamondsScreen> {
     ref.read(navigationServiceProvider).go(RouteNames.subscription);
   }
 
+  void onExchangeTap() {
+    ref.read(navigationServiceProvider).go(RouteNames.exchange);
+  }
+
   Future<void> onPurchase(PurchasePackage package) async {
     if (purchasing) return;
     setState(() => purchasing = true);

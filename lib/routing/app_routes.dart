@@ -231,6 +231,21 @@ final _routes = <RouteBase>[
     ),
   ),
 
+  // Fullscreen Photo Viewer (root navigator — Hero gecisi chat ile ayni
+  // navigator'da kalsin diye burada tanimli)
+  GoRoute(
+    parentNavigatorKey: rootNavigatorKey,
+    path: '/photo-viewer',
+    name: RouteNames.photoViewer,
+    builder: (context, state) {
+      final extra = state.extra as Map<String, dynamic>;
+      return FullscreenPhotoViewer(
+        imageUrl: extra['imageUrl'] as String,
+        heroTag: extra['heroTag'] as String?,
+      );
+    },
+  ),
+
   // Solve Chat Question (root navigator — full screen over bottom nav)
   GoRoute(
     parentNavigatorKey: rootNavigatorKey,
@@ -400,6 +415,13 @@ final _routes = <RouteBase>[
                   path: 'my-tickets',
                   name: RouteNames.myTickets,
                   builder: (context, state) => const MyTicketsScreen(),
+                  routes: [
+                    GoRoute(
+                      path: 'create',
+                      name: RouteNames.createTicket,
+                      builder: (context, state) => const CreateTicketScreen(),
+                    ),
+                  ],
                 ),
               ],
             ),

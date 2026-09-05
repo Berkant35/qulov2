@@ -46,6 +46,8 @@ abstract final class RouteNames {
   // Settings sub-screens
   static const blockedUsers = 'blocked-users';
   static const myTickets = 'my-tickets';
+  static const createTicket = 'create-ticket';
+  static const photoViewer = 'photo-viewer';
 
   // Referral
   static const invite = 'invite';

@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qulo_v2/features/page_messages/data/models/page_message_model.dart';
+import 'package:qulo_v2/data/models/page_message_model.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 
 class PageMessagesState {

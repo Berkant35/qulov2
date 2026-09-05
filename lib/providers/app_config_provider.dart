@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:qulo_v2/core/utils/version_utils.dart';
 import 'package:qulo_v2/data/models/app_config_model.dart';
@@ -50,8 +49,7 @@ class AppConfigNotifier extends Notifier<AppConfigState> {
     state = state.copyWith(isLoading: true);
 
     try {
-      final packageInfo = await PackageInfo.fromPlatform();
-      final currentVersion = packageInfo.version;
+      final currentVersion = await ref.read(appInfoManagerProvider).version;
 
       final result = await ref.read(appConfigRepositoryProvider).getConfig();
 

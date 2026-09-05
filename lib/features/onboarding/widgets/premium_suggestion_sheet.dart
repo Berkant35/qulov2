@@ -13,6 +13,7 @@ import 'package:qulo_v2/features/onboarding/widgets/paywall_plan_button.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
 import 'package:qulo_v2/providers/daily_stats_provider.dart';
 import 'package:qulo_v2/providers/subscription_provider.dart';
+import 'package:qulo_v2/core/theme/app_colors.dart';
 
 class PremiumSuggestionSheet extends ConsumerWidget {
   const PremiumSuggestionSheet({super.key});
@@ -61,7 +62,7 @@ class PremiumSuggestionSheet extends ConsumerWidget {
                     shape: BoxShape.circle,
                     color: Colors.white.withAlpha(15),
                   ),
-                  child: const Icon(Icons.close, size: 16, color: Color(0xFF666666)),
+                  child: const Icon(Icons.close, size: 16, color: AppColors.textHint),
                 ),
               ),
             ),
@@ -112,7 +113,7 @@ class PremiumSuggestionSheet extends ConsumerWidget {
                 context.tr('paywall_maybe_later'),
                 style: const TextStyle(
                   fontSize: 12,
-                  color: Color(0xFF555555),
+                  color: AppColors.textMuted,
                 ),
               ),
             ),

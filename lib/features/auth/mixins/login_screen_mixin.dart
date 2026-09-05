@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/core/mixins/form_mixin.dart';
 import 'package:qulo_v2/core/mixins/loading_mixin.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
@@ -19,16 +19,20 @@ mixin LoginScreenMixin
         FormMixin<LoginScreen>,
         LoadingMixin<LoginScreen>,
         SocialAuthMixin<LoginScreen> {
-  final emailCtrl = TextEditingController(
-    text: kDebugMode
-        ? const String.fromEnvironment('DEBUG_EMAIL', defaultValue: '')
-        : null,
+  /// Debug build'de login formunu otomatik dolduran test hesabi.
+  /// `--dart-define=DEBUG_EMAIL=...` ile ezilebilir; release build'de kullanilmaz.
+  static const _debugEmail = String.fromEnvironment(
+    'DEBUG_EMAIL',
+    defaultValue: 'tester_001@qulo.test',
   );
-  final passwordCtrl = TextEditingController(
-    text: kDebugMode
-        ? const String.fromEnvironment('DEBUG_PASSWORD', defaultValue: '')
-        : null,
+  static const _debugPassword = String.fromEnvironment(
+    'DEBUG_PASSWORD',
+    defaultValue: 'Test1234!',
   );
+
+  final emailCtrl = TextEditingController(text: kDebugMode ? _debugEmail : null);
+  final passwordCtrl =
+      TextEditingController(text: kDebugMode ? _debugPassword : null);
   bool obscure = true;
   String? loginError;
   String appVersion = '';
@@ -36,8 +40,8 @@ mixin LoginScreenMixin
   final staggeredKey = GlobalKey<StaggeredColumnState>();
 
   void initMixin() {
-    PackageInfo.fromPlatform().then((info) {
-      if (mounted) setState(() => appVersion = info.version);
+    ref.read(appInfoManagerProvider).version.then((value) {
+      if (mounted) setState(() => appVersion = value);
     });
   }
 

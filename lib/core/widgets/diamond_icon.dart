@@ -107,7 +107,7 @@ class _DiamondIconState extends State<DiamondIcon>
             clipBehavior: Clip.none,
             children: [
               // Layer 1: Ambient glow
-              _buildAmbientGlow(pulse),
+              _AmbientGlow(pulse: pulse, size: widget.size, color: _glowColor),
               // Layer 2: Rotating smoke
               CustomPaint(
                 size: Size(widget.size, widget.size),
@@ -120,7 +120,7 @@ class _DiamondIconState extends State<DiamondIcon>
                 ),
               ),
               // Layer 3: Core glow
-              _buildCoreGlow(pulse),
+              _CoreGlow(pulse: pulse, size: widget.size, color: _glowColor),
               // Layer 4: Diamond SVG
               child!,
               // Layer 5: Sparkles
@@ -139,9 +139,23 @@ class _DiamondIconState extends State<DiamondIcon>
       ),
     );
   }
+}
 
-  Widget _buildAmbientGlow(double pulse) {
-    final glowSize = widget.size * (1.2 + pulse * 0.3);
+/// Layer 1 — elmasin cevresine yayilan yumusak halka.
+class _AmbientGlow extends StatelessWidget {
+  const _AmbientGlow({
+    required this.pulse,
+    required this.size,
+    required this.color,
+  });
+
+  final double pulse;
+  final double size;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final glowSize = size * (1.2 + pulse * 0.3);
     return Container(
       width: glowSize,
       height: glowSize,
@@ -149,18 +163,32 @@ class _DiamondIconState extends State<DiamondIcon>
         shape: BoxShape.circle,
         gradient: RadialGradient(
           colors: [
-            _glowColor.withValues(alpha: 0.25 + pulse * 0.12),
-            _glowColor.withValues(alpha: 0.08),
-            _glowColor.withValues(alpha: 0.0),
+            color.withValues(alpha: 0.25 + pulse * 0.12),
+            color.withValues(alpha: 0.08),
+            color.withValues(alpha: 0.0),
           ],
           stops: const [0.0, 0.5, 1.0],
         ),
       ),
     );
   }
+}
 
-  Widget _buildCoreGlow(double pulse) {
-    final coreSize = widget.size * (0.5 + pulse * 0.15);
+/// Layer 3 — elmasin merkezindeki yogun parlama.
+class _CoreGlow extends StatelessWidget {
+  const _CoreGlow({
+    required this.pulse,
+    required this.size,
+    required this.color,
+  });
+
+  final double pulse;
+  final double size;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final coreSize = size * (0.5 + pulse * 0.15);
     return Container(
       width: coreSize,
       height: coreSize,
@@ -168,9 +196,9 @@ class _DiamondIconState extends State<DiamondIcon>
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
-            color: _glowColor.withValues(alpha: 0.4 + pulse * 0.2),
-            blurRadius: widget.size * 0.4,
-            spreadRadius: widget.size * 0.05,
+            color: color.withValues(alpha: 0.4 + pulse * 0.2),
+            blurRadius: size * 0.4,
+            spreadRadius: size * 0.05,
           ),
         ],
       ),

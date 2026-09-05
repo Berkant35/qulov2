@@ -31,7 +31,8 @@ class AnalyticsManager {
   void logEvent(String name, {Map<String, Object>? params}) {
     if (!_initialized) return;
 
-    _analytics.logEvent(name: name, parameters: params);
+    final sanitized = _sanitizeParams(params);
+    _analytics.logEvent(name: name, parameters: sanitized);
 
     _crashlytics.log('EVENT: $name${params != null ? ' $params' : ''}');
 
@@ -43,6 +44,21 @@ class AnalyticsManager {
     if (kDebugMode) {
       debugPrint('[Analytics] $name${params != null ? ' | $params' : ''}');
     }
+  }
+
+  /// Firebase Analytics yalnizca `String` veya `num` deger kabul eder; `bool`
+  /// gonderildiginde SDK assertion firlatir. Bool'lari burada tek noktada
+  /// normalize ediyoruz ki her cagri yerinde tekrar tekrar donusturmeyelim.
+  Map<String, Object>? _sanitizeParams(Map<String, Object>? params) {
+    if (params == null) return null;
+    return params.map(
+      (key, value) => MapEntry(
+        key,
+        value is bool
+            ? (value ? 1 : 0)
+            : (value is String || value is num ? value : value.toString()),
+      ),
+    );
   }
 
   // ─── Screen Tracking ───

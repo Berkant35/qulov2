@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qulo_v2/core/constants/app_assets.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
+import 'package:qulo_v2/core/theme/app_colors.dart';
 
 class ParallaxBackground extends StatelessWidget {
   final double scrollOffset;
@@ -14,8 +15,6 @@ class ParallaxBackground extends StatelessWidget {
     required this.scrollOffset,
     required this.floatingAnimation,
   });
-
-  static const _purpleColor = Color(0xFFBB86FC);
 
   static const _powerIcons = [
     _FloatingElement(
@@ -147,20 +146,22 @@ class ParallaxBackground extends StatelessWidget {
         return Stack(
           children: [
             for (final element in _powerIcons)
-              _buildElement(
+              _FloatingElementView(
                 element: element,
                 time: time,
                 currentPage: currentPage,
                 screenWidth: screenWidth,
                 screenHeight: screenHeight,
+                scrollOffset: scrollOffset,
               ),
             for (final element in _diamonds)
-              _buildElement(
+              _FloatingElementView(
                 element: element,
                 time: time,
                 currentPage: currentPage,
                 screenWidth: screenWidth,
                 screenHeight: screenHeight,
+                scrollOffset: scrollOffset,
               ),
           ],
         );
@@ -168,13 +169,28 @@ class ParallaxBackground extends StatelessWidget {
     );
   }
 
-  Widget _buildElement({
-    required _FloatingElement element,
-    required double time,
-    required int currentPage,
-    required double screenWidth,
-    required double screenHeight,
-  }) {
+}
+
+/// Tek bir yuzen arka plan ogesi — parallax kaydirma + sinuzoidal salinim.
+class _FloatingElementView extends StatelessWidget {
+  const _FloatingElementView({
+    required this.element,
+    required this.time,
+    required this.currentPage,
+    required this.screenWidth,
+    required this.screenHeight,
+    required this.scrollOffset,
+  });
+
+  final _FloatingElement element;
+  final double time;
+  final int currentPage;
+  final double screenWidth;
+  final double screenHeight;
+  final double scrollOffset;
+
+  @override
+  Widget build(BuildContext context) {
     final parallaxX = -scrollOffset * screenWidth * element.parallaxFactor;
     final floatX = sin(time * element.speed + element.phase) * 6;
     final floatY = cos(time * element.speed * 0.7 + element.phase) * 8;
@@ -187,8 +203,7 @@ class ParallaxBackground extends StatelessWidget {
       opacityBoost = 0.15;
     }
 
-    final opacity =
-        (element.baseOpacity + opacityBoost).clamp(0.0, 0.4);
+    final opacity = (element.baseOpacity + opacityBoost).clamp(0.0, 0.4);
 
     final left = element.relX * screenWidth + parallaxX + floatX;
     final top = element.relY * screenHeight + floatY;
@@ -203,8 +218,10 @@ class ParallaxBackground extends StatelessWidget {
                 element.assetPath,
                 width: element.size,
                 height: element.size,
-                colorFilter:
-                    const ColorFilter.mode(_purpleColor, BlendMode.srcIn),
+                colorFilter: const ColorFilter.mode(
+                  AppColors.primary,
+                  BlendMode.srcIn,
+                ),
               )
             : SvgPicture.asset(
                 element.assetPath,

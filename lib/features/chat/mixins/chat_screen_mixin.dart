@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/services/coach_mark_service.dart';
 import 'package:qulo_v2/features/chat/coach/chat_question_coach_marks.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:qulo_v2/core/services/one_time_flag_store.dart';
 import 'package:qulo_v2/core/navigation/navigation_provider.dart';
 import 'package:qulo_v2/core/navigation/models/app_dialog.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
@@ -132,10 +132,11 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
 
   // ─── Quiz Summary ───
 
+  String get _quizSummaryDismissKey =>
+      'quiz_summary_dismissed_${widget.matchId}';
+
   Future<void> _loadQuizSummaryDismissState() async {
-    final prefs = await SharedPreferences.getInstance();
-    final dismissed =
-        prefs.getBool('quiz_summary_dismissed_${widget.matchId}') ?? false;
+    final dismissed = await OneTimeFlagStore.isSet(_quizSummaryDismissKey);
     if (dismissed && mounted) {
       setState(() => quizSummaryDismissed = true);
     }
@@ -143,8 +144,7 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
 
   Future<void> dismissQuizSummary() async {
     setState(() => quizSummaryDismissed = true);
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('quiz_summary_dismissed_${widget.matchId}', true);
+    await OneTimeFlagStore.mark(_quizSummaryDismissKey);
   }
 
   // ─── Send Message ───

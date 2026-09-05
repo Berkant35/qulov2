@@ -5,7 +5,7 @@ import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/data/models/support_ticket_model.dart';
-import 'package:qulo_v2/features/settings/screens/create_ticket_screen.dart';
+import 'package:qulo_v2/features/settings/mixins/my_tickets_screen_mixin.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 
 final _myTicketsProvider = FutureProvider.autoDispose<List<SupportTicketModel>>(
@@ -18,7 +18,7 @@ final _myTicketsProvider = FutureProvider.autoDispose<List<SupportTicketModel>>(
   },
 );
 
-class MyTicketsScreen extends ConsumerWidget {
+class MyTicketsScreen extends ConsumerWidget with MyTicketsScreenMixin {
   const MyTicketsScreen({super.key});
 
   @override
@@ -32,15 +32,7 @@ class MyTicketsScreen extends ConsumerWidget {
         IconButton(
           icon: const Icon(Icons.add),
           tooltip: context.tr('create_ticket'),
-          onPressed: () async {
-            final result = await Navigator.push<bool>(
-              context,
-              MaterialPageRoute(builder: (_) => const CreateTicketScreen()),
-            );
-            if (result == true) {
-              ref.invalidate(_myTicketsProvider);
-            }
-          },
+          onPressed: () => openCreateTicket(ref, _myTicketsProvider),
         ),
       ],
       isLoading: state is AsyncLoading,
@@ -73,16 +65,7 @@ class MyTicketsScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: AppSpacing.md),
                   FilledButton.icon(
-                    onPressed: () async {
-                      final result = await Navigator.push<bool>(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const CreateTicketScreen()),
-                      );
-                      if (result == true) {
-                        ref.invalidate(_myTicketsProvider);
-                      }
-                    },
+                    onPressed: () => openCreateTicket(ref, _myTicketsProvider),
                     icon: const Icon(Icons.add),
                     label: Text(context.tr('create_ticket')),
                   ),
@@ -105,26 +88,16 @@ class MyTicketsScreen extends ConsumerWidget {
   }
 }
 
-class _TicketListItem extends StatelessWidget {
+class _TicketListItem extends StatelessWidget with TicketListItemWidgetMixin {
   final SupportTicketModel ticket;
 
   const _TicketListItem({required this.ticket});
-
-  Color _statusColor(BuildContext context, String status) {
-    return switch (status) {
-      'OPEN' => context.appColors.warning,
-      'IN_PROGRESS' => context.appColors.info,
-      'RESOLVED' => context.appColors.success,
-      'CLOSED' => context.appColors.textHint,
-      _ => context.appColors.textHint,
-    };
-  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final hasReply = ticket.adminReply != null;
-    final statusColor = _statusColor(context, ticket.status);
+    final color = statusColor(context, ticket.status);
 
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(
@@ -164,13 +137,13 @@ class _TicketListItem extends StatelessWidget {
           vertical: AppSpacing.xs / 2,
         ),
         decoration: BoxDecoration(
-          color: statusColor.withValues(alpha: 0.12),
+          color: color.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
         ),
         child: Text(
           ticket.status,
           style: theme.textTheme.labelSmall?.copyWith(
-            color: statusColor,
+            color: color,
             fontWeight: FontWeight.w600,
           ),
         ),

@@ -2,11 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
-import 'package:qulo_v2/core/navigation/navigation_provider.dart';
-import 'package:qulo_v2/core/navigation/models/app_dialog.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
+import 'package:qulo_v2/features/settings/mixins/blocked_users_screen_mixin.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 
 final _blockedUsersProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>(
@@ -19,7 +18,7 @@ final _blockedUsersProvider = FutureProvider.autoDispose<List<Map<String, dynami
   },
 );
 
-class BlockedUsersScreen extends ConsumerWidget {
+class BlockedUsersScreen extends ConsumerWidget with BlockedUsersScreenMixin {
   const BlockedUsersScreen({super.key});
 
   @override
@@ -98,7 +97,8 @@ class BlockedUsersScreen extends ConsumerWidget {
                       ),
                 ),
                 trailing: TextButton(
-                  onPressed: () => _confirmUnblock(context, ref, blockedId, name),
+                  onPressed: () =>
+                      confirmUnblock(context, ref, blockedId, _blockedUsersProvider),
                   child: Text(
                     context.tr('unblock'),
                     style: TextStyle(color: context.appColors.primary),
@@ -110,26 +110,5 @@ class BlockedUsersScreen extends ConsumerWidget {
         },
       ),
     );
-  }
-
-  Future<void> _confirmUnblock(
-    BuildContext context,
-    WidgetRef ref,
-    String blockedId,
-    String name,
-  ) async {
-    final nav = ref.read(navigationServiceProvider);
-    final confirmed = await nav.showAppDialog<bool>(
-      ConfirmDialog(
-        name: 'unblock_user',
-        title: context.tr('unblock_user_title'),
-        message: context.tr('unblock_user_message'),
-        confirmText: context.tr('unblock'),
-        cancelText: context.tr('cancel'),
-      ),
-    );
-    if (confirmed != true) return;
-    await ref.read(blockRepositoryProvider).unblockUser(blockedId);
-    ref.invalidate(_blockedUsersProvider);
   }
 }

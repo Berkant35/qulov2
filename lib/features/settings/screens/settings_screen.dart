@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
@@ -15,8 +14,8 @@ import 'package:qulo_v2/providers/haptic_provider.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
 
-final _packageInfoProvider = FutureProvider<PackageInfo>(
-  (_) => PackageInfo.fromPlatform(),
+final _appVersionProvider = FutureProvider<String>(
+  (ref) => ref.read(appInfoManagerProvider).displayVersion,
 );
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -99,9 +98,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
           ),
           const SizedBox(height: AppSpacing.xl),
           Center(
-            child: ref.watch(_packageInfoProvider).when(
-              data: (info) => Text(
-                'v${info.version} (${info.buildNumber})',
+            child: ref.watch(_appVersionProvider).when(
+              data: (version) => Text(
+                'v$version',
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
                 ),

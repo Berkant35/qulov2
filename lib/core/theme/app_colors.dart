@@ -30,6 +30,8 @@ abstract final class AppColors {
   static const textPrimary = Color(0xFFFFFFFF);
   static const textSecondary = Color(0xFFB0B0B0);
   static const textHint = Color(0xFF666666);
+  static const textMuted = Color(0xFF555555);
+  static const textDisabled = Color(0xFF444444);
 
   // ─── Border & Divider ───
   static const border = Color(0xFF2A2A2A);
@@ -39,6 +41,10 @@ abstract final class AppColors {
   static const Color gold = Color(0xFFFFD700);
   static const Color silver = Color(0xFFC0C0C0);
   static const Color bronze = Color(0xFFCD7F32);
+
+  // ─── Match ───
+  /// Eslesme/kalp vurgusu — bildirim ve kutlama yuzeylerinde kullanilir.
+  static const matchPink = Color(0xFFFF4D6D);
 
   // ─── Difficulty ───
   static const Color hardOrange = Color(0xFFFF7043);
@@ -73,6 +79,22 @@ abstract final class AppColors {
 
   static const primaryButtonGradient = LinearGradient(
     colors: [Color(0xFF9C27B0), Color(0xFF7B1FA2)],
+  );
+
+  // ─── Splash & Onboarding chrome (her iki temada da koyu — marka acilis ekrani) ───
+  static const splashGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Color(0xFF0D0015), Color(0xFF1A0A2E)],
+  );
+
+  /// Splash ortasindaki radial spot isigi.
+  static const splashSpotlight = Color(0xFF2D1B4E);
+
+  static const onboardingGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [background, Color(0xFF1A1A2E)],
   );
 }
 

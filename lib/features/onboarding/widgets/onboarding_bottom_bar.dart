@@ -41,12 +41,7 @@ class OnboardingBottomBar extends StatelessWidget {
               height: 52,
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      context.appColors.primaryDark,
-                      const Color(0xFF7B1FA2),
-                    ],
-                  ),
+                  gradient: context.appColors.primaryButtonGradient,
                   borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                 ),
                 child: ElevatedButton(

@@ -5,9 +5,7 @@ import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/diamond_icon.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
-import 'package:qulo_v2/providers/diamond_provider.dart';
-import 'package:qulo_v2/providers/economy_config_provider.dart';
-import 'package:qulo_v2/providers/exchange_provider.dart';
+import 'package:qulo_v2/features/exchange/mixins/convert_section_mixin.dart';
 
 class ConvertSection extends ConsumerStatefulWidget {
   const ConvertSection({super.key});
@@ -16,53 +14,13 @@ class ConvertSection extends ConsumerStatefulWidget {
   ConsumerState<ConvertSection> createState() => _ConvertSectionState();
 }
 
-class _ConvertSectionState extends ConsumerState<ConvertSection> {
-  double _sliderValue = 3;
-  bool _converting = false;
-
-  int get _greenAmount => _sliderValue.toInt();
-  int get _convertRatio =>
-      ref.read(exchangeProvider).rates?.convertRatio ??
-      ref.read(economyConfigProvider).core.greenToPurpleRatio;
-  int get _purpleResult => _greenAmount ~/ _convertRatio;
-
-  int get _maxGreen {
-    final balance = ref.read(diamondProvider).valueOrNull;
-    if (balance == null) return 3;
-    final raw = balance.green;
-    // Round down to nearest multiple of convertRatio
-    final ratio = _convertRatio;
-    final max = (raw ~/ ratio) * ratio;
-    return max < ratio ? ratio : max;
-  }
-
-  Future<void> _onConvert() async {
-    if (_converting || _greenAmount < _convertRatio) return;
-    setState(() => _converting = true);
-
-    final success = await ref.read(exchangeProvider.notifier).convert(_greenAmount);
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            success
-                ? context.tr('purchase_success')
-                : context.tr('purchase_failed'),
-          ),
-        ),
-      );
-      if (success) {
-        setState(() => _sliderValue = _convertRatio.toDouble());
-      }
-      setState(() => _converting = false);
-    }
-  }
-
+class _ConvertSectionState extends ConsumerState<ConvertSection>
+    with ConvertSectionMixin {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final ratio = _convertRatio;
-    final maxGreen = _maxGreen;
+    final ratio = convertRatio;
+    final maxValue = maxGreen;
 
     return Container(
       decoration: BoxDecoration(
@@ -94,7 +52,7 @@ class _ConvertSectionState extends ConsumerState<ConvertSection> {
                   const DiamondIcon.green(size: 40),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
-                    '$_greenAmount',
+                    '$greenAmount',
                     style: theme.textTheme.headlineSmall?.copyWith(
                       color: context.appColors.secondary,
                       fontWeight: FontWeight.bold,
@@ -116,7 +74,7 @@ class _ConvertSectionState extends ConsumerState<ConvertSection> {
                   const DiamondIcon.purple(size: 40),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
-                    '$_purpleResult',
+                    '$purpleResult',
                     style: theme.textTheme.headlineSmall?.copyWith(
                       color: context.appColors.primary,
                       fontWeight: FontWeight.bold,
@@ -138,15 +96,15 @@ class _ConvertSectionState extends ConsumerState<ConvertSection> {
               overlayColor: context.appColors.secondary.withValues(alpha: 0.1),
             ),
             child: Slider(
-              value: _sliderValue.clamp(ratio.toDouble(), maxGreen.toDouble()),
+              value: sliderValue.clamp(ratio.toDouble(), maxValue.toDouble()),
               min: ratio.toDouble(),
-              max: maxGreen.toDouble(),
-              divisions: maxGreen > ratio ? ((maxGreen - ratio) ~/ ratio) : 1,
-              onChanged: maxGreen > ratio
+              max: maxValue.toDouble(),
+              divisions: maxValue > ratio ? ((maxValue - ratio) ~/ ratio) : 1,
+              onChanged: maxValue > ratio
                   ? (val) {
                       // Snap to multiples of ratio
                       final snapped = (val / ratio).round() * ratio;
-                      setState(() => _sliderValue = snapped.toDouble());
+                      setState(() => sliderValue = snapped.toDouble());
                     }
                   : null,
             ),
@@ -168,8 +126,8 @@ class _ConvertSectionState extends ConsumerState<ConvertSection> {
           SizedBox(
             width: double.infinity,
             child: FilledButton(
-              onPressed: _greenAmount >= ratio && !_converting
-                  ? _onConvert
+              onPressed: greenAmount >= ratio && !converting
+                  ? onConvert
                   : null,
               style: FilledButton.styleFrom(
                 backgroundColor: context.appColors.secondary,
@@ -179,7 +137,7 @@ class _ConvertSectionState extends ConsumerState<ConvertSection> {
                   borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                 ),
               ),
-              child: _converting
+              child: converting
                   ? const AppLoadingWidget.small()
                   : Text(
                       context.tr('exchange_convert_button'),

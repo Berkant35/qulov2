@@ -16,3 +16,4 @@ export 'app_config_repository.dart';
 export 'user_repository.dart';
 export 'block_repository.dart';
 export 'support_ticket_repository.dart';
+export 'page_message_repository.dart';

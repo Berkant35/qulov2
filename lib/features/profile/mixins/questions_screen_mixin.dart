@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:qulo_v2/core/services/one_time_flag_store.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
@@ -38,9 +38,7 @@ mixin QuestionsScreenMixin on ConsumerState<QuestionsScreen> {
     if (initialized &&
         previousCount < AppConstants.minQuestions &&
         count >= AppConstants.minQuestions) {
-      final prefs = await SharedPreferences.getInstance();
-      if (!(prefs.getBool(keyCelebrationShown) ?? false)) {
-        await prefs.setBool(keyCelebrationShown, true);
+      if (await OneTimeFlagStore.markIfUnset(keyCelebrationShown)) {
         if (mounted) showCelebrationDialog();
       }
     }

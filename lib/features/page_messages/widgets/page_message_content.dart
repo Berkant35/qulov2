@@ -5,7 +5,7 @@ import 'package:qulo_v2/core/navigation/navigation_provider.dart';
 import 'package:qulo_v2/core/services/deep_link_parser.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_button.dart';
-import 'package:qulo_v2/features/page_messages/data/models/page_message_model.dart';
+import 'package:qulo_v2/data/models/page_message_model.dart';
 import 'package:qulo_v2/providers/locale_provider.dart';
 import 'package:qulo_v2/providers/page_messages_provider.dart';
 

@@ -51,40 +51,38 @@ class _PassportScreenState extends ConsumerState<PassportScreen>
     if (passport.isActive && !isChangingCity) {
       return AppScaffold(
         title: context.tr('passport'),
-        body: Padding(
-          padding: const EdgeInsets.all(AppSpacing.pagePadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              PassportActiveCard(city: passport.city ?? ''),
-              const SizedBox(height: AppSpacing.xl),
-              SizedBox(
-                height: 52,
-                child: FilledButton.icon(
-                  onPressed: isLoading ? null : () => onChangeCity(passport.city),
-                  icon: const Icon(Icons.swap_horiz),
-                  label: Text(context.tr('passport_change_city')),
-                  style: FilledButton.styleFrom(backgroundColor: context.appColors.primaryDark),
-                ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            PassportActiveCard(city: passport.city ?? ''),
+            const SizedBox(height: AppSpacing.xl),
+            SizedBox(
+              height: 52,
+              child: FilledButton.icon(
+                onPressed: isLoading ? null : () => onChangeCity(passport.city),
+                icon: const Icon(Icons.swap_horiz),
+                label: Text(context.tr('passport_change_city')),
+                style: FilledButton.styleFrom(backgroundColor: context.appColors.primaryDark),
               ),
-              const SizedBox(height: AppSpacing.md),
-              SizedBox(
-                height: 52,
-                child: OutlinedButton(
-                  onPressed: isLoading ? null : () => onDeactivate(withLoading),
-                  child: isLoading
-                      ? const SizedBox(height: 20, width: 20, child: AppLoadingWidget.small())
-                      : Text(context.tr('passport_return_home')),
-                ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            SizedBox(
+              height: 52,
+              child: OutlinedButton(
+                onPressed: isLoading ? null : () => onDeactivate(withLoading),
+                child: isLoading
+                    ? const SizedBox(height: 20, width: 20, child: AppLoadingWidget.small())
+                    : Text(context.tr('passport_return_home')),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
     }
 
     return AppScaffold(
       title: context.tr('passport'),
+      padding: EdgeInsets.zero,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.pagePadding),
         child: Column(

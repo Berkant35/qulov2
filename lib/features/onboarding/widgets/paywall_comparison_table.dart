@@ -87,10 +87,10 @@ const List<_RowConfig> _kRows = [
 
 // ─── Plan colors ─────────────────────────────────────────────────────────────
 
-const Color _kFreeColor = Color(0xFF666666);
+const Color _kFreeColor = AppColors.textHint;
 const Color _kPlusColor = AppColors.secondary;
 const Color _kPremiumColor = AppColors.primary;
-const Color _kDashColor = Color(0xFF444444);
+const Color _kDashColor = AppColors.textDisabled;
 
 // ─── Public widget ───────────────────────────────────────────────────────────
 
@@ -238,11 +238,26 @@ class _DataCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       flex: 7,
-      child: Center(child: _buildContent()),
+      child: Center(child: _CellContent(type: type, planColor: planColor, text: text)),
     );
   }
 
-  Widget _buildContent() {
+}
+
+/// [_DataCell] icerigi — hucre tipine gore metin, sonsuzluk, tik veya tire.
+class _CellContent extends StatelessWidget {
+  const _CellContent({
+    required this.type,
+    required this.planColor,
+    this.text,
+  });
+
+  final _CellType type;
+  final Color planColor;
+  final String? text;
+
+  @override
+  Widget build(BuildContext context) {
     switch (type) {
       case _CellType.text:
         return Text(

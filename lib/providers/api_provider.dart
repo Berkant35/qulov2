@@ -6,6 +6,7 @@ import 'package:qulo_v2/core/services/notification_manager.dart';
 import 'package:qulo_v2/core/services/url_launcher_manager.dart';
 import 'package:qulo_v2/core/services/version_manager.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/app_info_manager.dart';
 import 'package:qulo_v2/core/services/audio_player_manager.dart';
 import 'package:qulo_v2/core/services/share_manager.dart';
 import 'package:qulo_v2/core/services/audio_recorder_manager.dart';
@@ -40,7 +41,6 @@ import 'package:qulo_v2/core/network/services/page_message_service.dart';
 import 'package:qulo_v2/data/repositories/acquisition_repository.dart';
 import 'package:qulo_v2/core/services/presence_manager.dart';
 import 'package:qulo_v2/data/repositories/repositories.dart';
-import 'package:qulo_v2/features/page_messages/data/repositories/page_message_repository.dart';
 
 // ─── Core Services ───
 final imagePickerManagerProvider = Provider<ImagePickerManager>(
@@ -60,6 +60,9 @@ final versionManagerProvider = Provider<VersionManager>(
 );
 final analyticsManagerProvider = Provider<AnalyticsManager>(
   (_) => AnalyticsManager.instance,
+);
+final appInfoManagerProvider = Provider<AppInfoManager>(
+  (_) => AppInfoManager.instance,
 );
 final shareManagerProvider = Provider<ShareManager>(
   (_) => ShareManager.instance,

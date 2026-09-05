@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:qulo_v2/features/page_messages/data/models/page_message_model.dart';
+import 'package:qulo_v2/data/models/page_message_model.dart';
 
 void main() {
   test('PageMessageModel parses + localized fallback', () {

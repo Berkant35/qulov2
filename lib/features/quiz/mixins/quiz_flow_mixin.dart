@@ -1,4 +1,4 @@
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:qulo_v2/core/services/one_time_flag_store.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
@@ -62,17 +62,16 @@ mixin QuizFlowMixin on QuizScreenStateMixin {
   // turda paywall + review birlikte acilmasin diye review'i sadece bu dalda cagir.
   Future<void> _maybeShowFirstMatchPaywall({required String nextRoute}) async {
     final nav = ref.read(navigationServiceProvider);
-    final prefs = await SharedPreferences.getInstance();
-    final alreadyShown =
-        prefs.getBool(AnalyticsEvents.flagPaywallFirstMatch) ?? false;
+    final isFirstTime = await OneTimeFlagStore.markIfUnset(
+      AnalyticsEvents.flagPaywallFirstMatch,
+    );
 
-    if (alreadyShown) {
+    if (!isFirstTime) {
       nav.go(nextRoute);
       AppReviewManager.instance.tryShowReview(trigger: 'match_celebration');
       return;
     }
 
-    await prefs.setBool(AnalyticsEvents.flagPaywallFirstMatch, true);
     FunnelEvents.logAuthed(
       AnalyticsEvents.paywallShown,
       params: {AnalyticsEvents.paramTrigger: 'first_match'},

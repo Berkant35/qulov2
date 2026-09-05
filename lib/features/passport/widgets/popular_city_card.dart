@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
-import 'package:qulo_v2/features/passport/data/popular_cities.dart';
+import 'package:qulo_v2/features/passport/constants/popular_cities.dart';
 
 class PopularCityCard extends StatelessWidget {
   const PopularCityCard({super.key, required this.city, required this.onTap});

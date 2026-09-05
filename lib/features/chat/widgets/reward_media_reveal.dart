@@ -6,9 +6,10 @@ import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
-import 'package:qulo_v2/core/widgets/fullscreen_photo_viewer.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/features/chat/mixins/photo_viewer_mixin.dart';
 
-class RewardMediaReveal extends StatefulWidget {
+class RewardMediaReveal extends ConsumerStatefulWidget {
   final String mediaUrl;
   final String mediaType;
 
@@ -19,11 +20,11 @@ class RewardMediaReveal extends StatefulWidget {
   });
 
   @override
-  State<RewardMediaReveal> createState() => _RewardMediaRevealState();
+  ConsumerState<RewardMediaReveal> createState() => _RewardMediaRevealState();
 }
 
-class _RewardMediaRevealState extends State<RewardMediaReveal>
-    with SingleTickerProviderStateMixin {
+class _RewardMediaRevealState extends ConsumerState<RewardMediaReveal>
+    with SingleTickerProviderStateMixin, PhotoViewerMixin {
   late final AnimationController _controller;
   late final Animation<double> _blurAnimation;
   late final Animation<double> _scaleAnimation;
@@ -63,16 +64,7 @@ class _RewardMediaRevealState extends State<RewardMediaReveal>
     final heroTag = 'reward_${widget.mediaUrl}';
 
     return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => FullscreenPhotoViewer(
-              imageUrl: widget.mediaUrl,
-              heroTag: heroTag,
-            ),
-          ),
-        );
-      },
+      onTap: () => openPhotoViewer(ref, widget.mediaUrl, heroTag: heroTag),
       child: Hero(
         tag: heroTag,
         child: AnimatedBuilder(

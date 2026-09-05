@@ -10,6 +10,7 @@ import 'package:qulo_v2/features/onboarding/widgets/onboarding_language_page.dar
 import 'package:qulo_v2/features/onboarding/widgets/onboarding_powers_page.dart';
 import 'package:qulo_v2/features/onboarding/widgets/onboarding_questions_page.dart';
 import 'package:qulo_v2/features/onboarding/widgets/parallax_background.dart';
+import 'package:qulo_v2/core/theme/app_colors.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
@@ -37,14 +38,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF0D0D0D),
-              Color(0xFF1A1A2E),
-            ],
-          ),
+          gradient: AppColors.onboardingGradient,
         ),
         child: SafeArea(
           child: Stack(

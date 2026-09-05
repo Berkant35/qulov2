@@ -216,7 +216,7 @@ _NotifTypeMeta _typeMeta(String type, AppColorsResolved colors) {
       ),
     'new_match' => _NotifTypeMeta(
         icon: Icons.favorite_rounded,
-        color: const Color(0xFFFF4D6D),
+        color: AppColors.matchPink,
       ),
     'quiz_started' => _NotifTypeMeta(
         icon: Icons.help_outline_rounded,

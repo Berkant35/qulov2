@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
-import 'package:qulo_v2/core/widgets/fullscreen_photo_viewer.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/features/chat/mixins/photo_viewer_mixin.dart';
 
-class BlurredMediaPreview extends StatelessWidget {
+class BlurredMediaPreview extends ConsumerWidget with PhotoViewerMixin {
   final String? mediaUrl;
   final String mediaType;
   final bool isRevealed;
@@ -22,7 +23,7 @@ class BlurredMediaPreview extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     if (mediaType == 'audio') {
       return _AudioPreview(isRevealed: isRevealed, height: height);
     }
@@ -33,16 +34,7 @@ class BlurredMediaPreview extends StatelessWidget {
     if (isRevealed) {
       final heroTag = 'reward_preview_$mediaUrl';
       return GestureDetector(
-        onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute<void>(
-              builder: (_) => FullscreenPhotoViewer(
-                imageUrl: mediaUrl!,
-                heroTag: heroTag,
-              ),
-            ),
-          );
-        },
+        onTap: () => openPhotoViewer(ref, mediaUrl!, heroTag: heroTag),
         child: Hero(
           tag: heroTag,
           child: ClipRRect(

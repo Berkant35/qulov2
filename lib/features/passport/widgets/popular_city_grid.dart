@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
-import 'package:qulo_v2/features/passport/data/popular_cities.dart';
+import 'package:qulo_v2/features/passport/constants/popular_cities.dart';
 import 'package:qulo_v2/features/passport/widgets/popular_city_card.dart';
 
 class PopularCityGrid extends StatelessWidget {

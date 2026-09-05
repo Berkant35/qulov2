@@ -35,57 +35,56 @@ class _ExchangeScreenState extends ConsumerState<ExchangeScreen> {
 
     return AppScaffold(
       title: context.tr('exchange_title'),
-      body: exchange.isLoading
-          ? const Center(child: AppLoadingWidget.large())
-          : SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // 1. Diamond Balance Card
-                  balance.when(
-                    data: (bal) => DiamondBalanceCard(
-                      greenCount: bal.green,
-                      purpleCount: bal.purple,
-                    ),
-                    loading: () =>
-                        const Center(child: AppLoadingWidget.large()),
-                    error: (_, __) => const SizedBox.shrink(),
-                  ),
+      isLoading: exchange.isLoading,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // 1. Diamond Balance Card
+            balance.when(
+              data: (bal) => DiamondBalanceCard(
+                greenCount: bal.green,
+                purpleCount: bal.purple,
+              ),
+              loading: () =>
+                  const Center(child: AppLoadingWidget.large()),
+              error: (_, __) => const SizedBox.shrink(),
+            ),
 
-                  const SizedBox(height: AppSpacing.sectionGap),
+            const SizedBox(height: AppSpacing.sectionGap),
 
-                  // 2. Convert Section
-                  const ConvertSection(),
+            // 2. Convert Section
+            const ConvertSection(),
 
-                  const SizedBox(height: AppSpacing.sectionGap),
+            const SizedBox(height: AppSpacing.sectionGap),
 
-                  // 3. Power Shop Header
-                  Text(
-                    context.tr('exchange_powers_title'),
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-
-                  // 4. Power Shop Cards
-                  if (exchange.rates != null)
-                    ...exchange.rates!.powers.map(
-                      (power) => Padding(
-                        padding:
-                            const EdgeInsets.only(bottom: AppSpacing.sm),
-                        child: PowerShopCard(
-                          power: power,
-                          inventoryCount:
-                              exchange.getCount(power.name),
-                        ),
-                      ),
-                    ),
-
-                  const SizedBox(height: AppSpacing.xl),
-                ],
+            // 3. Power Shop Header
+            Text(
+              context.tr('exchange_powers_title'),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
               ),
             ),
+            const SizedBox(height: AppSpacing.md),
+
+            // 4. Power Shop Cards
+            if (exchange.rates != null)
+              ...exchange.rates!.powers.map(
+                (power) => Padding(
+                  padding:
+                      const EdgeInsets.only(bottom: AppSpacing.sm),
+                  child: PowerShopCard(
+                    power: power,
+                    inventoryCount:
+                        exchange.getCount(power.name),
+                  ),
+                ),
+              ),
+
+            const SizedBox(height: AppSpacing.xl),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -105,18 +105,4 @@ class AppReviewManager {
       debugPrint('[AppReviewManager] Review prompted (trigger: $trigger, count: $shownCount)');
     }
   }
-
-  Future<void> _openStoreUrl() async {
-    try {
-      await _inAppReview.openStoreListing(
-        appStoreId: _iosAppStoreId,
-      );
-    } catch (_) {
-      if (Platform.isAndroid) {
-        await UrlLauncherManager.instance.launch(
-          'https://play.google.com/store/apps/details?id=$_androidPackageName',
-        );
-      }
-    }
-  }
 }

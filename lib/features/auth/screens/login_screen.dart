@@ -20,12 +20,6 @@ import 'package:qulo_v2/features/auth/widgets/social_login_buttons.dart';
 import 'package:qulo_v2/features/auth/widgets/staggered_column.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 
-/*
-
-DEBUG_EMAIL=tester_001@qulo.test
-DEBUG_PASSWORD=Test1234!
-
-* */
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 

@@ -15,36 +15,33 @@ class PassportPremiumGate extends ConsumerWidget {
     final theme = Theme.of(context);
 
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.pagePadding),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AppIcon(QIcons.lock, size: 64, color: context.appColors.textHint),
-            const SizedBox(height: AppSpacing.lg),
-            Text(
-              context.tr('passport_premium_only'),
-              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-              textAlign: TextAlign.center,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AppIcon(QIcons.lock, size: 64, color: context.appColors.textHint),
+          const SizedBox(height: AppSpacing.lg),
+          Text(
+            context.tr('passport_premium_only'),
+            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            context.tr('passport_premium_desc'),
+            style: theme.textTheme.bodyMedium?.copyWith(color: context.appColors.textSecondary),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppSpacing.xl),
+          SizedBox(
+            width: double.infinity,
+            height: 52,
+            child: FilledButton(
+              onPressed: () => PaywallBottomSheetContent.show(ref, trigger: 'passport_locked'),
+              style: FilledButton.styleFrom(backgroundColor: context.appColors.primaryDark),
+              child: Text(context.tr('upgrade_to_premium')),
             ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              context.tr('passport_premium_desc'),
-              style: theme.textTheme.bodyMedium?.copyWith(color: context.appColors.textSecondary),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppSpacing.xl),
-            SizedBox(
-              width: double.infinity,
-              height: 52,
-              child: FilledButton(
-                onPressed: () => PaywallBottomSheetContent.show(ref, trigger: 'passport_locked'),
-                style: FilledButton.styleFrom(backgroundColor: context.appColors.primaryDark),
-                child: Text(context.tr('upgrade_to_premium')),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

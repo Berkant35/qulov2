@@ -1,12 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/widgets/language_picker_sheet.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/features/settings/models/deletion_reason.dart';
 import 'package:qulo_v2/features/settings/screens/settings_screen.dart';
 import 'package:qulo_v2/features/settings/widgets/delete_reason_sheet.dart';
@@ -152,11 +152,11 @@ mixin SettingsScreenMixin on ConsumerState<SettingsScreen> {
       AnalyticsEvents.settingsDeleteAccountReason,
       params: {AnalyticsEvents.paramReasonCode: reason.reasonCode},
     );
-    final packageInfo = await PackageInfo.fromPlatform();
+    final appVersion = await ref.read(appInfoManagerProvider).version;
     await userNotifier.deleteAccount(
       reasonCode: reason.reasonCode,
       reasonText: reason.reasonText,
-      appVersion: packageInfo.version,
+      appVersion: appVersion,
       platform: Platform.isIOS ? 'ios' : 'android',
       locale: locale,
     );

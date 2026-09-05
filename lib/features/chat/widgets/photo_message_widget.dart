@@ -2,9 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
-import 'package:qulo_v2/core/widgets/fullscreen_photo_viewer.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/features/chat/mixins/photo_viewer_mixin.dart';
 
-class PhotoMessageWidget extends StatelessWidget {
+class PhotoMessageWidget extends ConsumerWidget with PhotoViewerMixin {
   final String imageUrl;
   final bool isMine;
 
@@ -15,15 +16,9 @@ class PhotoMessageWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => FullscreenPhotoViewer(imageUrl: imageUrl),
-          ),
-        );
-      },
+      onTap: () => openPhotoViewer(ref, imageUrl),
       child: Hero(
         tag: imageUrl,
         child: Container(

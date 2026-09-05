@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/network/services/page_message_service.dart';
-import 'package:qulo_v2/features/page_messages/data/models/page_message_model.dart';
+import 'package:qulo_v2/data/models/page_message_model.dart';
 
 class PageMessageRepository {
   final PageMessageRetrofitService _service;

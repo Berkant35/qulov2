@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qulo_v2/core/navigation/navigation.dart';
-import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/diamond_icon.dart';
 import 'package:qulo_v2/core/widgets/power_icon.dart';
-import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/features/exchange/mixins/power_shop_card_mixin.dart';
 import 'package:qulo_v2/data/models/exchange_model.dart';
-import 'package:qulo_v2/providers/exchange_provider.dart';
-import 'package:qulo_v2/routing/route_names.dart';
 
 class PowerShopCard extends ConsumerStatefulWidget {
   final ExchangeRatePower power;
@@ -27,145 +23,7 @@ class PowerShopCard extends ConsumerStatefulWidget {
 }
 
 class _PowerShopCardState extends ConsumerState<PowerShopCard>
-    with SingleTickerProviderStateMixin {
-  String? _buyingWith; // 'purple' or 'green' or null
-  int _quantity = 1;
-
-  late final AnimationController _pulseController;
-  late final Animation<double> _scaleAnimation;
-  late final Animation<double> _glowAnimation;
-  int _previousCount = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _previousCount = widget.inventoryCount;
-
-    _pulseController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 400),
-    );
-
-    _scaleAnimation = TweenSequence<double>([
-      TweenSequenceItem(
-        tween: Tween(begin: 1.0, end: 1.35)
-            .chain(CurveTween(curve: Curves.easeOut)),
-        weight: 40,
-      ),
-      TweenSequenceItem(
-        tween: Tween(begin: 1.35, end: 1.0)
-            .chain(CurveTween(curve: Curves.easeOutBack)),
-        weight: 60,
-      ),
-    ]).animate(_pulseController);
-
-    _glowAnimation = TweenSequence<double>([
-      TweenSequenceItem(
-        tween: Tween(begin: 0.0, end: 0.6)
-            .chain(CurveTween(curve: Curves.easeOut)),
-        weight: 35,
-      ),
-      TweenSequenceItem(
-        tween: Tween(begin: 0.6, end: 0.0)
-            .chain(CurveTween(curve: Curves.easeIn)),
-        weight: 65,
-      ),
-    ]).animate(_pulseController);
-  }
-
-  @override
-  void didUpdateWidget(PowerShopCard oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.inventoryCount > _previousCount) {
-      _pulseController.forward(from: 0);
-    }
-    _previousCount = widget.inventoryCount;
-  }
-
-  @override
-  void dispose() {
-    _pulseController.dispose();
-    super.dispose();
-  }
-
-  PowerType get _powerType => PowerType.fromApiName(widget.power.name) ?? PowerType.oracle;
-
-  String get _powerLabel {
-    final key = switch (widget.power.name) {
-      'ORACLE' => 'power_oracle',
-      'HALF' => 'power_half',
-      'SKIP' => 'power_skip',
-      'SKIP_ALL' => 'power_skip_all',
-      'TIME_EXTEND' => 'power_time',
-      'HINT' => 'power_hint',
-      _ => widget.power.name,
-    };
-    return context.tr(key);
-  }
-
-  String get _powerDesc {
-    final key = switch (widget.power.name) {
-      'ORACLE' => 'power_oracle_desc',
-      'HALF' => 'power_half_desc',
-      'SKIP' => 'power_skip_desc',
-      'SKIP_ALL' => 'power_skip_all_desc',
-      'TIME_EXTEND' => 'power_time_extend_desc',
-      'HINT' => 'power_hint_desc',
-      _ => '',
-    };
-    return context.tr(key);
-  }
-
-  Future<void> _onBuy(String diamondType) async {
-    if (_buyingWith != null) return;
-    setState(() => _buyingWith = diamondType);
-
-    final result = await ref
-        .read(exchangeProvider.notifier)
-        .buyPower(widget.power.name, diamondType.toUpperCase(), _quantity);
-
-    if (mounted) {
-      result.when(
-        success: (_) {
-          // animation in didUpdateWidget is the feedback
-        },
-        failure: (f) {
-          if (f is ServerFailure && f.code == 'INSUFFICIENT_DIAMONDS') {
-            final params = f.params as Map<String, dynamic>?;
-            final required = params?['required'] ?? '';
-            final current = params?['current'] ?? '';
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  context.tr('purchase_insufficient_diamonds')
-                      .replaceAll('{required}', '$required')
-                      .replaceAll('{current}', '$current'),
-                ),
-                backgroundColor: context.appColors.error,
-                action: SnackBarAction(
-                  label: context.tr('purchase_get_diamonds'),
-                  textColor: Colors.white,
-                  onPressed: () {
-                    ref.read(navigationServiceProvider).go(RouteNames.diamonds);
-                  },
-                ),
-                duration: const Duration(seconds: 4),
-              ),
-            );
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(f.message ?? context.tr('purchase_failed')),
-                backgroundColor: context.appColors.error,
-              ),
-            );
-          }
-        },
-      );
-      setState(() => _buyingWith = null);
-    }
-  }
-
+    with SingleTickerProviderStateMixin, PowerShopCardMixin {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -183,16 +41,16 @@ class _PowerShopCardState extends ConsumerState<PowerShopCard>
         children: [
           // Power icon with inventory badge
           AnimatedBuilder(
-            animation: _pulseController,
+            animation: pulseController,
             builder: (context, child) {
               return Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  boxShadow: _pulseController.isAnimating
+                  boxShadow: pulseController.isAnimating
                       ? [
                           BoxShadow(
-                            color: _powerType.color
-                                .withValues(alpha: _glowAnimation.value),
+                            color: powerType.color
+                                .withValues(alpha: glowAnimation.value),
                             blurRadius: 12,
                             spreadRadius: 2,
                           ),
@@ -200,13 +58,13 @@ class _PowerShopCardState extends ConsumerState<PowerShopCard>
                       : null,
                 ),
                 child: Transform.scale(
-                  scale: _scaleAnimation.value,
+                  scale: scaleAnimation.value,
                   child: child,
                 ),
               );
             },
             child: PowerIcon(
-              type: _powerType,
+              type: powerType,
               size: 32,
               showCount: widget.inventoryCount > 0,
               count: widget.inventoryCount,
@@ -220,14 +78,14 @@ class _PowerShopCardState extends ConsumerState<PowerShopCard>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _powerLabel,
+                  powerLabel,
                   style: theme.textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  _powerDesc,
+                  powerDesc,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
@@ -241,8 +99,8 @@ class _PowerShopCardState extends ConsumerState<PowerShopCard>
 
           // Quantity stepper
           _QuantityStepper(
-            quantity: _quantity,
-            onChanged: (q) => setState(() => _quantity = q),
+            quantity: quantity,
+            onChanged: (q) => setState(() => quantity = q),
           ),
           const SizedBox(width: AppSpacing.sm),
 
@@ -252,18 +110,18 @@ class _PowerShopCardState extends ConsumerState<PowerShopCard>
             children: [
               // Purple cost button
               _BuyButton(
-                cost: widget.power.purpleCost * _quantity,
+                cost: widget.power.purpleCost * quantity,
                 icon: const DiamondIcon.purple(size: 16, showGlow: false),
-                isLoading: _buyingWith == 'purple',
-                onTap: () => _onBuy('purple'),
+                isLoading: buyingWith == 'purple',
+                onTap: () => onBuy('purple'),
               ),
               const SizedBox(height: AppSpacing.xs),
               // Green cost button
               _BuyButton(
-                cost: widget.power.greenCost * _quantity,
+                cost: widget.power.greenCost * quantity,
                 icon: const DiamondIcon.green(size: 16, showGlow: false),
-                isLoading: _buyingWith == 'green',
-                onTap: () => _onBuy('green'),
+                isLoading: buyingWith == 'green',
+                onTap: () => onBuy('green'),
               ),
             ],
           ),

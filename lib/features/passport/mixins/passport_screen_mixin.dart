@@ -5,7 +5,7 @@ import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/teleport_service.dart';
-import 'package:qulo_v2/features/passport/data/popular_cities.dart';
+import 'package:qulo_v2/features/passport/constants/popular_cities.dart';
 import 'package:qulo_v2/features/passport/screens/passport_screen.dart';
 import 'package:qulo_v2/providers/passport_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
