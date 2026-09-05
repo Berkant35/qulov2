@@ -144,6 +144,9 @@ void main() {
       expect(fm.relative(now.subtract(const Duration(days: 4)), now: now), '4 days ago');
       expect(fm.relative(now.subtract(const Duration(days: 10)), now: now), 'Aug 25');
     });
+    test('lastSeen: son görülme + göreli zaman, iki nokta yok', () {
+      expect(fm.lastSeen(now.subtract(const Duration(minutes: 5)), now: now), 'Last seen 5 minutes ago');
+    });
     test('relativeShort rozet biçimi', () {
       expect(fm.relativeShort(now.subtract(const Duration(seconds: 5)), now: now), 'Now');
       expect(fm.relativeShort(now.subtract(const Duration(minutes: 5)), now: now), '5m');

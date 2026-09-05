@@ -211,6 +211,10 @@ class FormatManager {
   }
 
   /// Rozet bicimi: `Now` / `5m` / `3h` / `4d` / `Aug 25`.
+  /// "Last seen 5 minutes ago" — son gorulme etiketi tek yerde (chat + profil).
+  String lastSeen(DateTime dt, {DateTime? now}) =>
+      '${_l10n.get('last_seen')} ${relative(dt, now: now)}';
+
   String relativeShort(DateTime dt, {DateTime? now}) {
     final diff = _elapsedSince(dt, now);
     if (diff.inSeconds < 60) return _l10n.get('now');

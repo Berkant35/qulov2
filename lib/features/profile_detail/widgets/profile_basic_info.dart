@@ -175,7 +175,7 @@ class _OnlineStatusChip extends StatelessWidget {
     final dt = lastSeen == null ? null : DateTime.tryParse(lastSeen!);
     if (dt != null) {
       return Text(
-        '${context.tr('last_seen')} ${context.fmt.relative(dt)}',
+        context.fmt.lastSeen(dt),
         style: Theme.of(context).textTheme.labelMedium?.copyWith(
               color: context.appColors.textSecondary,
             ),

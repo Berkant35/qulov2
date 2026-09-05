@@ -59,7 +59,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with ChatScreenMixin {
     final userName = matchUser?.name ?? context.tr('chat');
     final isOnline = matchUser?.isOnline ?? false;
     final lastSeen = matchUser?.lastSeen;
-    final statusText = isOnline ? 'Online' : formatLastSeen(lastSeen);
+    final statusText = isOnline ? context.tr('online') : formatLastSeen(lastSeen);
     final chatData = chatState.valueOrNull;
     final mediaEnabled = chatData?.mediaEnabled ?? false;
     final pendingRequest = chatData?.pendingMediaRequest;
