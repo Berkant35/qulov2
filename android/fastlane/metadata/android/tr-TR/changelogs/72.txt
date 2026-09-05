@@ -1,0 +1,6 @@
+• Ölçü birimleri ve tarihler artık bölgene göre: mil, ft/in, lbs, 12 saat ve yerel tarih biçimi
+• Fiyatlar mağazadan, kendi para biriminde
+• Dil tercihinde tek dokunuşla tümünü seç ya da sıfırla; 16 dilin hepsi kaydedilebiliyor
+• Soru çözerken elmas bakiyen görünür ve harcaman anında düşer; Kâhin ile 50/50 artık birlikte doğru çalışıyor
+• Soru ekranında karşındakinin adı ve fotoğrafı, profilde uzaklık
+• Giriş ekranı düzeltmeleri ve küçük iyileştirmeler

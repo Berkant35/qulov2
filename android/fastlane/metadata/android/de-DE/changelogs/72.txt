@@ -1,0 +1,6 @@
+• Einheiten und Daten folgen deiner Region: Meilen, ft/in, lbs, 12-Stunden-Zeit, lokales Datum
+• Preise direkt aus dem Store, in deiner Währung
+• Sprachen: alle auswählen oder zurücksetzen mit einem Tipp; alle 16 Sprachen speicherbar
+• Diamantguthaben beim Lösen sichtbar und sofort aktuell; Orakel und 50/50 arbeiten jetzt korrekt zusammen
+• Das Quiz zeigt, für wen du löst; Profile zeigen die Entfernung
+• Korrekturen am Anmeldebildschirm, kleine Verbesserungen

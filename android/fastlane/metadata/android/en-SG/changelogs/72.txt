@@ -1,0 +1,6 @@
+• Units and dates now follow your region: miles, ft/in, lbs, 12-hour time and local date format
+• Prices come straight from the store, in your currency
+• Language preferences: select all or reset with one tap; all 16 languages can be saved
+• Your diamond balance shows while solving and updates instantly; Oracle and 50/50 now work together correctly
+• The quiz shows who you're solving for, and profiles show distance
+• Sign-in screen fixes and small improvements
