@@ -1172,6 +1172,8 @@ const esTranslations = <String, String>{
   'today': 'Hoy',
   'mi': 'mi',
   'lbs': 'lb',
+  'ft': 'ft',
+  'in': 'in',
   'time_minutes_ago_one': 'hace {count} minuto',
   'time_minutes_ago_other': 'hace {count} minutos',
   'time_hours_ago_one': 'hace {count} hora',

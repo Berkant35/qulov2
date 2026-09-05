@@ -1165,6 +1165,8 @@ const trTranslations = <String, String>{
   'today': 'Bugün',
   'mi': 'mil',
   'lbs': 'lb',
+  'ft': 'ft',
+  'in': 'inç',
   'time_minutes_ago_one': '{count} dakika önce',
   'time_minutes_ago_other': '{count} dakika önce',
   'time_hours_ago_one': '{count} saat önce',

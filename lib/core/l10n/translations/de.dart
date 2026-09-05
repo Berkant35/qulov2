@@ -1172,6 +1172,8 @@ const deTranslations = <String, String>{
   'today': 'Heute',
   'mi': 'mi',
   'lbs': 'lbs',
+  'ft': 'ft',
+  'in': 'in',
   'time_minutes_ago_one': 'vor {count} Minute',
   'time_minutes_ago_other': 'vor {count} Minuten',
   'time_hours_ago_one': 'vor {count} Stunde',

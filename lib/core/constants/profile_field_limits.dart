@@ -18,6 +18,9 @@ abstract final class ProfileFieldLimits {
 
   // Sayısal (rakam) alanlar.
   static const int height = 3;
+  /// Imperial boy alanlari: 1 haneli ft, 2 haneli in.
+  static const int heightFeet = 1;
+  static const int heightInches = 2;
   static const int weight = 3;
 
   /// "Son X karakter kaldı" uyarısının görüneceği kalan-karakter eşiği.

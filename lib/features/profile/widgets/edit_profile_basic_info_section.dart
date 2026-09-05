@@ -73,8 +73,8 @@ class EditProfileBasicInfoSection extends ConsumerWidget {
                   child: AppTextField(
                     controller: units.heightFeet,
                     label: context.tr('height'),
-                    hint: 'ft',
-                    maxLength: 1,
+                    hint: context.tr('ft'),
+                    maxLength: ProfileFieldLimits.heightFeet,
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   ),
@@ -84,8 +84,8 @@ class EditProfileBasicInfoSection extends ConsumerWidget {
                   child: AppTextField(
                     controller: units.heightInches,
                     label: null,
-                    hint: 'in',
-                    maxLength: 2,
+                    hint: context.tr('in'),
+                    maxLength: ProfileFieldLimits.heightInches,
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   ),

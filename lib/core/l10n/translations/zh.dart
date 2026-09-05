@@ -1170,6 +1170,8 @@ const zhTranslations = <String, String>{
   'today': '今天',
   'mi': '英里',
   'lbs': '磅',
+  'ft': '英尺',
+  'in': '英寸',
   'time_minutes_ago_one': '{count}分钟前',
   'time_minutes_ago_other': '{count}分钟前',
   'time_hours_ago_one': '{count}小时前',

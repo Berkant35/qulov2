@@ -1172,6 +1172,8 @@ const ptTranslations = <String, String>{
   'today': 'Hoje',
   'mi': 'mi',
   'lbs': 'lb',
+  'ft': 'pés',
+  'in': 'pol',
   'time_minutes_ago_one': 'há {count} minuto',
   'time_minutes_ago_other': 'há {count} minutos',
   'time_hours_ago_one': 'há {count} hora',

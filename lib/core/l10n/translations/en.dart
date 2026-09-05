@@ -1165,6 +1165,8 @@ const enTranslations = <String, String>{
   'today': 'Today',
   'mi': 'mi',
   'lbs': 'lbs',
+  'ft': 'ft',
+  'in': 'in',
   'time_minutes_ago_one': '{count} minute ago',
   'time_minutes_ago_other': '{count} minutes ago',
   'time_hours_ago_one': '{count} hour ago',

@@ -1170,6 +1170,8 @@ const arTranslations = <String, String>{
   'today': 'اليوم',
   'mi': 'ميل',
   'lbs': 'رطل',
+  'ft': 'قدم',
+  'in': 'بوصة',
   'time_minutes_ago_one': 'قبل {count} دقيقة',
   'time_minutes_ago_other': 'قبل {count} دقيقة',
   'time_hours_ago_one': 'قبل {count} ساعة',

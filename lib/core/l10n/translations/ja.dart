@@ -1172,6 +1172,8 @@ const jaTranslations = <String, String>{
   'today': '今日',
   'mi': 'マイル',
   'lbs': 'ポンド',
+  'ft': 'フィート',
+  'in': 'インチ',
   'time_minutes_ago_one': '{count}分前',
   'time_minutes_ago_other': '{count}分前',
   'time_hours_ago_one': '{count}時間前',

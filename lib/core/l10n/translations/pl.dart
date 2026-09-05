@@ -1170,6 +1170,8 @@ const plTranslations = <String, String>{
   'today': 'Dzisiaj',
   'mi': 'mi',
   'lbs': 'lbs',
+  'ft': 'ft',
+  'in': 'in',
   'time_minutes_ago_one': '{count} minutę temu',
   'time_minutes_ago_other': '{count} minut temu',
   'time_hours_ago_one': '{count} godzinę temu',

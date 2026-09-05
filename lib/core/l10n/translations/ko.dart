@@ -1170,6 +1170,8 @@ const koTranslations = <String, String>{
   'today': '오늘',
   'mi': '마일',
   'lbs': '파운드',
+  'ft': '피트',
+  'in': '인치',
   'time_minutes_ago_one': '{count}분 전',
   'time_minutes_ago_other': '{count}분 전',
   'time_hours_ago_one': '{count}시간 전',

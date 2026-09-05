@@ -1170,6 +1170,8 @@ const ruTranslations = <String, String>{
   'today': 'Сегодня',
   'mi': 'мили',
   'lbs': 'фунт',
+  'ft': 'фут',
+  'in': 'дюйм',
   'time_minutes_ago_one': '{count} минуту назад',
   'time_minutes_ago_other': '{count} минут назад',
   'time_hours_ago_one': '{count} час назад',

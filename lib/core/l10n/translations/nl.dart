@@ -1170,6 +1170,8 @@ const nlTranslations = <String, String>{
   'today': 'Vandaag',
   'mi': 'mi',
   'lbs': 'lbs',
+  'ft': 'ft',
+  'in': 'in',
   'time_minutes_ago_one': '{count} minuut geleden',
   'time_minutes_ago_other': '{count} minuten geleden',
   'time_hours_ago_one': '{count} uur geleden',

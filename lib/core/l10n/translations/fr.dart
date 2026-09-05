@@ -1172,6 +1172,8 @@ const frTranslations = <String, String>{
   'today': 'Aujourd\'hui',
   'mi': 'mi',
   'lbs': 'lb',
+  'ft': 'pi',
+  'in': 'po',
   'time_minutes_ago_one': 'il y a {count} minute',
   'time_minutes_ago_other': 'il y a {count} minutes',
   'time_hours_ago_one': 'il y a {count} heure',

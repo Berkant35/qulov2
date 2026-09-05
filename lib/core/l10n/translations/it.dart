@@ -1172,6 +1172,8 @@ const itTranslations = <String, String>{
   'today': 'Oggi',
   'mi': 'mi',
   'lbs': 'lb',
+  'ft': 'ft',
+  'in': 'in',
   'time_minutes_ago_one': '{count} minuto fa',
   'time_minutes_ago_other': '{count} minuti fa',
   'time_hours_ago_one': '{count} ora fa',

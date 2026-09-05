@@ -1172,6 +1172,8 @@ const svTranslations = <String, String>{
   'today': 'Idag',
   'mi': 'mi',
   'lbs': 'lbs',
+  'ft': 'ft',
+  'in': 'tum',
   'time_minutes_ago_one': 'för {count} minut sedan',
   'time_minutes_ago_other': 'för {count} minuter sedan',
   'time_hours_ago_one': 'för {count} timme sedan',

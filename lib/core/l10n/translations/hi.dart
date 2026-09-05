@@ -1172,6 +1172,8 @@ const hiTranslations = <String, String>{
   'today': 'आज',
   'mi': 'मील',
   'lbs': 'पाउंड',
+  'ft': 'फ़ीट',
+  'in': 'इंच',
   'time_minutes_ago_one': '{count} मिनट पहले',
   'time_minutes_ago_other': '{count} मिनट पहले',
   'time_hours_ago_one': '{count} घंटा पहले',
