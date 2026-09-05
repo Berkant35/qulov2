@@ -7,6 +7,8 @@ import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/providers/edit_profile_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
 import 'package:qulo_v2/features/profile/mixins/edit_profile_screen_mixin.dart';
+import 'package:qulo_v2/features/profile/mixins/edit_profile_photos_mixin.dart';
+import 'package:qulo_v2/features/profile/mixins/edit_profile_labels_mixin.dart';
 import 'package:qulo_v2/features/profile/widgets/edit_profile_progress_bar.dart';
 import 'package:qulo_v2/features/profile/widgets/edit_profile_question_nudge.dart';
 import 'package:qulo_v2/features/profile/widgets/edit_profile_bio_section.dart';
@@ -27,7 +29,7 @@ class EditProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
-    with EditProfileScreenMixin {
+    with EditProfileScreenMixin, EditProfilePhotosMixin, EditProfileLabelsMixin {
   @override
   void initState() {
     super.initState();
