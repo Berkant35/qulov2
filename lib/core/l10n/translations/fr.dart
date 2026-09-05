@@ -4,6 +4,8 @@ const frTranslations = <String, String>{
   'ok': 'OK',
   'cancel': 'Annuler',
   'save': 'Enregistrer',
+  'select_all': 'Tout sélectionner',
+  'reset_selection': 'Réinitialiser',
   'delete': 'Supprimer',
   'loading': 'Chargement...',
   'error': 'Erreur',

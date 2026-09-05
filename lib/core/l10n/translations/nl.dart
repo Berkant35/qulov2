@@ -4,6 +4,8 @@ const nlTranslations = <String, String>{
   'ok': 'OK',
   'cancel': 'Annuleren',
   'save': 'Opslaan',
+  'select_all': 'Alles selecteren',
+  'reset_selection': 'Resetten',
   'delete': 'Verwijderen',
   'loading': 'Laden...',
   'error': 'Fout',

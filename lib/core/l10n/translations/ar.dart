@@ -4,6 +4,8 @@ const arTranslations = <String, String>{
   'ok': 'حسناً',
   'cancel': 'إلغاء',
   'save': 'حفظ',
+  'select_all': 'تحديد الكل',
+  'reset_selection': 'إعادة تعيين',
   'delete': 'حذف',
   'loading': 'جاري التحميل...',
   'error': 'خطأ',

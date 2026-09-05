@@ -4,6 +4,8 @@ const koTranslations = <String, String>{
   'ok': '확인',
   'cancel': '취소',
   'save': '저장',
+  'select_all': '모두 선택',
+  'reset_selection': '초기화',
   'delete': '삭제',
   'loading': '로딩 중...',
   'error': '오류',

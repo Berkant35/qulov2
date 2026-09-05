@@ -84,6 +84,26 @@ mixin OnboardingScreenMixin on ConsumerState<OnboardingScreen>,
     });
   }
 
+  /// Desteklenen 16 dilin tumunu sirasiyla secer ("select all" aksiyonu).
+  void selectAllLanguages() {
+    setState(() {
+      selectedLanguages = List.of(AppConstants.supportedQuestionLocales);
+    });
+  }
+
+  /// Secimi tek dile sifirlar — initMixin'deki ile ayni kural (app dili
+  /// destekleniyorsa o, degilse 'tr').
+  void resetLanguages() {
+    final appLocale = Localizations.localeOf(context).languageCode;
+    setState(() {
+      selectedLanguages = [
+        AppConstants.supportedQuestionLocales.contains(appLocale)
+            ? appLocale
+            : 'tr',
+      ];
+    });
+  }
+
   void onNext() {
     if (currentPage < _totalPages - 1) {
       pageController.nextPage(
@@ -132,4 +152,8 @@ mixin OnboardingScreenMixin on ConsumerState<OnboardingScreen>,
 
   bool get isLastPage => currentPage == _totalPages - 1;
   int get totalPages => _totalPages;
+
+  /// 16 dilin tumu secili mi — "select all" / "reset" buton etiketini belirler.
+  bool get allLanguagesSelected =>
+      selectedLanguages.length == AppConstants.supportedQuestionLocales.length;
 }

@@ -4,6 +4,8 @@ const hiTranslations = <String, String>{
   'ok': 'ठीक है',
   'cancel': 'रद्द करें',
   'save': 'सेव करें',
+  'select_all': 'सभी चुनें',
+  'reset_selection': 'रीसेट करें',
   'delete': 'हटाएं',
   'loading': 'लोड हो रहा है...',
   'error': 'त्रुटि',

@@ -5,15 +5,24 @@ import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/widgets/app_button.dart';
 
 class OnboardingLanguagePage extends StatelessWidget {
   final List<String> selectedLanguages;
   final ValueChanged<String> onToggle;
+  final bool allSelected;
+  final VoidCallback? onSelectAll;
+  final VoidCallback? onReset;
 
+  /// onSelectAll/onReset opsiyonel — cagiran taraf henuz wire etmediyse
+  /// buton disabled gorunur, crash olmaz.
   const OnboardingLanguagePage({
     super.key,
     required this.selectedLanguages,
     required this.onToggle,
+    this.allSelected = false,
+    this.onSelectAll,
+    this.onReset,
   });
 
   @override
@@ -32,13 +41,26 @@ class OnboardingLanguagePage extends StatelessWidget {
             child: Lottie.asset(AppAssets.lottieLocation),
           ),
           const SizedBox(height: AppSpacing.xl),
-          Text(
-            context.tr('onboarding_v2_page5_title'),
-            style: textTheme.headlineSmall?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.center,
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  context.tr('onboarding_v2_page5_title'),
+                  style: textTheme.headlineSmall?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              AppButton(
+                label: allSelected
+                    ? context.tr('reset_selection')
+                    : context.tr('select_all'),
+                variant: AppButtonVariant.text,
+                fullWidth: false,
+                onPressed: allSelected ? onReset : onSelectAll,
+              ),
+            ],
           ),
           const SizedBox(height: AppSpacing.xl),
           Wrap(

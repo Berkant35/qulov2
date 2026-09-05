@@ -4,6 +4,8 @@ const zhTranslations = <String, String>{
   'ok': '好的',
   'cancel': '取消',
   'save': '保存',
+  'select_all': '全选',
+  'reset_selection': '重置',
   'delete': '删除',
   'loading': '加载中...',
   'error': '错误',

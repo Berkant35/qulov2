@@ -4,6 +4,8 @@ const itTranslations = <String, String>{
   'ok': 'OK',
   'cancel': 'Annulla',
   'save': 'Salva',
+  'select_all': 'Seleziona tutto',
+  'reset_selection': 'Reimposta',
   'delete': 'Elimina',
   'loading': 'Caricamento...',
   'error': 'Errore',

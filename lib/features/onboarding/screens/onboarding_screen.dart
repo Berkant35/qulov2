@@ -96,6 +96,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                         OnboardingLanguagePage(
                           selectedLanguages: selectedLanguages,
                           onToggle: onLanguageToggle,
+                          allSelected: allLanguagesSelected,
+                          onSelectAll: selectAllLanguages,
+                          onReset: resetLanguages,
                         ),
                       ],
                     ),

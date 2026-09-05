@@ -4,6 +4,8 @@ const svTranslations = <String, String>{
   'ok': 'OK',
   'cancel': 'Avbryt',
   'save': 'Spara',
+  'select_all': 'Välj alla',
+  'reset_selection': 'Återställ',
   'delete': 'Ta bort',
   'loading': 'Laddar...',
   'error': 'Fel',

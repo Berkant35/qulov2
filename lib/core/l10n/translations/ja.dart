@@ -4,6 +4,8 @@ const jaTranslations = <String, String>{
   'ok': 'OK',
   'cancel': 'キャンセル',
   'save': '保存',
+  'select_all': 'すべて選択',
+  'reset_selection': 'リセット',
   'delete': '削除',
   'loading': '読み込み中...',
   'error': 'エラー',

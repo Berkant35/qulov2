@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/widgets/app_button.dart';
 import 'package:qulo_v2/core/widgets/profile_section_card.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/providers/edit_profile_provider.dart';
+import 'package:qulo_v2/providers/locale_provider.dart';
 
 class EditProfilePreferencesSection extends ConsumerWidget {
   final String completionText;
@@ -99,7 +101,7 @@ class EditProfilePreferencesSection extends ConsumerWidget {
 
           // Distance slider
           Text(
-            '${context.tr('distance')}: ${context.fmt.radius(epState.distanceKm)}',
+            '${context.tr('distance_range')}: ${context.fmt.radius(epState.distanceKm)}',
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),
@@ -119,11 +121,32 @@ class EditProfilePreferencesSection extends ConsumerWidget {
           const SizedBox(height: AppSpacing.lg),
 
           // Language preference
-          Text(
-            context.tr('language_preference'),
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  context.tr('language_preference'),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
+              AppButton(
+                label: epState.allLanguagesSelected
+                    ? context.tr('reset_selection')
+                    : context.tr('select_all'),
+                variant: AppButtonVariant.text,
+                fullWidth: false,
+                onPressed: () {
+                  final notifier = ref.read(editProfileProvider.notifier);
+                  if (epState.allLanguagesSelected) {
+                    notifier.resetLanguages(ref.read(localeProvider).languageCode);
+                  } else {
+                    notifier.selectAllLanguages();
+                  }
+                },
+              ),
+            ],
           ),
           const SizedBox(height: AppSpacing.sm),
           Wrap(
@@ -158,9 +181,9 @@ class EditProfilePreferencesSection extends ConsumerWidget {
       case 'WOMAN':
         return context.tr('female');
       case 'BOTH':
-        return context.tr('all');
+        return context.tr('both');
       default:
-        return context.tr('all');
+        return context.tr('both');
     }
   }
 }

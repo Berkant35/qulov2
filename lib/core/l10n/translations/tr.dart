@@ -4,6 +4,8 @@ const trTranslations = <String, String>{
   'ok': 'Tamam',
   'cancel': 'İptal',
   'save': 'Kaydet',
+  'select_all': 'Tümünü seç',
+  'reset_selection': 'Sıfırla',
   'delete': 'Sil',
   'loading': 'Yükleniyor...',
   'error': 'Hata',

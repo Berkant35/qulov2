@@ -4,6 +4,8 @@ const esTranslations = <String, String>{
   'ok': 'OK',
   'cancel': 'Cancelar',
   'save': 'Guardar',
+  'select_all': 'Seleccionar todo',
+  'reset_selection': 'Restablecer',
   'delete': 'Eliminar',
   'loading': 'Cargando...',
   'error': 'Error',

@@ -4,6 +4,8 @@ const enTranslations = <String, String>{
   'ok': 'OK',
   'cancel': 'Cancel',
   'save': 'Save',
+  'select_all': 'Select all',
+  'reset_selection': 'Reset',
   'delete': 'Delete',
   'loading': 'Loading...',
   'error': 'Error',

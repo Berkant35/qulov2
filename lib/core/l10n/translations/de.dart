@@ -4,6 +4,8 @@ const deTranslations = <String, String>{
   'ok': 'OK',
   'cancel': 'Abbrechen',
   'save': 'Speichern',
+  'select_all': 'Alle auswählen',
+  'reset_selection': 'Zurücksetzen',
   'delete': 'Löschen',
   'loading': 'Laden...',
   'error': 'Fehler',

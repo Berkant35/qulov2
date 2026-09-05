@@ -4,6 +4,8 @@ const ruTranslations = <String, String>{
   'ok': 'ОК',
   'cancel': 'Отмена',
   'save': 'Сохранить',
+  'select_all': 'Выбрать все',
+  'reset_selection': 'Сбросить',
   'delete': 'Удалить',
   'loading': 'Загрузка...',
   'error': 'Ошибка',

@@ -4,6 +4,8 @@ const ptTranslations = <String, String>{
   'ok': 'OK',
   'cancel': 'Cancelar',
   'save': 'Salvar',
+  'select_all': 'Selecionar tudo',
+  'reset_selection': 'Redefinir',
   'delete': 'Excluir',
   'loading': 'Carregando...',
   'error': 'Erro',

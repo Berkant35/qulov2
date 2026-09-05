@@ -4,6 +4,8 @@ const plTranslations = <String, String>{
   'ok': 'OK',
   'cancel': 'Anuluj',
   'save': 'Zapisz',
+  'select_all': 'Zaznacz wszystko',
+  'reset_selection': 'Resetuj',
   'delete': 'Usu\u0144',
   'loading': '\u0141adowanie...',
   'error': 'B\u0142\u0105d',

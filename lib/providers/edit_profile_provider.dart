@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
 
 class EditProfileState {
@@ -59,6 +60,10 @@ class EditProfileState {
       selectedLanguages: selectedLanguages ?? this.selectedLanguages,
     );
   }
+
+  /// 16 dilin tumu secili mi — "select all" / "reset" buton etiketini belirler.
+  bool get allLanguagesSelected =>
+      selectedLanguages.length == AppConstants.supportedQuestionLocales.length;
 }
 
 class EditProfileNotifier extends Notifier<EditProfileState> {
@@ -103,12 +108,21 @@ class EditProfileNotifier extends Notifier<EditProfileState> {
   void toggleLanguage(String lang) {
     final current = List<String>.from(state.selectedLanguages);
     if (current.contains(lang)) {
-      if (current.length > 1) current.remove(lang); // En az 1 dil kalmalı
+      if (current.length > 1) current.remove(lang); // En az 1 dil kalmali
     } else {
       current.add(lang);
     }
     state = state.copyWith(selectedLanguages: current);
   }
+
+  /// Desteklenen 16 dilin tumunu sirasiyla secer ("select all" aksiyonu).
+  void selectAllLanguages() => state = state.copyWith(
+        selectedLanguages: List.of(AppConstants.supportedQuestionLocales),
+      );
+
+  /// Secimi tek dile sifirlar ("reset" aksiyonu) — en az 1 dil kuralini korur.
+  void resetLanguages(String keep) =>
+      state = state.copyWith(selectedLanguages: [keep]);
 
   void refreshPhotos() {
     final user = ref.read(userProvider).valueOrNull;
