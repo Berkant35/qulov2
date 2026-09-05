@@ -48,7 +48,12 @@ mixin LoginScreenMixin
 
   void toggleObscure() => setState(() => obscure = !obscure);
 
-  void onVideoInitialized() {
+  void onVideoInitialized() => _revealForm();
+
+  /// Video yuklenemedi: form videoya takili kalmasin, hemen ac.
+  void onVideoFailed() => _revealForm();
+
+  void _revealForm() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       staggeredKey.currentState?.forward();
     });

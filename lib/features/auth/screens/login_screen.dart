@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/constants/app_assets.dart';
+import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/mixins/form_mixin.dart';
 import 'package:qulo_v2/core/mixins/loading_mixin.dart';
@@ -63,6 +64,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
               assetPath: AppAssets.videoLoginBg,
               overlayOpacity: 0.75,
               onInitialized: onVideoInitialized,
+              onFailed: onVideoFailed,
             ),
 
             // 2) Gradient daireler (AppScaffold ile paylaşımlı)
@@ -86,6 +88,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                           key: formKey,
                           child: StaggeredColumn(
                             key: staggeredKey,
+                            autoForwardAfter: AppConstants.loginFormRevealFallback,
                             children: [
                               const SizedBox(height: AppSpacing.xxxl),
                               const LoginHeader(),

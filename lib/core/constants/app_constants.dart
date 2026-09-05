@@ -1,4 +1,7 @@
 abstract final class AppConstants {
+  /// Login formu arka plan videosunu en fazla bu kadar bekler; sonra kendini acar.
+  static const loginFormRevealFallback = Duration(milliseconds: 1500);
+
   static const int maxPhotos = 6;
   static const int minQuestions = 2;
   static const int maxQuestions = 6;

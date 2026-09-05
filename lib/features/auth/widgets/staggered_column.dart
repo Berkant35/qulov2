@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 /// Çocuk widget'ları staggered fade-in + slide-up animasyonuyla gösterir.
@@ -11,12 +13,17 @@ class StaggeredColumn extends StatefulWidget {
   final Duration totalDuration;
   final double slideOffset;
 
+  /// Emniyet suresi: [forward] bu sure icinde disaridan cagrilmazsa kolon
+  /// kendini acar (orn. arka plan videosu yuklenemedi/gecikti).
+  final Duration? autoForwardAfter;
+
   const StaggeredColumn({
     super.key,
     required this.children,
     this.crossAxisAlignment = CrossAxisAlignment.stretch,
     this.totalDuration = const Duration(milliseconds: 1200),
     this.slideOffset = 20.0,
+    this.autoForwardAfter,
   });
 
   @override
@@ -29,6 +36,7 @@ class StaggeredColumnState extends State<StaggeredColumn>
   late List<Animation<double>> _fadeAnimations;
   late List<Animation<Offset>> _slideAnimations;
   late Animation<double> _scaleAnimation;
+  Timer? _autoForwardTimer;
 
   @override
   void initState() {
@@ -38,6 +46,10 @@ class StaggeredColumnState extends State<StaggeredColumn>
       duration: widget.totalDuration,
     );
     _buildAnimations();
+    final fallback = widget.autoForwardAfter;
+    if (fallback != null) {
+      _autoForwardTimer = Timer(fallback, forward);
+    }
   }
 
   void _buildAnimations() {
@@ -79,13 +91,16 @@ class StaggeredColumnState extends State<StaggeredColumn>
     );
   }
 
-  /// Dışarıdan animasyonu başlatmak için.
+  /// Dışarıdan animasyonu başlatmak için (tekrar cagrilmasi zararsiz).
   void forward() {
+    _autoForwardTimer?.cancel();
+    if (!mounted) return;
     _controller.forward();
   }
 
   @override
   void dispose() {
+    _autoForwardTimer?.cancel();
     _controller.dispose();
     super.dispose();
   }

@@ -12,11 +12,16 @@ class BackgroundVideo extends StatefulWidget {
   final double overlayOpacity;
   final VoidCallback? onInitialized;
 
+  /// Video yuklenemezse cagrilir; ekran icerigini videoya baglayan taraf
+  /// (login formu) bunu duyup kendini acar.
+  final VoidCallback? onFailed;
+
   const BackgroundVideo({
     super.key,
     required this.assetPath,
     this.overlayOpacity = 0.5,
     this.onInitialized,
+    this.onFailed,
   });
 
   @override
@@ -47,10 +52,13 @@ class _BackgroundVideoState extends State<BackgroundVideo> {
       });
       if (_isInitialized) {
         widget.onInitialized?.call();
+      } else {
+        widget.onFailed?.call();
       }
     } catch (e) {
-      // Video yüklenemezse siyah arka plan kalır
+      // Video yuklenemezse siyah arka plan kalir; icerik yine de acilmali
       debugPrint('[BackgroundVideo] Failed to load ${widget.assetPath}: $e');
+      if (mounted) widget.onFailed?.call();
     }
   }
 
