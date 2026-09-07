@@ -275,6 +275,10 @@ abstract class AnalyticsEvents {
   // ═══════════════════════════════════════════════════════════════════
 
   static const String paramReasonCode = 'reason_code';
+  /// Silme aninda kullanicinin gecemedigi gorunurluk kapisi sayisi (0-4).
+  /// `few_matches` diyenlerin kaci gercekten gorunmezdi sorusunu ayirir;
+  /// bu olmadan kontrol listesinin ise yarayip yaramadigi bilinemez.
+  static const String paramMissingGates = 'missing_gates';
   static const String paramMethod = 'method';
   static const String paramDurationMs = 'duration_ms';
   static const String paramErrorCode = 'error_code';

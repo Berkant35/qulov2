@@ -3,6 +3,9 @@ abstract final class AppConstants {
   static const loginFormRevealFallback = Duration(milliseconds: 1500);
 
   static const int maxPhotos = 6;
+  /// Profilin Kesfet havuzuna girmesi icin gereken en az fotograf sayisi
+  /// (sunucu: matching.service.ts adim 5.5, `photoCount >= 1`).
+  static const int minPhotos = 1;
   static const int minQuestions = 2;
   static const int maxQuestions = 6;
 

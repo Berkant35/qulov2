@@ -8,6 +8,7 @@ import 'package:qulo_v2/core/widgets/language_picker_sheet.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/features/settings/models/deletion_reason.dart';
+import 'package:qulo_v2/features/settings/models/visibility_gate.dart';
 import 'package:qulo_v2/features/settings/screens/settings_screen.dart';
 import 'package:qulo_v2/features/settings/widgets/delete_reason_sheet.dart';
 import 'package:qulo_v2/core/config/env.dart';
@@ -130,6 +131,10 @@ mixin SettingsScreenMixin on ConsumerState<SettingsScreen> {
     final reason = await nav.showAppBottomSheet<DeleteReasonResult>(
       CustomBottomSheet(
         name: 'delete_reason',
+        // Dokuz secenek + gorunurluk karti, varsayilan yukseklige (ekranin
+        // 9/16'si) sigmiyor; faktor verilmeden `isScrollControlled` da false
+        // kaliyor ve sheet buyuyemiyor.
+        maxHeightFactor: 0.85,
         builder: (_) => const DeleteReasonSheet(),
       ),
     );
@@ -148,9 +153,17 @@ mixin SettingsScreenMixin on ConsumerState<SettingsScreen> {
     if (confirm != true) return;
 
     // 3) Analytics (sadece kod — serbest metin PII, gönderilmez) + sil.
+    final user = ref.read(userProvider).valueOrNull;
     AnalyticsManager.instance.logEvent(
       AnalyticsEvents.settingsDeleteAccountReason,
-      params: {AnalyticsEvents.paramReasonCode: reason.reasonCode},
+      params: {
+        AnalyticsEvents.paramReasonCode: reason.reasonCode,
+        // Kullanici silerken profili gercekten gorunmez miydi? Kontrol
+        // listesinin etkisi ancak bu ayrimla olculebilir.
+        if (user != null)
+          AnalyticsEvents.paramMissingGates:
+              missingVisibilityGates(user).length,
+      },
     );
     final appVersion = await ref.read(appInfoManagerProvider).version;
     await userNotifier.deleteAccount(

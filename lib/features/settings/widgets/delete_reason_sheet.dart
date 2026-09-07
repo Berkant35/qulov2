@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/features/settings/models/deletion_reason.dart';
+import 'package:qulo_v2/features/settings/models/visibility_gate.dart';
+import 'package:qulo_v2/features/settings/widgets/visibility_checklist_card.dart';
+import 'package:qulo_v2/providers/user_provider.dart';
 
 /// Hesap silme öncesi neden toplama sheet'i.
 /// Tek seçim (radio) + `other` için opsiyonel serbest metin.
 /// Sonuç [DeleteReasonResult] (Hesabı Sil / Atla) veya `null` (iptal) döner.
-class DeleteReasonSheet extends StatefulWidget {
+class DeleteReasonSheet extends ConsumerStatefulWidget {
   const DeleteReasonSheet({super.key});
 
   @override
-  State<DeleteReasonSheet> createState() => _DeleteReasonSheetState();
+  ConsumerState<DeleteReasonSheet> createState() => _DeleteReasonSheetState();
 }
 
-class _DeleteReasonSheetState extends State<DeleteReasonSheet> {
+class _DeleteReasonSheetState extends ConsumerState<DeleteReasonSheet> {
   static const int _maxReasonTextLength = 280;
 
   DeletionReason? _selected;
@@ -49,6 +53,12 @@ class _DeleteReasonSheetState extends State<DeleteReasonSheet> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colors = context.appColors;
+    // Reactive wiring build'de kalir, karar mantigi model dosyasinda —
+    // boylece kural test edilebilir (visibility_gate_test.dart).
+    final user = ref.watch(userProvider).valueOrNull;
+    final gates = gatesForDeletionReason(_selected, user);
+    final showCard =
+        gates.isNotEmpty || shouldShowLanguageNote(_selected, user);
 
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.pagePadding),
@@ -103,6 +113,14 @@ class _DeleteReasonSheetState extends State<DeleteReasonSheet> {
               ),
             ),
           ),
+          // Kart kaydirma alaninin DISINDA: sheet `maxHeightFactor` almadigi
+          // icin Flutter yuksekligi ekranin %56'siyla sinirliyor ve dokuz
+          // secenek o alani zaten tasiriyor. Liste icinde olsaydi kart, onu
+          // gormesi gereken kullanicinin cok asagisinda kalirdi.
+          if (showCard) ...[
+            const SizedBox(height: AppSpacing.sm),
+            VisibilityChecklistCard(gates: gates),
+          ],
           const SizedBox(height: AppSpacing.md),
           FilledButton(
             onPressed: _selected == null ? null : _onDelete,

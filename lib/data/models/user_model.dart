@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:qulo_v2/core/constants/app_constants.dart';
 
 import 'package:qulo_v2/data/models/discover_model.dart';
 import 'package:qulo_v2/data/models/public_profile_model.dart';
@@ -144,9 +145,13 @@ class UserModel extends Equatable {
     return UserModel.fromJson(json..['purple_diamonds'] = purple);
   }
 
+  /// Esikler `AppConstants`'tan geliyor: ayni sunucu kurali
+  /// (`matching.service.ts` adim 5.5) `missingVisibilityGates` icinde de
+  /// ifade ediliyor ve iki yerde ayri sabit tutmak, sunucu esigi degistiginde
+  /// birinin sessizce bayatlamasi demekti.
   bool get setupComplete =>
-      (photos?.isNotEmpty ?? false) &&
-      questionCount >= 2 &&
+      (photos?.length ?? 0) >= AppConstants.minPhotos &&
+      questionCount >= AppConstants.minQuestions &&
       genderPrefSetAt != null;
 
   @override
