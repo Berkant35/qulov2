@@ -5,7 +5,7 @@ import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/data/models/diamond_model.dart';
-import 'package:qulo_v2/features/diamonds/widgets/purchase_grid.dart';
+import 'package:qulo_v2/features/diamonds/models/diamond_tier.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
 import 'package:qulo_v2/providers/daily_stats_provider.dart';
 import 'package:qulo_v2/providers/referral_provider.dart';

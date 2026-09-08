@@ -51,9 +51,33 @@ class RevenueCatService {
     if (!_isConfigured) throw RevenueCatNotConfiguredException();
   }
 
-  static Future<Offerings?> getOfferings() async {
-    if (!_isConfigured) return null;
-    return await Purchases.getOfferings();
+  /// productId → magazanin yerel fiyat metni.
+  ///
+  /// Fiyat, satin almanin kullandigi AYNI cagriyla (`Purchases.getProducts`)
+  /// okunur. Onceden `getOfferings()` kullaniliyordu; offering panelden
+  /// yapilandirilir ve elmas urunleri hicbir offering'e ekli olmadigi icin
+  /// fiyatlar hic gelmiyordu — satin alma calisirken kartlar sonsuz iskelet
+  /// gosteriyordu. Ayni kaynagi kullanmak bu asimetriyi yapisal olarak kapatir:
+  /// satin alinabilen her urunun fiyati da gorunur.
+  static Future<Map<String, String>> getPrices(Iterable<String> productIds) async {
+    if (!_isConfigured) return const {};
+    final groups = partitionProductIds(productIds);
+    final lists = await Future.wait([
+      if (groups.subscriptions.isNotEmpty)
+        Purchases.getProducts(
+          groups.subscriptions,
+          productCategory: ProductCategory.subscription,
+        ),
+      if (groups.consumables.isNotEmpty)
+        Purchases.getProducts(
+          groups.consumables,
+          productCategory: ProductCategory.nonSubscription,
+        ),
+    ]);
+    return {
+      for (final list in lists)
+        for (final product in list) product.identifier: product.priceString,
+    };
   }
 
   static Future<CustomerInfo> purchasePackage(Package package) async {
@@ -81,12 +105,23 @@ class RevenueCatService {
 
   static const plusProductId = 'quloplusmonthly2';
   static const premiumProductId = 'qulopremiummonthly2';
-  static const _subscriptionIds = {plusProductId, premiumProductId};
+  static const subscriptionProductIds = {plusProductId, premiumProductId};
+
+  /// `getProducts` kategori istedigi icin kimlikleri ikiye ayirir.
+  static ({List<String> subscriptions, List<String> consumables})
+      partitionProductIds(Iterable<String> productIds) {
+    final subscriptions = <String>[];
+    final consumables = <String>[];
+    for (final id in productIds) {
+      (subscriptionProductIds.contains(id) ? subscriptions : consumables).add(id);
+    }
+    return (subscriptions: subscriptions, consumables: consumables);
+  }
 
   static Future<CustomerInfo> purchaseByProductId(String productId) async {
     _ensureConfigured();
     try {
-      final category = _subscriptionIds.contains(productId)
+      final category = subscriptionProductIds.contains(productId)
           ? ProductCategory.subscription
           : ProductCategory.nonSubscription;
       final products = await Purchases.getProducts(

@@ -6,34 +6,9 @@ import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/diamond_icon.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/features/diamonds/models/diamond_tier.dart';
+import 'package:qulo_v2/features/diamonds/utils/monthly_price_label.dart';
 import 'package:qulo_v2/providers/store_prices_provider.dart';
-
-enum DiamondTier {
-  starter(amount: 50, diamondCount: 1, productId: 'qulopurple50'),
-  popular(amount: 150, diamondCount: 2, productId: 'qulopurple150'),
-  bestValue(amount: 400, diamondCount: 3, productId: 'qulopurple400'),
-  mega(amount: 1000, diamondCount: 4, productId: 'qulopurple1000'),
-  ultra(amount: 2500, diamondCount: 5, productId: 'qulopurple2500'),
-  vip(amount: 6000, diamondCount: 6, productId: 'qulopurple6000');
-
-  final int amount;
-  final int diamondCount;
-  final String productId;
-
-  const DiamondTier({
-    required this.amount,
-    required this.diamondCount,
-    required this.productId,
-  });
-}
-
-class PurchasePackage {
-  final DiamondTier tier;
-
-  const PurchasePackage({required this.tier});
-
-  int get amount => tier.amount;
-}
 
 class PurchaseGrid extends ConsumerWidget {
   final ValueChanged<PurchasePackage>? onPurchase;
@@ -43,7 +18,11 @@ class PurchaseGrid extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final prices = ref.watch(storePricesProvider).valueOrNull ?? const <String, String>{};
+    final pricesAsync = ref.watch(storePricesProvider);
+    final prices = pricesAsync.valueOrNull ?? const <String, String>{};
+    // Yukleme bittigi halde fiyat yoksa kart sonsuza kadar spinner gostermemeli:
+    // magaza urunu dondurmediginde iskelet degil `—` gosterilir.
+    final pricesSettled = !pricesAsync.isLoading;
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -64,6 +43,7 @@ class PurchaseGrid extends ConsumerWidget {
             child: _PackageCard(
               tier: tier,
               price: prices[tier.productId],
+              pricesSettled: pricesSettled,
               isBestValue: isBestValue,
               onTap: () => onPurchase?.call(PurchasePackage(tier: tier)),
             ),
@@ -77,12 +57,14 @@ class PurchaseGrid extends ConsumerWidget {
 class _PackageCard extends StatelessWidget {
   final DiamondTier tier;
   final String? price;
+  final bool pricesSettled;
   final bool isBestValue;
   final VoidCallback onTap;
 
   const _PackageCard({
     required this.tier,
     required this.price,
+    required this.pricesSettled,
     required this.isBestValue,
     required this.onTap,
   });
@@ -129,6 +111,14 @@ class _PackageCard extends StatelessWidget {
                         price,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: context.appColors.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      )
+                    else if (pricesSettled)
+                      Text(
+                        unknownPriceLabel,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
                           fontWeight: FontWeight.w600,
                         ),
                       )

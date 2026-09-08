@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:qulo_v2/core/l10n/app_localizations.dart';
 import 'package:qulo_v2/core/theme/app_theme.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
+import 'package:qulo_v2/features/diamonds/models/diamond_tier.dart';
+import 'package:qulo_v2/features/diamonds/utils/monthly_price_label.dart';
 import 'package:qulo_v2/features/diamonds/widgets/purchase_grid.dart';
 import 'package:qulo_v2/providers/store_prices_provider.dart';
 
@@ -31,10 +35,57 @@ void main() {
     expect(find.text('\$0.99'), findsNothing);
   });
 
-  testWidgets('fiyat yoksa iskelet', (tester) async {
+  // ESKI TEST BAYATTI (2026-09-08): "fiyat yoksa iskelet" adiyla, magaza fiyat
+  // dondurmedigi halde SONSUZA KADAR iskelet gostermeyi dogru davranis sayiyordu.
+  // Sahada tam olarak bu yasandi: alti kart kalici spinner. Yukleme SURERKEN
+  // iskelet dogru; yukleme BITTIGI halde fiyat yoksa kart bunu soylemeli.
+  testWidgets('yukleme surerken iskelet gosterilir', (tester) async {
+    final never = Completer<Map<String, String>>();
+    addTearDown(() => never.complete(const {}));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          storePricesLoaderProvider.overrideWithValue(() => never.future),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.dark,
+          localizationsDelegates: const [AppLocalizationsDelegate()],
+          supportedLocales: const [Locale('en')],
+          locale: const Locale('en'),
+          home: const Scaffold(
+            body: SingleChildScrollView(child: PurchaseGrid()),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(find.byType(AppLoadingWidget), findsWidgets);
+    expect(find.text(unknownPriceLabel), findsNothing);
+  });
+
+  testWidgets('yukleme bitti ama fiyat yok: sonsuz iskelet degil, bilinmiyor etiketi',
+      (tester) async {
     await tester.pumpWidget(_wrap(const PurchaseGrid(), prices: const {}));
     await tester.pump();
     await tester.pump();
-    expect(find.byType(AppLoadingWidget), findsWidgets);
+
+    expect(find.byType(AppLoadingWidget), findsNothing);
+    expect(find.text(unknownPriceLabel), findsNWidgets(DiamondTier.values.length));
+  });
+
+  testWidgets('bir urunun fiyati gelmezse sadece o kart etkilenir', (tester) async {
+    await tester.pumpWidget(
+      _wrap(const PurchaseGrid(), prices: {'qulopurple50': '₺39,99'}),
+    );
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.text('₺39,99'), findsOneWidget);
+    expect(
+      find.text(unknownPriceLabel),
+      findsNWidgets(DiamondTier.values.length - 1),
+    );
   });
 }

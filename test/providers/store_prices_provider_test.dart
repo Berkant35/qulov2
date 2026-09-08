@@ -1,9 +1,41 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:qulo_v2/core/services/revenuecat_service.dart';
 import 'package:qulo_v2/providers/store_prices_provider.dart';
 
 /// Fiyat koda gomulu degil: magazadan gelir; magaza yoksa bos map (asla USD literal).
 void main() {
+  // REGRESYON (2026-09-08): fiyatlar `getOfferings()` ile okunuyordu. RevenueCat
+  // panelinde tek offering vardi ve icinde SADECE abonelikler vardi; alti elmas
+  // urunu hicbir offering'e ekli degildi. Sonuc: elmas kartlari sonsuza kadar
+  // iskelet, Premium fiyati null oldugu icin paywall butonu KALICI disabled.
+  // Fiyat artik satin almanin kullandigi ayni urun kimlikleriyle okunuyor.
+  group('sorgulanan urun kimlikleri — magaza sozlesmesi', () {
+    test('alti elmas urununun HEPSI fiyat sorgusuna dahil', () {
+      expect(
+        purchasableProductIds,
+        containsAll([
+          'qulopurple50',
+          'qulopurple150',
+          'qulopurple400',
+          'qulopurple1000',
+          'qulopurple2500',
+          'qulopurple6000',
+        ]),
+      );
+    });
+
+    test('iki abonelik de dahil — Premium eksikse paywall butonu kilitlenir', () {
+      expect(purchasableProductIds, contains(RevenueCatService.plusProductId));
+      expect(purchasableProductIds, contains(RevenueCatService.premiumProductId));
+    });
+
+    test('satin alinabilen urun sayisi kadar kimlik sorulur, fazlasi degil', () {
+      expect(purchasableProductIds, hasLength(8));
+      expect(purchasableProductIds.toSet(), hasLength(8));
+    });
+  });
+
   test('loader sonucu productId → fiyat metni', () async {
     final c = ProviderContainer(overrides: [
       storePricesLoaderProvider.overrideWithValue(() async => {'qulopurple50': '₺39,99'}),
