@@ -56,7 +56,9 @@ server/dist/
 # Flutter generated
 .flutter-plugins
 .packages
-pubspec.lock
+# pubspec.lock DEGIL: bu bir uygulama, kutuphane degil. Lock'suz her makine ve
+# her store build'i bagimliliklari yeniden cozer; "bende calisiyordu" farklari
+# ve yeniden uretilemeyen surumler oradan cikiyor.
 
 # iOS
 ios/Pods/
