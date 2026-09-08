@@ -16,22 +16,22 @@
 	<string>6.0</string>
 	<key>CFBundleLocalizations</key>
 	<array>
-		<string>ar
-de
-en
-es
-fr
-hi
-it
-ja
-ko
-nl
-pl
-pt
-ru
-sv
-tr
-zh</string>
+		<string>ar</string>
+		<string>de</string>
+		<string>en</string>
+		<string>es</string>
+		<string>fr</string>
+		<string>hi</string>
+		<string>it</string>
+		<string>ja</string>
+		<string>ko</string>
+		<string>nl</string>
+		<string>pl</string>
+		<string>pt</string>
+		<string>ru</string>
+		<string>sv</string>
+		<string>tr</string>
+		<string>zh</string>
 	</array>
 	<key>CFBundleName</key>
 	<string>Qulo</string>
