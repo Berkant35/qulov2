@@ -1,7 +1,6 @@
 import 'dart:developer' as dev;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/services/revenuecat_service.dart';
 import 'package:qulo_v2/data/models/diamond_model.dart';
@@ -39,22 +38,6 @@ class DiamondNotifier extends AsyncNotifier<DiamondBalance> {
       await fetchBalance();
     }
     return result;
-  }
-
-  Future<bool> purchaseConsumable(Package package) async {
-    if (!RevenueCatService.isConfigured) {
-      dev.log('RevenueCat not configured — cannot purchase');
-      return false;
-    }
-    try {
-      await RevenueCatService.purchasePackage(package);
-      await _notifyBackend(package.storeProduct.identifier);
-      await fetchBalance();
-      return true;
-    } catch (e) {
-      dev.log('purchaseConsumable error: $e');
-      return false;
-    }
   }
 
   Future<bool> purchaseByProductId(String productId) async {
