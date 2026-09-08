@@ -1,0 +1,3 @@
+• "Neden eşleşmiyorum?" sorusunun cevabı artık Ayarlar'da: profilinin keşfette görünüp görünmediğini, görünmüyorsa hangi adımın eksik olduğunu tek kartta gösteriyoruz
+• Sorularının hangi dilde yazıldığını da görüyorsun; eşleşmeler aynı dilde soru yazan kişiler arasında oluyor
+• Hata düzeltmeleri ve küçük iyileştirmeler

@@ -1,0 +1,3 @@
+• "Why am I not matching?" now has an answer in Settings: one card shows whether your profile appears in Discover, and which step is missing if it doesn't
+• You can also see which languages your questions are written in — matches happen between people who write in the same language
+• Bug fixes and small improvements

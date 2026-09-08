@@ -1,0 +1,3 @@
+• "Warum matche ich nicht?" wird jetzt in den Einstellungen beantwortet: Eine Karte zeigt, ob dein Profil in Entdecken erscheint und welcher Schritt fehlt, falls nicht
+• Du siehst auch, in welchen Sprachen deine Fragen geschrieben sind — Matches entstehen zwischen Menschen, die in derselben Sprache schreiben
+• Fehlerbehebungen und kleine Verbesserungen
