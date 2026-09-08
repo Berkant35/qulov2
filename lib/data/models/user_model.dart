@@ -67,6 +67,18 @@ class UserModel extends Equatable {
   final List<String> badgeRewardsClaimed;
   @JsonKey(name: 'question_count', defaultValue: 0)
   final int questionCount;
+
+  /// Sorularin dil dagilimi, ornegin `{ 'tr': 3, 'en': 1 }`.
+  ///
+  /// BILGI, teshis DEGIL. Bundan "kimseye gorunmuyorsun" cikarilamaz: sunucu
+  /// dil basina degil, izleyicinin okudugu dillerdeki sorularin TOPLAMINI
+  /// sayiyor (matching.service.ts:242). Izleyici tr+en okuyorsa {tr:1, en:1}
+  /// olan profil filtreyi gecer.
+  ///
+  /// `null` = sunucu bu bilgiyi vermedi (eski surum ya da sorgu hatasi) —
+  /// o durumda gosterilecek bir sey yok, bos harita ile karistirma.
+  @JsonKey(name: 'question_locales')
+  final Map<String, int>? questionLocales;
   @JsonKey(name: 'relationship_goal')
   final String? relationshipGoal;
   @JsonKey(name: 'preferred_languages', defaultValue: [])
@@ -120,6 +132,7 @@ class UserModel extends Equatable {
     this.createdAt,
     this.badgeRewardsClaimed = const [],
     this.questionCount = 0,
+    this.questionLocales,
     this.relationshipGoal,
     this.preferredLanguages = const [],
     this.completionRewardsClaimed = const {},
@@ -160,7 +173,7 @@ class UserModel extends Equatable {
     matchRadiusKm, agePrefMin, agePrefMax, city, country, locale,
     lat, lng, photos, profileCompletion, greenDiamonds, purpleDiamonds,
     isOnline, lastSeenAt, emailVerified, passportCity, boostUntil,
-    likeReceivedCount, timesShownCount, badgeRewardsClaimed, questionCount,
+    likeReceivedCount, timesShownCount, badgeRewardsClaimed, questionCount, questionLocales,
     relationshipGoal, preferredLanguages, completionRewardsClaimed, strictLanguageMode, referralCode,
     acquisitionAnswered,
     interests,

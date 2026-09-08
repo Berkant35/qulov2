@@ -119,7 +119,10 @@ class _DeleteReasonSheetState extends ConsumerState<DeleteReasonSheet> {
           // gormesi gereken kullanicinin cok asagisinda kalirdi.
           if (showCard) ...[
             const SizedBox(height: AppSpacing.sm),
-            VisibilityChecklistCard(gates: gates),
+            VisibilityChecklistCard(
+              gates: gates,
+              questionLocales: user?.questionLocales,
+            ),
           ],
           const SizedBox(height: AppSpacing.md),
           FilledButton(

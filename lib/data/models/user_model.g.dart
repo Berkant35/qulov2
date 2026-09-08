@@ -47,6 +47,9 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
           .toList() ??
       const [],
   questionCount: (json['question_count'] as num?)?.toInt() ?? 0,
+  questionLocales: (json['question_locales'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, (e as num).toInt()),
+  ),
   relationshipGoal: json['relationship_goal'] as String?,
   preferredLanguages:
       (json['preferred_languages'] as List<dynamic>?)
@@ -103,6 +106,7 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
   'created_at': instance.createdAt,
   'badge_rewards_claimed': instance.badgeRewardsClaimed,
   'question_count': instance.questionCount,
+  'question_locales': instance.questionLocales,
   'relationship_goal': instance.relationshipGoal,
   'preferred_languages': instance.preferredLanguages,
   'completion_rewards_claimed': instance.completionRewardsClaimed,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/features/settings/mixins/visibility_checklist_card_mixin.dart';
 import 'package:qulo_v2/features/settings/models/visibility_gate.dart';
 
 /// "Eşleşme yok" diyen kullanıcıya, silmeden önce profilinin durumunu gösteren
@@ -14,12 +15,26 @@ import 'package:qulo_v2/features/settings/models/visibility_gate.dart';
 ///
 /// TASARIM SINIRI: bu bir tutma ekranı değil. Silme butonu her zaman erişilebilir
 /// kalır, kart hiçbir şeyi engellemez, geri sayım ya da suçluluk metni içermez.
-class VisibilityChecklistCard extends StatelessWidget {
-  const VisibilityChecklistCard({super.key, required this.gates});
+class VisibilityChecklistCard extends StatelessWidget
+    with VisibilityChecklistCardMixin {
+  const VisibilityChecklistCard({
+    super.key,
+    required this.gates,
+    this.questionLocales,
+  });
 
   /// Kullanıcının geçemediği kapılar. Boş liste, "profil görünür" hâlidir ve
   /// kartı dil notu moduna alır.
   final List<VisibilityGate> gates;
+
+  /// Soruların dil dağılımı (`{ 'tr': 3, 'en': 1 }`), dil notunun altında
+  /// bayrak + sayı olarak gösterilir. Soyut bir kuralı kullanıcının kendi
+  /// sayılarına bağlar: "yerel dilde soru ekle" tavsiyesi ancak kaç sorusunun
+  /// hangi dilde olduğunu görünce somutlaşıyor.
+  ///
+  /// `null` ise (eski sunucu ya da sorgu hatası) satır hiç çizilmez — uydurma
+  /// bir "0 soru" göstermektense hiçbir şey göstermemek doğru.
+  final Map<String, int>? questionLocales;
 
   @override
   Widget build(BuildContext context) {
@@ -81,13 +96,24 @@ class VisibilityChecklistCard extends StatelessWidget {
                 ),
               ),
             ),
-          ] else
+          ] else ...[
             Text(
               context.tr('visibility_language_note'),
               style: theme.textTheme.bodySmall?.copyWith(
                 color: colors.textSecondary,
               ),
             ),
+            if (questionLocaleSummary(questionLocales) case final summary?) ...[
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                summary,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: colors.textPrimary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ],
         ],
       ),
     );
