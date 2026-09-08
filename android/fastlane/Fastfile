@@ -98,6 +98,30 @@ platform :android do
     UI.important("Yayina almak icin Play Console > Uretim > 'Surumu incele' > 'Kullanima sunmayi baslat'.")
   end
 
+  desc "internal'daki build'i production'a DOGRUDAN CANLI cikar (geri alinamaz)"
+  lane :promote_live do
+    ensure_key!
+    info = version_info
+    # `promote_to_production` bilerek taslak birakiyor (2026-08-01 kazasi).
+    # Bu lane ONUN YERINE GECMEZ: adi acikca canliya cikardigini soyluyor ve
+    # yalnizca kullanici "yayinla" dediginde calistirilir. Varsayilani taslak
+    # olan lane'i bozup burayi kolaylastirmak yerine ayri kapi actik.
+    UI.important("versionCode #{info[:code]} PRODUCTION'a CANLI cikiyor — geri alinamaz.")
+    upload_to_play_store(
+      track: "internal",
+      track_promote_to: "production",
+      track_promote_release_status: "completed", # <-- canli, %100
+      version_code: info[:code].to_i,
+      skip_upload_aab: true,
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      skip_upload_changelogs: true,
+    )
+    UI.success("versionCode #{info[:code]} production'da YAYINDA.")
+  end
+
   desc "Sadece release notlarini guncelle (yeni build yuklemeden)"
   lane :notes_only do
     ensure_key!
