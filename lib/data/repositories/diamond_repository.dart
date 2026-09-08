@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:dio/dio.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/network/services/diamond_service.dart';
@@ -34,7 +36,13 @@ class DiamondRepository implements IDiamondRepository {
     try {
       await _service.purchase({
         'product_id': iapProductId,
-        'platform': 'ios',
+        // Sabit 'ios' yaziliydi: Android satin alimlari da iOS olarak
+        // gonderiliyordu. Sunucu bugun bu alani okumuyor (yalnizca
+        // diamond.validator.ts'te enum dogrulamasi var), o yuzden para akisi
+        // bozulmuyordu — ama alan ileride kullanilirsa (analitik, makbuz
+        // dogrulama) Android satislari sessizce iOS gorunurdu.
+        // Kalip network_manager.dart:40 ile ayni.
+        'platform': Platform.isIOS ? 'ios' : 'android',
         if (transactionId != null) 'transaction_id': transactionId,
       });
       return const Success(null);
