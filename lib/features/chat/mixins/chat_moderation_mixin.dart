@@ -124,12 +124,24 @@ mixin ChatModerationMixin on ChatScreenMixin {
                 nav.closeOverlay();
                 final targetId = _getTargetUserId();
                 if (targetId == null) return;
-                await ref.read(reportRepositoryProvider).createReport(
+                // Sonuc KONTROL EDILIYOR: eskiden `Result` atilmiyordu, yani
+                // sikayet 400/401/429 alsa da kullanici hicbir sey gormuyordu.
+                // Moderasyon yolunda sessiz kayip; `reports` tablosunda sifir
+                // satir olmasinin sebeplerinden biri bu olabilir.
+                final result = await ref.read(reportRepositoryProvider).createReport(
                   reportedId: targetId,
                   category: category,
                   reason: reason.isNotEmpty ? reason : null,
                 );
                 controller.dispose();
+                if (!mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      result.isSuccess ? l10n.get('report_sent') : l10n.get('report_failed'),
+                    ),
+                  ),
+                );
               },
               child: Text(l10n.get('report')),
             ),

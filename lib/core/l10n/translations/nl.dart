@@ -382,6 +382,8 @@ const nlTranslations = <String, String>{
 
   'purchase_success': 'Aankoop geslaagd!',
   'purchase_failed': 'Aankoop mislukt',
+  'report_sent': 'Je melding is verzonden',
+  'report_failed': 'Melding kon niet worden verzonden, probeer het opnieuw',
   'purchase_insufficient_diamonds': 'Niet genoeg diamanten \u2014 {required} nodig, je hebt {current}',
   'purchase_get_diamonds': 'Diamanten kopen',
 

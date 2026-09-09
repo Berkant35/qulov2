@@ -389,6 +389,8 @@ const enTranslations = <String, String>{
 
   'purchase_success': 'Purchase successful!',
   'purchase_failed': 'Purchase failed',
+  'report_sent': 'Your report was sent',
+  'report_failed': 'Report could not be sent, please try again',
   'purchase_insufficient_diamonds': 'Not enough diamonds \u2014 {required} needed, you have {current}',
   'purchase_get_diamonds': 'Get Diamonds',
 

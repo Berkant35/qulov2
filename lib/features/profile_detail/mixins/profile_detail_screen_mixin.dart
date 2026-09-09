@@ -194,12 +194,27 @@ mixin ProfileDetailScreenMixin on ConsumerState<ProfileDetailScreen> {
                   AnalyticsEvents.profileDetailReport,
                   params: {AnalyticsEvents.paramTargetUserId: widget.userId},
                 );
-                await ref.read(reportRepositoryProvider).createReport(
+                // Metinler await ONCESI aliniyor: dialog context'i async gap'ten
+                // sonra kullanilamaz (`use_build_context_synchronously`) ve
+                // buradaki `mounted` State'e ait, `ctx`'e degil.
+                final sentText = ctx.tr('report_sent');
+                final failedText = ctx.tr('report_failed');
+                // Sonuc KONTROL EDILIYOR — bkz. chat_moderation_mixin'deki
+                // ayni duzeltme: sessiz basarisizlik moderasyon yolunu korduyordu.
+                final result = await ref.read(reportRepositoryProvider).createReport(
                   reportedId: widget.userId,
                   category: category,
                   reason: reason.isNotEmpty ? reason : null,
                 );
                 controller.dispose();
+                if (!mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      result.isSuccess ? sentText : failedText,
+                    ),
+                  ),
+                );
               },
               child: Text(ctx.tr('report')),
             ),

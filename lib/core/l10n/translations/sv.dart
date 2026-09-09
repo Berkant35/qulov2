@@ -384,6 +384,8 @@ const svTranslations = <String, String>{
 
   'purchase_success': 'Köp genomfört!',
   'purchase_failed': 'Köp misslyckat',
+  'report_sent': 'Din anmälan har skickats',
+  'report_failed': 'Anmälan kunde inte skickas, försök igen',
   'purchase_insufficient_diamonds': 'Inte tillräckligt med diamanter \u2014 {required} behövs, du har {current}',
   'purchase_get_diamonds': 'Skaffa diamanter',
 

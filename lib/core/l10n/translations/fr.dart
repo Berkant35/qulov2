@@ -384,6 +384,8 @@ const frTranslations = <String, String>{
 
   'purchase_success': 'Achat réussi !',
   'purchase_failed': 'Achat échoué',
+  'report_sent': 'Ton signalement a été envoyé',
+  'report_failed': 'Le signalement n\'a pas pu être envoyé, réessaie',
   'purchase_insufficient_diamonds': 'Pas assez de diamants \u2014 {required} nécessaires, tu en as {current}',
   'purchase_get_diamonds': 'Obtenir des diamants',
 

@@ -384,6 +384,8 @@ const esTranslations = <String, String>{
 
   'purchase_success': '¡Compra exitosa!',
   'purchase_failed': 'Compra fallida',
+  'report_sent': 'Tu reporte fue enviado',
+  'report_failed': 'No se pudo enviar el reporte, inténtalo de nuevo',
   'purchase_insufficient_diamonds': 'No hay suficientes diamantes \u2014 se necesitan {required}, tienes {current}',
   'purchase_get_diamonds': 'Obtener diamantes',
 

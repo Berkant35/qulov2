@@ -384,6 +384,8 @@ const hiTranslations = <String, String>{
 
   'purchase_success': 'खरीदारी सफल!',
   'purchase_failed': 'खरीदारी विफल',
+  'report_sent': 'आपकी शिकायत भेज दी गई',
+  'report_failed': 'शिकायत नहीं भेजी जा सकी, दोबारा कोशिश करें',
   'purchase_insufficient_diamonds': 'पर्याप्त हीरे नहीं \u2014 {required} चाहिए, आपके पास {current} हैं',
   'purchase_get_diamonds': 'हीरे लें',
 

@@ -382,6 +382,8 @@ const ruTranslations = <String, String>{
 
   'purchase_success': 'Покупка успешна!',
   'purchase_failed': 'Покупка не удалась',
+  'report_sent': 'Жалоба отправлена',
+  'report_failed': 'Не удалось отправить жалобу, попробуйте снова',
   'purchase_insufficient_diamonds': 'Недостаточно алмазов \u2014 нужно {required}, у вас {current}',
   'purchase_get_diamonds': 'Получить алмазы',
 

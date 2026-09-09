@@ -382,6 +382,8 @@ const arTranslations = <String, String>{
 
   'purchase_success': 'تم الشراء بنجاح!',
   'purchase_failed': 'فشل الشراء',
+  'report_sent': 'تم إرسال بلاغك',
+  'report_failed': 'تعذّر إرسال البلاغ، حاول مرة أخرى',
   'purchase_insufficient_diamonds': 'ماسات غير كافية \u2014 مطلوب {required}، لديك {current}',
   'purchase_get_diamonds': 'احصل على ماسات',
 

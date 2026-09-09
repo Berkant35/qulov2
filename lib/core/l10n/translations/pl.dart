@@ -382,6 +382,8 @@ const plTranslations = <String, String>{
 
   'purchase_success': 'Zakup udany!',
   'purchase_failed': 'Zakup nie powi\u00f3d\u0142 si\u0119',
+  'report_sent': 'Twoje zgłoszenie zostało wysłane',
+  'report_failed': 'Nie udało się wysłać zgłoszenia, spróbuj ponownie',
   'purchase_insufficient_diamonds': 'Za ma\u0142o diament\u00f3w \u2014 potrzeba {required}, masz {current}',
   'purchase_get_diamonds': 'Zdobywaj diamenty',
 

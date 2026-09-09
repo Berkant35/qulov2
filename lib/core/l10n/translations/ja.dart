@@ -384,6 +384,8 @@ const jaTranslations = <String, String>{
 
   'purchase_success': '購入が完了しました！',
   'purchase_failed': '購入に失敗しました',
+  'report_sent': '報告を送信しました',
+  'report_failed': '報告を送信できませんでした。もう一度お試しください',
   'purchase_insufficient_diamonds': 'ダイヤが足りません \u2014 {required}個必要、現在{current}個',
   'purchase_get_diamonds': 'ダイヤを入手',
 

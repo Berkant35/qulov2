@@ -382,6 +382,8 @@ const zhTranslations = <String, String>{
 
   'purchase_success': '购买成功！',
   'purchase_failed': '购买失败',
+  'report_sent': '举报已提交',
+  'report_failed': '举报发送失败，请重试',
   'purchase_insufficient_diamonds': '钻石不足 — 需要 {required}，你有 {current}',
   'purchase_get_diamonds': '获取钻石',
 

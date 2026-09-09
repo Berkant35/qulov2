@@ -389,6 +389,8 @@ const trTranslations = <String, String>{
 
   'purchase_success': 'Satın alma başarılı!',
   'purchase_failed': 'Satın alma başarısız oldu',
+  'report_sent': 'Şikayetin iletildi',
+  'report_failed': 'Şikayet gönderilemedi, tekrar dene',
   'purchase_insufficient_diamonds': 'Yetersiz elmas \u2014 {required} gerekli, {current} var',
   'purchase_get_diamonds': 'Elmas Al',
 

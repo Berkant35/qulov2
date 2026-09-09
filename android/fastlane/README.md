@@ -63,6 +63,14 @@ Production'a taslak olarak YENI aab yukle (henuz hicbir track'te yoksa)
 
 internal'daki mevcut build'i production'a TASLAK olarak terfi ettir
 
+### android promote_live
+
+```sh
+[bundle exec] fastlane android promote_live
+```
+
+internal'daki build'i production'a DOGRUDAN CANLI cikar (geri alinamaz)
+
 ### android notes_only
 
 ```sh

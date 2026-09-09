@@ -384,6 +384,8 @@ const deTranslations = <String, String>{
 
   'purchase_success': 'Kauf erfolgreich!',
   'purchase_failed': 'Kauf fehlgeschlagen',
+  'report_sent': 'Deine Meldung wurde gesendet',
+  'report_failed': 'Meldung konnte nicht gesendet werden, bitte erneut versuchen',
   'purchase_insufficient_diamonds': 'Nicht genug Diamanten \u2014 {required} benötigt, du hast {current}',
   'purchase_get_diamonds': 'Diamanten holen',
 

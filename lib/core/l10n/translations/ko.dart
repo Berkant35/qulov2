@@ -382,6 +382,8 @@ const koTranslations = <String, String>{
 
   'purchase_success': '구매 완료!',
   'purchase_failed': '구매 실패',
+  'report_sent': '신고가 접수되었습니다',
+  'report_failed': '신고를 보내지 못했습니다. 다시 시도해 주세요',
   'purchase_insufficient_diamonds': '다이아몬드가 부족해요 \u2014 {required}개 필요, 현재 {current}개',
   'purchase_get_diamonds': '다이아몬드 얻기',
 
