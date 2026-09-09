@@ -9,18 +9,22 @@ class ReportRepository implements IReportRepository {
   ReportRepository(this._service);
 
   @override
+  /// `description` parametresi kaldirildi (2026-09-09): hicbir cagri yeri
+  /// vermiyordu ve sunucu semasinda (report.validator.ts) boyle bir alan yok —
+  /// gonderilse sessizce atilirdi.
+  ///
+  /// `reason` opsiyonel kalmaya devam ediyor; sunucu tarafi da artik opsiyonel
+  /// (eskiden zorunluydu ve sebepsiz sikayet 400 aliyordu).
   Future<Result<void>> createReport({
     required String reportedId,
     required String category,
     String? reason,
-    String? description,
   }) async {
     try {
       await _service.createReport({
         'reported_id': reportedId,
         'category': category,
         if (reason != null && reason.isNotEmpty) 'reason': reason,
-        if (description != null) 'description': description,
       });
       return const Success(null);
     } on DioException catch (e) {

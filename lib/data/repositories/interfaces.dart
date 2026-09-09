@@ -161,7 +161,6 @@ abstract class IReportRepository {
     required String reportedId,
     required String category,
     String? reason,
-    String? description,
   });
 }
 
