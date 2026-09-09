@@ -7,6 +7,8 @@ import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/widgets/app_icon.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/data/models/discover_model.dart';
+import 'package:qulo_v2/features/discover/mixins/profile_card_mixin.dart';
+import 'package:qulo_v2/features/discover/widgets/profile_photo_placeholder.dart';
 import 'package:qulo_v2/features/questions/widgets/difficulty_badge.dart';
 
 class ProfileCard extends StatefulWidget {
@@ -25,7 +27,7 @@ class ProfileCard extends StatefulWidget {
   State<ProfileCard> createState() => _ProfileCardState();
 }
 
-class _ProfileCardState extends State<ProfileCard> {
+class _ProfileCardState extends State<ProfileCard> with ProfileCardMixin {
   final PageController _controller = PageController();
   int _current = 0;
   Offset? _pointerDownPosition;
@@ -49,19 +51,6 @@ class _ProfileCardState extends State<ProfileCard> {
     );
   }
 
-  Widget _photoPlaceholder(ThemeData theme) => Container(
-        color: theme.colorScheme.surface,
-        child: Center(child: AppIcon(QIcons.userRounded, color: theme.hintColor, size: 80)),
-      );
-
-  String _relationshipGoalLabel(BuildContext context, String? goal) {
-    return switch (goal) {
-      'SERIOUS' => context.tr('serious_relationship'),
-      'FRIENDSHIP' => context.tr('friendship'),
-      _ => context.tr('not_sure'),
-    };
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -78,7 +67,7 @@ class _ProfileCardState extends State<ProfileCard> {
         children: [
           // Photo area
           if (_photos.isEmpty)
-            _photoPlaceholder(theme)
+            const ProfilePhotoPlaceholder()
           else
             PageView.builder(
               controller: _controller,
@@ -112,8 +101,8 @@ class _ProfileCardState extends State<ProfileCard> {
                         imageUrl: _photos[index],
                         fit: BoxFit.cover,
                         memCacheWidth: 1080,
-                        placeholder: (_, __) => _photoPlaceholder(theme),
-                        errorWidget: (_, __, ___) => _photoPlaceholder(theme),
+                        placeholder: (_, __) => const ProfilePhotoPlaceholder(),
+                        errorWidget: (_, __, ___) => const ProfilePhotoPlaceholder(),
                       ),
                     );
                   },
@@ -209,7 +198,7 @@ class _ProfileCardState extends State<ProfileCard> {
                         borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                       ),
                       child: Text(
-                        _relationshipGoalLabel(context, widget.card.relationshipGoal),
+                        relationshipGoalLabel(context, widget.card.relationshipGoal),
                         style: theme.textTheme.labelSmall?.copyWith(color: context.appColors.primary),
                       ),
                     ),

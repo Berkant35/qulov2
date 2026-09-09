@@ -6,6 +6,7 @@ import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
+import 'package:qulo_v2/core/widgets/empty_state_view.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/features/discover/mixins/discover_empty_state_mixin.dart';
 import 'package:qulo_v2/providers/passport_provider.dart';
@@ -44,32 +45,11 @@ class _DiscoverEmptyStateState extends ConsumerState<DiscoverEmptyState>
     final isPremium = subscription.valueOrNull?.isPremium ?? false;
     final scale = context.fmt.radiusScale;
 
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.pagePadding),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            QIcon(QIcons.icCompassOff, size: 64, color: context.appColors.textHint),
-            const SizedBox(height: AppSpacing.lg),
-            Text(
-              context.tr('no_more_profiles'),
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              context.tr('no_more_profiles_hint'),
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: context.appColors.textSecondary,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppSpacing.xl),
-
+    return EmptyStateView(
+      icon: QIcon(QIcons.icCompassOff, size: 64, color: context.appColors.textHint),
+      title: context.tr('no_more_profiles'),
+      message: context.tr('no_more_profiles_hint'),
+      children: [
             // Inline radius slider
             Container(
               padding: const EdgeInsets.all(AppSpacing.lg),
@@ -178,9 +158,7 @@ class _DiscoverEmptyStateState extends ConsumerState<DiscoverEmptyState>
                 ),
               ),
             ],
-          ],
-        ),
-      ),
+      ],
     );
   }
 }
