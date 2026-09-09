@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/features/questions/mixins/question_step_settings_mixin.dart';
 import 'package:qulo_v2/features/questions/widgets/time_preset_card.dart';
 
-class QuestionStepSettings extends StatelessWidget {
+class QuestionStepSettings extends StatelessWidget
+    with QuestionStepSettingsMixin {
   final int selectedTimeLimit;
   final List<int> timePresets;
   final ValueChanged<int> onTimeLimitChanged;
@@ -18,19 +20,6 @@ class QuestionStepSettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final timeLabels = [
-      'question_time_fast',
-      'question_time_normal',
-      'question_time_relaxed',
-      'question_time_thoughtful',
-    ];
-    final timeDescs = [
-      'question_time_fast_desc',
-      'question_time_normal_desc',
-      'question_time_relaxed_desc',
-      'question_time_thoughtful_desc',
-    ];
-
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.pagePadding),
       child: Column(
@@ -53,14 +42,19 @@ class QuestionStepSettings extends StatelessWidget {
               crossAxisSpacing: AppSpacing.md,
               childAspectRatio: 1.4,
             ),
-            itemCount: 4,
+            // Sabit 4 yaziliydi: secenekler economy config'ten geliyor ve
+            // sayisi degisebiliyor. 4'ten az preset RangeError ile cokerdi,
+            // fazlasi sessizce gosterilmezdi.
+            itemCount: timePresets.length,
             itemBuilder: (_, i) {
               final seconds = timePresets[i];
               final isSelected = selectedTimeLimit == seconds;
+              final labelKey = timeLabelKey(i);
+              final descKey = timeDescKey(i);
               return TimePresetCard(
                 seconds: seconds,
-                label: context.tr(timeLabels[i]),
-                description: context.tr(timeDescs[i]),
+                label: labelKey != null ? context.tr(labelKey) : '$seconds sn',
+                description: descKey != null ? context.tr(descKey) : '',
                 isSelected: isSelected,
                 onTap: () => onTimeLimitChanged(seconds),
               );
