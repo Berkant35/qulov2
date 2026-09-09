@@ -3,6 +3,15 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'discover_model.g.dart';
 
+/// Sunucunun `empty_reason` alaninda donebilecegi degerler.
+abstract final class DiscoverEmptyReason {
+  /// Aday havuzunda kisi var ama hicbiri kullanicinin dilinde soru yazmamis.
+  static const language = 'language';
+
+  /// Hicbir kapidan aday cikmadi.
+  static const noCandidates = 'no_candidates';
+}
+
 @JsonSerializable()
 class DiscoverResponse extends Equatable {
   final List<ProfileCardModel> cards;
@@ -10,10 +19,16 @@ class DiscoverResponse extends Equatable {
   @JsonKey(name: 'has_more')
   final bool hasMore;
 
+  /// Kart listesi bosken sunucunun verdigi sebep. Kart varsa gonderilmez.
+  /// Olasi degerler: [DiscoverEmptyReason].
+  @JsonKey(name: 'empty_reason')
+  final String? emptyReason;
+
   const DiscoverResponse({
     required this.cards,
     required this.page,
     required this.hasMore,
+    this.emptyReason,
   });
 
   factory DiscoverResponse.fromJson(Map<String, dynamic> json) =>
@@ -21,7 +36,7 @@ class DiscoverResponse extends Equatable {
   Map<String, dynamic> toJson() => _$DiscoverResponseToJson(this);
 
   @override
-  List<Object?> get props => [page, hasMore, cards];
+  List<Object?> get props => [page, hasMore, cards, emptyReason];
 }
 
 @JsonSerializable()

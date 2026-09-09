@@ -31,11 +31,12 @@ class DiscoverNotifier extends AsyncNotifier<DiscoverState> {
         return AsyncData(DiscoverState(
           cards: response.cards,
           page: response.page,
-          // Sunucu has_more'u güvenilmez (limit 50 + in-memory filtre → çoğu
-          // zaman false). Discover sayfa-tabanlı değil "görülmemiş aday havuzu"
-          // tabanlı; ilk batch doluysa taze-çek denemelerine devam edebiliriz.
+          // Discover sayfa-tabanlı değil "görülmemiş aday havuzu" tabanlı:
+          // her çağrı page=1 çekip swipe edilmişleri sunucuda eleyerek kalanın
+          // en iyisini döndürür. İlk batch doluysa taze-çek denemelerine devam.
           hasMore: response.cards.isNotEmpty,
           initialized: true,
+          emptyReason: response.cards.isEmpty ? response.emptyReason : null,
         ));
       },
       failure: (f) => AsyncError(f, StackTrace.current),
@@ -79,6 +80,8 @@ class DiscoverNotifier extends AsyncNotifier<DiscoverState> {
               // gelmediyse tükendi → dur (sonsuz prefetch önle).
               hasMore: fresh.isNotEmpty,
               isPrefetching: false,
+              // Kuyruk tükendi ve sunucu sebep bildirdiyse boş durum metnini besle.
+              emptyReason: fresh.isEmpty ? response.emptyReason : null,
             ));
           }
         },
@@ -173,6 +176,9 @@ class DiscoverState {
   final bool isPrefetching;
   final ProfileCardModel? lastSwipedCard;
 
+  /// Sunucudan gelen SON yanitin sebebi. Kart geldiyse null.
+  final String? emptyReason;
+
   const DiscoverState({
     this.cards = const [],
     this.page = 1,
@@ -180,6 +186,7 @@ class DiscoverState {
     this.initialized = false,
     this.isPrefetching = false,
     this.lastSwipedCard,
+    this.emptyReason,
   });
 
   bool get canUndo => lastSwipedCard != null;
@@ -191,6 +198,7 @@ class DiscoverState {
     bool? initialized,
     bool? isPrefetching,
     ProfileCardModel? lastSwipedCard,
+    String? emptyReason,
   }) {
     return DiscoverState(
       cards: cards ?? this.cards,
@@ -199,6 +207,9 @@ class DiscoverState {
       initialized: initialized ?? this.initialized,
       isPrefetching: isPrefetching ?? this.isPrefetching,
       lastSwipedCard: lastSwipedCard,
+      // "?? this.emptyReason" YOK: sebep her zaman son yanitin sebebidir,
+      // kart gelince temizlenmeli.
+      emptyReason: emptyReason,
     );
   }
 }

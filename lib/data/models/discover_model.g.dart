@@ -13,6 +13,7 @@ DiscoverResponse _$DiscoverResponseFromJson(Map<String, dynamic> json) =>
           .toList(),
       page: (json['page'] as num).toInt(),
       hasMore: json['has_more'] as bool,
+      emptyReason: json['empty_reason'] as String?,
     );
 
 Map<String, dynamic> _$DiscoverResponseToJson(DiscoverResponse instance) =>
@@ -20,6 +21,7 @@ Map<String, dynamic> _$DiscoverResponseToJson(DiscoverResponse instance) =>
       'cards': instance.cards,
       'page': instance.page,
       'has_more': instance.hasMore,
+      'empty_reason': instance.emptyReason,
     };
 
 QuestionInfoModel _$QuestionInfoModelFromJson(Map<String, dynamic> json) =>
