@@ -56,10 +56,14 @@ class ProfileCardModel extends Equatable {
   final String? city;
   final String? bio;
   final List<String>? photos;
-  @JsonKey(name: 'distance_km')
   /// Sunucu hesaplayamadiysa null (koordinat yok); 0 "yakinda" demek DEGIL.
   @JsonKey(name: 'distance_km')
   final double? distanceKm;
+
+  /// 0 = kullanicinin radius'u icinde, 3 = en uzak. Alan gelmezse 0 —
+  /// required YAPILMAZ, yoksa alani gondermeyen yanitta null cast patlar.
+  @JsonKey(name: 'distance_tier')
+  final int distanceTier;
   @JsonKey(name: 'question_count')
   final int questionCount;
   @JsonKey(name: 'profile_completion')
@@ -79,6 +83,7 @@ class ProfileCardModel extends Equatable {
     this.bio,
     this.photos,
     this.distanceKm,
+    this.distanceTier = 0,
     required this.questionCount,
     this.profileCompletion = 0,
     this.isBoosted = false,
@@ -99,6 +104,7 @@ class ProfileCardModel extends Equatable {
         bio,
         photos,
         distanceKm,
+        distanceTier,
         questionCount,
         profileCompletion,
         isBoosted,
