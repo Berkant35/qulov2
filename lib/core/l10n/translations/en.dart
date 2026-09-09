@@ -58,6 +58,11 @@ const enTranslations = <String, String>{
   'discover': 'Discover',
   'reject': 'Pass',
   'no_more_profiles': 'No more profiles',
+  'discover_scope_nearby': 'Searching nearby',
+  'discover_scope_expanded': 'We widened the search',
+  'discover_empty_language_title': 'No one writes questions in your language',
+  'discover_empty_language_hint': 'Add more languages and profiles in those languages will show up',
+  'discover_empty_language_cta': 'Edit language preferences',
   'refresh': 'Refresh',
   'questions_count': '{count} questions',
 

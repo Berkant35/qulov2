@@ -58,6 +58,11 @@ const frTranslations = <String, String>{
   'discover': 'Découvrir',
   'reject': 'Passer',
   'no_more_profiles': 'Plus de profils',
+  'discover_scope_nearby': 'Recherche près de toi',
+  'discover_scope_expanded': 'On a élargi la recherche',
+  'discover_empty_language_title': 'Personne n\'écrit de questions dans ta langue',
+  'discover_empty_language_hint': 'Ajoute des langues et tu verras aussi des profils dans ces langues',
+  'discover_empty_language_cta': 'Modifier mes langues',
   'refresh': 'Actualiser',
   'questions_count': '{count} questions',
 

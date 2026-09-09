@@ -58,6 +58,11 @@ const hiTranslations = <String, String>{
   'discover': 'खोजें',
   'reject': 'पास',
   'no_more_profiles': 'और प्रोफ़ाइल नहीं हैं',
+  'discover_scope_nearby': 'आस-पास खोज रहे हैं',
+  'discover_scope_expanded': 'हमने खोज का दायरा बढ़ाया',
+  'discover_empty_language_title': 'आपकी भाषा में कोई सवाल नहीं लिखता',
+  'discover_empty_language_hint': 'और भाषाएँ चुनें, उन भाषाओं के प्रोफ़ाइल भी दिखेंगे',
+  'discover_empty_language_cta': 'भाषा पसंद बदलें',
   'refresh': 'रिफ़्रेश',
   'questions_count': '{count} सवाल',
 

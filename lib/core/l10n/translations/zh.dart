@@ -58,6 +58,11 @@ const zhTranslations = <String, String>{
   'discover': '发现',
   'reject': '跳过',
   'no_more_profiles': '暂时没有更多了',
+  'discover_scope_nearby': '正在附近寻找',
+  'discover_scope_expanded': '我们扩大了搜索范围',
+  'discover_empty_language_title': '没有人用你的语言写问题',
+  'discover_empty_language_hint': '多选几种语言，就能看到这些语言的用户',
+  'discover_empty_language_cta': '修改语言偏好',
   'refresh': '刷新',
   'questions_count': '{count} 个问题',
 

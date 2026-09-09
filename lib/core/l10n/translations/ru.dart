@@ -58,6 +58,11 @@ const ruTranslations = <String, String>{
   'discover': 'Поиск',
   'reject': 'Пропустить',
   'no_more_profiles': 'Больше нет профилей',
+  'discover_scope_nearby': 'Ищем рядом с тобой',
+  'discover_scope_expanded': 'Мы расширили поиск',
+  'discover_empty_language_title': 'Никто не пишет вопросы на твоём языке',
+  'discover_empty_language_hint': 'Добавь больше языков — и увидишь профили на них',
+  'discover_empty_language_cta': 'Изменить языки',
   'refresh': 'Обновить',
   'questions_count': '{count} вопросов',
 

@@ -58,6 +58,11 @@ const deTranslations = <String, String>{
   'discover': 'Entdecken',
   'reject': 'Weiter',
   'no_more_profiles': 'Keine weiteren Profile',
+  'discover_scope_nearby': 'Suche in deiner Nähe',
+  'discover_scope_expanded': 'Wir haben die Suche erweitert',
+  'discover_empty_language_title': 'Niemand schreibt Fragen in deiner Sprache',
+  'discover_empty_language_hint': 'Wähle mehr Sprachen aus, dann erscheinen auch Profile in diesen Sprachen',
+  'discover_empty_language_cta': 'Spracheinstellungen bearbeiten',
   'refresh': 'Aktualisieren',
   'questions_count': '{count} Fragen',
 

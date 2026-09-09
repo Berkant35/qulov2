@@ -58,6 +58,11 @@ const ptTranslations = <String, String>{
   'discover': 'Descobrir',
   'reject': 'Passar',
   'no_more_profiles': 'Sem mais perfis',
+  'discover_scope_nearby': 'Procurando por perto',
+  'discover_scope_expanded': 'Ampliamos a busca',
+  'discover_empty_language_title': 'Ninguém escreve perguntas no seu idioma',
+  'discover_empty_language_hint': 'Adicione mais idiomas e você vai ver perfis nesses idiomas',
+  'discover_empty_language_cta': 'Editar preferências de idioma',
   'refresh': 'Atualizar',
   'questions_count': '{count} perguntas',
 

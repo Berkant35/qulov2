@@ -7,10 +7,9 @@ import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
-import 'package:qulo_v2/providers/match_provider.dart';
+import 'package:qulo_v2/features/discover/mixins/discover_empty_state_mixin.dart';
 import 'package:qulo_v2/providers/passport_provider.dart';
 import 'package:qulo_v2/providers/subscription_provider.dart';
-import 'package:qulo_v2/providers/user_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 
 class DiscoverEmptyState extends ConsumerStatefulWidget {
@@ -20,26 +19,20 @@ class DiscoverEmptyState extends ConsumerStatefulWidget {
   ConsumerState<DiscoverEmptyState> createState() => _DiscoverEmptyStateState();
 }
 
-class _DiscoverEmptyStateState extends ConsumerState<DiscoverEmptyState> {
+class _DiscoverEmptyStateState extends ConsumerState<DiscoverEmptyState>
+    with DiscoverEmptyStateMixin<DiscoverEmptyState> {
   late double _radius;
   bool _isSearching = false;
 
   @override
   void initState() {
     super.initState();
-    final user = ref.read(userProvider).valueOrNull;
-    _radius = (user?.matchRadiusKm ?? 50).toDouble();
+    _radius = initialRadiusKm();
   }
 
   Future<void> _updateRadiusAndSearch() async {
     setState(() => _isSearching = true);
-
-    await ref.read(userProvider.notifier).updateProfile({
-      'match_radius_km': _radius.round(),
-    });
-
-    await ref.read(discoverProvider.notifier).loadCards();
-
+    await applyRadiusAndSearch(_radius);
     if (mounted) setState(() => _isSearching = false);
   }
 

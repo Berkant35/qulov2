@@ -58,6 +58,11 @@ const trTranslations = <String, String>{
   'discover': 'Keşfet',
   'reject': 'Geç',
   'no_more_profiles': 'Gösterilecek profil kalmadı',
+  'discover_scope_nearby': 'Yakınında arıyorsun',
+  'discover_scope_expanded': 'Aramayı genişlettik',
+  'discover_empty_language_title': 'Senin dilinde soru yazan kimse yok',
+  'discover_empty_language_hint': 'Daha fazla dil seçersen o dillerdeki profiller de karşına çıkar',
+  'discover_empty_language_cta': 'Dil tercihlerini düzenle',
   'refresh': 'Yenile',
   'questions_count': '{count} soru',
 

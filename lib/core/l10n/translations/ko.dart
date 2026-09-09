@@ -58,6 +58,11 @@ const koTranslations = <String, String>{
   'discover': '발견',
   'reject': '넘기기',
   'no_more_profiles': '더 이상 프로필이 없어요',
+  'discover_scope_nearby': '근처에서 찾는 중',
+  'discover_scope_expanded': '검색 범위를 넓혔어요',
+  'discover_empty_language_title': '내 언어로 질문을 쓴 사람이 없어요',
+  'discover_empty_language_hint': '언어를 더 추가하면 그 언어의 프로필도 볼 수 있어요',
+  'discover_empty_language_cta': '언어 설정 수정',
   'refresh': '새로고침',
   'questions_count': '{count}개 질문',
 

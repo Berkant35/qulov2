@@ -58,6 +58,11 @@ const nlTranslations = <String, String>{
   'discover': 'Ontdekken',
   'reject': 'Nee',
   'no_more_profiles': 'Geen profielen meer',
+  'discover_scope_nearby': 'Zoeken in de buurt',
+  'discover_scope_expanded': 'We hebben de zoektocht uitgebreid',
+  'discover_empty_language_title': 'Niemand schrijft vragen in jouw taal',
+  'discover_empty_language_hint': 'Voeg meer talen toe en je ziet ook profielen in die talen',
+  'discover_empty_language_cta': 'Taalvoorkeuren bewerken',
   'refresh': 'Vernieuwen',
   'questions_count': '{count} vragen',
 

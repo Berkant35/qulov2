@@ -58,6 +58,11 @@ const esTranslations = <String, String>{
   'discover': 'Descubrir',
   'reject': 'Pasar',
   'no_more_profiles': 'No hay más perfiles',
+  'discover_scope_nearby': 'Buscando cerca de ti',
+  'discover_scope_expanded': 'Ampliamos la búsqueda',
+  'discover_empty_language_title': 'Nadie escribe preguntas en tu idioma',
+  'discover_empty_language_hint': 'Añade más idiomas y verás perfiles en esos idiomas',
+  'discover_empty_language_cta': 'Editar preferencias de idioma',
   'refresh': 'Actualizar',
   'questions_count': '{count} preguntas',
 

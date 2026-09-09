@@ -58,6 +58,11 @@ const arTranslations = <String, String>{
   'discover': 'اكتشف',
   'reject': 'تمرير',
   'no_more_profiles': 'لا مزيد من الملفات الشخصية',
+  'discover_scope_nearby': 'نبحث بالقرب منك',
+  'discover_scope_expanded': 'وسّعنا نطاق البحث',
+  'discover_empty_language_title': 'لا أحد يكتب أسئلة بلغتك',
+  'discover_empty_language_hint': 'أضف لغات أخرى وستظهر لك ملفات بهذه اللغات',
+  'discover_empty_language_cta': 'تعديل تفضيلات اللغة',
   'refresh': 'تحديث',
   'questions_count': '{count} أسئلة',
 

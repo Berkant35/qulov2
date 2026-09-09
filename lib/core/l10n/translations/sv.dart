@@ -58,6 +58,11 @@ const svTranslations = <String, String>{
   'discover': 'Utforska',
   'reject': 'Passa',
   'no_more_profiles': 'Inga fler profiler',
+  'discover_scope_nearby': 'Söker i närheten',
+  'discover_scope_expanded': 'Vi utökade sökningen',
+  'discover_empty_language_title': 'Ingen skriver frågor på ditt språk',
+  'discover_empty_language_hint': 'Lägg till fler språk så dyker profiler på de språken upp',
+  'discover_empty_language_cta': 'Ändra språkval',
   'refresh': 'Uppdatera',
   'questions_count': '{count} frågor',
 

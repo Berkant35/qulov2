@@ -12,9 +12,12 @@ import 'package:qulo_v2/providers/location_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
 import 'package:qulo_v2/features/discover/mixins/discover_screen_mixin.dart';
+import 'package:qulo_v2/data/models/discover_model.dart';
 import 'package:qulo_v2/features/discover/widgets/discover_card_view.dart';
+import 'package:qulo_v2/features/discover/widgets/discover_empty_language.dart';
 import 'package:qulo_v2/features/discover/widgets/discover_empty_state.dart';
 import 'package:qulo_v2/features/discover/widgets/discover_location_error.dart';
+import 'package:qulo_v2/features/discover/widgets/discover_scope_chip.dart';
 import 'package:qulo_v2/features/discover/widgets/passport_badge.dart';
 import 'package:qulo_v2/features/page_messages/widgets/page_message_host.dart';
 
@@ -84,10 +87,16 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen>
                   // Boş discover'da da "Qulo nasıl çalışır" intro turu görünmeli.
                   maybeStartDiscoverCoach(hasCards: false);
                   // Kart yokken de sayfa mesajı görünmeli (onboarding/rehberlik için).
-                  return const Column(
+                  return Column(
                     children: [
-                      PageMessageHost(page: 'discover'),
-                      Expanded(child: DiscoverEmptyState()),
+                      const PageMessageHost(page: 'discover'),
+                      Expanded(
+                        // Mesafe kademeli olarak sinirsiza kadar geniyor; geriye
+                        // kalan bos ekranin tek sebebi dil kapisi olabilir.
+                        child: discover.emptyReason == DiscoverEmptyReason.language
+                            ? const DiscoverEmptyLanguage()
+                            : const DiscoverEmptyState(),
+                      ),
                     ],
                   );
                 }
@@ -111,6 +120,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen>
                           onAddQuestions: () => ref.read(navigationServiceProvider).go(RouteNames.questions),
                         ),
                       ),
+                    DiscoverScopeChip(card: discover.cards.first),
                     Expanded(
                       child: DiscoverCardView(
                         card: discover.cards.first,

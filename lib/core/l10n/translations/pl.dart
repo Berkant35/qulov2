@@ -58,6 +58,11 @@ const plTranslations = <String, String>{
   'discover': 'Odkrywaj',
   'reject': 'Pomi\u0144',
   'no_more_profiles': 'Nie ma wi\u0119cej profili',
+  'discover_scope_nearby': 'Szukamy w pobli\u017cu',
+  'discover_scope_expanded': 'Poszerzyli\u015bmy wyszukiwanie',
+  'discover_empty_language_title': 'Nikt nie pisze pyta\u0144 w Twoim j\u0119zyku',
+  'discover_empty_language_hint': 'Dodaj wi\u0119cej j\u0119zyk\u00f3w, a zobaczysz profile w tych j\u0119zykach',
+  'discover_empty_language_cta': 'Edytuj j\u0119zyki',
   'refresh': 'Od\u015bwie\u017c',
   'questions_count': '{count} pyta\u0144',
 
