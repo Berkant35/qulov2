@@ -36,8 +36,8 @@ class DiscoverScopeChip extends ConsumerWidget with DiscoverScopeChipMixin {
         alignment: Alignment.centerLeft,
         child: InkWell(
           borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-          // Radius ayari profil duzenleme ekraninda
-          // (features/profile/widgets/profile_preferences_section.dart).
+          // Radius slider'i profil DUZENLEME ekraninda
+          // (features/profile/widgets/edit_profile_preferences_section.dart:109).
           onTap: () => ref.read(navigationServiceProvider).push(RouteNames.editProfile),
           child: Container(
             padding: const EdgeInsets.symmetric(

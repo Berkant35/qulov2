@@ -35,11 +35,20 @@ void main() {
       );
     });
 
-    test('sebep, son yanitin sebebidir — kart gelince temizlenir', () {
-      // "emptyReason ?? this.emptyReason" YAZILMAZ: eski sebep yapisip
-      // kartlar geldikten sonra da bos durum metnini surdururdu.
+    test('acikca null gecilince temizlenir', () {
       const state = DiscoverState(emptyReason: DiscoverEmptyReason.language);
       expect(state.copyWith(emptyReason: null).emptyReason, isNull);
+    });
+
+    test('gecilmeyen cagrida KORUNUR — ilgisiz guncelleme sebebi silmemeli', () {
+      // Ciplak atama (`emptyReason: emptyReason`) bu testte kirmiziya doner:
+      // son karti swipe eden `copyWith(cards:, lastSwipedCard:)` sebebi
+      // siliyordu ve dil ekrani hic gorunmuyordu.
+      const state = DiscoverState(
+        cards: [],
+        emptyReason: DiscoverEmptyReason.language,
+      );
+      expect(state.copyWith(isPrefetching: true).emptyReason, DiscoverEmptyReason.language);
     });
   });
 }

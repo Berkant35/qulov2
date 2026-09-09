@@ -49,8 +49,8 @@ class DiscoverEmptyLanguage extends ConsumerWidget {
               width: double.infinity,
               height: 48,
               child: FilledButton(
-                // Dil tercihi profil duzenleme ekraninda
-                // (features/profile/mixins/edit_profile_screen_mixin.dart).
+                // Dil tercihi UI'si profil duzenleme ekraninda
+                // (features/profile/widgets/edit_profile_preferences_section.dart).
                 onPressed: () =>
                     ref.read(navigationServiceProvider).push(RouteNames.editProfile),
                 style: FilledButton.styleFrom(

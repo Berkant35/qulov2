@@ -7,6 +7,11 @@ abstract final class AppConstants {
   /// (sunucu: matching.service.ts adim 5.5, `photoCount >= 1`).
   static const int minPhotos = 1;
   static const int minQuestions = 2;
+
+  /// Kullanicinin kayitli arama yaricapi yokken kullanilan varsayilan (km).
+  /// `UserModel.matchRadiusKm` ile ayni deger olmali — iki yerde ayri sabit
+  /// tutulursa biri degisince sessizce sapar.
+  static const int defaultMatchRadiusKm = 50;
   static const int maxQuestions = 6;
 
   /// Destek talebi kategorileri (sunucu enum'u) ve `ticket_cat_<kategori>` anahtarlari.

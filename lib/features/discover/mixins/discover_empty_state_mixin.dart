@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
 
@@ -7,7 +8,7 @@ mixin DiscoverEmptyStateMixin<T extends ConsumerStatefulWidget> on ConsumerState
   /// Kullanicinin kayitli arama yaricapi; yoksa makul bir varsayilan.
   double initialRadiusKm() {
     final user = ref.read(userProvider).valueOrNull;
-    return (user?.matchRadiusKm ?? 50).toDouble();
+    return (user?.matchRadiusKm ?? AppConstants.defaultMatchRadiusKm).toDouble();
   }
 
   /// Yaricapi kaydeder ve kartlari yeniden ceker.

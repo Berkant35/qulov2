@@ -80,7 +80,10 @@ class DiscoverNotifier extends AsyncNotifier<DiscoverState> {
               // gelmediyse tükendi → dur (sonsuz prefetch önle).
               hasMore: fresh.isNotEmpty,
               isPrefetching: false,
-              // Kuyruk tükendi ve sunucu sebep bildirdiyse boş durum metnini besle.
+              // Sebep, YEREL KUYRUK hakkında değil SUNUCU HAVUZU hakkında bir
+              // olgu: "havuzda başka aday yok, sebebi şu". Elde hâlâ kart
+              // varken de kaydedilir, çünkü kullanıcı o kartları da tükettiğinde
+              // gösterilecek olan budur. Ekran zaten yalnızca kuyruk boşken okur.
               emptyReason: fresh.isEmpty ? response.emptyReason : null,
             ));
           }
@@ -168,6 +171,9 @@ class DiscoverNotifier extends AsyncNotifier<DiscoverState> {
   }
 }
 
+/// `copyWith`'te "bu alan gecilmedi" ile "acikca null gecildi"yi ayirt eden nobetci.
+const Object _keep = Object();
+
 class DiscoverState {
   final List<ProfileCardModel> cards;
   final int page;
@@ -176,7 +182,9 @@ class DiscoverState {
   final bool isPrefetching;
   final ProfileCardModel? lastSwipedCard;
 
-  /// Sunucudan gelen SON yanitin sebebi. Kart geldiyse null.
+  /// Sunucu havuzunun neden aday döndürmediği: `DiscoverEmptyReason` değeri.
+  /// Yerel kuyruk hakkında değil sunucu havuzu hakkında bir olgu — elde hâlâ
+  /// kart varken de dolu olabilir. Ekran yalnızca kuyruk boşken okur.
   final String? emptyReason;
 
   const DiscoverState({
@@ -198,7 +206,7 @@ class DiscoverState {
     bool? initialized,
     bool? isPrefetching,
     ProfileCardModel? lastSwipedCard,
-    String? emptyReason,
+    Object? emptyReason = _keep,
   }) {
     return DiscoverState(
       cards: cards ?? this.cards,
@@ -207,9 +215,14 @@ class DiscoverState {
       initialized: initialized ?? this.initialized,
       isPrefetching: isPrefetching ?? this.isPrefetching,
       lastSwipedCard: lastSwipedCard,
-      // "?? this.emptyReason" YOK: sebep her zaman son yanitin sebebidir,
-      // kart gelince temizlenmeli.
-      emptyReason: emptyReason,
+      // Sebep yalnizca sunucu yaniti isleyen cagrilarda degisir. Swipe/prefetch
+      // bayragi gibi ilgisiz guncellemeler onu OLDUGU GIBI birakmali — "?? "
+      // yeterli degildi cunku acikca null gecip temizlemeyi de imkansiz kilardi,
+      // ciplak atama ise gecmeyen her cagirida sebebi siliyordu (son karti
+      // swipe edince dil ekrani hic gorunmuyordu).
+      emptyReason: identical(emptyReason, _keep)
+          ? this.emptyReason
+          : emptyReason as String?,
     );
   }
 }
