@@ -51,12 +51,37 @@ class QuestionNotifier extends AsyncNotifier<List<QuestionModel>> {
     return result;
   }
 
-  Future<void> reorderQuestions(int oldIndex, int newIndex) async {
+  /// Sirayi iyimser olarak gunceller ve sunucuya gonderir.
+  ///
+  /// Doner: `false` YALNIZCA sunucu reddettiginde ve sira geri alindiginda —
+  /// ekran mixin'i bunu kullaniciya gostermek icin kullaniyor. Eskiden `void`
+  /// donuyordu ve hata yalnizca `dev.log`'a gidiyordu: liste sessizce geri
+  /// zipliyor, kullanici nedenini bilmiyordu (sikayet akisindaki desenin aynisi).
+  /// Siralanacak veri yoksa (yukleniyor/hata) `true` — gosterilecek bir
+  /// basarisizlik yok.
+  Future<bool> reorderQuestions(int oldIndex, int newIndex) async {
     final current = state.valueOrNull;
-    if (current == null) return;
+    if (current == null) return true;
 
     // Adjust index for ReorderableListView behavior
     if (newIndex > oldIndex) newIndex--;
+
+    // Sinir kontrolu. Riverpod yukleme/hata durumlarinda ONCEKI veriyi korur
+    // (build'in bos listesi dahil), yani `current` null degil BOS olabilir.
+    // Ayrica indeksler kullanicinin surukledigi ANDAKI listeye gore gelir;
+    // surukleme sirasinda liste degistiyse (silme, yenileme) bayat kalirlar.
+    // Eskiden bu durumda `removeAt` RangeError atiyordu — `onReorder`'in async
+    // callback'inde yakalanmayan hata. Gecerli bir tasima yoksa no-op: sunucuya
+    // gitme, basarisizlik bildirme.
+    if (oldIndex < 0 ||
+        oldIndex >= current.length ||
+        newIndex < 0 ||
+        newIndex >= current.length) {
+      return true;
+    }
+
+    // Ayni yere birakmak: sira degismiyor, sunucuya gitmeye gerek yok.
+    if (newIndex == oldIndex) return true;
 
     final reordered = List<QuestionModel>.from(current);
     final item = reordered.removeAt(oldIndex);
@@ -67,12 +92,16 @@ class QuestionNotifier extends AsyncNotifier<List<QuestionModel>> {
 
     final orderedIds = reordered.map((q) => q.id).toList();
     final result = await ref.read(questionRepositoryProvider).reorderQuestions(orderedIds);
-    result.when(
-      success: (data) => state = AsyncData(data),
+    return result.when(
+      success: (data) {
+        state = AsyncData(data);
+        return true;
+      },
       failure: (f) {
         // Rollback
         state = AsyncData(current);
         dev.log('reorderQuestions failed: $f', name: 'QuestionNotifier');
+        return false;
       },
     );
   }

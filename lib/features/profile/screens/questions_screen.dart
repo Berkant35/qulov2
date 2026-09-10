@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
@@ -59,10 +58,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen>
           return ReorderableListView.builder(
             padding: const EdgeInsets.all(AppSpacing.pagePadding),
             itemCount: questions.length,
-            onReorder: (oldIndex, newIndex) {
-              HapticFeedback.mediumImpact();
-              ref.read(questionProvider.notifier).reorderQuestions(oldIndex, newIndex);
-            },
+            onReorder: onReorderQuestions,
             proxyDecorator: (child, index, animation) {
               return Material(
                 elevation: 4,

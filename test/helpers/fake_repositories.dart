@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/data/models/diamond_model.dart';
 import 'package:qulo_v2/data/models/exchange_model.dart';
+import 'package:qulo_v2/data/models/question_model.dart';
 import 'package:qulo_v2/data/models/user_model.dart';
 import 'package:qulo_v2/data/repositories/diamond_repository.dart';
 import 'package:qulo_v2/data/repositories/exchange_repository.dart';
+import 'package:qulo_v2/data/repositories/question_repository.dart';
 import 'package:qulo_v2/data/repositories/user_repository.dart';
 
 /// Provider testleri icin bellek-ici repository'ler. Servis/ag yok; testler
@@ -90,4 +94,48 @@ class FakeDiamondRepository implements DiamondRepository {
     if (purchaseFailure != null) return Failure(purchaseFailure!);
     return const Success(null);
   }
+}
+
+/// Soru repository'si — 9 metot; yalnizca `getMyQuestions` ve
+/// `reorderQuestions` acik (UserRepository stili, gerisi noSuchMethod ile patlar).
+///
+/// `reorderCompleter` verilirse `reorderQuestions` onu bekler: iyimser
+/// guncellemenin sunucu cevabindan ONCE gorundugunu test edebilmek icin.
+class FakeQuestionRepository implements QuestionRepository {
+  FakeQuestionRepository({
+    this.questions = const [],
+    this.listFailure,
+    this.reorderFailure,
+    this.reorderResponse,
+    this.reorderCompleter,
+  });
+
+  final List<QuestionModel> questions;
+  final AppFailure? listFailure;
+  final AppFailure? reorderFailure;
+  final List<QuestionModel>? reorderResponse;
+  final Completer<void>? reorderCompleter;
+
+  int reorderCallCount = 0;
+  List<String>? lastOrderedIds;
+
+  @override
+  Future<Result<List<QuestionModel>>> getMyQuestions() async {
+    if (listFailure != null) return Failure(listFailure!);
+    return Success(questions);
+  }
+
+  @override
+  Future<Result<List<QuestionModel>>> reorderQuestions(List<String> orderedIds) async {
+    reorderCallCount++;
+    lastOrderedIds = orderedIds;
+    if (reorderCompleter != null) await reorderCompleter!.future;
+    if (reorderFailure != null) return Failure(reorderFailure!);
+    final byId = {for (final q in questions) q.id: q};
+    return Success(reorderResponse ?? [for (final id in orderedIds) if (byId[id] != null) byId[id]!]);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) =>
+      throw UnimplementedError('FakeQuestionRepository.${invocation.memberName}');
 }

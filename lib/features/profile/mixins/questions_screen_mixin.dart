@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/services/one_time_flag_store.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
@@ -44,6 +45,22 @@ mixin QuestionsScreenMixin on ConsumerState<QuestionsScreen> {
     }
     previousCount = count;
     initialized = true;
+  }
+
+  /// `ReorderableListView.onReorder` — build'den mixin'e tasindi (CLAUDE.md
+  /// "Widget Logic -> Mixin"). Sunucu siralamayi reddederse liste eski haline
+  /// doner; eskiden bu sessizdi, artik kullaniciya soyleniyor.
+  ///
+  /// Mesaj await ONCESI aliniyor; sonrasinda `State.context` yalnizca `mounted`
+  /// kontroluyle kullaniliyor.
+  Future<void> onReorderQuestions(int oldIndex, int newIndex) async {
+    HapticFeedback.mediumImpact();
+    final message = context.tr('error_try_again');
+    final ok = await ref
+        .read(questionProvider.notifier)
+        .reorderQuestions(oldIndex, newIndex);
+    if (ok || !mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
   void openAnalytics() {
