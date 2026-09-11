@@ -879,6 +879,9 @@ const plTranslations = <String, String>{
   'comparison_free_header': 'DARMOWY',
   'error_no_connection': 'Brak połączenia z internetem. Spróbuj ponownie.',
   'error_timeout': 'Przekroczono limit czasu połączenia. Spróbuj ponownie.',
+  'bio': 'O mnie',
+  'confirm': 'Potwierdź',
+  'questions': 'Pytania',
   // Brama konfiguracji profilu
   'setup_title': 'Zostało kilka kroków',
   'setup_subtitle': 'Uzupełnij profil, by zacząć dopasowywać',

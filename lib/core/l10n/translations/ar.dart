@@ -879,6 +879,9 @@ const arTranslations = <String, String>{
   'comparison_free_header': 'مجاني',
   'error_no_connection': 'لا يوجد اتصال بالإنترنت. حاول مرة أخرى.',
   'error_timeout': 'انتهت مهلة الاتصال. حاول مرة أخرى.',
+  'bio': 'نبذة عني',
+  'confirm': 'تأكيد',
+  'questions': 'الأسئلة',
   // بوابة إعداد الملف الشخصي
   'setup_title': 'بقيت خطوات قليلة',
   'setup_subtitle': 'أكمل ملفك الشخصي لبدء المطابقة',

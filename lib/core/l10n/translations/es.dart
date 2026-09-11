@@ -881,6 +881,9 @@ const esTranslations = <String, String>{
   'comparison_free_header': 'GRATIS',
   'error_no_connection': 'Sin conexión a internet. Inténtalo de nuevo.',
   'error_timeout': 'Se agotó el tiempo de conexión. Inténtalo de nuevo.',
+  'bio': 'Sobre mí',
+  'confirm': 'Confirmar',
+  'questions': 'Preguntas',
   // Configuración del perfil
   'setup_title': 'Faltan unos pocos pasos',
   'setup_subtitle': 'Completa tu perfil para empezar a hacer match',

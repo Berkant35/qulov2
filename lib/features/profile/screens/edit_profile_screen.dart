@@ -81,7 +81,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
             const SizedBox(height: AppSpacing.sectionGap),
             ProfileSectionCard(
               icon: Icons.photo_library,
-              title: context.tr('photos'),
+              title: context.tr('edit_photos'),
               subtitle: context.tr('profile_photo_hint'),
               completionText: photoCompletionText(epState.photos),
               isComplete: epState.photos.where((p) => p != null).length >= 2,

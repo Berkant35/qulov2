@@ -165,7 +165,7 @@ class _ProfileCardState extends State<ProfileCard> with ProfileCardMixin {
                   Row(
                     children: [
                       Text(
-                        '${widget.card.name ?? context.tr('unknown')}, ${widget.card.age ?? ''}',
+                        '${widget.card.name ?? context.tr('unknown_user')}, ${widget.card.age ?? ''}',
                         style: theme.textTheme.headlineSmall?.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,

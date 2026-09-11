@@ -879,6 +879,9 @@ const ruTranslations = <String, String>{
   'comparison_free_header': 'БЕСПЛАТНО',
   'error_no_connection': 'Нет подключения к интернету. Попробуйте ещё раз.',
   'error_timeout': 'Время ожидания истекло. Попробуйте ещё раз.',
+  'bio': 'О себе',
+  'confirm': 'Подтвердить',
+  'questions': 'Вопросы',
   // Шлюз настройки профиля
   'setup_title': 'Осталось пару шагов',
   'setup_subtitle': 'Заполни профиль, чтобы начать матчиться',

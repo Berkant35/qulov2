@@ -85,7 +85,7 @@ class _LegalWebViewScreenState extends State<LegalWebViewScreen> {
                   Icon(Icons.error_outline,
                       size: 48, color: context.appColors.error),
                   const SizedBox(height: 16),
-                  Text(context.tr('error_generic')),
+                  Text(context.tr('error_general')),
                   const SizedBox(height: 16),
                   TextButton(
                     onPressed: _retry,

@@ -881,6 +881,9 @@ const ptTranslations = <String, String>{
   'comparison_free_header': 'GRÁTIS',
   'error_no_connection': 'Sem conexão com a internet. Tente novamente.',
   'error_timeout': 'A conexão expirou. Tente novamente.',
+  'bio': 'Sobre mim',
+  'confirm': 'Confirmar',
+  'questions': 'Perguntas',
   // Porta de configuração do perfil
   'setup_title': 'Faltam alguns passos',
   'setup_subtitle': 'Complete seu perfil para começar a dar match',

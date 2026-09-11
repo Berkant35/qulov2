@@ -103,7 +103,7 @@ class ProfileDetailsGrid extends StatelessWidget {
     return switch (value.toUpperCase()) {
       'YES' => context.tr('yes'),
       'NO' => context.tr('no'),
-      'SOMETIMES' => context.tr('sometimes'),
+      'SOMETIMES' => context.tr('freq_sometimes'),
       _ => value,
     };
   }

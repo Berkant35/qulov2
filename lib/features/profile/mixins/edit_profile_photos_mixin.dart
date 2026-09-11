@@ -113,7 +113,7 @@ mixin EditProfilePhotosMixin on EditProfileScreenMixin {
         ref.read(editProfileProvider.notifier).refreshPhotos();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.tr('save_error'))),
+          SnackBar(content: Text(context.tr('error_general'))),
         );
       }
     }

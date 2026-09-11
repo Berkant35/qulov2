@@ -66,7 +66,7 @@ class _CreateTicketScreenState extends ConsumerState<CreateTicketScreen>
               ),
               validator: (val) {
                 if (val == null || val.trim().length < 5) {
-                  return context.tr('ticket_subject_min_chars');
+                  return context.tr('ticket_subject_error');
                 }
                 return null;
               },
@@ -85,7 +85,7 @@ class _CreateTicketScreenState extends ConsumerState<CreateTicketScreen>
               maxLines: 6,
               validator: (val) {
                 if (val == null || val.trim().length < 10) {
-                  return context.tr('ticket_message_min_chars');
+                  return context.tr('ticket_message_error');
                 }
                 return null;
               },

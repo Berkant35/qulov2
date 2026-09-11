@@ -188,7 +188,7 @@ mixin ChatQuestionPowerMixin on SolveChatQuestionScreenMixin {
           timerKey.currentState?.resume();
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(context.tr('error_rate_limit'))),
+              SnackBar(content: Text(context.tr('error_rate_limited'))),
             );
           }
         } else {

@@ -881,6 +881,9 @@ const svTranslations = <String, String>{
   'comparison_free_header': 'GRATIS',
   'error_no_connection': 'Ingen internetanslutning. Försök igen.',
   'error_timeout': 'Anslutningen tog för lång tid. Försök igen.',
+  'bio': 'Om mig',
+  'confirm': 'Bekräfta',
+  'questions': 'Frågor',
   // Profilinställningsport
   'setup_title': 'Bara några steg kvar',
   'setup_subtitle': 'Slutför din profil för att börja matcha',

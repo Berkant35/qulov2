@@ -76,12 +76,12 @@ mixin DetailChipsWidgetMixin {
       ChipData(
         icon: QIcons.icPets,
         filled: details?.pets != null,
-        label: details?.pets ?? context.tr('pets'),
+        label: details?.pets ?? context.tr('pets_label'),
       ),
       ChipData(
         icon: QIcons.icMusic,
         filled: details?.musicType != null,
-        label: details?.musicType ?? context.tr('music'),
+        label: details?.musicType ?? context.tr('music_type'),
       ),
       ChipData(
         icon: QIcons.icPersonality,

@@ -881,6 +881,9 @@ const deTranslations = <String, String>{
   'comparison_free_header': 'KOSTENLOS',
   'error_no_connection': 'Keine Internetverbindung. Bitte versuche es erneut.',
   'error_timeout': 'Zeitüberschreitung der Verbindung. Bitte versuche es erneut.',
+  'bio': 'Über mich',
+  'confirm': 'Bestätigen',
+  'questions': 'Fragen',
   // Profileinrichtungstor
   'setup_title': 'Nur noch ein paar Schritte',
   'setup_subtitle': 'Vervollständige dein Profil, um Matches zu starten',

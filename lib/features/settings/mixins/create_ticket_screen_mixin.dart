@@ -46,7 +46,7 @@ mixin CreateTicketScreenMixin on ConsumerState<CreateTicketScreen> {
       failure: (_) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(context.tr('ticket_create_error')),
+            content: Text(context.tr('error_general')),
             backgroundColor: context.appColors.error,
           ),
         );

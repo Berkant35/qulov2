@@ -914,6 +914,9 @@ const enTranslations = <String, String>{
   'comparison_free_header': 'FREE',
   'error_no_connection': 'No internet connection. Please try again.',
   'error_timeout': 'The connection timed out. Please try again.',
+  'bio': 'Bio',
+  'confirm': 'Confirm',
+  'questions': 'Questions',
   // Profile Setup Gate
   'setup_title': 'A few steps left',
   'setup_subtitle': 'Complete your profile to start matching',

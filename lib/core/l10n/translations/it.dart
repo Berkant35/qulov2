@@ -881,6 +881,9 @@ const itTranslations = <String, String>{
   'comparison_free_header': 'GRATIS',
   'error_no_connection': 'Nessuna connessione a internet. Riprova.',
   'error_timeout': 'Connessione scaduta. Riprova.',
+  'bio': 'Bio',
+  'confirm': 'Conferma',
+  'questions': 'Domande',
   // Configurazione del profilo
   'setup_title': 'Mancano pochi passi',
   'setup_subtitle': 'Completa il profilo per iniziare a fare match',

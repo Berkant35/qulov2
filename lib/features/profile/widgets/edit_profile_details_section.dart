@@ -92,7 +92,7 @@ class EditProfileDetailsSection extends ConsumerWidget {
           const SizedBox(height: AppSpacing.itemGap),
           AppTextField(
             controller: petsController,
-            label: context.tr('pets'),
+            label: context.tr('pets_label'),
             hint: context.tr('pets_hint'),
             maxLength: ProfileFieldLimits.pets,
             textCapitalization: TextCapitalization.sentences,
@@ -100,7 +100,7 @@ class EditProfileDetailsSection extends ConsumerWidget {
           const SizedBox(height: AppSpacing.itemGap),
           AppTextField(
             controller: musicController,
-            label: context.tr('music'),
+            label: context.tr('music_type'),
             hint: context.tr('music_hint'),
             maxLength: ProfileFieldLimits.music,
             textCapitalization: TextCapitalization.words,

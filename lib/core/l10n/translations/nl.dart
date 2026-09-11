@@ -879,6 +879,9 @@ const nlTranslations = <String, String>{
   'comparison_free_header': 'GRATIS',
   'error_no_connection': 'Geen internetverbinding. Probeer het opnieuw.',
   'error_timeout': 'Time-out van de verbinding. Probeer het opnieuw.',
+  'bio': 'Over mij',
+  'confirm': 'Bevestigen',
+  'questions': 'Vragen',
   // Profiel Instelpoort
   'setup_title': 'Nog een paar stappen',
   'setup_subtitle': 'Maak je profiel af om te matchen',

@@ -161,7 +161,7 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
     if (mounted) {
       if (!success) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.tr('save_error'))),
+          SnackBar(content: Text(context.tr('error_general'))),
         );
         return;
       }

@@ -18,8 +18,8 @@ mixin BlockedUsersScreenMixin {
     final confirmed = await nav.showAppDialog<bool>(
       ConfirmDialog(
         name: 'unblock_user',
-        title: context.tr('unblock_user_title'),
-        message: context.tr('unblock_user_message'),
+        title: context.tr('unblock_confirm_title'),
+        message: context.tr('unblock_confirm_message'),
         confirmText: context.tr('unblock'),
         cancelText: context.tr('cancel'),
       ),

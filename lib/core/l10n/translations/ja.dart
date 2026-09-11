@@ -881,6 +881,9 @@ const jaTranslations = <String, String>{
   'comparison_free_header': '無料',
   'error_no_connection': 'インターネットに接続されていません。もう一度お試しください。',
   'error_timeout': '接続がタイムアウトしました。もう一度お試しください。',
+  'bio': '自己紹介',
+  'confirm': '確認',
+  'questions': '質問',
   // プロフィール設定ゲート
   'setup_title': 'あと少しです',
   'setup_subtitle': 'プロフィールを完成させてマッチを始めよう',

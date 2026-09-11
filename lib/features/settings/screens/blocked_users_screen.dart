@@ -50,7 +50,7 @@ class BlockedUsersScreen extends ConsumerWidget with BlockedUsersScreenMixin {
                   ),
                   const SizedBox(height: AppSpacing.md),
                   Text(
-                    context.tr('blocked_users_empty'),
+                    context.tr('no_blocked_users'),
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           color: context.appColors.textSecondary,
                         ),

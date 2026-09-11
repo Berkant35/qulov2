@@ -881,6 +881,9 @@ const hiTranslations = <String, String>{
   'comparison_free_header': 'मुफ़्त',
   'error_no_connection': 'इंटरनेट कनेक्शन नहीं है। कृपया फिर से प्रयास करें।',
   'error_timeout': 'कनेक्शन का समय समाप्त हो गया। कृपया फिर से प्रयास करें।',
+  'bio': 'परिचय',
+  'confirm': 'पुष्टि करें',
+  'questions': 'प्रश्न',
   // प्रोफ़ाइल सेटअप गेट
   'setup_title': 'कुछ ही कदम बाकी',
   'setup_subtitle': 'मैचिंग शुरू करने के लिए प्रोफ़ाइल पूरी करें',
