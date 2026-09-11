@@ -207,48 +207,32 @@ class NotificationNotifier extends Notifier<NotificationState> {
     );
   }
 
+  /// Sayac yalnizca listede OKUNMAMIS bir bildirim okunduysa duser. Kutu her
+  /// dokunusta cagiriyor (`notifications_screen`); okunmusa dokunmak eskiden
+  /// rozeti gercek sayinin altina indiriyordu. Listede yoksa (push'tan
+  /// acildi, kutu yuklenmedi) dogrusu bilinmez → sunucudan tazele.
   Future<void> markAsRead(String id) async {
     await ref.read(notificationRepositoryProvider).markAsRead(id);
-    final updated = state.notifications.map((n) {
-      if (n.id == id && !n.isRead) {
-        return NotificationModel(
-          id: n.id,
-          userId: n.userId,
-          campaignId: n.campaignId,
-          type: n.type,
-          title: n.title,
-          body: n.body,
-          imageUrl: n.imageUrl,
-          actionUrl: n.actionUrl,
-          actionLabel: n.actionLabel,
-          isRead: true,
-          createdAt: n.createdAt,
-        );
-      }
-      return n;
-    }).toList();
-    final newUnread = (state.unreadCount - 1).clamp(0, 9999);
-    state = state.copyWith(notifications: updated, unreadCount: newUnread);
+    final target = state.notifications.where((n) => n.id == id).firstOrNull;
+    if (target == null) {
+      await fetchUnreadCount();
+      return;
+    }
+    if (target.isRead) return;
+    state = state.copyWith(
+      notifications: [
+        for (final n in state.notifications) n.id == id ? n.copyWith(isRead: true) : n,
+      ],
+      unreadCount: (state.unreadCount - 1).clamp(0, 9999),
+    );
   }
 
   Future<void> markAllAsRead() async {
     await ref.read(notificationRepositoryProvider).markAllAsRead();
-    final updated = state.notifications
-        .map((n) => NotificationModel(
-              id: n.id,
-              userId: n.userId,
-              campaignId: n.campaignId,
-              type: n.type,
-              title: n.title,
-              body: n.body,
-              imageUrl: n.imageUrl,
-              actionUrl: n.actionUrl,
-              actionLabel: n.actionLabel,
-              isRead: true,
-              createdAt: n.createdAt,
-            ))
-        .toList();
-    state = state.copyWith(notifications: updated, unreadCount: 0);
+    state = state.copyWith(
+      notifications: [for (final n in state.notifications) n.copyWith(isRead: true)],
+      unreadCount: 0,
+    );
   }
 
   Future<void> trackClick(String id) async {

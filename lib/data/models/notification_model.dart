@@ -43,6 +43,22 @@ class NotificationModel extends Equatable {
 
   Map<String, dynamic> toJson() => _$NotificationModelToJson(this);
 
+  /// Yerel "okundu" guncellemesi icin. Alanlari elle kopyalamak, modele yeni
+  /// alan eklendiginde onu sessizce dusururdu.
+  NotificationModel copyWith({bool? isRead}) => NotificationModel(
+        id: id,
+        userId: userId,
+        campaignId: campaignId,
+        type: type,
+        title: title,
+        body: body,
+        imageUrl: imageUrl,
+        actionUrl: actionUrl,
+        actionLabel: actionLabel,
+        isRead: isRead ?? this.isRead,
+        createdAt: createdAt,
+      );
+
   @override
   List<Object?> get props => [
         id,
