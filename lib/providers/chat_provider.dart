@@ -68,8 +68,15 @@ class ChatNotifier extends FamilyAsyncNotifier<ChatState, String> {
       success: (response) {
         final latest = state.valueOrNull;
         if (latest != null) {
+          // Offset sayfalama (sunucu created_at desc + range): arada gelen ya
+          // da gonderilen mesaj sonraki sayfayi kaydirir, sinirdaki mesaj iki
+          // kez gelir — id ile tekillestir.
+          final known = latest.messages.map((m) => m.id).toSet();
           state = AsyncData(latest.copyWith(
-            messages: [...latest.messages, ...response.messages],
+            messages: [
+              ...latest.messages,
+              ...response.messages.where((m) => !known.contains(m.id)),
+            ],
             total: response.total,
             page: nextPage,
           ));
@@ -87,29 +94,22 @@ class ChatNotifier extends FamilyAsyncNotifier<ChatState, String> {
     ));
   }
 
+  /// Sunucu tepkiyi TOGGLE eder (`UNIQUE (message_id, user_id, emoji)`):
+  /// ayni emoji tekrar secilince kaldirir ve `{toggled: 'removed'}` doner.
   Future<void> addReaction(String messageId, String emoji) async {
     final result = await ref.read(chatRepositoryProvider).addReaction(arg, messageId, emoji);
     result.when(
-      success: (_) {
+      success: (response) {
         final current = state.valueOrNull ?? const ChatState();
         final userId = ref.read(authProvider).userId ?? '';
+        final removed = response['toggled'] == 'removed';
+        bool isMine(MessageReaction r) => r.userId == userId && r.emoji == emoji;
         final updatedMessages = current.messages.map((msg) {
           if (msg.id != messageId) return msg;
-          final existing = msg.reactions ?? [];
-          final newReaction = MessageReaction(emoji: emoji, userId: userId);
-          return MessageModel(
-            id: msg.id,
-            matchId: msg.matchId,
-            senderId: msg.senderId,
-            content: msg.content,
-            isImage: msg.isImage,
-            readAt: msg.readAt,
-            deletedAt: msg.deletedAt,
-            audioUrl: msg.audioUrl,
-            audioDurationSeconds: msg.audioDurationSeconds,
-            reactions: [...existing, newReaction],
-            createdAt: msg.createdAt,
-          );
+          return msg.copyWith(reactions: [
+            ...?msg.reactions?.where((r) => !isMine(r)),
+            if (!removed) MessageReaction(emoji: emoji, userId: userId),
+          ]);
         }).toList();
         state = AsyncData(current.copyWith(messages: updatedMessages));
       },
@@ -207,19 +207,7 @@ class ChatNotifier extends FamilyAsyncNotifier<ChatState, String> {
         final current = state.valueOrNull ?? const ChatState();
         final updatedMessages = current.messages.map((msg) {
           if (msg.id != messageId) return msg;
-          return MessageModel(
-            id: msg.id,
-            matchId: msg.matchId,
-            senderId: msg.senderId,
-            content: msg.content,
-            isImage: msg.isImage,
-            readAt: msg.readAt,
-            deletedAt: DateTime.now().toIso8601String(),
-            audioUrl: msg.audioUrl,
-            audioDurationSeconds: msg.audioDurationSeconds,
-            reactions: msg.reactions,
-            createdAt: msg.createdAt,
-          );
+          return msg.copyWith(deletedAt: DateTime.now().toIso8601String());
         }).toList();
         state = AsyncData(current.copyWith(messages: updatedMessages));
       },

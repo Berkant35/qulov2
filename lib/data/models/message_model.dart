@@ -46,6 +46,22 @@ class MessageModel extends Equatable {
   bool get isDeleted => deletedAt != null;
   bool get isAudio => audioUrl != null;
 
+  /// Yerel guncellemeler (tepki, silme) icin. Alanlari elle kopyalamak,
+  /// modele yeni alan eklendiginde onu sessizce dusururdu.
+  MessageModel copyWith({List<MessageReaction>? reactions, String? deletedAt}) => MessageModel(
+        id: id,
+        matchId: matchId,
+        senderId: senderId,
+        content: content,
+        isImage: isImage,
+        readAt: readAt,
+        deletedAt: deletedAt ?? this.deletedAt,
+        audioUrl: audioUrl,
+        audioDurationSeconds: audioDurationSeconds,
+        reactions: reactions ?? this.reactions,
+        createdAt: createdAt,
+      );
+
   @override
   List<Object?> get props => [id];
 }
