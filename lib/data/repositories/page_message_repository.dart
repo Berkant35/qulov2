@@ -20,6 +20,8 @@ class PageMessageRepository {
       return Success(list);
     } on DioException catch (e) {
       return Failure(e.toAppFailure());
+    } catch (e) {
+      return Failure(UnknownFailure(error: e, message: 'Failed to parse page messages'));
     }
   }
 

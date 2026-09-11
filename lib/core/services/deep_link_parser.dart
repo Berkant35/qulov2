@@ -22,6 +22,21 @@ abstract class DeepLinkParser {
   static const _validHosts = {'quloapp.com', 'www.quloapp.com'};
   static final _safeSegmentPattern = RegExp(r'^[a-zA-Z0-9_-]+$');
 
+  /// `/profile` altindaki tek segmentli rotalar (`routing/app_routes.dart`).
+  /// Burada olmayan ikinci segment kullanici kimligi sayilir ve profil
+  /// detayina gider — yeni sekme eklenince buraya da eklenmeli.
+  static const _profileTabs = {
+    'edit',
+    'questions',
+    'diamonds',
+    'passport',
+    'exchange',
+    'subscription',
+    'performance',
+    'settings',
+    'notifications',
+  };
+
   /// URI'yi parse eder, desteklenen bir deep link ise DeepLinkResult doner.
   /// Desteklenmiyorsa veya gecersizse null doner.
   static DeepLinkResult? parse(Uri uri) {
@@ -75,25 +90,16 @@ abstract class DeepLinkParser {
       );
     }
 
-    // /profile/:userId → /profile-detail/:userId
+    // /profile/<sekme> → kendi sekmesi; /profile/:userId → profil detay
     if (segments.first == 'profile' && segments.length == 2) {
       final secondSegment = segments[1];
-      // subscription ve passport ayri handle edilir
-      if (secondSegment == 'subscription') {
-        return const DeepLinkResult(
-          goRouterPath: '/profile/subscription',
+      if (_profileTabs.contains(secondSegment)) {
+        return DeepLinkResult(
+          goRouterPath: '/profile/$secondSegment',
           requiresAuth: true,
           navType: DeepLinkNavType.go,
         );
       }
-      if (secondSegment == 'passport') {
-        return const DeepLinkResult(
-          goRouterPath: '/profile/passport',
-          requiresAuth: true,
-          navType: DeepLinkNavType.go,
-        );
-      }
-      // Diger /profile/:userId → profil detay
       return DeepLinkResult(
         goRouterPath: '/profile-detail/$secondSegment',
         requiresAuth: true,
