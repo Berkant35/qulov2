@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/data/models/diamond_model.dart';
 import 'package:qulo_v2/data/models/exchange_model.dart';
+import 'package:qulo_v2/data/models/notification_preferences_model.dart';
 import 'package:qulo_v2/data/models/question_model.dart';
 import 'package:qulo_v2/data/models/user_model.dart';
 import 'package:qulo_v2/data/repositories/diamond_repository.dart';
@@ -17,12 +18,30 @@ import 'package:qulo_v2/data/repositories/user_repository.dart';
 /// gerisi `noSuchMethod` ile patlar; `ExchangeRepository` 4 metot → hepsi acik.
 
 class FakeUserRepository implements UserRepository {
-  FakeUserRepository(this.user);
+  FakeUserRepository(this.user, {this.prefsFailure});
 
   final UserModel user;
+  final AppFailure? prefsFailure;
+
+  int getMeCallCount = 0;
+  int prefsCallCount = 0;
+  Map<String, dynamic>? lastPrefsBody;
 
   @override
-  Future<Result<UserModel>> getMe() async => Success(user);
+  Future<Result<UserModel>> getMe() async {
+    getMeCallCount++;
+    return Success(user);
+  }
+
+  @override
+  Future<Result<NotificationPreferencesModel>> updateNotificationPreferences(
+    Map<String, dynamic> body,
+  ) async {
+    prefsCallCount++;
+    lastPrefsBody = body;
+    if (prefsFailure != null) return Failure(prefsFailure!);
+    return const Success(NotificationPreferencesModel());
+  }
 
   @override
   dynamic noSuchMethod(Invocation invocation) =>

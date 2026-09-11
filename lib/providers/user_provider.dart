@@ -81,6 +81,18 @@ class UserNotifier extends AsyncNotifier<UserModel?> {
     return result;
   }
 
+  /// E-posta bildirim tercihi (sunucuda `email_matches`). Basarida profil
+  /// tazelenir — ayar anahtari `emailNotificationsEnabled`'i okur. Sonuc
+  /// cagirana doner: eskiden ekran sonucu yok sayiyordu, ag yokken anahtar
+  /// sessizce yerinde kaliyor ve kullanici neden oldugunu gormuyordu.
+  Future<Result<void>> setEmailNotifications(bool enabled) async {
+    final result = await ref
+        .read(userRepositoryProvider)
+        .updateNotificationPreferences({'email_matches': enabled});
+    if (result.isSuccess) await fetchMe();
+    return result;
+  }
+
   Future<void> updateLocation({required double lat, required double lng}) async {
     await ref.read(userRepositoryProvider).updateLocation(lat: lat, lng: lng);
   }

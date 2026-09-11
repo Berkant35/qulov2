@@ -7,12 +7,12 @@ import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/services/app_review_manager.dart';
 import 'package:qulo_v2/features/settings/mixins/settings_screen_mixin.dart';
 import 'package:qulo_v2/features/settings/widgets/settings_action_tile.dart';
+import 'package:qulo_v2/features/settings/widgets/settings_email_notifications_tile.dart';
+import 'package:qulo_v2/features/settings/widgets/settings_haptic_tile.dart';
 import 'package:qulo_v2/features/settings/widgets/settings_legal_section.dart';
 import 'package:qulo_v2/features/settings/widgets/settings_language_tile.dart';
 import 'package:qulo_v2/features/settings/widgets/settings_theme_tile.dart';
-import 'package:qulo_v2/providers/haptic_provider.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
-import 'package:qulo_v2/providers/user_provider.dart';
 
 final _appVersionProvider = FutureProvider<String>(
   (ref) => ref.read(appInfoManagerProvider).displayVersion,
@@ -51,8 +51,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
           const SizedBox(height: AppSpacing.sm),
           SettingsLanguageTile(onTap: onLanguageTap),
           SettingsThemeTile(onChanged: onThemeChanged),
-          _HapticTile(),
-          _EmailNotificationsTile(),
+          const SettingsHapticTile(),
+          const SettingsEmailNotificationsTile(),
           const SizedBox(height: AppSpacing.sm),
           SettingsLegalSection(
             onTerms: onOpenTerms,
@@ -111,73 +111,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
           ),
           const SizedBox(height: AppSpacing.md),
         ],
-      ),
-    );
-  }
-}
-
-class _HapticTile extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-      ),
-      child: SwitchListTile(
-        secondary: Icon(Icons.vibration, color: theme.colorScheme.onSurfaceVariant),
-        title: Text(
-          context.tr('haptic_feedback'),
-          style: TextStyle(color: theme.colorScheme.onSurface),
-        ),
-        subtitle: Text(
-          context.tr('haptic_feedback_desc'),
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
-        ),
-        value: ref.watch(hapticProvider),
-        onChanged: (_) => ref.read(hapticProvider.notifier).toggle(),
-      ),
-    );
-  }
-}
-
-class _EmailNotificationsTile extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final user = ref.watch(userProvider).valueOrNull;
-    final value = user?.emailNotificationsEnabled ?? true;
-
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-      ),
-      child: SwitchListTile(
-        secondary: Icon(Icons.email_outlined, color: theme.colorScheme.onSurfaceVariant),
-        title: Text(
-          context.tr('email_notifications'),
-          style: TextStyle(color: theme.colorScheme.onSurface),
-        ),
-        subtitle: Text(
-          context.tr('email_notifications_desc'),
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
-        ),
-        value: value,
-        onChanged: (v) async {
-          await ref.read(userRepositoryProvider).updateNotificationPreferences({
-            'email_matches': v,
-          });
-          await ref.read(userProvider.notifier).fetchMe();
-        },
       ),
     );
   }
