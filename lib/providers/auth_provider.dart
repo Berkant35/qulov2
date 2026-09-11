@@ -8,7 +8,6 @@ import 'package:qulo_v2/core/error/error_manager.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/services/meta_events_manager.dart';
-import 'package:qulo_v2/core/network/network_manager.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/services/revenuecat_service.dart';
 import 'package:qulo_v2/core/services/social_auth_service.dart';
@@ -21,7 +20,6 @@ import 'package:qulo_v2/providers/diamond_provider.dart';
 import 'package:qulo_v2/providers/power_provider.dart';
 import 'package:qulo_v2/providers/question_provider.dart';
 import 'package:qulo_v2/providers/notification_provider.dart';
-import 'package:qulo_v2/providers/subscription_provider.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
 import 'package:qulo_v2/providers/passport_provider.dart';
 import 'package:qulo_v2/providers/user_languages_provider.dart';
@@ -79,7 +77,8 @@ class AuthNotifier extends Notifier<AuthState> {
         return;
       }
 
-      // Check JWT expiry locally first
+      // Check JWT expiry locally first. Gecici hata (ag/5xx) buradan firlar ve
+      // en distaki catch'e duser: token'lar silinmeden unauthenticated.
       if (_isTokenExpired(token)) {
         final refreshed = await _tryRefreshToken();
         if (!refreshed) {
@@ -102,7 +101,9 @@ class AuthNotifier extends Notifier<AuthState> {
             state = state.copyWith(status: AuthStatus.banned);
             return;
           }
-          await _clearTokens();
+          // Ag yokken/sunucu cokmusken acan kullanicinin 30 gunluk oturumu
+          // silinmez; ag varken bir sonraki acilis otomatik giris yapar.
+          if (!_isTransient(failure)) await _clearTokens();
           state = state.copyWith(status: AuthStatus.unauthenticated);
           return;
         }
@@ -448,13 +449,20 @@ class AuthNotifier extends Notifier<AuthState> {
     }
   }
 
-  Future<bool> _tryRefreshToken() async {
-    try {
-      final refreshToken = await _storage.read(key: 'refresh_token');
-      if (refreshToken == null) return false;
+  /// Ag yok, zaman asimi ya da sunucu 5xx: "oturum gecersiz" DEMEK DEGIL.
+  static bool _isTransient(Object? failure) =>
+      failure is NetworkFailure ||
+      failure is TimeoutFailure ||
+      (failure is ServerFailure && (failure.statusCode ?? 0) >= 500);
 
-      final refreshDio = NetworkManager.createRefreshDio();
-      final response = await refreshDio.post(
+  /// `true` = yenilendi, `false` = oturum gecersiz (token'lar silinmeli).
+  /// Gecici hata FIRLATILIR — cagiran oturumu silmemeli.
+  Future<bool> _tryRefreshToken() async {
+    final refreshToken = await _storage.read(key: 'refresh_token');
+    if (refreshToken == null) return false;
+
+    try {
+      final response = await ref.read(refreshDioFactoryProvider)().post(
         '/auth/refresh',
         data: {'refreshToken': refreshToken},
       );
@@ -464,6 +472,9 @@ class AuthNotifier extends Notifier<AuthState> {
       await _storage.write(key: 'access_token', value: newAccess);
       await _storage.write(key: 'refresh_token', value: newRefresh);
       return true;
+    } on DioException catch (e) {
+      if (_isTransient(e.toAppFailure())) rethrow;
+      return false;
     } catch (_) {
       return false;
     }
@@ -495,15 +506,18 @@ class AuthNotifier extends Notifier<AuthState> {
     _invalidateAllProviders();
   }
 
-  /// Invalidate all auth-dependent providers to prevent stale data crashes
+  /// Invalidate all auth-dependent providers to prevent stale data crashes.
+  ///
+  /// `matchListProvider` ve `subscriptionProvider` burada YOK: ikisi de
+  /// `authProvider.select(status)`'u watch ediyor, durum degisince kendileri
+  /// yeniden kuruluyor. Buradan invalidate etmek debug'da
+  /// `CircularDependencyError` firlatip sonraki satirlari atliyordu.
   void _invalidateAllProviders() {
     ref.invalidate(userProvider);
     ref.invalidate(discoverProvider);
-    ref.invalidate(matchListProvider);
     ref.invalidate(diamondProvider);
     ref.invalidate(powerProvider);
     ref.invalidate(questionProvider);
-    ref.invalidate(subscriptionProvider);
     ref.invalidate(notificationProvider);
     ref.invalidate(userLanguagesProvider);
     ref.invalidate(passportProvider);

@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/network/network_manager.dart';
 import 'package:qulo_v2/core/services/image_picker_manager.dart';
@@ -63,6 +64,12 @@ final analyticsManagerProvider = Provider<AnalyticsManager>(
 );
 final appInfoManagerProvider = Provider<AppInfoManager>(
   (_) => AppInfoManager.instance,
+);
+
+/// Interceptor'suz token yenileme Dio'su (acilista `AuthNotifier.checkAuth`).
+/// Testler senaryolu adapter'la override eder — varsayilan prod'a gider.
+final refreshDioFactoryProvider = Provider<Dio Function()>(
+  (_) => NetworkManager.createRefreshDio,
 );
 final shareManagerProvider = Provider<ShareManager>(
   (_) => ShareManager.instance,

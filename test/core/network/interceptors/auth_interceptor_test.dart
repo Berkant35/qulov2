@@ -1,11 +1,12 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:qulo_v2/core/network/interceptors/auth_interceptor.dart';
+
+import '../../../helpers/scripted_http_adapter.dart';
 
 /// Oturum yenileme — her API cagrisinin arkasindaki yol.
 ///
@@ -20,7 +21,7 @@ void main() {
 
     await h.dio.get('/me');
 
-    expect(h.api.requests.single.headers['Authorization'], 'Bearer old');
+    expect(h.api.sentAuthHeaders.single, 'Bearer old');
   });
 
   test('token yoksa Authorization basligi eklenmez', () async {
@@ -28,7 +29,7 @@ void main() {
 
     await h.dio.get('/app/config');
 
-    expect(h.api.requests.single.headers.containsKey('Authorization'), isFalse);
+    expect(h.api.sentAuthHeaders.single, isNull);
   });
 
   group('401 → yenile → tekrarla', () {
@@ -61,9 +62,9 @@ void main() {
       final h = _Harness(
         stored: _session,
         api: _acceptsOnly('new'),
-        refresh: _ScriptedAdapter((_) async {
+        refresh: ScriptedHttpAdapter((_) async {
           await gate.future;
-          return _json(200, {'accessToken': 'new', 'refreshToken': 'new-r'});
+          return jsonResponse(200, {'accessToken': 'new', 'refreshToken': 'new-r'});
         }),
       );
 
@@ -85,7 +86,7 @@ void main() {
       final h = _Harness(
         stored: _session,
         api: _acceptsOnly('new'),
-        refresh: _ScriptedAdapter((_) async => _json(401, _error('INVALID_TOKEN'))),
+        refresh: ScriptedHttpAdapter((_) async => jsonResponse(401, _error('INVALID_TOKEN'))),
       );
 
       await _expectStatus(h.dio.get('/me'), 401);
@@ -99,7 +100,7 @@ void main() {
       final h = _Harness(
         stored: _session,
         api: _acceptsOnly('new'),
-        refresh: _ScriptedAdapter((o) async => throw DioException(
+        refresh: ScriptedHttpAdapter((o) async => throw DioException(
               requestOptions: o,
               type: DioExceptionType.connectionError,
             )),
@@ -115,7 +116,7 @@ void main() {
       final h = _Harness(
         stored: _session,
         api: _acceptsOnly('new'),
-        refresh: _ScriptedAdapter((_) async => _json(200, {'accessToken': 'new'})),
+        refresh: ScriptedHttpAdapter((_) async => jsonResponse(200, {'accessToken': 'new'})),
       );
 
       await _expectStatus(h.dio.get('/me'), 401);
@@ -153,7 +154,7 @@ void main() {
       test('401 disi hata ($status)', () async {
         final h = _Harness(
           stored: _session,
-          api: _ScriptedAdapter((_) async => _json(status, _error('X'))),
+          api: ScriptedHttpAdapter((_) async => jsonResponse(status, _error('X'))),
           refresh: _rotates(),
         );
 
@@ -197,76 +198,43 @@ Map<String, dynamic> _error(String code) => {
       'error': {'code': code},
     };
 
-ResponseBody _json(int status, Object body) => ResponseBody.fromString(
-      jsonEncode(body),
-      status,
-      headers: {
-        Headers.contentTypeHeader: [Headers.jsonContentType],
-      },
-    );
-
-_ScriptedAdapter _ok() => _ScriptedAdapter((_) async => _json(200, {'ok': true}));
+ScriptedHttpAdapter _ok() => ScriptedHttpAdapter((_) async => jsonResponse(200, {'ok': true}));
 
 /// Yalnizca `Bearer <token>` ile gelen istegi kabul eder, gerisine 401.
-_ScriptedAdapter _acceptsOnly(String token) => _ScriptedAdapter((o) async =>
+ScriptedHttpAdapter _acceptsOnly(String token) => ScriptedHttpAdapter((o) async =>
     o.headers['Authorization'] == 'Bearer $token'
-        ? _json(200, {'ok': true})
-        : _json(401, _error('TOKEN_EXPIRED')));
+        ? jsonResponse(200, {'ok': true})
+        : jsonResponse(401, _error('TOKEN_EXPIRED')));
 
-_ScriptedAdapter _rotates() => _ScriptedAdapter(
-    (_) async => _json(200, {'accessToken': 'new', 'refreshToken': 'new-r'}));
+ScriptedHttpAdapter _rotates() => ScriptedHttpAdapter(
+    (_) async => jsonResponse(200, {'accessToken': 'new', 'refreshToken': 'new-r'}));
 
 class _Harness {
   _Harness({
     required Map<String, String> stored,
     required this.api,
-    _ScriptedAdapter? refresh,
+    ScriptedHttpAdapter? refresh,
   })  : refresh = refresh ?? _rotates(),
         storage = _FakeStorage(stored) {
-    dio = Dio(BaseOptions(baseUrl: 'https://api.test'))..httpClientAdapter = api;
+    dio = scriptedDio(api);
     dio.interceptors.add(AuthInterceptor(
       dio,
       onForceLogout: () => forceLogoutCount++,
       storage: storage,
       createRefreshDio: () {
         refreshDioCreated++;
-        return Dio(BaseOptions(baseUrl: 'https://api.test'))..httpClientAdapter = this.refresh;
+        return scriptedDio(this.refresh);
       },
       retryBaseDelay: Duration.zero,
     ));
   }
 
-  final _ScriptedAdapter api;
-  final _ScriptedAdapter refresh;
+  final ScriptedHttpAdapter api;
+  final ScriptedHttpAdapter refresh;
   final _FakeStorage storage;
   late final Dio dio;
   int forceLogoutCount = 0;
   int refreshDioCreated = 0;
-}
-
-class _ScriptedAdapter implements HttpClientAdapter {
-  _ScriptedAdapter(this.respond);
-
-  final Future<ResponseBody> Function(RequestOptions options) respond;
-  final requests = <RequestOptions>[];
-
-  /// Gonderim anindaki baslik. Tekrar gonderim ayni `RequestOptions`'i
-  /// degistirdigi icin `requests[i].headers` sonradan okunursa hep son hali gorulur.
-  final sentAuthHeaders = <Object?>[];
-
-  @override
-  Future<ResponseBody> fetch(
-    RequestOptions options,
-    Stream<Uint8List>? requestStream,
-    Future<void>? cancelFuture,
-  ) {
-    requests.add(options);
-    sentAuthHeaders.add(options.headers['Authorization']);
-    return respond(options);
-  }
-
-  @override
-  void close({bool force = false}) {}
 }
 
 /// Bellek-ici guvenli depo. Interceptor yalnizca read/write/deleteAll
