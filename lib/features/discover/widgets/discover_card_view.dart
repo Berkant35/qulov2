@@ -12,6 +12,8 @@ import 'package:qulo_v2/core/widgets/locked_feature_button.dart';
 import 'package:qulo_v2/core/widgets/safe_tap_button.dart';
 import 'package:qulo_v2/data/models/discover_model.dart';
 import 'package:qulo_v2/features/diamonds/widgets/paywall_bottom_sheet.dart';
+import 'package:qulo_v2/features/discover/mixins/discover_action_buttons_mixin.dart';
+import 'package:qulo_v2/features/discover/utils/undo_failure_message.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/daily_stats_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
@@ -288,7 +290,7 @@ class _DiscoverCardViewState extends ConsumerState<DiscoverCardView>
       failure: (f) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(context.tr('undo_limit_reached'))),
+            SnackBar(content: Text(context.tr(undoFailureMessageKey(f)))),
           );
         }
       },
@@ -343,7 +345,7 @@ class DiscoverSolveButton extends StatelessWidget {
   }
 }
 
-class DiscoverActionButtons extends ConsumerWidget {
+class DiscoverActionButtons extends ConsumerWidget with DiscoverActionButtonsMixin {
   final VoidCallback onReject;
   final Future<void> Function() onUndo;
   final bool canUndo;
@@ -357,12 +359,8 @@ class DiscoverActionButtons extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dailyStats = ref.watch(dailyStatsProvider).valueOrNull;
-    final undosUsed = dailyStats?.dailyUndosUsed ?? 0;
-    final undosLimit = dailyStats?.dailyUndosLimit ?? 0;
-    final isUnlimited = dailyStats?.isUndoUnlimited ?? false;
-    final hasUndoRight = isUnlimited || undosLimit > 0;
-    final undosRemaining = isUnlimited ? -1 : (undosLimit - undosUsed).clamp(0, undosLimit);
+    final allowance = undoAllowance(ref.watch(dailyStatsProvider).valueOrNull);
+    final hasUndoRight = allowance.hasRight;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -390,7 +388,7 @@ class DiscoverActionButtons extends ConsumerWidget {
             const SizedBox(height: 4),
             Text(
               hasUndoRight
-                  ? (isUnlimited ? '∞' : '$undosRemaining')
+                  ? (allowance.isUnlimited ? '∞' : '${allowance.remaining}')
                   : context.tr('undo'),
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
                 color: hasUndoRight

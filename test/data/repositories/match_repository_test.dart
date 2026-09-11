@@ -218,16 +218,23 @@ void main() {
       expect(result.when(success: (d) => d.userId, failure: (_) => null), 'u2');
     });
 
-    test('undo hakki bittiginde ServerFailure — paywall buna bakiyor', () async {
+    test('undo hakki bittiginde kod ve params tasinir — mesaj eslemesi buna bakar', () async {
+      // Sunucu: subscription.service.ts incrementDailyUndos →
+      // Errors.DAILY_LIMIT_EXCEEDED('undo'). UNDO_LIMIT_REACHED diye bir kod yok.
       final fake = _FakeMatchService(
-        error: _dio(DioExceptionType.badResponse,
-            status: 403, body: {'error': {'code': 'UNDO_LIMIT_REACHED'}}),
+        error: _dio(DioExceptionType.badResponse, status: 403, body: {
+          'error': {
+            'code': 'DAILY_LIMIT_EXCEEDED',
+            'params': {'resource': 'undo'},
+          },
+        }),
       );
 
       final result = await MatchRepository(fake).undoSwipe('u2');
 
-      expect((result.when(success: (_) => null, failure: (f) => f) as ServerFailure).code,
-          'UNDO_LIMIT_REACHED');
+      final failure = result.when(success: (_) => null, failure: (f) => f) as ServerFailure;
+      expect(failure.code, 'DAILY_LIMIT_EXCEEDED');
+      expect(failure.params, {'resource': 'undo'});
     });
 
     test('unmatch id gonderir ve Success(null) doner', () async {

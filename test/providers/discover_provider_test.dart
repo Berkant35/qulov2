@@ -138,10 +138,14 @@ void main() {
       expect(h.state.canUndo, isFalse);
     });
 
-    test('hak bitince (UNDO_LIMIT_REACHED) kuyruk degismez', () async {
+    test('hak bitince (sunucu DAILY_LIMIT_EXCEEDED, resource undo) kuyruk degismez', () async {
       final h = await _Harness.loaded(['a', 'b', 'c', 'd', 'e']);
       h.notifier.rejectCard('a');
-      h.repo.undoResult = const Failure(ServerFailure(code: 'UNDO_LIMIT_REACHED', statusCode: 403));
+      h.repo.undoResult = const Failure(ServerFailure(
+        code: 'DAILY_LIMIT_EXCEEDED',
+        statusCode: 403,
+        params: {'resource': 'undo'},
+      ));
 
       await h.notifier.undoSwipe();
 
