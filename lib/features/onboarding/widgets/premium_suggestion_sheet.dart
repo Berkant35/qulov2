@@ -8,6 +8,7 @@ import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/diamond_icon.dart';
 import 'package:qulo_v2/features/diamonds/utils/monthly_price_label.dart';
 import 'package:qulo_v2/features/diamonds/widgets/celebration_dialog.dart';
+import 'package:qulo_v2/features/diamonds/widgets/subscription_legal_links.dart';
 import 'package:qulo_v2/features/onboarding/widgets/paywall_comparison_table.dart';
 import 'package:qulo_v2/features/onboarding/widgets/paywall_plan_button.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
@@ -117,6 +118,11 @@ class PremiumSuggestionSheet extends ConsumerWidget {
                 ),
               ),
             ),
+            const SizedBox(height: AppSpacing.sm),
+
+            // Terms of Use & Privacy Policy — otomatik yenilenen abonelik satilan
+            // her yuzeyde zorunlu (App Store 3.1.2(c)); diger iki paywall ile ayni.
+            const SubscriptionLegalLinks(),
           ],
         ),
       ),
