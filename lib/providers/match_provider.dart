@@ -158,9 +158,12 @@ class DiscoverNotifier extends AsyncNotifier<DiscoverState> {
     final result = await ref.read(matchRepositoryProvider).undoSwipe(lastCard.userId);
     result.when(
       success: (card) {
-        if (current != null) {
-          state = AsyncData(current.copyWith(
-            cards: [card, ...current.cards],
+        // Beklerken biten prefetch'in kartlari kaybolmasin: `current` await
+        // oncesinin anlik goruntusu, guncel state'in uzerine yazilir.
+        final latest = state.valueOrNull;
+        if (latest != null) {
+          state = AsyncData(latest.copyWith(
+            cards: [card, ...latest.cards],
             lastSwipedCard: null,
           ));
         }
@@ -205,7 +208,7 @@ class DiscoverState {
     bool? hasMore,
     bool? initialized,
     bool? isPrefetching,
-    ProfileCardModel? lastSwipedCard,
+    Object? lastSwipedCard = _keep,
     Object? emptyReason = _keep,
   }) {
     return DiscoverState(
@@ -214,7 +217,12 @@ class DiscoverState {
       hasMore: hasMore ?? this.hasMore,
       initialized: initialized ?? this.initialized,
       isPrefetching: isPrefetching ?? this.isPrefetching,
-      lastSwipedCard: lastSwipedCard,
+      // emptyReason ile ayni sebep: ciplak atama prefetch bayragi gibi ilgisiz
+      // her guncellemede geri alma hakkini siliyordu (kuyrukta <=3 kart varken
+      // swipe edilen kart geri alinamiyordu). Temizlemek icin null gecilir.
+      lastSwipedCard: identical(lastSwipedCard, _keep)
+          ? this.lastSwipedCard
+          : lastSwipedCard as ProfileCardModel?,
       // Sebep yalnizca sunucu yaniti isleyen cagrilarda degisir. Swipe/prefetch
       // bayragi gibi ilgisiz guncellemeler onu OLDUGU GIBI birakmali — "?? "
       // yeterli degildi cunku acikca null gecip temizlemeyi de imkansiz kilardi,
