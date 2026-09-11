@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/constants/diamond_reason_labels.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/diamond_icon.dart';
 import 'package:qulo_v2/data/models/diamond_model.dart';
+import 'package:qulo_v2/features/performance/mixins/diamond_transaction_tile_mixin.dart';
 
-class DiamondTransactionTile extends StatelessWidget {
+class DiamondTransactionTile extends StatelessWidget with DiamondTransactionTileMixin {
   final DiamondTransaction transaction;
 
   const DiamondTransactionTile({super.key, required this.transaction});
@@ -29,12 +31,12 @@ class DiamondTransactionTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _reasonLabel(context, transaction.reason),
+                  context.tr(diamondReasonKey(transaction.reason)),
                   style: theme.textTheme.bodyMedium,
                 ),
                 if (transaction.createdAt != null)
                   Text(
-                    _formatDate(context, transaction.createdAt!),
+                    formattedDate(context, transaction.createdAt!),
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: context.appColors.textSecondary,
                     ),
@@ -54,22 +56,5 @@ class DiamondTransactionTile extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String _reasonLabel(BuildContext context, String reason) {
-    return switch (reason) {
-      'POWER_USED' => context.tr('reason_power_used'),
-      'POWER_REWARD' => context.tr('reason_power_reward'),
-      'IAP' => context.tr('reason_iap'),
-      'REFERRAL' => context.tr('reason_referral'),
-      'SUBSCRIPTION_BONUS' => context.tr('reason_subscription'),
-      'BOOST' => context.tr('reason_boost'),
-      _ => reason.replaceAll('_', ' ').toLowerCase(),
-    };
-  }
-
-  String _formatDate(BuildContext context, String dateStr) {
-    final dt = DateTime.tryParse(dateStr);
-    return dt == null ? '' : context.fmt.date(dt);
   }
 }

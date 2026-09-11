@@ -29,30 +29,67 @@ class FakeUserRepository implements UserRepository {
       throw UnimplementedError('FakeUserRepository.${invocation.memberName}');
 }
 
+/// Hata alanlari degistirilebilir: once basarili yukleyip sonra hataya gecerek
+/// "hata onceki veriyi silmez" davranisi sinanir. Cagri sayaclari satin alma
+/// sonrasi tazelemenin YALNIZCA basarida yapildigini dogrular.
 class FakeExchangeRepository implements ExchangeRepository {
-  FakeExchangeRepository({this.inventory = const []});
+  FakeExchangeRepository({
+    this.inventory = const [],
+    this.rates = const RatesResponse(convertRatio: 3, powers: []),
+    this.inventoryFailure,
+    this.ratesFailure,
+    this.convertFailure,
+    this.buyPowerFailure,
+  });
 
-  final List<PowerInventoryItem> inventory;
+  List<PowerInventoryItem> inventory;
+  RatesResponse rates;
+  AppFailure? inventoryFailure;
+  AppFailure? ratesFailure;
+  final AppFailure? convertFailure;
+  final AppFailure? buyPowerFailure;
+
+  int getInventoryCallCount = 0;
+  int convertCallCount = 0;
+  int buyPowerCallCount = 0;
 
   @override
-  Future<Result<InventoryResponse>> getInventory() async =>
-      Success(InventoryResponse(inventory: inventory));
+  Future<Result<InventoryResponse>> getInventory() async {
+    getInventoryCallCount++;
+    if (inventoryFailure != null) return Failure(inventoryFailure!);
+    return Success(InventoryResponse(inventory: inventory));
+  }
 
   @override
-  Future<Result<RatesResponse>> getRates() async =>
-      const Success(RatesResponse(convertRatio: 3, powers: []));
+  Future<Result<RatesResponse>> getRates() async {
+    if (ratesFailure != null) return Failure(ratesFailure!);
+    return Success(rates);
+  }
 
   @override
-  Future<Result<ConvertResponse>> convert(int greenAmount) =>
-      throw UnimplementedError();
+  Future<Result<ConvertResponse>> convert(int greenAmount) async {
+    convertCallCount++;
+    if (convertFailure != null) return Failure(convertFailure!);
+    final purple = greenAmount ~/ rates.convertRatio;
+    return Success(ConvertResponse(
+      purpleReceived: purple,
+      newBalance: DiamondBalance(green: 0, purple: purple),
+    ));
+  }
 
   @override
   Future<Result<BuyPowerResponse>> buyPower(
     String powerName,
     String diamondType,
     int quantity,
-  ) =>
-      throw UnimplementedError();
+  ) async {
+    buyPowerCallCount++;
+    if (buyPowerFailure != null) return Failure(buyPowerFailure!);
+    return Success(BuyPowerResponse(
+      newCount: quantity,
+      newBalance: const DiamondBalance(green: 0, purple: 0),
+    ));
+  }
 }
 
 /// Elmas repository'si — 3 metot, hepsi acik yazildi (ExchangeRepository stili).

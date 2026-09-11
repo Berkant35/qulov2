@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
+import 'package:qulo_v2/core/constants/diamond_reason_labels.dart';
 import 'package:qulo_v2/core/constants/power_labels.dart';
 import 'package:qulo_v2/core/l10n/translations/en.dart';
 
@@ -40,5 +41,10 @@ void main() {
   test('güç adı → etiket ve açıklama anahtarları (8 güç)', () {
     expectKeys('power label', powerNames.map(powerLabelKey));
     expectKeys('power desc', powerNames.map(powerDescKey));
+  });
+
+  test('elmas işlem sebebi ve türü anahtarları', () {
+    expectKeys('diamond reason', diamondReasonKeys);
+    expectKeys('diamond type', ['GREEN', 'PURPLE'].map(diamondTypeKey));
   });
 }

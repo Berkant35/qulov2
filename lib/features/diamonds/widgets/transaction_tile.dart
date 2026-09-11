@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/constants/diamond_reason_labels.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
@@ -28,9 +30,9 @@ class TransactionTile extends StatelessWidget {
             isPositive ? QIcons.icPlusCircle : QIcons.icMinusCircle,
             color: isPositive ? context.appColors.success : context.appColors.error,
           ),
-          title: Text(transaction.reason),
+          title: Text(context.tr(diamondReasonKey(transaction.reason))),
           subtitle: Text(
-            transaction.type,
+            context.tr(diamondTypeKey(transaction.type)),
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),
