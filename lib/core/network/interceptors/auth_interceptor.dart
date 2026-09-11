@@ -9,20 +9,38 @@ import 'package:qulo_v2/core/network/network_manager.dart';
 class AuthInterceptor extends Interceptor {
   final Dio _dio;
   final VoidCallback? onForceLogout;
-  final _storage = const FlutterSecureStorage();
+  final FlutterSecureStorage _storage;
+  final Dio Function() _createRefreshDio;
+  final Duration _retryBaseDelay;
 
-  Completer<String?>? _refreshCompleter;
+  /// Ayni anda gelen 401'ler tek yenilemeyi paylasir.
+  Future<String?>? _refreshInFlight;
 
   static const _maxRetries = 3;
+
+  /// Yeni token'la tekrar gonderilen istegin isareti: o da 401 alirsa ikinci
+  /// kez yenileme denenmez — yoksa yenile/tekrarla dongusu hic bitmezdi.
+  static const _retriedKey = 'auth_retried';
+
+  /// 401'in "oturum bitti" degil "kimlik bilgisi gecersiz" demek oldugu uclar.
   static const _noRefreshPaths = [
     '/auth/login',
     '/auth/register',
+    '/auth/social-login',
     '/auth/refresh',
     '/auth/forgot-password',
     '/auth/reset-password',
   ];
 
-  AuthInterceptor(this._dio, {this.onForceLogout});
+  AuthInterceptor(
+    this._dio, {
+    this.onForceLogout,
+    FlutterSecureStorage storage = const FlutterSecureStorage(),
+    Dio Function() createRefreshDio = NetworkManager.createRefreshDio,
+    Duration retryBaseDelay = const Duration(seconds: 1),
+  })  : _storage = storage,
+        _createRefreshDio = createRefreshDio,
+        _retryBaseDelay = retryBaseDelay;
 
   @override
   void onRequest(
@@ -38,45 +56,39 @@ class AuthInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    final path = err.requestOptions.path;
-    final isAuthEndpoint = _noRefreshPaths.any((p) => path.endsWith(p));
+    final options = err.requestOptions;
+    final isAuthEndpoint = _noRefreshPaths.any((p) => options.path.endsWith(p));
+    final alreadyRetried = options.extra[_retriedKey] == true;
 
-    if (err.response?.statusCode != 401 || isAuthEndpoint) {
+    if (err.response?.statusCode != 401 || isAuthEndpoint || alreadyRetried) {
       return handler.next(err);
     }
 
-    final newToken = await _ensureRefreshed();
+    final String? newToken;
+    try {
+      newToken = await _ensureRefreshed();
+    } catch (e) {
+      // Beklenmeyen hata (or. depolamaya yazilamadi): handler mutlaka
+      // tamamlanmali, yoksa istek sonsuza kadar asili kalir.
+      LogManager.instance.logInfo('AUTH', 'Refresh failed unexpectedly: $e');
+      return handler.next(err);
+    }
     if (newToken == null) {
       return handler.next(err);
     }
 
     try {
-      err.requestOptions.headers['Authorization'] = 'Bearer $newToken';
-      final response = await _dio.fetch(err.requestOptions);
+      options.headers['Authorization'] = 'Bearer $newToken';
+      options.extra[_retriedKey] = true;
+      final response = await _dio.fetch(options);
       return handler.resolve(response);
     } on DioException catch (retryErr) {
       return handler.next(retryErr);
     }
   }
 
-  Future<String?> _ensureRefreshed() async {
-    if (_refreshCompleter != null) {
-      return _refreshCompleter!.future;
-    }
-
-    final completer = Completer<String?>();
-    _refreshCompleter = completer;
-    try {
-      final result = await _refreshWithRetry();
-      completer.complete(result);
-      return result;
-    } catch (e, st) {
-      completer.completeError(e, st);
-      rethrow;
-    } finally {
-      _refreshCompleter = null;
-    }
-  }
+  Future<String?> _ensureRefreshed() => _refreshInFlight ??=
+      _refreshWithRetry().whenComplete(() => _refreshInFlight = null);
 
   Future<String?> _refreshWithRetry() async {
     final refreshToken = await _storage.read(key: 'refresh_token');
@@ -90,7 +102,7 @@ class AuthInterceptor extends Interceptor {
 
     for (var attempt = 1; attempt <= _maxRetries; attempt++) {
       try {
-        final refreshDio = NetworkManager.createRefreshDio();
+        final refreshDio = _createRefreshDio();
         final response = await refreshDio.post(
           '/auth/refresh',
           data: {'refreshToken': refreshToken},
@@ -147,8 +159,7 @@ class AuthInterceptor extends Interceptor {
         );
 
         if (attempt < _maxRetries) {
-          final delayMs = 1000 * (1 << (attempt - 1)); // 1s, 2s, 4s
-          await Future.delayed(Duration(milliseconds: delayMs));
+          await Future.delayed(_retryBaseDelay * (1 << (attempt - 1))); // 1s, 2s, 4s
         }
       }
     }
