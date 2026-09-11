@@ -24,6 +24,12 @@ void main() {
       expect(const TimeoutFailure().userMessageKey('purchase_failed'), 'error_timeout');
     });
 
+    test('rate limit (429, sunucu rateLimitResponse) kendi anahtarina gider', () {
+      const f = ServerFailure(code: 'RATE_LIMITED', statusCode: 429);
+
+      expect(f.userMessageKey('purchase_failed'), 'error_rate_limited');
+    });
+
     test('sunucu hatasi cagiranin anahtarina duser — mesaj gelse bile ham gosterilmez', () {
       const f = ServerFailure(code: 'SERVER_ERROR', statusCode: 500, message: 'Internal error');
 

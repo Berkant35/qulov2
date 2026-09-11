@@ -12,6 +12,7 @@ extension AppFailureMessageKey on AppFailure {
   String userMessageKey(String fallbackKey) => switch (this) {
         NetworkFailure() => 'error_no_connection',
         TimeoutFailure() => 'error_timeout',
+        ServerFailure(code: 'RATE_LIMITED') => 'error_rate_limited',
         _ => fallbackKey,
       };
 }

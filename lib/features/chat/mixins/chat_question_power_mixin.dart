@@ -184,14 +184,8 @@ mixin ChatQuestionPowerMixin on SolveChatQuestionScreenMixin {
               SnackBar(content: Text(context.tr('quiz_power_failed'))),
             );
           }
-        } else if (f is ServerFailure && f.code == 'RATE_LIMITED') {
-          timerKey.currentState?.resume();
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(context.tr('error_rate_limited'))),
-            );
-          }
         } else {
+          // Ag / zaman asimi / rate limit metni `userMessageKey`'den gelir.
           timerKey.currentState?.resume();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
