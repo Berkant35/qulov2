@@ -879,6 +879,8 @@ const ptTranslations = <String, String>{
   'chat_message_deleted': 'Esta mensagem foi apagada',
   'paywall_buy_purple': 'Comprar Diamantes Roxos',
   'comparison_free_header': 'GRÁTIS',
+  'error_no_connection': 'Sem conexão com a internet. Tente novamente.',
+  'error_timeout': 'A conexão expirou. Tente novamente.',
   // Porta de configuração do perfil
   'setup_title': 'Faltam alguns passos',
   'setup_subtitle': 'Complete seu perfil para começar a dar match',

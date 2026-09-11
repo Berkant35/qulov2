@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/core/network/failure_message.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/data/models/chat_question_model.dart';
 import 'package:qulo_v2/features/chat/screens/solve_chat_question_screen.dart';
@@ -116,7 +117,7 @@ mixin SolveChatQuestionScreenMixin
         timerKey.currentState?.resume();
         setState(() => isSubmitting = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(f.message ?? context.tr('error_general'))),
+          SnackBar(content: Text(context.tr(f.userMessageKey('error_general')))),
         );
       },
     );
@@ -213,7 +214,7 @@ mixin SolveChatQuestionScreenMixin
         }
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(f.message ?? context.tr('error_general'))),
+          SnackBar(content: Text(context.tr(f.userMessageKey('error_general')))),
         );
       },
     );
@@ -247,7 +248,7 @@ mixin SolveChatQuestionScreenMixin
       failure: (f) {
         setState(() => isSubmitting = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(f.message ?? context.tr('error_chat_generic'))),
+          SnackBar(content: Text(context.tr(f.userMessageKey('error_chat_generic')))),
         );
       },
     );

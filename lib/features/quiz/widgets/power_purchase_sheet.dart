@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/constants/power_labels.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/core/network/failure_message.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
@@ -56,7 +57,7 @@ class _PowerPurchaseSheetState extends ConsumerState<PowerPurchaseSheet> {
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(f.message ?? context.tr('purchase_failed')),
+                content: Text(context.tr(f.userMessageKey('purchase_failed'))),
                 backgroundColor: context.appColors.error,
               ),
             );
@@ -67,13 +68,13 @@ class _PowerPurchaseSheetState extends ConsumerState<PowerPurchaseSheet> {
           // 24h social-signup cooldown — subscription doesn't bypass; show explanation.
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(f.message ?? context.tr('purchase_failed')),
+              content: Text(context.tr(f.userMessageKey('purchase_failed'))),
               backgroundColor: context.appColors.error,
             ),
           );
           return;
         }
-        final message = f.message ?? context.tr('purchase_failed');
+        final message = context.tr(f.userMessageKey('purchase_failed'));
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(message),

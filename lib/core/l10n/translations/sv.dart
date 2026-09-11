@@ -879,6 +879,8 @@ const svTranslations = <String, String>{
   'chat_message_deleted': 'Det här meddelandet har raderats',
   'paywall_buy_purple': 'Köp lila diamanter',
   'comparison_free_header': 'GRATIS',
+  'error_no_connection': 'Ingen internetanslutning. Försök igen.',
+  'error_timeout': 'Anslutningen tog för lång tid. Försök igen.',
   // Profilinställningsport
   'setup_title': 'Bara några steg kvar',
   'setup_subtitle': 'Slutför din profil för att börja matcha',

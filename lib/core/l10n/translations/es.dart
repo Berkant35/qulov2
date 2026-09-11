@@ -879,6 +879,8 @@ const esTranslations = <String, String>{
   'chat_message_deleted': 'Este mensaje fue eliminado',
   'paywall_buy_purple': 'Comprar diamantes morados',
   'comparison_free_header': 'GRATIS',
+  'error_no_connection': 'Sin conexión a internet. Inténtalo de nuevo.',
+  'error_timeout': 'Se agotó el tiempo de conexión. Inténtalo de nuevo.',
   // Configuración del perfil
   'setup_title': 'Faltan unos pocos pasos',
   'setup_subtitle': 'Completa tu perfil para empezar a hacer match',

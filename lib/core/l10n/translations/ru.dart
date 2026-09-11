@@ -877,6 +877,8 @@ const ruTranslations = <String, String>{
   'chat_message_deleted': 'Это сообщение удалено',
   'paywall_buy_purple': 'Купить фиолетовые алмазы',
   'comparison_free_header': 'БЕСПЛАТНО',
+  'error_no_connection': 'Нет подключения к интернету. Попробуйте ещё раз.',
+  'error_timeout': 'Время ожидания истекло. Попробуйте ещё раз.',
   // Шлюз настройки профиля
   'setup_title': 'Осталось пару шагов',
   'setup_subtitle': 'Заполни профиль, чтобы начать матчиться',

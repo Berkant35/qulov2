@@ -879,6 +879,8 @@ const hiTranslations = <String, String>{
   'chat_message_deleted': 'यह संदेश हटा दिया गया',
   'paywall_buy_purple': 'बैंगनी हीरे खरीदें',
   'comparison_free_header': 'मुफ़्त',
+  'error_no_connection': 'इंटरनेट कनेक्शन नहीं है। कृपया फिर से प्रयास करें।',
+  'error_timeout': 'कनेक्शन का समय समाप्त हो गया। कृपया फिर से प्रयास करें।',
   // प्रोफ़ाइल सेटअप गेट
   'setup_title': 'कुछ ही कदम बाकी',
   'setup_subtitle': 'मैचिंग शुरू करने के लिए प्रोफ़ाइल पूरी करें',

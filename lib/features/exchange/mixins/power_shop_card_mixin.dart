@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
+import 'package:qulo_v2/core/network/failure_message.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/widgets/power_icon.dart';
@@ -140,7 +141,7 @@ mixin PowerShopCardMixin on ConsumerState<PowerShopCard>
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(f.message ?? context.tr('purchase_failed')),
+                content: Text(context.tr(f.userMessageKey('purchase_failed'))),
                 backgroundColor: context.appColors.error,
               ),
             );

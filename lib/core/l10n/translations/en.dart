@@ -912,6 +912,8 @@ const enTranslations = <String, String>{
   'chat_message_deleted': 'This message was deleted',
   'paywall_buy_purple': 'Buy Purple Diamonds',
   'comparison_free_header': 'FREE',
+  'error_no_connection': 'No internet connection. Please try again.',
+  'error_timeout': 'The connection timed out. Please try again.',
   // Profile Setup Gate
   'setup_title': 'A few steps left',
   'setup_subtitle': 'Complete your profile to start matching',

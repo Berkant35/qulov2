@@ -877,6 +877,8 @@ const nlTranslations = <String, String>{
   'chat_message_deleted': 'Dit bericht is verwijderd',
   'paywall_buy_purple': 'Paarse diamanten kopen',
   'comparison_free_header': 'GRATIS',
+  'error_no_connection': 'Geen internetverbinding. Probeer het opnieuw.',
+  'error_timeout': 'Time-out van de verbinding. Probeer het opnieuw.',
   // Profiel Instelpoort
   'setup_title': 'Nog een paar stappen',
   'setup_subtitle': 'Maak je profiel af om te matchen',

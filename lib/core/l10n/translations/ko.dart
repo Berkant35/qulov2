@@ -877,6 +877,8 @@ const koTranslations = <String, String>{
   'chat_message_deleted': '삭제된 메시지입니다',
   'paywall_buy_purple': '보라색 다이아몬드 구매',
   'comparison_free_header': '무료',
+  'error_no_connection': '인터넷에 연결되어 있지 않습니다. 다시 시도해 주세요.',
+  'error_timeout': '연결 시간이 초과되었습니다. 다시 시도해 주세요.',
   // 프로필 설정 게이트
   'setup_title': '몇 단계 남았어요',
   'setup_subtitle': '매칭을 시작하려면 프로필을 완성하세요',

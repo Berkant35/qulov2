@@ -877,6 +877,8 @@ const plTranslations = <String, String>{
   'chat_message_deleted': 'Ta wiadomość została usunięta',
   'paywall_buy_purple': 'Kup fioletowe diamenty',
   'comparison_free_header': 'DARMOWY',
+  'error_no_connection': 'Brak połączenia z internetem. Spróbuj ponownie.',
+  'error_timeout': 'Przekroczono limit czasu połączenia. Spróbuj ponownie.',
   // Brama konfiguracji profilu
   'setup_title': 'Zostało kilka kroków',
   'setup_subtitle': 'Uzupełnij profil, by zacząć dopasowywać',

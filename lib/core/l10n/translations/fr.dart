@@ -879,6 +879,8 @@ const frTranslations = <String, String>{
   'chat_message_deleted': 'Ce message a été supprimé',
   'paywall_buy_purple': 'Acheter des diamants violets',
   'comparison_free_header': 'GRATUIT',
+  'error_no_connection': 'Pas de connexion internet. Veuillez réessayer.',
+  'error_timeout': 'La connexion a expiré. Veuillez réessayer.',
   // Porte de configuration du profil
   'setup_title': 'Encore quelques étapes',
   'setup_subtitle': 'Complète ton profil pour commencer à matcher',

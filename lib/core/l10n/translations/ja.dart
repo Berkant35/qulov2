@@ -879,6 +879,8 @@ const jaTranslations = <String, String>{
   'chat_message_deleted': 'このメッセージは削除されました',
   'paywall_buy_purple': 'パープルダイヤを購入',
   'comparison_free_header': '無料',
+  'error_no_connection': 'インターネットに接続されていません。もう一度お試しください。',
+  'error_timeout': '接続がタイムアウトしました。もう一度お試しください。',
   // プロフィール設定ゲート
   'setup_title': 'あと少しです',
   'setup_subtitle': 'プロフィールを完成させてマッチを始めよう',

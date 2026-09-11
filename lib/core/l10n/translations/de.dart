@@ -879,6 +879,8 @@ const deTranslations = <String, String>{
   'chat_message_deleted': 'Diese Nachricht wurde gelöscht',
   'paywall_buy_purple': 'Lila Diamanten kaufen',
   'comparison_free_header': 'KOSTENLOS',
+  'error_no_connection': 'Keine Internetverbindung. Bitte versuche es erneut.',
+  'error_timeout': 'Zeitüberschreitung der Verbindung. Bitte versuche es erneut.',
   // Profileinrichtungstor
   'setup_title': 'Nur noch ein paar Schritte',
   'setup_subtitle': 'Vervollständige dein Profil, um Matches zu starten',

@@ -912,6 +912,8 @@ const trTranslations = <String, String>{
   'chat_message_deleted': 'Bu mesaj silindi',
   'paywall_buy_purple': 'Mor Elmas Satın Al',
   'comparison_free_header': 'ÜCRETSİZ',
+  'error_no_connection': 'İnternet bağlantısı yok. Lütfen tekrar dene.',
+  'error_timeout': 'Bağlantı zaman aşımına uğradı. Lütfen tekrar dene.',
   // Profil Kurulum Kapısı
   'setup_title': 'Birkaç adım kaldı',
   'setup_subtitle': 'Profilini tamamla, eşleşmen başlasın',

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/core/network/failure_message.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
@@ -194,7 +195,7 @@ mixin ChatQuestionPowerMixin on SolveChatQuestionScreenMixin {
           timerKey.currentState?.resume();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-                content: Text(f.message ?? context.tr('error_general'))),
+                content: Text(context.tr(f.userMessageKey('error_general')))),
           );
         }
       },
@@ -288,7 +289,7 @@ mixin ChatQuestionPowerMixin on SolveChatQuestionScreenMixin {
         }
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(f.message ?? context.tr('error_rescue_failed'))),
+          SnackBar(content: Text(context.tr(f.userMessageKey('error_rescue_failed')))),
         );
       },
     );

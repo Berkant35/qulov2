@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/core/network/failure_message.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
@@ -212,7 +213,7 @@ mixin QuizPowerMixin on QuizScreenStateMixin {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(f.message ?? context.tr('quiz_power_failed')),
+        content: Text(context.tr(f.userMessageKey('quiz_power_failed'))),
         backgroundColor: context.appColors.error,
       ),
     );

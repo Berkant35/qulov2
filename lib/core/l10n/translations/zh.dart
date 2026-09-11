@@ -877,6 +877,8 @@ const zhTranslations = <String, String>{
   'chat_message_deleted': '此消息已删除',
   'paywall_buy_purple': '购买紫钻',
   'comparison_free_header': '免费',
+  'error_no_connection': '没有网络连接，请重试。',
+  'error_timeout': '连接超时，请重试。',
   // 个人资料设置入口
   'setup_title': '还差几步',
   'setup_subtitle': '完成资料即可开始匹配',

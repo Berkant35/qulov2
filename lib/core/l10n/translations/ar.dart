@@ -877,6 +877,8 @@ const arTranslations = <String, String>{
   'chat_message_deleted': 'تم حذف هذه الرسالة',
   'paywall_buy_purple': 'شراء الماسات البنفسجية',
   'comparison_free_header': 'مجاني',
+  'error_no_connection': 'لا يوجد اتصال بالإنترنت. حاول مرة أخرى.',
+  'error_timeout': 'انتهت مهلة الاتصال. حاول مرة أخرى.',
   // بوابة إعداد الملف الشخصي
   'setup_title': 'بقيت خطوات قليلة',
   'setup_subtitle': 'أكمل ملفك الشخصي لبدء المطابقة',
