@@ -86,21 +86,11 @@ mixin EditProfilePhotosMixin on EditProfileScreenMixin {
   }
 
   Future<void> _pickCropAndUpload(ImageSource source) async {
-    final PickedImage? picked;
-    try {
-      picked = await ref
-          .read(imagePickerManagerProvider)
-          .pickAndCrop(context, source);
-    } on ImagePickerPermissionException catch (e) {
-      if (mounted) {
-        await showImagePickerPermissionDialog(
-          ref,
-          context,
-          isCamera: e.isCamera,
-        );
-      }
-      return;
-    }
+    final picked = await pickWithPermissionPrompt(
+      ref,
+      context,
+      () => ref.read(imagePickerManagerProvider).pickAndCrop(context, source),
+    );
     if (picked == null) return;
 
     final result = await ref

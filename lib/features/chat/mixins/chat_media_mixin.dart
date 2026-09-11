@@ -114,21 +114,11 @@ mixin ChatMediaMixin on ChatScreenMixin {
 
   Future<void> _pickAndSendPhoto(ImageSource source) async {
     final picker = ref.read(imagePickerManagerProvider);
-    final PickedImage? picked;
-    try {
-      picked = source == ImageSource.gallery
-          ? await picker.pickFromGallery()
-          : await picker.pickFromCamera();
-    } on ImagePickerPermissionException catch (e) {
-      if (mounted) {
-        await showImagePickerPermissionDialog(
-          ref,
-          context,
-          isCamera: e.isCamera,
-        );
-      }
-      return;
-    }
+    final picked = await pickWithPermissionPrompt(
+      ref,
+      context,
+      () => source == ImageSource.gallery ? picker.pickFromGallery() : picker.pickFromCamera(),
+    );
     if (picked == null) return;
 
     try {

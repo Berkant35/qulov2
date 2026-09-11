@@ -5,6 +5,7 @@ import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/diamond_icon.dart';
+import 'package:qulo_v2/core/widgets/image_picker_permission_dialog.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 
 class ChatQuestionStep2 extends ConsumerStatefulWidget {
@@ -194,8 +195,9 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
 
   Future<void> _pickPhoto() async {
     final picker = ref.read(imagePickerManagerProvider);
-    final picked = await picker.pickFromGallery();
-    if (picked == null) return;
+    // Izin reddi eskiden yakalanmiyordu: kullanici hicbir geri bildirim almiyordu.
+    final picked = await pickWithPermissionPrompt(ref, context, picker.pickFromGallery);
+    if (picked == null || !mounted) return;
 
     setState(() => _isUploading = true);
     try {

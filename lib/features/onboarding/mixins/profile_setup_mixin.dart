@@ -4,6 +4,7 @@ import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/widgets/image_picker_permission_dialog.dart';
 import 'package:qulo_v2/features/onboarding/widgets/setup_ai_preview_sheet.dart';
 import 'package:qulo_v2/features/onboarding/widgets/setup_brief_sheet.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
@@ -58,11 +59,17 @@ mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
       final picker = ref.read(imagePickerManagerProvider);
       if (!mounted) return;
       // ignore: use_build_context_synchronously
-      final picked = source == 'camera'
-          // ignore: use_build_context_synchronously
-          ? await picker.pickAndCropFromCamera(context)
-          // ignore: use_build_context_synchronously
-          : await picker.pickAndCropFromGallery(context);
+      // Izin reddi burada genel "yukleme hatasi"na dusuyordu; yardimci ayarlara
+      // yonlendiren dialog'u gosterip null doner (asagida vazgecme dali).
+      final picked = await pickWithPermissionPrompt(
+        ref,
+        context,
+        () => source == 'camera'
+            // ignore: use_build_context_synchronously
+            ? picker.pickAndCropFromCamera(context)
+            // ignore: use_build_context_synchronously
+            : picker.pickAndCropFromGallery(context),
+      );
       if (picked == null) {
         if (mounted) setState(() => isUploadingPhoto = false);
         return;

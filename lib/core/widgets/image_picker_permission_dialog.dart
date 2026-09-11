@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
+import 'package:qulo_v2/core/services/image_picker_manager.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 
 /// Shows a dialog explaining that camera or photo permission was denied and
@@ -31,5 +32,26 @@ Future<void> showImagePickerPermissionDialog(
 
   if (confirmed == true) {
     await ref.read(imagePickerManagerProvider).openAppSettings();
+  }
+}
+
+/// Secici cagrisini sarar: izin reddinde ayarlara yonlendiren dialog'u
+/// gosterir ve `null` doner (kullanici vazgecmis gibi). TUM secici cagrilari
+/// bundan gecmeli — elle yazilan catch unutulunca izin reddi ya genel "yukleme
+/// hatasi" mesajina (profil kurulumu) ya da yakalanmayan istisnaya (soru
+/// gorseli) donusuyordu; iOS reddden sonra bir daha sormadigi icin kullanici
+/// ayarlara gidilmesi gerektigini hic ogrenemiyordu.
+Future<PickedImage?> pickWithPermissionPrompt(
+  WidgetRef ref,
+  BuildContext context,
+  Future<PickedImage?> Function() pick,
+) async {
+  try {
+    return await pick();
+  } on ImagePickerPermissionException catch (e) {
+    if (context.mounted) {
+      await showImagePickerPermissionDialog(ref, context, isCamera: e.isCamera);
+    }
+    return null;
   }
 }
