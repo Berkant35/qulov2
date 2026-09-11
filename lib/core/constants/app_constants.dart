@@ -14,6 +14,10 @@ abstract final class AppConstants {
   static const int defaultMatchRadiusKm = 50;
   static const int maxQuestions = 6;
 
+  /// Destek adresi (banlanan kullanicinin tek itiraz yolu). Sunucu
+  /// `config/env.ts` ve web ile ayni kanonik adres.
+  static const supportEmail = 'info@socrepho.com';
+
   /// Destek talebi kategorileri (sunucu enum'u) ve `ticket_cat_<kategori>` anahtarlari.
   static const List<String> ticketCategories = [
     'ACCOUNT', 'TECHNICAL', 'BILLING', 'MATCH', 'OTHER',

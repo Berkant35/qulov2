@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
@@ -42,7 +43,7 @@ class BannedScreen extends ConsumerWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
-            'info@socrepho.com',
+            AppConstants.supportEmail,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: context.appColors.primary,
               fontWeight: FontWeight.w600,
