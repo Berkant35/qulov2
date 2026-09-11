@@ -164,6 +164,8 @@ class FakeQuestionRepository implements QuestionRepository {
     this.reorderFailure,
     this.reorderResponse,
     this.reorderCompleter,
+    this.aiResponse = const {},
+    this.aiFailure,
   });
 
   final List<QuestionModel> questions;
@@ -171,9 +173,19 @@ class FakeQuestionRepository implements QuestionRepository {
   final AppFailure? reorderFailure;
   final List<QuestionModel>? reorderResponse;
   final Completer<void>? reorderCompleter;
+  final Map<String, dynamic> aiResponse;
+  final AppFailure? aiFailure;
 
   int reorderCallCount = 0;
   List<String>? lastOrderedIds;
+  Map<String, dynamic>? lastAiBody;
+
+  @override
+  Future<Result<Map<String, dynamic>>> getAiSuggestions(Map<String, dynamic> body) async {
+    lastAiBody = body;
+    if (aiFailure != null) return Failure(aiFailure!);
+    return Success(aiResponse);
+  }
 
   @override
   Future<Result<List<QuestionModel>>> getMyQuestions() async {
