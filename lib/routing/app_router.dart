@@ -43,6 +43,7 @@ import 'package:qulo_v2/core/widgets/app_icon.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
+import 'package:qulo_v2/routing/setup_gate_redirect.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/navigation/observers/route_change_notifier.dart';
@@ -158,45 +159,14 @@ final routerProvider = Provider<GoRouter>((ref) {
         return pendingLink;
       }
 
-      // 6. Profile completion check — age null means social login user hasn't completed profile
-      if (isAuth && state.matchedLocation != '/profile-completion') {
-        final user = ref.read(userProvider).value;
-        if (user != null && user.age == null) {
-          return '/profile-completion';
-        }
-      }
-
-      // Already on profile-completion but profile is done → go to discover
-      if (isAuth && state.matchedLocation == '/profile-completion') {
-        final user = ref.read(userProvider).value;
-        if (user != null && user.age != null) {
-          return '/discover';
-        }
-        return null;
-      }
-
-      // 7. Setup gate: photo + 2 questions required
-      // (age != null already implies registration complete)
-      // Allow /questions/* (Kendim Olustur path) and /profile/* (foto, edit)
-      // so the user can actually complete the gate.
-      final isSetupSubflow = state.matchedLocation.startsWith('/questions') ||
-          state.matchedLocation.startsWith('/profile');
-      if (isAuth &&
-          state.matchedLocation != '/profile-setup' &&
-          !isSetupSubflow) {
-        final user = ref.read(userProvider).value;
-        if (user != null && user.age != null && !user.setupComplete) {
-          return '/profile-setup';
-        }
-      }
-
-      // 8. On /profile-setup but already complete → discover
-      if (isAuth && state.matchedLocation == '/profile-setup') {
-        final user = ref.read(userProvider).value;
-        if (user != null && user.setupComplete) {
-          return '/discover';
-        }
-        return null;
+      // 6-8. Profil tamamlama (yas) + kurulum kapisi (foto + soru).
+      // Saf kural ve kenar durumlari: setup_gate_redirect.dart
+      if (isAuth) {
+        final gate = setupGateRedirect(
+          location: state.matchedLocation,
+          user: ref.read(userProvider).value,
+        );
+        if (gate != null) return gate;
       }
 
       // 9. Auth + auth route veya splash → discover'a yonlendir
