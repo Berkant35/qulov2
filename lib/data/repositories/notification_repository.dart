@@ -23,6 +23,8 @@ class NotificationRepository {
       return Success(list);
     } on DioException catch (e) {
       return Failure(e.toAppFailure());
+    } catch (e) {
+      return Failure(UnknownFailure(error: e));
     }
   }
 
@@ -32,6 +34,8 @@ class NotificationRepository {
       return Success((response['unreadCount'] as num?)?.toInt() ?? 0);
     } on DioException catch (e) {
       return Failure(e.toAppFailure());
+    } catch (e) {
+      return Failure(UnknownFailure(error: e));
     }
   }
 
@@ -41,6 +45,8 @@ class NotificationRepository {
       return const Success(null);
     } on DioException catch (e) {
       return Failure(e.toAppFailure());
+    } catch (e) {
+      return Failure(UnknownFailure(error: e));
     }
   }
 
@@ -50,6 +56,8 @@ class NotificationRepository {
       return const Success(null);
     } on DioException catch (e) {
       return Failure(e.toAppFailure());
+    } catch (e) {
+      return Failure(UnknownFailure(error: e));
     }
   }
 
@@ -59,6 +67,8 @@ class NotificationRepository {
       return const Success(null);
     } on DioException catch (e) {
       return Failure(e.toAppFailure());
+    } catch (e) {
+      return Failure(UnknownFailure(error: e));
     }
   }
 }

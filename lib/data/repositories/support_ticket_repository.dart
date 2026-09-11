@@ -24,6 +24,8 @@ class SupportTicketRepository implements ISupportTicketRepository {
       return Success(SupportTicketModel.fromJson(response));
     } on DioException catch (e) {
       return Failure(e.toAppFailure());
+    } catch (e) {
+      return Failure(UnknownFailure(error: e));
     }
   }
 
@@ -35,6 +37,8 @@ class SupportTicketRepository implements ISupportTicketRepository {
       return Success(tickets);
     } on DioException catch (e) {
       return Failure(e.toAppFailure());
+    } catch (e) {
+      return Failure(UnknownFailure(error: e));
     }
   }
 
@@ -45,6 +49,8 @@ class SupportTicketRepository implements ISupportTicketRepository {
       return Success(SupportTicketModel.fromJson(response));
     } on DioException catch (e) {
       return Failure(e.toAppFailure());
+    } catch (e) {
+      return Failure(UnknownFailure(error: e));
     }
   }
 }
