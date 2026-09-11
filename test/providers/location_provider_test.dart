@@ -164,6 +164,23 @@ void main() {
       expect(h.state.lat, 41.0);
     });
 
+    test('onceki basaridan sonra hata olursa 15 dk kisitina takilmadan tekrar dener', () async {
+      // Ayirt edici senaryo: kisit (son basari < 15 dk) tek basina tekrar
+      // denemeyi ENGELLERDI; yalnizca "hata varsa her zaman dene" dali acar.
+      final h = _Harness();
+      await h.notifier.getCurrentLocation();
+      h.location.serviceEnabled = false;
+      await h.notifier.getCurrentLocation();
+      expect(h.state.error, 'LOCATION_SERVICE_DISABLED');
+      h.location.serviceEnabled = true;
+
+      h.notifier.onAppResumed();
+      await _settle();
+
+      expect(h.state.error, isNull);
+      expect(h.location.positionCalls, 2);
+    });
+
     test('yukleme surerken tetiklenmez', () async {
       final gate = Completer<LocationResult>();
       final h = _Harness()..location.positionGate = gate;
