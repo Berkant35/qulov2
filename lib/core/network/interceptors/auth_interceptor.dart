@@ -20,7 +20,7 @@ class AuthInterceptor extends Interceptor {
 
   /// Yeni token'la tekrar gonderilen istegin isareti: o da 401 alirsa ikinci
   /// kez yenileme denenmez — yoksa yenile/tekrarla dongusu hic bitmezdi.
-  static const _retriedKey = 'auth_retried';
+  static const retriedKey = 'auth_retried';
 
   /// 401'in "oturum bitti" degil "kimlik bilgisi gecersiz" demek oldugu uclar.
   static const _noRefreshPaths = [
@@ -58,7 +58,7 @@ class AuthInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) async {
     final options = err.requestOptions;
     final isAuthEndpoint = _noRefreshPaths.any((p) => options.path.endsWith(p));
-    final alreadyRetried = options.extra[_retriedKey] == true;
+    final alreadyRetried = options.extra[retriedKey] == true;
 
     if (err.response?.statusCode != 401 || isAuthEndpoint || alreadyRetried) {
       return handler.next(err);
@@ -79,7 +79,7 @@ class AuthInterceptor extends Interceptor {
 
     try {
       options.headers['Authorization'] = 'Bearer $newToken';
-      options.extra[_retriedKey] = true;
+      options.extra[retriedKey] = true;
       final response = await _dio.fetch(options);
       return handler.resolve(response);
     } on DioException catch (retryErr) {

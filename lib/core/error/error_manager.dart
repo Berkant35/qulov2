@@ -27,14 +27,13 @@ class ErrorManager {
     await _crashlytics.setCrashlyticsCollectionEnabled(kReleaseMode);
   }
 
+  /// Non-fatal'in tek kayit yolu `AnalyticsManager.logNonFatalError`
+  /// (Crashlytics kaydi + baglam anahtari + analytics olayi). Burada ayrica
+  /// `recordError` cagirmak her non-fatal'i Crashlytics'e iki kez yaziyordu.
   static void logError(Object error, [StackTrace? stack, String? reason]) {
-    if (kReleaseMode) {
-      _crashlytics.recordError(error, stack, reason: reason);
-    } else {
+    if (!kReleaseMode) {
       debugPrint('Error: $error${reason != null ? ' ($reason)' : ''}');
     }
-
-    // Forward to AnalyticsManager for breadcrumb tracking
     AnalyticsManager.instance.logNonFatalError(error, stack, context: reason);
   }
 
@@ -45,35 +44,5 @@ class ErrorManager {
 
   static void setCustomKey(String key, Object value) {
     _crashlytics.setCustomKey(key, value);
-  }
-
-  /// Log API errors with extended context
-  static void logApiError({
-    required String endpoint,
-    required int? statusCode,
-    required int responseTimeMs,
-    Object? error,
-    StackTrace? stack,
-  }) {
-    logError(
-      error ?? 'API Error: $endpoint ($statusCode)',
-      stack,
-      'API: $endpoint',
-    );
-  }
-
-  /// Log network errors
-  static void logNetworkError({
-    required String endpoint,
-    required String errorType,
-    required int durationMs,
-    Object? error,
-    StackTrace? stack,
-  }) {
-    logError(
-      error ?? 'Network Error: $errorType on $endpoint',
-      stack,
-      'Network: $endpoint ($errorType)',
-    );
   }
 }

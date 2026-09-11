@@ -1,11 +1,10 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:qulo_v2/core/network/interceptors/auth_interceptor.dart';
 
+import '../../../helpers/fake_secure_storage.dart';
 import '../../../helpers/scripted_http_adapter.dart';
 
 /// Oturum yenileme — her API cagrisinin arkasindaki yol.
@@ -215,7 +214,7 @@ class _Harness {
     required this.api,
     ScriptedHttpAdapter? refresh,
   })  : refresh = refresh ?? _rotates(),
-        storage = _FakeStorage(stored) {
+        storage = FakeSecureStorage(stored) {
     dio = scriptedDio(api);
     dio.interceptors.add(AuthInterceptor(
       dio,
@@ -231,36 +230,8 @@ class _Harness {
 
   final ScriptedHttpAdapter api;
   final ScriptedHttpAdapter refresh;
-  final _FakeStorage storage;
+  final FakeSecureStorage storage;
   late final Dio dio;
   int forceLogoutCount = 0;
   int refreshDioCreated = 0;
-}
-
-/// Bellek-ici guvenli depo. Interceptor yalnizca read/write/deleteAll
-/// kullaniyor; gerisi noSuchMethod ile patlar.
-class _FakeStorage implements FlutterSecureStorage {
-  _FakeStorage(Map<String, String> initial) : values = {...initial};
-
-  final Map<String, String> values;
-  bool failWrites = false;
-
-  @override
-  dynamic noSuchMethod(Invocation invocation) {
-    final key = invocation.namedArguments[#key] as String?;
-    switch (invocation.memberName) {
-      case #read:
-        return Future<String?>.value(values[key]);
-      case #write:
-        if (failWrites) {
-          return Future<void>.error(PlatformException(code: 'errSecInteractionNotAllowed'));
-        }
-        values[key!] = invocation.namedArguments[#value] as String;
-        return Future<void>.value();
-      case #deleteAll:
-        values.clear();
-        return Future<void>.value();
-    }
-    return super.noSuchMethod(invocation);
-  }
 }

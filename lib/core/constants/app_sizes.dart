@@ -9,4 +9,8 @@ abstract final class AppSizes {
   static const double iconMd = 24;
   static const double iconLg = 32;
   static const double iconXl = 48;
+
+  // Border
+  static const double borderThin = 1;
+  static const double borderSelected = 2;
 }

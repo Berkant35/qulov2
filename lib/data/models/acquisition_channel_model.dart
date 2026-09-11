@@ -23,6 +23,15 @@ class AcquisitionChannel extends Equatable {
     this.isFreeform = false,
   });
 
+  /// Agdan yuklenecek logo (icon_url) var mi.
+  bool get hasLogo => iconUrl?.isNotEmpty ?? false;
+
+  /// Bos string emoji yok sayilir — satirda bos Text + bosluk birakmasin.
+  bool get hasEmoji => emoji?.isNotEmpty ?? false;
+
+  /// Kanal satirinda gorsel (logo ya da emoji) var mi — yoksa bosluk da birakilmaz.
+  bool get hasIcon => hasLogo || hasEmoji;
+
   factory AcquisitionChannel.fromJson(Map<String, dynamic> json) =>
       _$AcquisitionChannelFromJson(json);
   Map<String, dynamic> toJson() => _$AcquisitionChannelToJson(this);

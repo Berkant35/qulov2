@@ -14,6 +14,10 @@ abstract final class AppConstants {
   static const int defaultMatchRadiusKm = 50;
   static const int maxQuestions = 6;
 
+  /// "Bizi nereden duydun" serbest metin siniri — sunucu
+  /// `acquisition.validator.ts` `freeform_text: max(280)` ile ayni olmali.
+  static const int acquisitionFreeformMaxLength = 280;
+
   /// Destek adresi (banlanan kullanicinin tek itiraz yolu). Sunucu
   /// `config/env.ts` ve web ile ayni kanonik adres.
   static const supportEmail = 'info@socrepho.com';

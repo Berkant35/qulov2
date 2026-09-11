@@ -50,6 +50,9 @@ dependencies:
   geolocator: ^13.0.2
   geocoding: ^3.0.0
   flutter_svg: ^2.0.16
+  # SafeSvgNetworkLoader ağdan gelen SVG'yi flutter_svg'ye vermeden önce aynı
+  # derleyiciyle doğrular (flutter_svg'nin kendi transitive bağımlılığı).
+  vector_graphics_compiler: ^1.1.14
   lottie: ^3.2.0
   shimmer: ^3.0.0
   intl: ^0.20.2
@@ -86,6 +89,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  http: ^1.0.0
   build_runner: ^2.4.13
   json_serializable: ^6.9.0
   riverpod_generator: ^2.6.2
