@@ -162,10 +162,14 @@ class UserModel extends Equatable {
   /// (`matching.service.ts` adim 5.5) `missingVisibilityGates` icinde de
   /// ifade ediliyor ve iki yerde ayri sabit tutmak, sunucu esigi degistiginde
   /// birinin sessizce bayatlamasi demekti.
-  bool get setupComplete =>
-      (photos?.length ?? 0) >= AppConstants.minPhotos &&
-      questionCount >= AppConstants.minQuestions &&
-      genderPrefSetAt != null;
+  ///
+  /// Uc parca ayri getter: kurulum ekraninin kartlari da bunlara bakar, router
+  /// kapisi (`setupComplete`) ile ekran ayni esigi kullanir.
+  bool get hasSetupPhoto => (photos?.length ?? 0) >= AppConstants.minPhotos;
+  bool get hasSetupQuestions => questionCount >= AppConstants.minQuestions;
+  bool get hasGenderPref => genderPrefSetAt != null;
+
+  bool get setupComplete => hasSetupPhoto && hasSetupQuestions && hasGenderPref;
 
   @override
   List<Object?> get props => [
