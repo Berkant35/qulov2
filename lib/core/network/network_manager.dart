@@ -2,8 +2,10 @@ import 'dart:io' show Platform;
 import 'dart:ui' show VoidCallback;
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:qulo_v2/core/config/env.dart';
 import 'package:qulo_v2/core/network/interceptors/accept_language_interceptor.dart';
+import 'package:qulo_v2/core/network/interceptors/app_version_interceptor.dart';
 import 'package:qulo_v2/core/network/interceptors/auth_interceptor.dart';
 import 'package:qulo_v2/core/network/interceptors/error_interceptor.dart';
 import 'package:qulo_v2/core/network/interceptors/idempotency_interceptor.dart';
@@ -49,6 +51,7 @@ class NetworkManager {
     _dio.interceptors.addAll([
       SessionInterceptor(),
       AcceptLanguageInterceptor(),
+      AppVersionInterceptor(),
       IdempotencyInterceptor(),
       AuthInterceptor(_dio, onForceLogout: () => this.onForceLogout?.call()),
       AppLogInterceptor(),
@@ -62,69 +65,48 @@ class NetworkManager {
     String path, {
     Map<String, dynamic>? queryParameters,
     T Function(dynamic json)? parser,
-  }) async {
-    try {
-      final response = await _dio.get(path, queryParameters: queryParameters);
-      return Success(parser != null ? parser(response.data) : response.data as T);
-    } on DioException catch (e) {
-      return Failure(e.toAppFailure());
-    } catch (e) {
-      return Failure(UnknownFailure(error: e));
-    }
-  }
+  }) =>
+      guard<T>(() => _dio.get(path, queryParameters: queryParameters), parser);
 
   Future<Result<T>> post<T>(
     String path, {
     dynamic data,
     T Function(dynamic json)? parser,
-  }) async {
-    try {
-      final response = await _dio.post(path, data: data);
-      return Success(parser != null ? parser(response.data) : response.data as T);
-    } on DioException catch (e) {
-      return Failure(e.toAppFailure());
-    } catch (e) {
-      return Failure(UnknownFailure(error: e));
-    }
-  }
+  }) =>
+      guard<T>(() => _dio.post(path, data: data), parser);
 
   Future<Result<T>> put<T>(
     String path, {
     dynamic data,
     T Function(dynamic json)? parser,
-  }) async {
-    try {
-      final response = await _dio.put(path, data: data);
-      return Success(parser != null ? parser(response.data) : response.data as T);
-    } on DioException catch (e) {
-      return Failure(e.toAppFailure());
-    } catch (e) {
-      return Failure(UnknownFailure(error: e));
-    }
-  }
-
-  Future<Result<T>> patch<T>(
-    String path, {
-    dynamic data,
-    T Function(dynamic json)? parser,
-  }) async {
-    try {
-      final response = await _dio.patch(path, data: data);
-      return Success(parser != null ? parser(response.data) : response.data as T);
-    } on DioException catch (e) {
-      return Failure(e.toAppFailure());
-    } catch (e) {
-      return Failure(UnknownFailure(error: e));
-    }
-  }
+  }) =>
+      guard<T>(() => _dio.put(path, data: data), parser);
 
   Future<Result<T>> delete<T>(
     String path, {
     dynamic data,
     T Function(dynamic json)? parser,
-  }) async {
+  }) =>
+      guard<T>(() => _dio.delete(path, data: data), parser);
+
+  Future<Result<T>> upload<T>(
+    String path, {
+    required FormData data,
+    T Function(dynamic json)? parser,
+  }) =>
+      guard<T>(() => _dio.post(path, data: data), parser);
+
+  /// Manuel metodlarin ortak sonuc/hata yolu: Dio hatasi → `toAppFailure()`,
+  /// digeri (parser ya da cast dahil) → `UnknownFailure`. Parser verilmezse ham
+  /// govde `T`'ye cast edilir. Saf oldugu icin testte interceptor zinciri
+  /// olmadan dogrudan cagrilir.
+  @visibleForTesting
+  static Future<Result<T>> guard<T>(
+    Future<Response<dynamic>> Function() request,
+    T Function(dynamic json)? parser,
+  ) async {
     try {
-      final response = await _dio.delete(path, data: data);
+      final response = await request();
       return Success(parser != null ? parser(response.data) : response.data as T);
     } on DioException catch (e) {
       return Failure(e.toAppFailure());
@@ -144,20 +126,5 @@ class NetworkManager {
       headers: {'Content-Type': 'application/json'},
     ))
       ..interceptors.add(AppLogInterceptor());
-  }
-
-  Future<Result<T>> upload<T>(
-    String path, {
-    required FormData data,
-    T Function(dynamic json)? parser,
-  }) async {
-    try {
-      final response = await _dio.post(path, data: data);
-      return Success(parser != null ? parser(response.data) : response.data as T);
-    } on DioException catch (e) {
-      return Failure(e.toAppFailure());
-    } catch (e) {
-      return Failure(UnknownFailure(error: e));
-    }
   }
 }

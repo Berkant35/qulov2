@@ -15,11 +15,22 @@ class AppInfoManager {
 
   Future<String> get version async => (await packageInfo).version;
 
-  Future<String> get buildNumber async => (await packageInfo).buildNumber;
-
   /// Ayarlar ekraninda gosterilen surum etiketi: `1.2.3 (71)`.
   Future<String> get displayVersion async {
     final info = await packageInfo;
     return '${info.version} (${info.buildNumber})';
   }
+
+  /// Sunucuya `x-app-version` basligiyla giden surum: `1.2.3+71`.
+  Future<String> get headerVersion async {
+    final info = await packageInfo;
+    return headerVersionOf(info.version, info.buildNumber);
+  }
+
+  /// Sunucu yalnizca `1.2.3` ya da `1.2.3+71` kabul eder (qulo-server
+  /// `utils/client-meta.ts`), gerisini sessizce atar. `displayVersion` bicimi
+  /// ("(71)") orada reddedilir; build numarasi bossa `+` eklenmez, cunku
+  /// "1.2.3+" de reddedilirdi.
+  static String headerVersionOf(String version, String buildNumber) =>
+      buildNumber.isEmpty ? version : '$version+$buildNumber';
 }
