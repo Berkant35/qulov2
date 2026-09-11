@@ -873,6 +873,12 @@ const ptTranslations = <String, String>{
   'reason_exchange': 'Troca de diamantes',
   'reason_retention': 'Bônus especial',
   'reason_other': 'Transação de diamantes',
+  'chat_question_send': 'Enviar',
+  'chat_question_back': 'Voltar',
+  'chat_question_save_draft': 'Salvar rascunho',
+  'chat_message_deleted': 'Esta mensagem foi apagada',
+  'paywall_buy_purple': 'Comprar Diamantes Roxos',
+  'comparison_free_header': 'GRÁTIS',
   // Porta de configuração do perfil
   'setup_title': 'Faltam alguns passos',
   'setup_subtitle': 'Complete seu perfil para começar a dar match',

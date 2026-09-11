@@ -906,6 +906,12 @@ const enTranslations = <String, String>{
   'reason_exchange': 'Diamond Exchange',
   'reason_retention': 'Special Bonus',
   'reason_other': 'Diamond Transaction',
+  'chat_question_send': 'Send',
+  'chat_question_back': 'Back',
+  'chat_question_save_draft': 'Save Draft',
+  'chat_message_deleted': 'This message was deleted',
+  'paywall_buy_purple': 'Buy Purple Diamonds',
+  'comparison_free_header': 'FREE',
   // Profile Setup Gate
   'setup_title': 'A few steps left',
   'setup_subtitle': 'Complete your profile to start matching',

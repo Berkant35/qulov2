@@ -873,6 +873,12 @@ const itTranslations = <String, String>{
   'reason_exchange': 'Scambio diamanti',
   'reason_retention': 'Bonus speciale',
   'reason_other': 'Transazione diamanti',
+  'chat_question_send': 'Invia',
+  'chat_question_back': 'Indietro',
+  'chat_question_save_draft': 'Salva bozza',
+  'chat_message_deleted': 'Questo messaggio è stato eliminato',
+  'paywall_buy_purple': 'Acquista diamanti viola',
+  'comparison_free_header': 'GRATIS',
   // Configurazione del profilo
   'setup_title': 'Mancano pochi passi',
   'setup_subtitle': 'Completa il profilo per iniziare a fare match',

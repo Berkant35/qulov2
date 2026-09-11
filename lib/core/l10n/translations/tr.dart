@@ -906,6 +906,12 @@ const trTranslations = <String, String>{
   'reason_exchange': 'Elmas Dönüşümü',
   'reason_retention': 'Özel Bonus',
   'reason_other': 'Elmas İşlemi',
+  'chat_question_send': 'Gönder',
+  'chat_question_back': 'Geri',
+  'chat_question_save_draft': 'Taslak Kaydet',
+  'chat_message_deleted': 'Bu mesaj silindi',
+  'paywall_buy_purple': 'Mor Elmas Satın Al',
+  'comparison_free_header': 'ÜCRETSİZ',
   // Profil Kurulum Kapısı
   'setup_title': 'Birkaç adım kaldı',
   'setup_subtitle': 'Profilini tamamla, eşleşmen başlasın',

@@ -286,7 +286,7 @@ class _PaywallBottomSheetContentState
                   const DiamondIcon.purple(size: 18, showGlow: false),
                   const SizedBox(width: AppSpacing.sm),
                   Text(
-                    'Mor Elmas Satin Al',
+                    context.tr('paywall_buy_purple'),
                     style: theme.textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),

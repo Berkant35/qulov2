@@ -873,6 +873,12 @@ const deTranslations = <String, String>{
   'reason_exchange': 'Diamantentausch',
   'reason_retention': 'Sonderbonus',
   'reason_other': 'Diamanten-Transaktion',
+  'chat_question_send': 'Senden',
+  'chat_question_back': 'Zurück',
+  'chat_question_save_draft': 'Entwurf speichern',
+  'chat_message_deleted': 'Diese Nachricht wurde gelöscht',
+  'paywall_buy_purple': 'Lila Diamanten kaufen',
+  'comparison_free_header': 'KOSTENLOS',
   // Profileinrichtungstor
   'setup_title': 'Nur noch ein paar Schritte',
   'setup_subtitle': 'Vervollständige dein Profil, um Matches zu starten',

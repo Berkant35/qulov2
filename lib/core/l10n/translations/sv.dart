@@ -873,6 +873,12 @@ const svTranslations = <String, String>{
   'reason_exchange': 'Diamantväxling',
   'reason_retention': 'Specialbonus',
   'reason_other': 'Diamanttransaktion',
+  'chat_question_send': 'Skicka',
+  'chat_question_back': 'Tillbaka',
+  'chat_question_save_draft': 'Spara utkast',
+  'chat_message_deleted': 'Det här meddelandet har raderats',
+  'paywall_buy_purple': 'Köp lila diamanter',
+  'comparison_free_header': 'GRATIS',
   // Profilinställningsport
   'setup_title': 'Bara några steg kvar',
   'setup_subtitle': 'Slutför din profil för att börja matcha',

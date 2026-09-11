@@ -871,6 +871,12 @@ const plTranslations = <String, String>{
   'reason_exchange': 'Wymiana diamentów',
   'reason_retention': 'Bonus specjalny',
   'reason_other': 'Transakcja diamentów',
+  'chat_question_send': 'Wyślij',
+  'chat_question_back': 'Wstecz',
+  'chat_question_save_draft': 'Zapisz szkic',
+  'chat_message_deleted': 'Ta wiadomość została usunięta',
+  'paywall_buy_purple': 'Kup fioletowe diamenty',
+  'comparison_free_header': 'DARMOWY',
   // Brama konfiguracji profilu
   'setup_title': 'Zostało kilka kroków',
   'setup_subtitle': 'Uzupełnij profil, by zacząć dopasowywać',

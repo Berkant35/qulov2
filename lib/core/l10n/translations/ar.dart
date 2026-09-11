@@ -871,6 +871,12 @@ const arTranslations = <String, String>{
   'reason_exchange': 'تبديل الماسات',
   'reason_retention': 'مكافأة خاصة',
   'reason_other': 'معاملة ماسات',
+  'chat_question_send': 'إرسال',
+  'chat_question_back': 'رجوع',
+  'chat_question_save_draft': 'حفظ المسودة',
+  'chat_message_deleted': 'تم حذف هذه الرسالة',
+  'paywall_buy_purple': 'شراء الماسات البنفسجية',
+  'comparison_free_header': 'مجاني',
   // بوابة إعداد الملف الشخصي
   'setup_title': 'بقيت خطوات قليلة',
   'setup_subtitle': 'أكمل ملفك الشخصي لبدء المطابقة',

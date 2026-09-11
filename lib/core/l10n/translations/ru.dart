@@ -871,6 +871,12 @@ const ruTranslations = <String, String>{
   'reason_exchange': 'Обмен алмазов',
   'reason_retention': 'Особый бонус',
   'reason_other': 'Операция с алмазами',
+  'chat_question_send': 'Отправить',
+  'chat_question_back': 'Назад',
+  'chat_question_save_draft': 'Сохранить черновик',
+  'chat_message_deleted': 'Это сообщение удалено',
+  'paywall_buy_purple': 'Купить фиолетовые алмазы',
+  'comparison_free_header': 'БЕСПЛАТНО',
   // Шлюз настройки профиля
   'setup_title': 'Осталось пару шагов',
   'setup_subtitle': 'Заполни профиль, чтобы начать матчиться',

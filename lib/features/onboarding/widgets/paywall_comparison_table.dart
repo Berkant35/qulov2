@@ -122,7 +122,7 @@ class _TableHeader extends StatelessWidget {
       child: Row(
         children: [
           const Spacer(flex: 14),
-          _HeaderCell(label: 'FREE', color: _kFreeColor),
+          _HeaderCell(label: context.tr('comparison_free_header'), color: _kFreeColor),
           _HeaderCell(label: 'PLUS', color: _kPlusColor),
           _HeaderCell(label: 'PREMIUM', color: _kPremiumColor),
         ],

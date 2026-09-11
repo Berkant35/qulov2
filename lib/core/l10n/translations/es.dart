@@ -873,6 +873,12 @@ const esTranslations = <String, String>{
   'reason_exchange': 'Intercambio de diamantes',
   'reason_retention': 'Bono especial',
   'reason_other': 'Transacción de diamantes',
+  'chat_question_send': 'Enviar',
+  'chat_question_back': 'Atrás',
+  'chat_question_save_draft': 'Guardar borrador',
+  'chat_message_deleted': 'Este mensaje fue eliminado',
+  'paywall_buy_purple': 'Comprar diamantes morados',
+  'comparison_free_header': 'GRATIS',
   // Configuración del perfil
   'setup_title': 'Faltan unos pocos pasos',
   'setup_subtitle': 'Completa tu perfil para empezar a hacer match',

@@ -871,6 +871,12 @@ const nlTranslations = <String, String>{
   'reason_exchange': 'Diamantenruil',
   'reason_retention': 'Speciale bonus',
   'reason_other': 'Diamanttransactie',
+  'chat_question_send': 'Versturen',
+  'chat_question_back': 'Terug',
+  'chat_question_save_draft': 'Concept opslaan',
+  'chat_message_deleted': 'Dit bericht is verwijderd',
+  'paywall_buy_purple': 'Paarse diamanten kopen',
+  'comparison_free_header': 'GRATIS',
   // Profiel Instelpoort
   'setup_title': 'Nog een paar stappen',
   'setup_subtitle': 'Maak je profiel af om te matchen',

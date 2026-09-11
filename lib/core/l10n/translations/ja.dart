@@ -873,6 +873,12 @@ const jaTranslations = <String, String>{
   'reason_exchange': 'ダイヤ交換',
   'reason_retention': '特別ボーナス',
   'reason_other': 'ダイヤ取引',
+  'chat_question_send': '送信',
+  'chat_question_back': '戻る',
+  'chat_question_save_draft': '下書き保存',
+  'chat_message_deleted': 'このメッセージは削除されました',
+  'paywall_buy_purple': 'パープルダイヤを購入',
+  'comparison_free_header': '無料',
   // プロフィール設定ゲート
   'setup_title': 'あと少しです',
   'setup_subtitle': 'プロフィールを完成させてマッチを始めよう',

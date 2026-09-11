@@ -270,7 +270,7 @@ class _MessageContent extends StatelessWidget {
           borderRadius: radius,
         ),
         child: Text(
-          'Bu mesaj silindi',
+          context.tr('chat_message_deleted'),
           style: theme.textTheme.bodyMedium?.copyWith(
             color: theme.colorScheme.onSurfaceVariant,
             fontStyle: FontStyle.italic,

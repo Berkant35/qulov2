@@ -871,6 +871,12 @@ const koTranslations = <String, String>{
   'reason_exchange': '다이아몬드 교환',
   'reason_retention': '특별 보너스',
   'reason_other': '다이아몬드 거래',
+  'chat_question_send': '보내기',
+  'chat_question_back': '뒤로',
+  'chat_question_save_draft': '임시 저장',
+  'chat_message_deleted': '삭제된 메시지입니다',
+  'paywall_buy_purple': '보라색 다이아몬드 구매',
+  'comparison_free_header': '무료',
   // 프로필 설정 게이트
   'setup_title': '몇 단계 남았어요',
   'setup_subtitle': '매칭을 시작하려면 프로필을 완성하세요',

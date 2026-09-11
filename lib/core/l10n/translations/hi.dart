@@ -873,6 +873,12 @@ const hiTranslations = <String, String>{
   'reason_exchange': 'हीरा एक्सचेंज',
   'reason_retention': 'विशेष बोनस',
   'reason_other': 'हीरा लेनदेन',
+  'chat_question_send': 'भेजें',
+  'chat_question_back': 'वापस',
+  'chat_question_save_draft': 'ड्राफ्ट सहेजें',
+  'chat_message_deleted': 'यह संदेश हटा दिया गया',
+  'paywall_buy_purple': 'बैंगनी हीरे खरीदें',
+  'comparison_free_header': 'मुफ़्त',
   // प्रोफ़ाइल सेटअप गेट
   'setup_title': 'कुछ ही कदम बाकी',
   'setup_subtitle': 'मैचिंग शुरू करने के लिए प्रोफ़ाइल पूरी करें',

@@ -871,6 +871,12 @@ const zhTranslations = <String, String>{
   'reason_exchange': '钻石兑换',
   'reason_retention': '特别奖励',
   'reason_other': '钻石交易',
+  'chat_question_send': '发送',
+  'chat_question_back': '返回',
+  'chat_question_save_draft': '保存草稿',
+  'chat_message_deleted': '此消息已删除',
+  'paywall_buy_purple': '购买紫钻',
+  'comparison_free_header': '免费',
   // 个人资料设置入口
   'setup_title': '还差几步',
   'setup_subtitle': '完成资料即可开始匹配',
