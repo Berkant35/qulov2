@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/l10n/app_localizations.dart';
+import 'package:qulo_v2/core/utils/age_utils.dart';
 import 'package:qulo_v2/core/services/location_manager.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
@@ -57,15 +59,11 @@ mixin ProfileCompletionMixin on ConsumerState<ProfileCompletionScreen> {
     setState(() => currentStep = step);
   }
 
+  /// Sunucunun takvimiyle (UTC) — bkz. `serverCalendarToday`: sunucu 18 alti
+  /// hesabi sildigi icin iki taraf ayni gunu esas almali.
   int calculateAge() {
     if (birthday == null) return 0;
-    final now = DateTime.now();
-    int age = now.year - birthday!.year;
-    if (now.month < birthday!.month ||
-        (now.month == birthday!.month && now.day < birthday!.day)) {
-      age--;
-    }
-    return age;
+    return ageOn(birthday: birthday!, today: serverCalendarToday(DateTime.now()));
   }
 
   bool validateName() {
@@ -90,7 +88,7 @@ mixin ProfileCompletionMixin on ConsumerState<ProfileCompletionScreen> {
     String? err;
     if (birthday == null) {
       err = l10n.get('field_required');
-    } else if (calculateAge() < 18) {
+    } else if (calculateAge() < AppConstants.minUserAge) {
       err = l10n.get('must_be_18');
     }
     setState(() => birthdayError = err);
@@ -194,10 +192,8 @@ mixin ProfileCompletionMixin on ConsumerState<ProfileCompletionScreen> {
 
     try {
       final authService = ref.read(authServiceProvider);
-      final birthdayStr =
-          '${birthday!.year}-${birthday!.month.toString().padLeft(2, '0')}-${birthday!.day.toString().padLeft(2, '0')}';
       await authService.completeProfile({
-        'birthday': birthdayStr,
+        'birthday': birthdayPayload(birthday!),
         'gender': gender!,
         if (lat != null) 'lat': lat,
         if (lng != null) 'lng': lng,

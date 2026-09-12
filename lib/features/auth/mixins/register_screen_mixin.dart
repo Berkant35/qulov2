@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
+import 'package:qulo_v2/core/utils/age_utils.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/services/location_manager.dart';
@@ -84,7 +86,7 @@ mixin RegisterScreenMixin on ConsumerState<RegisterScreen> {
         String? err;
         if (birthday == null) {
           err = l10n.get('field_required');
-        } else if (calculateAge() < 18) {
+        } else if (calculateAge() < AppConstants.minUserAge) {
           err = l10n.get('must_be_18');
         }
         setState(() => birthdayError = err);
@@ -138,16 +140,11 @@ mixin RegisterScreenMixin on ConsumerState<RegisterScreen> {
     return null;
   }
 
+  /// Kayitta sunucu yasi istemciden alir (`auth.validator.ts` `age: min(18)`),
+  /// yerel takvim burada dogru.
   int calculateAge() {
     if (birthday == null) return 0;
-    final now = DateTime.now();
-    if (birthday!.isAfter(now)) return 0;
-    int age = now.year - birthday!.year;
-    if (now.month < birthday!.month ||
-        (now.month == birthday!.month && now.day < birthday!.day)) {
-      age--;
-    }
-    return age < 0 ? 0 : age;
+    return ageOn(birthday: birthday!, today: DateTime.now());
   }
 
   Future<void> requestLocation() async {

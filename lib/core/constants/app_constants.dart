@@ -2,6 +2,10 @@ abstract final class AppConstants {
   /// Login formu arka plan videosunu en fazla bu kadar bekler; sonra kendini acar.
   static const loginFormRevealFallback = Duration(milliseconds: 1500);
 
+  /// Uygulamayi kullanma yas siniri — sunucu `auth.validator.ts` `age: min(18)`
+  /// ve `user.service.ts` `completeProfile` (`UNDERAGE_USER`) ile ayni olmali.
+  static const int minUserAge = 18;
+
   static const int maxPhotos = 6;
   /// Profilin Kesfet havuzuna girmesi icin gereken en az fotograf sayisi
   /// (sunucu: matching.service.ts adim 5.5, `photoCount >= 1`).
