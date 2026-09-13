@@ -886,6 +886,7 @@ const hiTranslations = <String, String>{
   'questions': 'प्रश्न',
   'question_min_chars': 'कम से कम {count} अक्षर लिखें',
   'milestone_progress_hint': '{percent}% पूरा करें और {diamonds} हीरे पाएं!',
+  'block_failed': 'इस उपयोगकर्ता को ब्लॉक नहीं किया जा सका। कृपया फिर से प्रयास करें।',
   // प्रोफ़ाइल सेटअप गेट
   'setup_title': 'कुछ ही कदम बाकी',
   'setup_subtitle': 'मैचिंग शुरू करने के लिए प्रोफ़ाइल पूरी करें',

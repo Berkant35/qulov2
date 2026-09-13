@@ -884,6 +884,7 @@ const ruTranslations = <String, String>{
   'questions': 'Вопросы',
   'question_min_chars': 'Напишите не менее {count} символов',
   'milestone_progress_hint': 'Заполните профиль на {percent}% и получите {diamonds} алмазов!',
+  'block_failed': 'Не удалось заблокировать пользователя. Попробуйте ещё раз.',
   // Шлюз настройки профиля
   'setup_title': 'Осталось пару шагов',
   'setup_subtitle': 'Заполни профиль, чтобы начать матчиться',

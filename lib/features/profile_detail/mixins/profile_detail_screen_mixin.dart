@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
+import 'package:qulo_v2/core/network/failure_message.dart';
 import 'package:qulo_v2/core/network/result.dart';
+import 'package:qulo_v2/core/utils/block_flow.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/features/diamonds/widgets/paywall_bottom_sheet.dart';
@@ -242,10 +244,20 @@ mixin ProfileDetailScreenMixin on ConsumerState<ProfileDetailScreen> {
         AnalyticsEvents.profileDetailBlock,
         params: {AnalyticsEvents.paramTargetUserId: widget.userId},
       );
-      await ref.read(blockRepositoryProvider).blockUser(widget.userId);
-      if (mounted) {
-        ref.read(navigationServiceProvider).pop('blocked');
-      }
+      await runBlock(
+        targetUserId: widget.userId,
+        block: ref.read(blockRepositoryProvider).blockUser,
+        // 'blocked' YALNIZCA sunucu onaylarsa — cagiran karti kaldiriyor.
+        onBlocked: () {
+          if (mounted) ref.read(navigationServiceProvider).pop('blocked');
+        },
+        onFailed: (f) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(context.tr(f.userMessageKey('block_failed')))),
+          );
+        },
+      );
     });
   }
 }

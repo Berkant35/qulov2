@@ -886,6 +886,7 @@ const esTranslations = <String, String>{
   'questions': 'Preguntas',
   'question_min_chars': 'Escribe al menos {count} caracteres',
   'milestone_progress_hint': '¡Completa el {percent}% y gana {diamonds} diamantes!',
+  'block_failed': 'No se pudo bloquear a este usuario. Inténtalo de nuevo.',
   // Configuración del perfil
   'setup_title': 'Faltan unos pocos pasos',
   'setup_subtitle': 'Completa tu perfil para empezar a hacer match',

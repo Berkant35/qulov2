@@ -884,6 +884,7 @@ const plTranslations = <String, String>{
   'questions': 'Pytania',
   'question_min_chars': 'Napisz co najmniej {count} znaków',
   'milestone_progress_hint': 'Uzupełnij {percent}% i zdobądź {diamonds} diamentów!',
+  'block_failed': 'Nie udało się zablokować użytkownika. Spróbuj ponownie.',
   // Brama konfiguracji profilu
   'setup_title': 'Zostało kilka kroków',
   'setup_subtitle': 'Uzupełnij profil, by zacząć dopasowywać',

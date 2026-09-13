@@ -886,6 +886,7 @@ const ptTranslations = <String, String>{
   'questions': 'Perguntas',
   'question_min_chars': 'Escreva pelo menos {count} caracteres',
   'milestone_progress_hint': 'Complete {percent}% e ganhe {diamonds} diamantes!',
+  'block_failed': 'Não foi possível bloquear este usuário. Tente novamente.',
   // Porta de configuração do perfil
   'setup_title': 'Faltam alguns passos',
   'setup_subtitle': 'Complete seu perfil para começar a dar match',

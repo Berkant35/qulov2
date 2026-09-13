@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation_provider.dart';
 import 'package:qulo_v2/core/navigation/models/app_dialog.dart';
+import 'package:qulo_v2/core/network/failure_message.dart';
+import 'package:qulo_v2/core/utils/block_flow.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/data/models/message_model.dart';
@@ -165,11 +167,18 @@ mixin ChatModerationMixin on ChatScreenMixin {
       ),
     );
     if (confirmed != true) return;
-    final targetId = _getTargetUserId();
-    if (targetId == null) return;
-    await ref.read(blockRepositoryProvider).blockUser(targetId);
-    if (mounted) {
-      ref.read(navigationServiceProvider).pop();
-    }
+    await runBlock(
+      targetUserId: _getTargetUserId(),
+      block: ref.read(blockRepositoryProvider).blockUser,
+      onBlocked: () {
+        if (mounted) ref.read(navigationServiceProvider).pop();
+      },
+      onFailed: (f) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.get(f.userMessageKey('block_failed')))),
+        );
+      },
+    );
   }
 }
