@@ -18,6 +18,25 @@ class QuestionNotifier extends AsyncNotifier<List<QuestionModel>> {
     );
   }
 
+  /// Yeni sorunun sira numarasi (`order_num`).
+  ///
+  /// `build()` bos liste dondurdugu icin state "hic cekilmedi" ile "hic soru
+  /// yok"u ayirt edemez. Liste yalnizca profildeki sorular ekraninda cekiliyor;
+  /// kurulum kapisindan dogrudan olusturmaya gelen ve zaten sorusu olan
+  /// kullanici icin eski hesap (liste uzunlugu + 1) 1 uretiyor, sunucudaki
+  /// `(user_id, order_num)` tekilliginden `DUPLICATE_ORDER_NUM` aliyordu.
+  /// Sunucu silmede sirayi sikistirir (1..n), yani taze liste uzunlugu + 1
+  /// dogru; liste alinamazsa profildeki soru sayisina duser.
+  Future<int> nextOrderNum() async {
+    await fetchQuestions();
+    // Hata durumunda Riverpod ONCEKI veriyi korur (build'in bos listesi
+    // dahil) — `valueOrNull` bos liste doner, 1 uretirdi. Hata varsa listeye
+    // guvenme.
+    final fresh = state.hasError ? null : state.valueOrNull;
+    if (fresh != null) return fresh.length + 1;
+    return (ref.read(userProvider).valueOrNull?.questionCount ?? 0) + 1;
+  }
+
   Future<Result<QuestionModel>> createQuestion(Map<String, dynamic> data) async {
     final result = await ref.read(questionRepositoryProvider).createQuestion(data);
     result.when(

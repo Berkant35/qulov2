@@ -917,6 +917,7 @@ const enTranslations = <String, String>{
   'bio': 'Bio',
   'confirm': 'Confirm',
   'questions': 'Questions',
+  'question_min_chars': 'Write at least {count} characters',
   // Profile Setup Gate
   'setup_title': 'A few steps left',
   'setup_subtitle': 'Complete your profile to start matching',

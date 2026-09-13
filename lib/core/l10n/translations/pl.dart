@@ -882,6 +882,7 @@ const plTranslations = <String, String>{
   'bio': 'O mnie',
   'confirm': 'Potwierdź',
   'questions': 'Pytania',
+  'question_min_chars': 'Napisz co najmniej {count} znaków',
   // Brama konfiguracji profilu
   'setup_title': 'Zostało kilka kroków',
   'setup_subtitle': 'Uzupełnij profil, by zacząć dopasowywać',

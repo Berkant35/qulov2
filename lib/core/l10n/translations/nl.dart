@@ -882,6 +882,7 @@ const nlTranslations = <String, String>{
   'bio': 'Over mij',
   'confirm': 'Bevestigen',
   'questions': 'Vragen',
+  'question_min_chars': 'Schrijf minstens {count} tekens',
   // Profiel Instelpoort
   'setup_title': 'Nog een paar stappen',
   'setup_subtitle': 'Maak je profiel af om te matchen',

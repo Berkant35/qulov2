@@ -882,6 +882,7 @@ const ruTranslations = <String, String>{
   'bio': 'О себе',
   'confirm': 'Подтвердить',
   'questions': 'Вопросы',
+  'question_min_chars': 'Напишите не менее {count} символов',
   // Шлюз настройки профиля
   'setup_title': 'Осталось пару шагов',
   'setup_subtitle': 'Заполни профиль, чтобы начать матчиться',

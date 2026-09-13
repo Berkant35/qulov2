@@ -882,6 +882,7 @@ const arTranslations = <String, String>{
   'bio': 'نبذة عني',
   'confirm': 'تأكيد',
   'questions': 'الأسئلة',
+  'question_min_chars': 'اكتب {count} أحرف على الأقل',
   // بوابة إعداد الملف الشخصي
   'setup_title': 'بقيت خطوات قليلة',
   'setup_subtitle': 'أكمل ملفك الشخصي لبدء المطابقة',

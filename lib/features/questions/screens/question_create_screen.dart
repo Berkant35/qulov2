@@ -83,6 +83,7 @@ class _QuestionCreateScreenState extends ConsumerState<QuestionCreateScreen>
                   onLocaleChanged: (v) => setState(() => selectedLocale = v),
                   onCategoryChanged: (v) =>
                       setState(() => selectedCategory = v),
+                  showTooShort: questionTooShort,
                 ),
                 QuestionStepAnswers(
                   answer1Controller: answer1Controller,

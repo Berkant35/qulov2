@@ -884,6 +884,7 @@ const jaTranslations = <String, String>{
   'bio': '自己紹介',
   'confirm': '確認',
   'questions': '質問',
+  'question_min_chars': '{count}文字以上入力してください',
   // プロフィール設定ゲート
   'setup_title': 'あと少しです',
   'setup_subtitle': 'プロフィールを完成させてマッチを始めよう',

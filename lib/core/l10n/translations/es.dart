@@ -884,6 +884,7 @@ const esTranslations = <String, String>{
   'bio': 'Sobre mí',
   'confirm': 'Confirmar',
   'questions': 'Preguntas',
+  'question_min_chars': 'Escribe al menos {count} caracteres',
   // Configuración del perfil
   'setup_title': 'Faltan unos pocos pasos',
   'setup_subtitle': 'Completa tu perfil para empezar a hacer match',

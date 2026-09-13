@@ -7,6 +7,7 @@ import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/features/questions/screens/question_create_screen.dart';
+import 'package:qulo_v2/features/questions/utils/question_text_rules.dart';
 import 'package:qulo_v2/providers/question_provider.dart';
 
 mixin QuestionCreateScreenMixin on ConsumerState<QuestionCreateScreen> {
@@ -26,6 +27,9 @@ mixin QuestionCreateScreenMixin on ConsumerState<QuestionCreateScreen> {
   late String selectedLocale;
 
   bool get isEditMode => widget.editQuestion != null;
+
+  /// Soru metni yazilmaya baslandi ama sunucunun alt sinirindan kisa.
+  bool get questionTooShort => isQuestionTextTooShort(questionTextController.text);
   bool didComplete = false;
 
   List<TextEditingController> get _answerControllers => [
@@ -110,7 +114,7 @@ mixin QuestionCreateScreenMixin on ConsumerState<QuestionCreateScreen> {
   bool canGoNext() {
     switch (currentStep) {
       case 0:
-        return questionTextController.text.trim().isNotEmpty;
+        return isQuestionTextLongEnough(questionTextController.text);
       case 1:
         return _answerControllers.every((c) => c.text.trim().isNotEmpty) &&
             duplicateAnswerIndices().isEmpty;
@@ -199,8 +203,7 @@ mixin QuestionCreateScreenMixin on ConsumerState<QuestionCreateScreen> {
         failure: (f) => _onSaveFailure(f),
       );
     } else {
-      final questions = ref.read(questionProvider).valueOrNull ?? [];
-      data['order_num'] = questions.length + 1;
+      data['order_num'] = await notifier.nextOrderNum();
       final result = await notifier.createQuestion(data);
       result.when(
         success: (_) => _onSaveSuccess(),

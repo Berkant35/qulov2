@@ -882,6 +882,7 @@ const koTranslations = <String, String>{
   'bio': '자기소개',
   'confirm': '확인',
   'questions': '질문',
+  'question_min_chars': '{count}자 이상 입력하세요',
   // 프로필 설정 게이트
   'setup_title': '몇 단계 남았어요',
   'setup_subtitle': '매칭을 시작하려면 프로필을 완성하세요',

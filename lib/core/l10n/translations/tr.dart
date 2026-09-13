@@ -917,6 +917,7 @@ const trTranslations = <String, String>{
   'bio': 'Hakkımda',
   'confirm': 'Onayla',
   'questions': 'Sorular',
+  'question_min_chars': 'En az {count} karakter yaz',
   // Profil Kurulum Kapısı
   'setup_title': 'Birkaç adım kaldı',
   'setup_subtitle': 'Profilini tamamla, eşleşmen başlasın',

@@ -884,6 +884,7 @@ const deTranslations = <String, String>{
   'bio': 'Über mich',
   'confirm': 'Bestätigen',
   'questions': 'Fragen',
+  'question_min_chars': 'Schreibe mindestens {count} Zeichen',
   // Profileinrichtungstor
   'setup_title': 'Nur noch ein paar Schritte',
   'setup_subtitle': 'Vervollständige dein Profil, um Matches zu starten',

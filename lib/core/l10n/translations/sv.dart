@@ -884,6 +884,7 @@ const svTranslations = <String, String>{
   'bio': 'Om mig',
   'confirm': 'Bekräfta',
   'questions': 'Frågor',
+  'question_min_chars': 'Skriv minst {count} tecken',
   // Profilinställningsport
   'setup_title': 'Bara några steg kvar',
   'setup_subtitle': 'Slutför din profil för att börja matcha',

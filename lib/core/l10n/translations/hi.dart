@@ -884,6 +884,7 @@ const hiTranslations = <String, String>{
   'bio': 'परिचय',
   'confirm': 'पुष्टि करें',
   'questions': 'प्रश्न',
+  'question_min_chars': 'कम से कम {count} अक्षर लिखें',
   // प्रोफ़ाइल सेटअप गेट
   'setup_title': 'कुछ ही कदम बाकी',
   'setup_subtitle': 'मैचिंग शुरू करने के लिए प्रोफ़ाइल पूरी करें',

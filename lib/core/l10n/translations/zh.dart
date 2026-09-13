@@ -882,6 +882,7 @@ const zhTranslations = <String, String>{
   'bio': '个人简介',
   'confirm': '确认',
   'questions': '问题',
+  'question_min_chars': '请至少输入 {count} 个字符',
   // 个人资料设置入口
   'setup_title': '还差几步',
   'setup_subtitle': '完成资料即可开始匹配',

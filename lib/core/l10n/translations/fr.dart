@@ -884,6 +884,7 @@ const frTranslations = <String, String>{
   'bio': 'Bio',
   'confirm': 'Confirmer',
   'questions': 'Questions',
+  'question_min_chars': 'Écris au moins {count} caractères',
   // Porte de configuration du profil
   'setup_title': 'Encore quelques étapes',
   'setup_subtitle': 'Complète ton profil pour commencer à matcher',

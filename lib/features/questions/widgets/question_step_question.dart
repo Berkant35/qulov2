@@ -15,6 +15,9 @@ class QuestionStepQuestion extends StatelessWidget {
   final ValueChanged<String> onLocaleChanged;
   final ValueChanged<String?> onCategoryChanged;
 
+  /// Soru metni sunucunun alt sinirindan kisa — alanin altinda uyari.
+  final bool showTooShort;
+
   const QuestionStepQuestion({
     super.key,
     required this.questionTextController,
@@ -22,6 +25,7 @@ class QuestionStepQuestion extends StatelessWidget {
     required this.selectedCategory,
     required this.onLocaleChanged,
     required this.onCategoryChanged,
+    required this.showTooShort,
   });
 
   @override
@@ -87,6 +91,11 @@ class QuestionStepQuestion extends StatelessWidget {
             label: context.tr('question'),
             maxLines: 3,
             maxLength: 500,
+            errorText: showTooShort
+                ? context
+                    .tr('question_min_chars')
+                    .replaceAll('{count}', '${AppConstants.minQuestionTextLength}')
+                : null,
             textCapitalization: TextCapitalization.sentences,
             textInputAction: TextInputAction.done,
           ),

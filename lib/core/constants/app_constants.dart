@@ -6,6 +6,10 @@ abstract final class AppConstants {
   /// ve `user.service.ts` `completeProfile` (`UNDERAGE_USER`) ile ayni olmali.
   static const int minUserAge = 18;
 
+  /// Soru metni alt siniri — sunucu `question.validator.ts`
+  /// `question_text: min(5)` ile ayni olmali (yoksa 3 adim sonra 400).
+  static const int minQuestionTextLength = 5;
+
   static const int maxPhotos = 6;
   /// Profilin Kesfet havuzuna girmesi icin gereken en az fotograf sayisi
   /// (sunucu: matching.service.ts adim 5.5, `photoCount >= 1`).
