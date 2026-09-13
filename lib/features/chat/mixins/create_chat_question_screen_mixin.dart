@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/app_localizations.dart';
 import 'package:qulo_v2/core/navigation/navigation_provider.dart';
+import 'package:qulo_v2/core/network/failure_message.dart';
+import 'package:qulo_v2/features/chat/utils/chat_question_form.dart';
 import 'package:qulo_v2/data/models/chat_question_draft_model.dart';
 import 'package:qulo_v2/features/chat/screens/create_chat_question_screen.dart';
 import 'package:qulo_v2/features/chat/sheets/draft_history_sheet.dart';
@@ -32,12 +34,15 @@ mixin CreateChatQuestionScreenMixin
   bool hasChatLock = false;
   bool hasPowerBlock = false;
 
-  bool get isStep1Valid =>
-      questionText.trim().length >= 3 &&
-      optionA.trim().isNotEmpty &&
-      optionB.trim().isNotEmpty &&
-      (optionCount == 2 ||
-          (optionC.trim().isNotEmpty && optionD.trim().isNotEmpty));
+  bool get isStep1Valid => isChatQuestionStep1Valid(
+        questionText: questionText,
+        optionCount: optionCount,
+        optionA: optionA,
+        optionB: optionB,
+        optionC: optionC,
+        optionD: optionD,
+        correctOption: correctOption,
+      );
 
   void onStep1Changed({
     int? optionCount,
@@ -115,8 +120,8 @@ mixin CreateChatQuestionScreenMixin
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                  content: Text(
-                      '${AppLocalizations.of(context).get('chat_question_send_failed')}: $failure')),
+                  content: Text(AppLocalizations.of(context)
+                      .get(failure.userMessageKey('chat_question_send_failed')))),
             );
           }
         },
@@ -147,8 +152,8 @@ mixin CreateChatQuestionScreenMixin
           failure: (failure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                  content: Text(
-                      '${AppLocalizations.of(context).get('chat_draft_save_failed')}: $failure')),
+                  content: Text(AppLocalizations.of(context)
+                      .get(failure.userMessageKey('chat_draft_save_failed')))),
             );
           },
         );
@@ -158,31 +163,22 @@ mixin CreateChatQuestionScreenMixin
     }
   }
 
-  Map<String, dynamic> _buildPayload() {
-    final data = <String, dynamic>{
-      'question_text': questionText.trim(),
-      'option_count': optionCount,
-      'option_a': optionA.trim(),
-      'option_b': optionB.trim(),
-      'correct_option': correctOption,
-      'time_limit_seconds': timeLimitSeconds,
-      'has_unmatch_risk': hasUnmatchRisk,
-      'has_chat_lock': hasChatLock,
-      'use_power_block': hasPowerBlock,
-    };
-    if (optionCount == 4) {
-      data['option_c'] = optionC.trim();
-      data['option_d'] = optionD.trim();
-    }
-    if (hintText.trim().isNotEmpty) {
-      data['hint_text'] = hintText.trim();
-    }
-    if (rewardMediaUrl != null) {
-      data['reward_media_url'] = rewardMediaUrl;
-      data['reward_media_type'] = rewardMediaType;
-    }
-    return data;
-  }
+  Map<String, dynamic> _buildPayload() => buildChatQuestionPayload(
+        questionText: questionText,
+        optionCount: optionCount,
+        optionA: optionA,
+        optionB: optionB,
+        optionC: optionC,
+        optionD: optionD,
+        correctOption: correctOption,
+        timeLimitSeconds: timeLimitSeconds,
+        hintText: hintText,
+        rewardMediaUrl: rewardMediaUrl,
+        rewardMediaType: rewardMediaType,
+        hasUnmatchRisk: hasUnmatchRisk,
+        hasChatLock: hasChatLock,
+        hasPowerBlock: hasPowerBlock,
+      );
 
   void showDraftHistory() {
     showModalBottomSheet(

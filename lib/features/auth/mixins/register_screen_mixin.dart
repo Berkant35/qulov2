@@ -194,10 +194,12 @@ mixin RegisterScreenMixin on ConsumerState<RegisterScreen> {
         locationGranted = true;
         isRequestingLocation = false;
       });
-    } catch (e) {
+    } catch (_) {
+      // Ham istisna metni (Ingilizce, platforma ozgu) kullaniciya gosterilmez —
+      // profil tamamlama ile ayni.
       setState(() {
         isRequestingLocation = false;
-        locationError = e.toString();
+        locationError = l10n.get('error_general');
       });
     }
   }

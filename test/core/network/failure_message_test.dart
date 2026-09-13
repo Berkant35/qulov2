@@ -52,7 +52,9 @@ void main() {
   });
 
   test('kaynak tarama: lib/features icinde ham failure.message gosterimi yok', () {
-    final rawMessage = RegExp(r'\b\w+\.message\s*\?\?');
+    // Iki bicim: `f.message ?? ...` ve metne gomulu `'...: $failure'`
+    // (2026-09-13: sohbet sorusu gonderme/taslak snackbar'lari boyleydi).
+    final rawMessage = RegExp(r'\b\w+\.message\s*\?\?|\$\{?(failure|error)\b');
     final offenders = [
       for (final f in Directory('lib/features').listSync(recursive: true))
         if (f is File && f.path.endsWith('.dart'))
