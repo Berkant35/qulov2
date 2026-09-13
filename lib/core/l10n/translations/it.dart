@@ -887,6 +887,8 @@ const itTranslations = <String, String>{
   'question_min_chars': 'Scrivi almeno {count} caratteri',
   'milestone_progress_hint': 'Completa il {percent}% e guadagna {diamonds} diamanti!',
   'block_failed': 'Impossibile bloccare questo utente. Riprova.',
+  'unmatch_failed': 'Impossibile annullare il match. Riprova.',
+  'unblock_failed': 'Impossibile sbloccare questo utente. Riprova.',
   // Configurazione del profilo
   'setup_title': 'Mancano pochi passi',
   'setup_subtitle': 'Completa il profilo per iniziare a fare match',

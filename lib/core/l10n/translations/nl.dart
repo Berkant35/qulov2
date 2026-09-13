@@ -885,6 +885,8 @@ const nlTranslations = <String, String>{
   'question_min_chars': 'Schrijf minstens {count} tekens',
   'milestone_progress_hint': 'Voltooi {percent}% en verdien {diamonds} diamanten!',
   'block_failed': 'Kan deze gebruiker niet blokkeren. Probeer het opnieuw.',
+  'unmatch_failed': 'Kan de match niet beëindigen. Probeer het opnieuw.',
+  'unblock_failed': 'Kan deze gebruiker niet deblokkeren. Probeer het opnieuw.',
   // Profiel Instelpoort
   'setup_title': 'Nog een paar stappen',
   'setup_subtitle': 'Maak je profiel af om te matchen',

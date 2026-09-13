@@ -920,6 +920,8 @@ const enTranslations = <String, String>{
   'question_min_chars': 'Write at least {count} characters',
   'milestone_progress_hint': 'Complete {percent}% to earn {diamonds} diamonds!',
   'block_failed': 'Could not block this user. Please try again.',
+  'unmatch_failed': 'Could not end the match. Please try again.',
+  'unblock_failed': 'Could not unblock this user. Please try again.',
   // Profile Setup Gate
   'setup_title': 'A few steps left',
   'setup_subtitle': 'Complete your profile to start matching',

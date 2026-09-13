@@ -887,6 +887,8 @@ const svTranslations = <String, String>{
   'question_min_chars': 'Skriv minst {count} tecken',
   'milestone_progress_hint': 'Fyll i {percent}% och tjäna {diamonds} diamanter!',
   'block_failed': 'Det gick inte att blockera användaren. Försök igen.',
+  'unmatch_failed': 'Det gick inte att avsluta matchningen. Försök igen.',
+  'unblock_failed': 'Det gick inte att avblockera användaren. Försök igen.',
   // Profilinställningsport
   'setup_title': 'Bara några steg kvar',
   'setup_subtitle': 'Slutför din profil för att börja matcha',

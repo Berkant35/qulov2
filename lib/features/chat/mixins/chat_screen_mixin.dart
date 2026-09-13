@@ -6,6 +6,8 @@ import 'package:qulo_v2/features/chat/coach/chat_question_coach_marks.dart';
 import 'package:qulo_v2/core/services/one_time_flag_store.dart';
 import 'package:qulo_v2/core/navigation/navigation_provider.dart';
 import 'package:qulo_v2/core/navigation/models/app_dialog.dart';
+import 'package:qulo_v2/core/network/failure_message.dart';
+import 'package:qulo_v2/core/utils/block_flow.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/data/models/message_model.dart';
@@ -192,10 +194,20 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
       ),
     );
     if (confirm == true && mounted) {
-      await ref.read(matchListProvider.notifier).unmatch(widget.matchId);
-      if (mounted) {
-        ref.read(navigationServiceProvider).pop();
-      }
+      // Sohbet YALNIZCA sunucu onaylarsa kapanir — eskiden sonuc yok sayiliyor,
+      // hatada kullanici eslesmeyi bitirdigini saniyordu.
+      await runServerAction(
+        action: () => ref.read(matchListProvider.notifier).unmatch(widget.matchId),
+        onDone: () {
+          if (mounted) ref.read(navigationServiceProvider).pop();
+        },
+        onFailed: (f) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(context.tr(f.userMessageKey('unmatch_failed')))),
+          );
+        },
+      );
     }
   }
 

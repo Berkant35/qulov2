@@ -887,6 +887,8 @@ const frTranslations = <String, String>{
   'question_min_chars': 'Écris au moins {count} caractères',
   'milestone_progress_hint': 'Complète {percent}% et gagne {diamonds} diamants !',
   'block_failed': 'Impossible de bloquer cet utilisateur. Veuillez réessayer.',
+  'unmatch_failed': 'Impossible de mettre fin au match. Veuillez réessayer.',
+  'unblock_failed': 'Impossible de débloquer cet utilisateur. Veuillez réessayer.',
   // Porte de configuration du profil
   'setup_title': 'Encore quelques étapes',
   'setup_subtitle': 'Complète ton profil pour commencer à matcher',

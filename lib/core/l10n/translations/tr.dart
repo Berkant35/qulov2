@@ -920,6 +920,8 @@ const trTranslations = <String, String>{
   'question_min_chars': 'En az {count} karakter yaz',
   'milestone_progress_hint': 'Profilini %{percent} tamamla, {diamonds} elmas kazan!',
   'block_failed': 'Kullanıcı engellenemedi. Lütfen tekrar dene.',
+  'unmatch_failed': 'Eşleşme kaldırılamadı. Lütfen tekrar dene.',
+  'unblock_failed': 'Engel kaldırılamadı. Lütfen tekrar dene.',
   // Profil Kurulum Kapısı
   'setup_title': 'Birkaç adım kaldı',
   'setup_subtitle': 'Profilini tamamla, eşleşmen başlasın',

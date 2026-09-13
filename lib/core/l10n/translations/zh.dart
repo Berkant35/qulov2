@@ -885,6 +885,8 @@ const zhTranslations = <String, String>{
   'question_min_chars': '请至少输入 {count} 个字符',
   'milestone_progress_hint': '完成 {percent}% 即可获得 {diamonds} 颗钻石！',
   'block_failed': '无法屏蔽该用户，请重试。',
+  'unmatch_failed': '无法解除配对，请重试。',
+  'unblock_failed': '无法解除屏蔽该用户，请重试。',
   // 个人资料设置入口
   'setup_title': '还差几步',
   'setup_subtitle': '完成资料即可开始匹配',

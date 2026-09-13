@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/models/app_dialog.dart';
 import 'package:qulo_v2/core/navigation/navigation_provider.dart';
+import 'package:qulo_v2/core/network/failure_message.dart';
+import 'package:qulo_v2/core/utils/block_flow.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 
 /// [BlockedUsersScreen] icin sunum-disi logic.
@@ -25,7 +27,18 @@ mixin BlockedUsersScreenMixin {
       ),
     );
     if (confirmed != true) return;
-    await ref.read(blockRepositoryProvider).unblockUser(blockedId);
-    ref.invalidate(listProvider);
+    // Liste her durumda sunucudan tazelenir (gercek durum); hata olursa
+    // kullanici nedenini gorur — eskiden dokunus sessizce hicbir sey yapmiyordu.
+    await runServerAction(
+      action: () => ref.read(blockRepositoryProvider).unblockUser(blockedId),
+      onDone: () => ref.invalidate(listProvider),
+      onFailed: (f) {
+        ref.invalidate(listProvider);
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.tr(f.userMessageKey('unblock_failed')))),
+        );
+      },
+    );
   }
 }

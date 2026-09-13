@@ -887,6 +887,8 @@ const deTranslations = <String, String>{
   'question_min_chars': 'Schreibe mindestens {count} Zeichen',
   'milestone_progress_hint': 'Vervollständige {percent}% und verdiene {diamonds} Diamanten!',
   'block_failed': 'Nutzer konnte nicht blockiert werden. Bitte versuche es erneut.',
+  'unmatch_failed': 'Das Match konnte nicht beendet werden. Bitte versuche es erneut.',
+  'unblock_failed': 'Blockierung konnte nicht aufgehoben werden. Bitte versuche es erneut.',
   // Profileinrichtungstor
   'setup_title': 'Nur noch ein paar Schritte',
   'setup_subtitle': 'Vervollständige dein Profil, um Matches zu starten',

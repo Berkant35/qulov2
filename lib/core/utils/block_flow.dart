@@ -1,5 +1,22 @@
 import 'package:qulo_v2/core/network/result.dart';
 
+/// Geri alinamaz, sunucu onayli bir islem (engelle, eslesmeyi kaldir, engeli
+/// kaldir): ekran sonucunu YALNIZCA sunucu onaylarsa uygular.
+///
+/// Kalip: bu cagri yerleri `Result`'i yok sayip her durumda ekrani kapatiyordu —
+/// ag/sunucu hatasinda kullanici islemin yapildigini saniyordu.
+Future<void> runServerAction({
+  required Future<Result<void>> Function() action,
+  required void Function() onDone,
+  required void Function(AppFailure failure) onFailed,
+}) async {
+  final result = await action();
+  result.when(
+    success: (_) => onDone(),
+    failure: onFailed,
+  );
+}
+
 /// Kullanici engelleme akisi — sohbet ve profil detayindaki iki cagri yerinin
 /// ortak karari.
 ///
@@ -21,9 +38,9 @@ Future<void> runBlock({
     onFailed(const UnknownFailure(message: 'Block target unknown'));
     return;
   }
-  final result = await block(targetUserId);
-  result.when(
-    success: (_) => onBlocked(),
-    failure: onFailed,
+  await runServerAction(
+    action: () => block(targetUserId),
+    onDone: onBlocked,
+    onFailed: onFailed,
   );
 }

@@ -60,6 +60,36 @@ void main() {
     expect((r.failures.single as ServerFailure).code, 'SERVER_ERROR');
   });
 
+  group('runServerAction — eslesmeyi kaldir / engeli kaldir', () {
+    test('basarida yalniz onDone', () async {
+      var done = 0;
+      final failures = <AppFailure>[];
+
+      await runServerAction(
+        action: () async => const Success(null),
+        onDone: () => done++,
+        onFailed: failures.add,
+      );
+
+      expect(done, 1);
+      expect(failures, isEmpty);
+    });
+
+    test('hatada yalniz onFailed — ekran islemi yapilmis gibi davranmaz', () async {
+      var done = 0;
+      final failures = <AppFailure>[];
+
+      await runServerAction(
+        action: () async => const Failure(TimeoutFailure()),
+        onDone: () => done++,
+        onFailed: failures.add,
+      );
+
+      expect(done, 0);
+      expect(failures.single, isA<TimeoutFailure>());
+    });
+  });
+
   test('hedef bilinmiyorsa istek gitmez ama kullaniciya hata gosterilir — sessiz donus yok', () async {
     final r = _Recorder();
 
