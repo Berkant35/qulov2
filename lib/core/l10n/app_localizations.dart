@@ -16,6 +16,7 @@ import 'package:qulo_v2/core/l10n/translations/nl.dart';
 import 'package:qulo_v2/core/l10n/translations/pl.dart';
 import 'package:qulo_v2/core/l10n/translations/sv.dart';
 import 'package:qulo_v2/core/l10n/translations/hi.dart';
+import 'package:qulo_v2/core/constants/app_constants.dart';
 
 class AppLocalizations {
   final Locale locale;
@@ -96,11 +97,10 @@ class AppLocalizations {
 class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const AppLocalizationsDelegate();
 
-  /// All 16 supported locales — falls back to TR if translations not yet available
-  static const supportedCodes = {
-    'tr', 'en', 'de', 'fr', 'es', 'ar', 'ru', 'pt',
-    'it', 'ja', 'ko', 'zh', 'nl', 'pl', 'sv', 'hi',
-  };
+  /// Desteklenen diller — `AppConstants.supportedQuestionLocales` ile TEK kaynak.
+  /// Listeler ayrışırsa dil seçici delegate'in yükleyemediği bir dili sunar ve
+  /// `AppLocalizations.of(context)!` çöker (parite testi: supported_locales_parity_test).
+  static final Set<String> supportedCodes = AppConstants.supportedQuestionLocales.toSet();
 
   @override
   bool isSupported(Locale locale) =>

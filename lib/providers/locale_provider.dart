@@ -5,13 +5,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:qulo_v2/core/l10n/app_localizations.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
+import 'package:qulo_v2/core/constants/app_constants.dart';
 
 class LocaleNotifier extends Notifier<Locale> {
   static const _key = 'app_locale';
 
   /// İlk kurulumda kayıtlı seçim yokken kullanılacak fallback dili.
   /// Cihaz dili desteklenmiyorsa buna düşülür (TR'ye değil — yurt dışı bug'ı).
-  static const _fallback = Locale('en');
+  static const _fallback = Locale(AppConstants.fallbackLocale);
 
   @override
   Locale build() {
@@ -43,7 +44,9 @@ class LocaleNotifier extends Notifier<Locale> {
   Future<void> _loadSaved() async {
     final prefs = await SharedPreferences.getInstance();
     final code = prefs.getString(_key);
-    if (code != null) {
+    // Bayat/bozuk tercih (desteklenmeyen kod) yok sayılır — delegate onu yükleyemez,
+    // onboarding ve soru ekranları buradan 'tr'ye düşüyordu.
+    if (code != null && AppLocalizationsDelegate.supportedCodes.contains(code)) {
       state = _withRegion(code);
     }
   }

@@ -16,11 +16,9 @@ mixin QuestionEasyModeScreenMixin on ConsumerState<QuestionEasyModeScreen> {
   void initMixin() {
     if (_localeInitialized) return;
     _localeInitialized = true;
-    final appLocale = Localizations.localeOf(context).languageCode;
-    selectedLocale =
-        AppConstants.supportedQuestionLocales.contains(appLocale)
-            ? appLocale
-            : 'tr';
+    selectedLocale = AppConstants.defaultQuestionLocale(
+      Localizations.localeOf(context).languageCode,
+    );
   }
 
   void disposeMixin() {

@@ -28,6 +28,7 @@ import 'package:qulo_v2/core/services/overlay_request.dart';
 import 'package:qulo_v2/routing/app_router.dart';
 import 'package:qulo_v2/core/services/format_manager.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
+import 'package:qulo_v2/core/constants/app_constants.dart';
 
 class QuloApp extends ConsumerStatefulWidget {
   const QuloApp({super.key});
@@ -346,13 +347,12 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
       themeMode: themeMode,
       locale: locale,
       // Bolge korunsun: `Locale('en','US')` desteklenen `Locale('en')`'e indirgenmesin.
-      localeResolutionCallback: (locale, _) => locale ?? const Locale('en'),
-      supportedLocales: const [
-            Locale('tr'), Locale('en'), Locale('de'), Locale('fr'),
-            Locale('es'), Locale('ar'), Locale('ru'), Locale('pt'),
-            Locale('it'), Locale('ja'), Locale('ko'), Locale('zh'),
-            Locale('nl'), Locale('pl'), Locale('sv'), Locale('hi'),
-          ],
+      localeResolutionCallback: (locale, _) =>
+          locale ?? const Locale(AppConstants.fallbackLocale),
+      // Tek kaynak: AppConstants.supportedQuestionLocales (delegate ile aynı küme).
+      supportedLocales: AppConstants.supportedQuestionLocales
+          .map((code) => Locale(code))
+          .toList(growable: false),
       localizationsDelegates: const [
         AppLocalizationsDelegate(),
         GlobalMaterialLocalizations.delegate,

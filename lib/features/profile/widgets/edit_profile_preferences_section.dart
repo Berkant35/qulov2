@@ -140,7 +140,11 @@ class EditProfilePreferencesSection extends ConsumerWidget {
                 onPressed: () {
                   final notifier = ref.read(editProfileProvider.notifier);
                   if (epState.allLanguagesSelected) {
-                    notifier.resetLanguages(ref.read(localeProvider).languageCode);
+                    notifier.resetLanguages(
+                      AppConstants.defaultQuestionLocale(
+                        ref.read(localeProvider).languageCode,
+                      ),
+                    );
                   } else {
                     notifier.selectAllLanguages();
                   }

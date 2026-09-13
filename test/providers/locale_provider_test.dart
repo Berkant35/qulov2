@@ -37,6 +37,20 @@ void main() {
     expect(container.read(localeProvider), const Locale('de', 'GB'));
     expect((await SharedPreferences.getInstance()).getString('app_locale'), 'de');
   });
+  testWidgets('kayıtlı tercih desteklenmeyen bir kodsa yok sayılır — cihaz dili/İngilizce seçilir', (tester) async {
+    // Bayat/bozuk tercih delegate'in isSupported'ına takılır; onboarding buradan 'tr'ye düşüyordu.
+    tester.platformDispatcher.localesTestValue = const [Locale('de', 'DE')];
+    addTearDown(tester.platformDispatcher.clearLocalesTestValue);
+    SharedPreferences.setMockInitialValues({'app_locale': 'xx'});
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+
+    container.read(localeProvider);
+    await tester.pumpAndSettle();
+
+    expect(container.read(localeProvider), const Locale('de', 'DE'));
+  });
+
   testWidgets('cihaz dil listesi boşsa İngilizce, bölgesiz', (tester) async {
     tester.platformDispatcher.localesTestValue = const <Locale>[];
     addTearDown(tester.platformDispatcher.clearLocalesTestValue);

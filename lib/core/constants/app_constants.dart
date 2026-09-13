@@ -52,6 +52,18 @@ abstract final class AppConstants {
     'pt', 'it', 'ja', 'ko', 'zh', 'nl', 'pl', 'sv', 'hi',
   ];
 
+  /// Uygulama dili ve eşleşme dili için ortak fallback — LocaleProvider, app.dart
+  /// ve sunucu `resolveLocale` aynı değere düşer. (`tr` DEĞİL: yurt dışı hatası.)
+  static const fallbackLocale = 'en';
+
+  /// Eşleşme/soru dilinin varsayılanı: uygulama dili destekleniyorsa o, değilse
+  /// [fallbackLocale]. Bölge/betik ekli kodlar (`tr_TR`, `pt-BR`) dile indirgenir.
+  /// Bayat bir tercihten desteklenmeyen kod sızarsa eskiden `tr`'ye düşüyordu (2026-09-13).
+  static String defaultQuestionLocale(String appLocale) {
+    final code = appLocale.split(RegExp('[_-]')).first;
+    return supportedQuestionLocales.contains(code) ? code : fallbackLocale;
+  }
+
   static const localeFlagEmojis = <String, String>{
     'tr': '\u{1F1F9}\u{1F1F7}',
     'en': '\u{1F1EC}\u{1F1E7}',

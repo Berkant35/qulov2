@@ -41,12 +41,7 @@ mixin OnboardingScreenMixin on ConsumerState<OnboardingScreen>,
       duration: const Duration(seconds: 4),
     )..repeat();
 
-    final appLocale = Localizations.localeOf(context).languageCode;
-    selectedLanguages = [
-      AppConstants.supportedQuestionLocales.contains(appLocale)
-          ? appLocale
-          : 'tr',
-    ];
+    selectedLanguages = [_defaultLanguage()];
 
     _analytics.logEvent(AnalyticsEvents.onboardingV2Start);
   }
@@ -91,18 +86,17 @@ mixin OnboardingScreenMixin on ConsumerState<OnboardingScreen>,
     });
   }
 
-  /// Secimi tek dile sifirlar — initMixin'deki ile ayni kural (app dili
-  /// destekleniyorsa o, degilse 'tr').
+  /// Secimi tek dile sifirlar — initMixin'deki ile ayni kural.
   void resetLanguages() {
-    final appLocale = Localizations.localeOf(context).languageCode;
     setState(() {
-      selectedLanguages = [
-        AppConstants.supportedQuestionLocales.contains(appLocale)
-            ? appLocale
-            : 'tr',
-      ];
+      selectedLanguages = [_defaultLanguage()];
     });
   }
+
+  /// Uygulama dili destekleniyorsa o, degilse `en` (tek kural, tek yer).
+  String _defaultLanguage() => AppConstants.defaultQuestionLocale(
+        Localizations.localeOf(context).languageCode,
+      );
 
   void onNext() {
     if (currentPage < _totalPages - 1) {

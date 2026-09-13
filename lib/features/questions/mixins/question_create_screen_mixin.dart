@@ -79,7 +79,8 @@ mixin QuestionCreateScreenMixin on ConsumerState<QuestionCreateScreen> {
       if (s.hint != null) hintController.text = s.hint!;
       selectedLocale = s.locale ?? 'tr';
     } else {
-      selectedLocale = 'tr';
+      // Context henüz yok; gerçek değer onDependenciesChanged'de uygulama dilinden gelir.
+      selectedLocale = AppConstants.fallbackLocale;
     }
   }
 
@@ -104,10 +105,9 @@ mixin QuestionCreateScreenMixin on ConsumerState<QuestionCreateScreen> {
 
   void onDependenciesChanged() {
     if (!isEditMode && widget.prefillSuggestion == null) {
-      final appLocale = Localizations.localeOf(context).languageCode;
-      if (AppConstants.supportedQuestionLocales.contains(appLocale)) {
-        selectedLocale = appLocale;
-      }
+      selectedLocale = AppConstants.defaultQuestionLocale(
+        Localizations.localeOf(context).languageCode,
+      );
     }
   }
 
