@@ -918,6 +918,7 @@ const trTranslations = <String, String>{
   'confirm': 'Onayla',
   'questions': 'Sorular',
   'question_min_chars': 'En az {count} karakter yaz',
+  'milestone_progress_hint': 'Profilini %{percent} tamamla, {diamonds} elmas kazan!',
   // Profil Kurulum Kapısı
   'setup_title': 'Birkaç adım kaldı',
   'setup_subtitle': 'Profilini tamamla, eşleşmen başlasın',

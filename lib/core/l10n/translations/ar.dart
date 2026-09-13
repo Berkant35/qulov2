@@ -883,6 +883,7 @@ const arTranslations = <String, String>{
   'confirm': 'تأكيد',
   'questions': 'الأسئلة',
   'question_min_chars': 'اكتب {count} أحرف على الأقل',
+  'milestone_progress_hint': 'أكمل {percent}% واربح {diamonds} ماسة!',
   // بوابة إعداد الملف الشخصي
   'setup_title': 'بقيت خطوات قليلة',
   'setup_subtitle': 'أكمل ملفك الشخصي لبدء المطابقة',

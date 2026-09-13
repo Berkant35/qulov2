@@ -885,6 +885,7 @@ const deTranslations = <String, String>{
   'confirm': 'Bestätigen',
   'questions': 'Fragen',
   'question_min_chars': 'Schreibe mindestens {count} Zeichen',
+  'milestone_progress_hint': 'Vervollständige {percent}% und verdiene {diamonds} Diamanten!',
   // Profileinrichtungstor
   'setup_title': 'Nur noch ein paar Schritte',
   'setup_subtitle': 'Vervollständige dein Profil, um Matches zu starten',

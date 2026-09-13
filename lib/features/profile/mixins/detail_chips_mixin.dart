@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/data/models/user_details_model.dart';
@@ -25,6 +26,13 @@ mixin DetailChipsWidgetMixin {
     }
   }
 
+  /// Burc kodu ('leo') → yerel ad. Eskiden ham kod gosteriliyordu. Bilinmeyen
+  /// deger oldugu gibi kalir (serbest metin girilmis eski kayit).
+  String zodiacLabel(BuildContext context, String value) {
+    final code = value.trim().toLowerCase();
+    return AppConstants.zodiacSigns.contains(code) ? context.tr('zodiac_$code') : value;
+  }
+
   List<ChipData> buildChips(
     BuildContext context, {
     required UserDetailsModel? details,
@@ -40,8 +48,10 @@ mixin DetailChipsWidgetMixin {
       ChipData(
         icon: QIcons.icHeight,
         filled: details?.height != null,
+        // Birim locale'e gore (imperial kullaniciya 5'9") — baskasinin profili
+        // (`profile_details_grid`) ile ayni formatlayici.
         label: details?.height != null
-            ? '${details!.height} cm'
+            ? context.fmt.height(details!.height!)
             : context.tr('height'),
       ),
       ChipData(
@@ -57,7 +67,9 @@ mixin DetailChipsWidgetMixin {
       ChipData(
         icon: QIcons.icZodiac,
         filled: details?.zodiac != null,
-        label: details?.zodiac ?? context.tr('zodiac'),
+        label: details?.zodiac != null
+            ? zodiacLabel(context, details!.zodiac!)
+            : context.tr('zodiac'),
       ),
       ChipData(
         icon: QIcons.icSmoke,

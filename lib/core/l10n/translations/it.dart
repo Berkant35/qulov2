@@ -885,6 +885,7 @@ const itTranslations = <String, String>{
   'confirm': 'Conferma',
   'questions': 'Domande',
   'question_min_chars': 'Scrivi almeno {count} caratteri',
+  'milestone_progress_hint': 'Completa il {percent}% e guadagna {diamonds} diamanti!',
   // Configurazione del profilo
   'setup_title': 'Mancano pochi passi',
   'setup_subtitle': 'Completa il profilo per iniziare a fare match',

@@ -4,6 +4,7 @@ import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/providers/economy_config_provider.dart';
 import 'package:qulo_v2/providers/edit_profile_provider.dart';
 import 'package:qulo_v2/features/profile/mixins/edit_profile_screen_mixin.dart';
+import 'package:qulo_v2/features/profile/utils/milestone_utils.dart';
 
 /// Tamamlanma metinleri, milestone ilerleme mesaji ve dropdown item
 /// builder'lari — sunum disi pure fonksiyonlar.
@@ -12,7 +13,7 @@ mixin EditProfileLabelsMixin on EditProfileScreenMixin {
 
   String photoCompletionText(List<String?> photos) {
     final count = photos.where((p) => p != null).length;
-    return '$count/6';
+    return '$count/${AppConstants.maxPhotos}';
   }
 
   String basicInfoCompletionText() {
@@ -48,33 +49,16 @@ mixin EditProfileLabelsMixin on EditProfileScreenMixin {
 
   // ─── Progress Helpers ───
 
-  int? nextMilestone(int completion) {
-    final milestones = ref.read(economyConfigProvider).rewards.milestones;
-    final sortedKeys = milestones.keys.toList()..sort();
-    for (final m in sortedKeys) {
-      if (completion < m) return m;
-    }
-    return null;
-  }
-
+  /// Eskiden Turkce sabitti ('%50 tamamla, 20 elmas kazan!') — Turkce olmayan
+  /// her kullanici profil duzenlemede Turkce metin goruyordu.
   String milestoneMessage(int completion) {
-    final next = nextMilestone(completion);
     final rewards = ref.read(economyConfigProvider).rewards.milestones;
+    final next = nextMilestoneFor(completion, rewards.keys);
     if (next == null) return '';
-    return '%$next tamamla, ${rewards[next]} elmas kazan!';
-  }
-
-  String languageLabel(String code) {
-    return switch (code) {
-      'tr' => 'Turkce',
-      'en' => 'English',
-      'de' => 'Deutsch',
-      'fr' => 'Francais',
-      'ar' => '\u0627\u0644\u0639\u0631\u0628\u064A\u0629',
-      'ru' => '\u0420\u0443\u0441\u0441\u043A\u0438\u0439',
-      'es' => 'Espanol',
-      _ => code,
-    };
+    return context
+        .tr('milestone_progress_hint')
+        .replaceAll('{percent}', '$next')
+        .replaceAll('{diamonds}', '${rewards[next]}');
   }
 
   // ─── Dropdown Helpers ───

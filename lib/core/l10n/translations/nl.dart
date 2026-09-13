@@ -883,6 +883,7 @@ const nlTranslations = <String, String>{
   'confirm': 'Bevestigen',
   'questions': 'Vragen',
   'question_min_chars': 'Schrijf minstens {count} tekens',
+  'milestone_progress_hint': 'Voltooi {percent}% en verdien {diamonds} diamanten!',
   // Profiel Instelpoort
   'setup_title': 'Nog een paar stappen',
   'setup_subtitle': 'Maak je profiel af om te matchen',

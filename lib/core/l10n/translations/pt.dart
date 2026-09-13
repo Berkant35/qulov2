@@ -885,6 +885,7 @@ const ptTranslations = <String, String>{
   'confirm': 'Confirmar',
   'questions': 'Perguntas',
   'question_min_chars': 'Escreva pelo menos {count} caracteres',
+  'milestone_progress_hint': 'Complete {percent}% e ganhe {diamonds} diamantes!',
   // Porta de configuração do perfil
   'setup_title': 'Faltam alguns passos',
   'setup_subtitle': 'Complete seu perfil para começar a dar match',

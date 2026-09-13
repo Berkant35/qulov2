@@ -883,6 +883,7 @@ const plTranslations = <String, String>{
   'confirm': 'Potwierdź',
   'questions': 'Pytania',
   'question_min_chars': 'Napisz co najmniej {count} znaków',
+  'milestone_progress_hint': 'Uzupełnij {percent}% i zdobądź {diamonds} diamentów!',
   // Brama konfiguracji profilu
   'setup_title': 'Zostało kilka kroków',
   'setup_subtitle': 'Uzupełnij profil, by zacząć dopasowywać',

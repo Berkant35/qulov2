@@ -883,6 +883,7 @@ const koTranslations = <String, String>{
   'confirm': '확인',
   'questions': '질문',
   'question_min_chars': '{count}자 이상 입력하세요',
+  'milestone_progress_hint': '{percent}% 완성하고 다이아몬드 {diamonds}개를 받으세요!',
   // 프로필 설정 게이트
   'setup_title': '몇 단계 남았어요',
   'setup_subtitle': '매칭을 시작하려면 프로필을 완성하세요',

@@ -883,6 +883,7 @@ const zhTranslations = <String, String>{
   'confirm': '确认',
   'questions': '问题',
   'question_min_chars': '请至少输入 {count} 个字符',
+  'milestone_progress_hint': '完成 {percent}% 即可获得 {diamonds} 颗钻石！',
   // 个人资料设置入口
   'setup_title': '还差几步',
   'setup_subtitle': '完成资料即可开始匹配',
