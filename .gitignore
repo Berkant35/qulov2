@@ -50,8 +50,6 @@ app.*.map.json
 
 # Node
 node_modules/
-server/node_modules/
-server/dist/
 
 # Flutter generated
 .flutter-plugins

@@ -46,7 +46,7 @@ Video üretim görevleri için: HTML→Puppeteer→ffmpeg pipeline'ını kullan.
 
 ## Project Structure
 - **Mobile**: Flutter + Riverpod + GoRouter (lib/)
-- **Backend**: Node.js + Express + TypeScript (server/)
+- **Backend**: Node.js + Express + TypeScript (ayrı repo: `../qulo-server`)
 - **DB**: Supabase PostgreSQL + PostGIS + Realtime
 - **Auth**: Custom JWT (bcrypt + access/refresh tokens)
 - **Firebase**: FCM (push), Crashlytics, Analytics
@@ -58,16 +58,18 @@ Video üretim görevleri için: HTML→Puppeteer→ffmpeg pipeline'ını kullan.
 - `lib/core/` — Shared utilities, error handling, l10n
 - `lib/core/navigation/` — NavigationService, observers, dialog/sheet models
 - `lib/data/` — Models, repositories, API layer
-- `server/src/routes/` — Express route modules
-- `server/src/services/` — Business logic
-- `server/src/middleware/` — Auth, rate limiting, validation
+- `../qulo-server/src/routes/` — Express route modules
+- `../qulo-server/src/services/` — Business logic
+- `../qulo-server/src/middleware/` — Auth, rate limiting, validation
+- `../qulo-server/migrations/` — DB migration'ları (001–019 ilk şema: `migrations/legacy/`)
+- `scripts/` — Mağaza sürüm notu / ASO script'leri (release akışı kullanır, silme)
 
 ## Development Commands
-- **Backend dev**: `cd server && npm run dev` (tsx watch)
-- **Backend build**: `cd server && npm run build`
+- **Backend dev**: `cd ../qulo-server && npm run dev` (tsx watch)
+- **Backend build**: `cd ../qulo-server && npm run build`
 - **Flutter run**: `flutter run`
 - **Flutter analyze**: `flutter analyze`
-- **Tests**: `cd server && npm test` (vitest)
+- **Tests**: `cd ../qulo-server && npx vitest run`
 - **Flutter test**: `flutter test`  |  tek dosya: `flutter test test/<yol>_test.dart`
 
 ## Conventions

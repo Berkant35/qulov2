@@ -7,6 +7,7 @@ disable-model-invocation: true
 # Add Endpoint
 
 Creates a new backend API endpoint with all required files following the project pattern.
+Backend lives in the separate `qulo-server` repo (`../qulo-server` from qulov2); all paths below are relative to it.
 
 ## Arguments
 
@@ -18,29 +19,29 @@ Creates a new backend API endpoint with all required files following the project
 
 ## Steps
 
-1. **Check if route file exists** at `server/src/routes/<resource>.routes.ts`
+1. **Check if route file exists** at `src/routes/<resource>.routes.ts`
    - If not, create new route file (see template below)
    - If exists, add the new endpoint to it
 
-2. **Check if service file exists** at `server/src/services/<resource>.service.ts`
+2. **Check if service file exists** at `src/services/<resource>.service.ts`
    - If not, create with class pattern + singleton export (see template)
    - If exists, add new method
 
-3. **Create validator** (if POST/PUT/PATCH) at `server/src/validators/<resource>.validator.ts`
+3. **Create validator** (if POST/PUT/PATCH) at `src/validators/<resource>.validator.ts`
    - Use Zod schema
    - If file exists, add new schema to it
 
-4. **Create controller** at `server/src/controllers/<resource>.controller.ts`
+4. **Create controller** at `src/controllers/<resource>.controller.ts`
    - If file exists, add new handler function
    - Always use try/catch with `Errors` utility
 
-5. **Register route** in `server/src/routes/app.routes.ts`:
+5. **Register route** in `src/routes/app.routes.ts`:
    ```ts
    import <resource>Routes from "./<resource>.routes.js";
    router.use("/<resource>s", <resource>Routes);
    ```
 
-6. **Run** `npx tsc --noEmit` in server/ to verify no type errors
+6. **Run** `npx tsc --noEmit` in qulo-server/ to verify no type errors
 
 ## Route File Template
 

@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Run Tests
 
-Runs backend tests using vitest.
+Runs backend tests using vitest. Backend lives in the separate `qulo-server` repo (`../qulo-server` from qulov2).
 
 ## Arguments
 
@@ -16,20 +16,20 @@ Runs backend tests using vitest.
 
 1. **If filter provided**: Run filtered tests
    ```bash
-   cd server && npx vitest run --reporter=verbose <filter>
+   cd ../qulo-server && npx vitest run --reporter=verbose <filter>
    ```
 
 2. **If no filter**: Run all tests
    ```bash
-   cd server && npx vitest run --reporter=verbose
+   cd ../qulo-server && npx vitest run --reporter=verbose
    ```
 
 3. **If tests fail**: Report failures with file paths and line numbers. Do NOT auto-fix unless asked.
 
-4. **If no test files found for filter**: Suggest creating tests at `server/src/__tests__/<filter>.test.ts`
+4. **If no test files found for filter**: Suggest creating tests at `../qulo-server/tests/services/<filter>.service.test.ts`
 
 ## Conventions
 
-- Tests live in `server/src/__tests__/` or colocated as `*.test.ts`
+- Tests live in `qulo-server/tests/` (services, validators, …) and `qulo-server/src/__tests__/`
 - Use vitest (`describe`, `it`, `expect`)
-- Mock Supabase calls, don't hit real DB in tests
+- Mock Supabase calls with `tests/helpers/fake-supabase.ts`, don't hit real DB in tests
