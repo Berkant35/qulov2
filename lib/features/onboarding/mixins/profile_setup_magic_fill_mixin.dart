@@ -26,14 +26,16 @@ mixin ProfileSetupMagicFillMixin<T extends ConsumerStatefulWidget>
       CustomBottomSheet(
         name: 'setup_brief',
         maxHeightFactor: AppBottomSheet.tallHeightFactor,
-        builder: (ctx) => SetupBriefSheet(
+        builder: (_) => SetupBriefSheet(
           onGenerate: (interests) async {
-            Navigator.of(ctx).pop();
+            navigation.closeOverlay();
             await _afterInterests(interests);
           },
           onSkip: () async {
-            Navigator.of(ctx).pop();
-            AnalyticsManager.instance.logEvent(AnalyticsEvents.setupMagicFillSkip);
+            navigation.closeOverlay();
+            AnalyticsManager.instance.logEvent(
+              AnalyticsEvents.setupMagicFillSkip,
+            );
             await _afterInterests(const []);
           },
         ),
@@ -46,8 +48,9 @@ mixin ProfileSetupMagicFillMixin<T extends ConsumerStatefulWidget>
     setState(() => isProcessing = true);
     try {
       if (interests.isNotEmpty) {
-        final result =
-            await ref.read(userProvider.notifier).setInterests(interests);
+        final result = await ref
+            .read(userProvider.notifier)
+            .setInterests(interests);
         if (!mounted) return;
         if (result.isFailure) {
           showSetupSnack(context.tr('preview_sheet_error'));
@@ -71,12 +74,13 @@ mixin ProfileSetupMagicFillMixin<T extends ConsumerStatefulWidget>
       // may have signed up in EN but switched UI to TR; question content should
       // follow what they actually see in the app.
       final appLocale = Localizations.localeOf(context).languageCode;
-      final repoResult =
-          await ref.read(questionRepositoryProvider).getAiSuggestions({
-        'profile_based': true,
-        'count': AppConstants.minQuestions,
-        'locale': appLocale,
-      });
+      final repoResult = await ref
+          .read(questionRepositoryProvider)
+          .getAiSuggestions({
+            'profile_based': true,
+            'count': AppConstants.minQuestions,
+            'locale': appLocale,
+          });
       if (!mounted) return;
       suggestions = repoResult.when<List<Map<String, dynamic>>>(
         success: (data) {
@@ -105,20 +109,21 @@ mixin ProfileSetupMagicFillMixin<T extends ConsumerStatefulWidget>
       CustomBottomSheet(
         name: 'setup_ai_preview',
         maxHeightFactor: AppBottomSheet.tallHeightFactor,
-        builder: (ctx) => SetupAiPreviewSheet(
+        builder: (_) => SetupAiPreviewSheet(
           suggestions: suggestions,
           onAssign: (edited) async {
-            Navigator.of(ctx).pop();
+            navigation.closeOverlay();
             await _assignSuggestions(edited);
           },
           onRegenerate: () async {
-            Navigator.of(ctx).pop();
-            AnalyticsManager.instance
-                .logEvent(AnalyticsEvents.setupMagicFillRegen);
+            navigation.closeOverlay();
+            AnalyticsManager.instance.logEvent(
+              AnalyticsEvents.setupMagicFillRegen,
+            );
             await _showPreviewSheet();
           },
           onSkip: () async {
-            Navigator.of(ctx).pop();
+            navigation.closeOverlay();
             await handleQuickAssign();
           },
         ),
@@ -131,19 +136,22 @@ mixin ProfileSetupMagicFillMixin<T extends ConsumerStatefulWidget>
     setState(() => isProcessing = true);
     try {
       final user = ref.read(userProvider).valueOrNull;
-      final outcome =
-          await ref.read(questionProvider.notifier).createFromSuggestions(
-                edited,
-                startOrder: (user?.questionCount ?? 0) + 1,
-                // Match the locale used at suggestion fetch time (app UI locale).
-                locale: Localizations.localeOf(context).languageCode,
-              );
+      final outcome = await ref
+          .read(questionProvider.notifier)
+          .createFromSuggestions(
+            edited,
+            startOrder: (user?.questionCount ?? 0) + 1,
+            // Match the locale used at suggestion fetch time (app UI locale).
+            locale: Localizations.localeOf(context).languageCode,
+          );
       if (!mounted) return;
       if (outcome.failed > 0) {
         showSetupSnack(context.tr('question_save_failed'));
       }
       if (outcome.created > 0) {
-        AnalyticsManager.instance.logEvent(AnalyticsEvents.setupMagicFillAssign);
+        AnalyticsManager.instance.logEvent(
+          AnalyticsEvents.setupMagicFillAssign,
+        );
         maybeCompleteSetup();
       }
     } finally {

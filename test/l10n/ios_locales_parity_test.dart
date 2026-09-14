@@ -6,6 +6,18 @@ import 'package:qulo_v2/core/constants/app_constants.dart';
 /// Dart dil listesi ile iOS paketleme dosyaları ve TestFlight not eşlemesi aynı
 /// kümeyi taşımalı. 2026-09-08'de InfoPlist.strings'ler pbxproj'e hiç eklenmemişti
 /// ve App Store uygulamayı tek dilli sanıyordu; 19. dilde bu dört yerden biri unutulmasın.
+/// push_testflight_notes.mjs LOCALE_MAP: Dart dil kodu → ASC kodu (tr→tr, de→de-DE...).
+/// Üç senkron testi aynı haritayı okur; parse tek yerde.
+Map<String, String> _testFlightLocaleMap() {
+  final map = RegExp(r'const LOCALE_MAP = \{([\s\S]*?)\};')
+      .firstMatch(File('scripts/push_testflight_notes.mjs').readAsStringSync())!
+      .group(1)!;
+  return {
+    for (final m in RegExp(r"([a-z]{2}):\s*'([^']+)'").allMatches(map))
+      m.group(1)!: m.group(2)!,
+  };
+}
+
 void main() {
   final expected = AppConstants.supportedQuestionLocales.toSet();
 
@@ -51,26 +63,12 @@ void main() {
   );
 
   test('push_testflight_notes.mjs LOCALE_MAP her dili eşler', () {
-    final mjs = File('scripts/push_testflight_notes.mjs').readAsStringSync();
-    final map = RegExp(
-      r'const LOCALE_MAP = \{([\s\S]*?)\};',
-    ).firstMatch(mjs)!.group(1)!;
-    final keys = RegExp(
-      r"\b([a-z]{2}):\s*'",
-    ).allMatches(map).map((m) => m.group(1)!).toSet();
-    expect(keys, expected);
+    expect(_testFlightLocaleMap().keys.toSet(), expected);
   });
 
   test('asc_whatsnew.mjs NOTES, LOCALE_MAP üzerinden her dili kapsar', () {
     // 5. senkron noktası: App Store "Yenilikler" metni. th/id eklenirken unutulmuştu (review).
-    final mjs = File('scripts/push_testflight_notes.mjs').readAsStringSync();
-    final map = RegExp(
-      r'const LOCALE_MAP = \{([\s\S]*?)\};',
-    ).firstMatch(mjs)!.group(1)!;
-    final ascOf = {
-      for (final m in RegExp(r"([a-z]{2}):\s*'([^']+)'").allMatches(map))
-        m.group(1)!: m.group(2)!,
-    };
+    final ascOf = _testFlightLocaleMap();
     final notes = File('scripts/asc_whatsnew.mjs').readAsStringSync();
     // Iki tanim bicimi var: literal (`'th': \`...\``) ve turetme (`NOTES['pt-BR'] = ...`).
     final noteKeys = RegExp(
@@ -93,15 +91,7 @@ void main() {
     'asc_keywords.mjs K, LOCALE_MAP üzerinden her dil için keyword seti taşır',
     () {
       // 6. senkron noktası: mağaza arama kelimeleri. th/id 18 dile çıkarken burada unutulmuştu.
-      final map = RegExp(r'const LOCALE_MAP = \{([\s\S]*?)\};')
-          .firstMatch(
-            File('scripts/push_testflight_notes.mjs').readAsStringSync(),
-          )!
-          .group(1)!;
-      final ascOf = {
-        for (final m in RegExp(r"([a-z]{2}):\s*'([^']+)'").allMatches(map))
-          m.group(1)!: m.group(2)!,
-      };
+      final ascOf = _testFlightLocaleMap();
       final k = RegExp(r'const K = \{([\s\S]*?)\n\};')
           .firstMatch(File('scripts/asc_keywords.mjs').readAsStringSync())!
           .group(1)!;

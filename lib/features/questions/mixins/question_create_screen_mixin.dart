@@ -68,7 +68,7 @@ mixin QuestionCreateScreenMixin on ConsumerState<QuestionCreateScreen> {
       correctAnswer = q.correctAnswer;
       selectedCategory = q.category;
       selectedTimeLimit = q.timeLimit;
-      selectedLocale = q.locale ?? 'tr';
+      selectedLocale = q.locale ?? AppConstants.fallbackLocale;
     } else if (widget.prefillSuggestion != null) {
       final s = widget.prefillSuggestion!;
       questionTextController.text = s.questionText;
@@ -79,7 +79,7 @@ mixin QuestionCreateScreenMixin on ConsumerState<QuestionCreateScreen> {
       correctAnswer = s.correctAnswer;
       selectedCategory = s.category;
       if (s.hint != null) hintController.text = s.hint!;
-      selectedLocale = s.locale ?? 'tr';
+      selectedLocale = s.locale ?? AppConstants.fallbackLocale;
     } else {
       // Context henüz yok; gerçek değer onDependenciesChanged'de uygulama dilinden gelir.
       selectedLocale = AppConstants.fallbackLocale;
@@ -236,7 +236,7 @@ mixin QuestionCreateScreenMixin on ConsumerState<QuestionCreateScreen> {
     ref.read(navigationServiceProvider).pop();
   }
 
-  void _onSaveFailure(dynamic f) {
+  void _onSaveFailure(AppFailure f) {
     if (!mounted) return;
 
     final String messageKey;

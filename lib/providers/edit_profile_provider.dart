@@ -42,12 +42,15 @@ class EditProfileState {
   }) {
     return EditProfileState(
       isSaving: isSaving ?? this.isSaving,
-      selectedZodiac:
-          selectedZodiac != null ? selectedZodiac() : this.selectedZodiac,
-      selectedSmoking:
-          selectedSmoking != null ? selectedSmoking() : this.selectedSmoking,
-      selectedAlcohol:
-          selectedAlcohol != null ? selectedAlcohol() : this.selectedAlcohol,
+      selectedZodiac: selectedZodiac != null
+          ? selectedZodiac()
+          : this.selectedZodiac,
+      selectedSmoking: selectedSmoking != null
+          ? selectedSmoking()
+          : this.selectedSmoking,
+      selectedAlcohol: selectedAlcohol != null
+          ? selectedAlcohol()
+          : this.selectedAlcohol,
       selectedGenderPref: selectedGenderPref != null
           ? selectedGenderPref()
           : this.selectedGenderPref,
@@ -89,12 +92,11 @@ class EditProfileNotifier extends Notifier<EditProfileState> {
       selectedRelationshipGoal: user.relationshipGoal,
       selectedLanguages: user.preferredLanguages.isNotEmpty
           ? user.preferredLanguages
-          : [user.locale ?? 'tr'],
+          : [user.locale ?? AppConstants.fallbackLocale],
     );
   }
 
-  void setZodiac(String? v) =>
-      state = state.copyWith(selectedZodiac: () => v);
+  void setZodiac(String? v) => state = state.copyWith(selectedZodiac: () => v);
   void setSmoking(String? v) =>
       state = state.copyWith(selectedSmoking: () => v);
   void setAlcohol(String? v) =>
@@ -117,8 +119,8 @@ class EditProfileNotifier extends Notifier<EditProfileState> {
 
   /// Desteklenen 18 dilin tumunu sirasiyla secer ("select all" aksiyonu).
   void selectAllLanguages() => state = state.copyWith(
-        selectedLanguages: List.of(AppConstants.supportedQuestionLocales),
-      );
+    selectedLanguages: List.of(AppConstants.supportedQuestionLocales),
+  );
 
   /// Secimi tek dile sifirlar ("reset" aksiyonu) — en az 1 dil kuralini korur.
   void resetLanguages(String keep) =>
@@ -140,11 +142,13 @@ class EditProfileNotifier extends Notifier<EditProfileState> {
     state = state.copyWith(isSaving: true);
     try {
       profileData.removeWhere((_, v) => v == null);
-      final r1 =
-          await ref.read(userProvider.notifier).updateProfile(profileData);
+      final r1 = await ref
+          .read(userProvider.notifier)
+          .updateProfile(profileData);
       detailsData.removeWhere((_, v) => v == null);
-      final r2 =
-          await ref.read(userProvider.notifier).updateDetails(detailsData);
+      final r2 = await ref
+          .read(userProvider.notifier)
+          .updateDetails(detailsData);
       return r1.isSuccess && r2.isSuccess;
     } finally {
       state = state.copyWith(isSaving: false);
@@ -154,5 +158,5 @@ class EditProfileNotifier extends Notifier<EditProfileState> {
 
 final editProfileProvider =
     NotifierProvider<EditProfileNotifier, EditProfileState>(
-  EditProfileNotifier.new,
-);
+      EditProfileNotifier.new,
+    );
