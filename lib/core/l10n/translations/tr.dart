@@ -63,6 +63,7 @@ const trTranslations = <String, String>{
   'discover_empty_language_title': 'Senin dilinde soru yazan kimse yok',
   'discover_empty_language_hint': 'Daha fazla dil seçersen o dillerdeki profiller de karşına çıkar',
   'discover_empty_language_cta': 'Dil tercihlerini düzenle',
+  'discover_empty_language_scope': 'Mesafe sınırının ötesine de baktık — sorun mesafe değil',
   'refresh': 'Yenile',
   'questions_count': '{count} soru',
 

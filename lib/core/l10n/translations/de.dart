@@ -63,6 +63,7 @@ const deTranslations = <String, String>{
   'discover_empty_language_title': 'Niemand schreibt Fragen in deiner Sprache',
   'discover_empty_language_hint': 'Wähle mehr Sprachen aus, dann erscheinen auch Profile in diesen Sprachen',
   'discover_empty_language_cta': 'Spracheinstellungen bearbeiten',
+  'discover_empty_language_scope': 'Wir haben schon über deinen Entfernungsbereich hinaus gesucht – an der Entfernung liegt es nicht',
   'refresh': 'Aktualisieren',
   'questions_count': '{count} Fragen',
 

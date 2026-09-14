@@ -4,25 +4,37 @@ import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
+import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/empty_state_view.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
+import 'package:qulo_v2/features/discover/widgets/discover_passport_hint.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 
 /// Aday havuzunda kisi var ama hicbiri kullanicinin dilinde soru yazmamis.
 ///
 /// Radius slider gostermek anlamsiz olurdu: mesafe zaten kademeli olarak
-/// sinirsiza kadar geniyor, eleyen dil kapisi. Dil kapisi bilincli olarak
-/// gevsetilmiyor — okunamayan soru cozulemez, cozulemeyen quiz elmas yakar.
+/// sinirsiza kadar geniyor, eleyen dil kapisi. Kullanici bunu bilmeden
+/// mesafeyi suclar — kapsam notu bunu acikca soyler. Dil kapisi bilincli
+/// olarak gevsetilmiyor — okunamayan soru cozulemez, cozulemeyen quiz elmas
+/// yakar. Ikinci cikis yolu pasaport: baska sehrin havuzu baska dilde yazar.
 class DiscoverEmptyLanguage extends ConsumerWidget {
   const DiscoverEmptyLanguage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+
     return EmptyStateView(
       icon: QIcon(QIcons.icCompassOff, size: 64, color: context.appColors.textHint),
       title: context.tr('discover_empty_language_title'),
       message: context.tr('discover_empty_language_hint'),
       children: [
+        Text(
+          context.tr('discover_empty_language_scope'),
+          style: theme.textTheme.bodySmall?.copyWith(color: context.appColors.textHint),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: AppSpacing.lg),
         SizedBox(
           width: double.infinity,
           height: 48,
@@ -36,6 +48,8 @@ class DiscoverEmptyLanguage extends ConsumerWidget {
             child: Text(context.tr('discover_empty_language_cta')),
           ),
         ),
+        const SizedBox(height: AppSpacing.md),
+        const DiscoverPassportHint(),
       ],
     );
   }

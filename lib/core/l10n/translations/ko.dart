@@ -63,6 +63,7 @@ const koTranslations = <String, String>{
   'discover_empty_language_title': '내 언어로 질문을 쓴 사람이 없어요',
   'discover_empty_language_hint': '언어를 더 추가하면 그 언어의 프로필도 볼 수 있어요',
   'discover_empty_language_cta': '언어 설정 수정',
+  'discover_empty_language_scope': '설정한 거리 밖까지 이미 찾아봤어요. 거리 때문이 아니에요',
   'refresh': '새로고침',
   'questions_count': '{count}개 질문',
 

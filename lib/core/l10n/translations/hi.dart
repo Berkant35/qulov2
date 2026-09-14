@@ -63,6 +63,7 @@ const hiTranslations = <String, String>{
   'discover_empty_language_title': 'आपकी भाषा में कोई सवाल नहीं लिखता',
   'discover_empty_language_hint': 'और भाषाएँ चुनें, उन भाषाओं के प्रोफ़ाइल भी दिखेंगे',
   'discover_empty_language_cta': 'भाषा पसंद बदलें',
+  'discover_empty_language_scope': 'हमने तुम्हारी दूरी सीमा से आगे भी खोजा — समस्या दूरी नहीं है',
   'refresh': 'रिफ़्रेश',
   'questions_count': '{count} सवाल',
 

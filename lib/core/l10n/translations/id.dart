@@ -63,6 +63,7 @@ const idTranslations = <String, String>{
   'discover_empty_language_title': 'Belum ada yang menulis pertanyaan dalam bahasamu',
   'discover_empty_language_hint': 'Tambahkan bahasa lain, dan profil dengan bahasa tersebut akan muncul',
   'discover_empty_language_cta': 'Ubah preferensi bahasa',
+  'discover_empty_language_scope': 'Kami sudah mencari di luar jarak pilihanmu — masalahnya bukan jarak',
   'refresh': 'Muat ulang',
   'questions_count': '{count} pertanyaan',
 

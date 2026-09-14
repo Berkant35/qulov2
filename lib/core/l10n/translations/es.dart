@@ -63,6 +63,7 @@ const esTranslations = <String, String>{
   'discover_empty_language_title': 'Nadie escribe preguntas en tu idioma',
   'discover_empty_language_hint': 'Añade más idiomas y verás perfiles en esos idiomas',
   'discover_empty_language_cta': 'Editar preferencias de idioma',
+  'discover_empty_language_scope': 'Ya buscamos más allá de tu rango de distancia: la distancia no es el problema',
   'refresh': 'Actualizar',
   'questions_count': '{count} preguntas',
 

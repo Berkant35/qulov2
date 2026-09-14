@@ -63,6 +63,7 @@ const jaTranslations = <String, String>{
   'discover_empty_language_title': 'あなたの言語で質問を書いている人がいません',
   'discover_empty_language_hint': '言語を追加すると、その言語のプロフィールも表示されます',
   'discover_empty_language_cta': '言語設定を変更',
+  'discover_empty_language_scope': '設定した距離の外まで探しました。距離が原因ではありません',
   'refresh': '更新',
   'questions_count': '{count}問',
 

@@ -63,6 +63,7 @@ const frTranslations = <String, String>{
   'discover_empty_language_title': 'Personne n\'écrit de questions dans ta langue',
   'discover_empty_language_hint': 'Ajoute des langues et tu verras aussi des profils dans ces langues',
   'discover_empty_language_cta': 'Modifier mes langues',
+  'discover_empty_language_scope': 'On a déjà cherché au-delà de ta distance : le problème ne vient pas de la distance',
   'refresh': 'Actualiser',
   'questions_count': '{count} questions',
 

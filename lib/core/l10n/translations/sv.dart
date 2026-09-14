@@ -63,6 +63,7 @@ const svTranslations = <String, String>{
   'discover_empty_language_title': 'Ingen skriver frågor på ditt språk',
   'discover_empty_language_hint': 'Lägg till fler språk så dyker profiler på de språken upp',
   'discover_empty_language_cta': 'Ändra språkval',
+  'discover_empty_language_scope': 'Vi har redan letat utanför ditt avståndsintervall – det är inte avståndet som är problemet',
   'refresh': 'Uppdatera',
   'questions_count': '{count} frågor',
 

@@ -63,6 +63,7 @@ const zhTranslations = <String, String>{
   'discover_empty_language_title': '没有人用你的语言写问题',
   'discover_empty_language_hint': '多选几种语言，就能看到这些语言的用户',
   'discover_empty_language_cta': '修改语言偏好',
+  'discover_empty_language_scope': '我们已经在你的距离范围之外搜索过了——问题不在距离',
   'refresh': '刷新',
   'questions_count': '{count} 个问题',
 

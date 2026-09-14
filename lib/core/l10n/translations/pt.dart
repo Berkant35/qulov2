@@ -63,6 +63,7 @@ const ptTranslations = <String, String>{
   'discover_empty_language_title': 'Ninguém escreve perguntas no seu idioma',
   'discover_empty_language_hint': 'Adicione mais idiomas e você vai ver perfis nesses idiomas',
   'discover_empty_language_cta': 'Editar preferências de idioma',
+  'discover_empty_language_scope': 'Já procuramos além do seu limite de distância — a distância não é o problema',
   'refresh': 'Atualizar',
   'questions_count': '{count} perguntas',
 

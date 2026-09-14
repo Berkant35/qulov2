@@ -2,16 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
-import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/empty_state_view.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/features/discover/mixins/discover_empty_state_mixin.dart';
-import 'package:qulo_v2/providers/passport_provider.dart';
-import 'package:qulo_v2/providers/subscription_provider.dart';
-import 'package:qulo_v2/routing/route_names.dart';
+import 'package:qulo_v2/features/discover/widgets/discover_passport_hint.dart';
 
 class DiscoverEmptyState extends ConsumerStatefulWidget {
   const DiscoverEmptyState({super.key});
@@ -40,9 +37,6 @@ class _DiscoverEmptyStateState extends ConsumerState<DiscoverEmptyState>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final passport = ref.watch(passportProvider);
-    final subscription = ref.watch(subscriptionProvider);
-    final isPremium = subscription.valueOrNull?.isPremium ?? false;
     final scale = context.fmt.radiusScale;
 
     return EmptyStateView(
@@ -123,41 +117,7 @@ class _DiscoverEmptyStateState extends ConsumerState<DiscoverEmptyState>
 
             const SizedBox(height: AppSpacing.lg),
 
-            // Passport hints
-            if (passport.isActive) ...[
-              TextButton.icon(
-                onPressed: () => ref
-                    .read(navigationServiceProvider)
-                    .push(RouteNames.passport),
-                icon: const Icon(Icons.flight, size: 16),
-                label: Text(context.tr('passport_change_city')),
-                style: TextButton.styleFrom(
-                  foregroundColor: context.appColors.primary,
-                ),
-              ),
-            ] else if (isPremium) ...[
-              TextButton.icon(
-                onPressed: () => ref
-                    .read(navigationServiceProvider)
-                    .push(RouteNames.passport),
-                icon: const Icon(Icons.flight, size: 16),
-                label: Text(context.tr('passport_explore_hint')),
-                style: TextButton.styleFrom(
-                  foregroundColor: context.appColors.primary,
-                ),
-              ),
-            ] else ...[
-              TextButton.icon(
-                onPressed: () => ref
-                    .read(navigationServiceProvider)
-                    .push(RouteNames.subscription),
-                icon: const Icon(Icons.flight, size: 16),
-                label: Text(context.tr('passport_premium_explore_hint')),
-                style: TextButton.styleFrom(
-                  foregroundColor: context.appColors.textSecondary,
-                ),
-              ),
-            ],
+            const DiscoverPassportHint(),
       ],
     );
   }

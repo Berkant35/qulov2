@@ -63,6 +63,7 @@ const thTranslations = <String, String>{
   'discover_empty_language_title': 'ยังไม่มีใครเขียนคำถามในภาษาของคุณ',
   'discover_empty_language_hint': 'เพิ่มภาษาอื่น แล้วโปรไฟล์ในภาษาเหล่านั้นจะแสดงขึ้นมา',
   'discover_empty_language_cta': 'แก้ไขภาษาที่ต้องการ',
+  'discover_empty_language_scope': 'เราค้นหาเกินระยะทางที่คุณตั้งไว้แล้ว — ปัญหาไม่ใช่ระยะทาง',
   'refresh': 'รีเฟรช',
   'questions_count': '{count} คำถาม',
 

@@ -63,6 +63,7 @@ const arTranslations = <String, String>{
   'discover_empty_language_title': 'لا أحد يكتب أسئلة بلغتك',
   'discover_empty_language_hint': 'أضف لغات أخرى وستظهر لك ملفات بهذه اللغات',
   'discover_empty_language_cta': 'تعديل تفضيلات اللغة',
+  'discover_empty_language_scope': 'بحثنا بالفعل خارج نطاق المسافة الذي اخترته — المسافة ليست المشكلة',
   'refresh': 'تحديث',
   'questions_count': '{count} أسئلة',
 

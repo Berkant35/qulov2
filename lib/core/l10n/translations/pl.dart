@@ -63,6 +63,7 @@ const plTranslations = <String, String>{
   'discover_empty_language_title': 'Nikt nie pisze pyta\u0144 w Twoim j\u0119zyku',
   'discover_empty_language_hint': 'Dodaj wi\u0119cej j\u0119zyk\u00f3w, a zobaczysz profile w tych j\u0119zykach',
   'discover_empty_language_cta': 'Edytuj j\u0119zyki',
+  'discover_empty_language_scope': 'Szukali\u015bmy ju\u017c poza Twoim zasi\u0119giem \u2014 to nie odleg\u0142o\u015b\u0107 jest problemem',
   'refresh': 'Od\u015bwie\u017c',
   'questions_count': '{count} pyta\u0144',
 

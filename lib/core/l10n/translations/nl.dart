@@ -63,6 +63,7 @@ const nlTranslations = <String, String>{
   'discover_empty_language_title': 'Niemand schrijft vragen in jouw taal',
   'discover_empty_language_hint': 'Voeg meer talen toe en je ziet ook profielen in die talen',
   'discover_empty_language_cta': 'Taalvoorkeuren bewerken',
+  'discover_empty_language_scope': 'We hebben al buiten je afstandsbereik gezocht — afstand is het probleem niet',
   'refresh': 'Vernieuwen',
   'questions_count': '{count} vragen',
 

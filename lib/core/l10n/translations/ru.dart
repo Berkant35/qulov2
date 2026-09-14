@@ -63,6 +63,7 @@ const ruTranslations = <String, String>{
   'discover_empty_language_title': 'Никто не пишет вопросы на твоём языке',
   'discover_empty_language_hint': 'Добавь больше языков — и увидишь профили на них',
   'discover_empty_language_cta': 'Изменить языки',
+  'discover_empty_language_scope': 'Мы уже искали за пределами твоего радиуса — дело не в расстоянии',
   'refresh': 'Обновить',
   'questions_count': '{count} вопросов',
 

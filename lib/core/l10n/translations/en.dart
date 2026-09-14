@@ -63,6 +63,7 @@ const enTranslations = <String, String>{
   'discover_empty_language_title': 'No one writes questions in your language',
   'discover_empty_language_hint': 'Add more languages and profiles in those languages will show up',
   'discover_empty_language_cta': 'Edit language preferences',
+  'discover_empty_language_scope': 'We already looked beyond your distance range — distance is not the issue',
   'refresh': 'Refresh',
   'questions_count': '{count} questions',
 

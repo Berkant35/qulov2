@@ -63,6 +63,7 @@ const itTranslations = <String, String>{
   'discover_empty_language_title': 'Nessuno scrive domande nella tua lingua',
   'discover_empty_language_hint': 'Aggiungi altre lingue e vedrai anche profili in quelle lingue',
   'discover_empty_language_cta': 'Modifica le lingue',
+  'discover_empty_language_scope': 'Abbiamo già cercato oltre la tua distanza: il problema non è la distanza',
   'refresh': 'Aggiorna',
   'questions_count': '{count} domande',
 
