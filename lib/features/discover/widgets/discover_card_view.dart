@@ -385,7 +385,7 @@ class DiscoverActionButtons extends ConsumerWidget with DiscoverActionButtonsMix
                 ),
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xs),
             Text(
               hasUndoRight
                   ? (allowance.isUnlimited ? '∞' : '${allowance.remaining}')

@@ -72,7 +72,7 @@ class _SetupAiPreviewSheetState extends State<SetupAiPreviewSheet> {
               height: 4,
               decoration: BoxDecoration(
                 color: theme.hintColor.withValues(alpha: 0.4),
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusXxs),
               ),
             ),
             const SizedBox(height: AppSpacing.lg),
@@ -214,7 +214,7 @@ class _SuggestionEditor extends StatelessWidget {
                     },
                     borderRadius: BorderRadius.circular(20),
                     child: Padding(
-                      padding: const EdgeInsets.all(4),
+                      padding: const EdgeInsets.all(AppSpacing.xs),
                       child: Icon(
                         isCorrect ? Icons.check_circle : Icons.circle_outlined,
                         size: 22,

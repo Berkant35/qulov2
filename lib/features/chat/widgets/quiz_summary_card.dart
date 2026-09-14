@@ -91,7 +91,7 @@ class QuizSummaryCard extends StatelessWidget {
             Row(
               children: [
                 Icon(Icons.flash_on, size: 14, color: context.appColors.warning),
-                const SizedBox(width: 4),
+                const SizedBox(width: AppSpacing.xs),
                 Text(
                   '${summary.totalPowersUsed} ${context.tr('quiz_result_powers_used').toLowerCase()}',
                   style: theme.textTheme.labelSmall?.copyWith(
@@ -120,7 +120,7 @@ class _PerformanceBadge extends StatelessWidget {
     final config = _badgeConfig(context, badge);
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 3),
       decoration: BoxDecoration(
         color: config.color.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
@@ -130,7 +130,7 @@ class _PerformanceBadge extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(config.icon, size: 12, color: config.color),
-          const SizedBox(width: 4),
+          const SizedBox(width: AppSpacing.xs),
           Text(
             context.tr('quiz_result_$badge'),
             style: theme.textTheme.labelSmall?.copyWith(

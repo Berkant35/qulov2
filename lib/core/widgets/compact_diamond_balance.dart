@@ -28,11 +28,11 @@ class CompactDiamondBalance extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           const DiamondIcon.purple(size: 14, showGlow: false),
-          const SizedBox(width: 2),
+          const SizedBox(width: AppSpacing.xxs),
           Text('${user.purpleDiamonds}', style: style),
           const SizedBox(width: AppSpacing.sm),
           const DiamondIcon.green(size: 14, showGlow: false),
-          const SizedBox(width: 2),
+          const SizedBox(width: AppSpacing.xxs),
           Text('${user.greenDiamonds}', style: style),
         ],
       ),

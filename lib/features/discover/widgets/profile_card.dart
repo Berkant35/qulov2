@@ -139,7 +139,7 @@ class _ProfileCardState extends State<ProfileCard> with ProfileCardMixin {
                         horizontal: _photos.length > 6 ? 1 : 2,
                       ),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(2),
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusXxs),
                         color: i == _current
                             ? AppColors.onScrim
                             : AppColors.onScrim.withValues(alpha: 0.4),
@@ -192,7 +192,7 @@ class _ProfileCardState extends State<ProfileCard> with ProfileCardMixin {
                   if (widget.card.relationshipGoal != null && widget.card.relationshipGoal != 'NOT_SURE')
                     Container(
                       margin: const EdgeInsets.only(top: AppSpacing.xs),
-                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 2),
+                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xxs),
                       decoration: BoxDecoration(
                         color: context.appColors.primarySurface,
                         borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
@@ -274,7 +274,7 @@ class _QuestionInfoSection extends StatelessWidget {
                 final category = info.categories[index];
                 return Center(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
                     decoration: BoxDecoration(
                       color: AppColors.onScrim.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
@@ -299,7 +299,7 @@ class _QuestionInfoSection extends StatelessWidget {
           Wrap(
             spacing: AppSpacing.xs,
             children: info.languages.map((lang) => Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: AppSpacing.xs),
               decoration: BoxDecoration(
                 color: AppColors.onScrim.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusFull),

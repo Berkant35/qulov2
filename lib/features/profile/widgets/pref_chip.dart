@@ -34,7 +34,7 @@ class PrefChip extends StatelessWidget {
             QIcon(iconPath, size: 14, color: context.appColors.secondary)
           else
             AppIcon(iconPath, size: 14, color: context.appColors.secondary),
-          const SizedBox(width: 4),
+          const SizedBox(width: AppSpacing.xs),
           Text(
             label,
             style: theme.textTheme.bodySmall?.copyWith(

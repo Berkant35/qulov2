@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
+import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
@@ -84,9 +85,9 @@ class _LegalWebViewScreenState extends State<LegalWebViewScreen> {
                 children: [
                   Icon(Icons.error_outline,
                       size: 48, color: context.appColors.error),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   Text(context.tr('error_general')),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   TextButton(
                     onPressed: _retry,
                     child: Text(context.tr('retry')),

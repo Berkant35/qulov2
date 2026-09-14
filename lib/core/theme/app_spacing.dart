@@ -1,4 +1,6 @@
 abstract final class AppSpacing {
+  /// Mikro bosluk: rozet/cip ic dolgusu, ikon-metin arasi.
+  static const double xxs = 2;
   static const double xs = 4;
   static const double sm = 8;
   static const double md = 12;
@@ -14,6 +16,8 @@ abstract final class AppSpacing {
   static const double itemGap = 12;
 
   // Border radius
+  static const double radiusXxs = 2;
+  static const double radiusXs = 4;
   static const double radiusSm = 8;
   static const double radiusMd = 12;
   static const double radiusLg = 16;

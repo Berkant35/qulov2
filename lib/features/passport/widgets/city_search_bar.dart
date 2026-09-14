@@ -79,7 +79,7 @@ class _CitySearchBarState extends ConsumerState<CitySearchBar> {
             hintText: context.tr('passport_search_placeholder'),
             prefixIcon: Icon(Icons.search, color: context.appColors.textHint),
             suffixIcon: _isSearching
-                ? const Padding(padding: EdgeInsets.all(12), child: SizedBox(width: 20, height: 20, child: AppLoadingWidget.small()))
+                ? const Padding(padding: EdgeInsets.all(AppSpacing.md), child: SizedBox(width: 20, height: 20, child: AppLoadingWidget.small()))
                 : _controller.text.isNotEmpty
                     ? IconButton(icon: Icon(Icons.clear, color: context.appColors.textHint), onPressed: () { _controller.clear(); setState(() { _results = []; _showResults = false; }); })
                     : null,

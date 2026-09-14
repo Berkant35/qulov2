@@ -74,7 +74,7 @@ class PageMessageBanner extends ConsumerWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       if (c.body.isNotEmpty) ...[
-                        const SizedBox(height: 2),
+                        const SizedBox(height: AppSpacing.xxs),
                         Text(
                           c.body,
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(

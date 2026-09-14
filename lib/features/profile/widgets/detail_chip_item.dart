@@ -55,7 +55,7 @@ class DetailChipItem extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           QIcon(chip.icon, size: 14, color: iconColor),
-          const SizedBox(width: 4),
+          const SizedBox(width: AppSpacing.xs),
           // Serbest metin alanları (job/school/personality vb.) input tarafında
           // ProfileFieldLimits ile sınırlanır; burada da savunmacı olarak clamp'lenir
           // ki hiçbir koşulda chip satırı taşmasın.
@@ -71,7 +71,7 @@ class DetailChipItem extends StatelessWidget {
             ),
           ),
           if (!isFilled) ...[
-            const SizedBox(width: 2),
+            const SizedBox(width: AppSpacing.xxs),
             Icon(Icons.add, size: 12, color: iconColor),
           ],
         ],

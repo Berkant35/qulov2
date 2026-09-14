@@ -38,7 +38,7 @@ class PageMessageSheet extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: context.appColors.textSecondary
                       .withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusXxs),
                 ),
               ),
               PageMessageContent(message: message, onClose: onClose),

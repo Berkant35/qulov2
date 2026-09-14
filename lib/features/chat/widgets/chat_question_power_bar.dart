@@ -184,7 +184,7 @@ class _ChatPowerButton extends StatelessWidget {
                 // Maliyet — envanterde yoksa ve seçilebilirse göster
                 if (isSelectable && !hasInventory && purpleCost > 0)
                   Padding(
-                    padding: const EdgeInsets.only(top: 2),
+                    padding: const EdgeInsets.only(top: AppSpacing.xxs),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -278,8 +278,8 @@ class _UnlockButton extends StatelessWidget {
                     const SizedBox(width: AppSpacing.sm),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 2,
+                        horizontal: AppSpacing.sm,
+                        vertical: AppSpacing.xxs,
                       ),
                       decoration: BoxDecoration(
                         color: colors.warning.withValues(alpha: 0.2),

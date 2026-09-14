@@ -70,7 +70,7 @@ class DiscoverQuestionGate extends ConsumerWidget {
                   ),
                   const SizedBox(height: AppSpacing.md),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 48),
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxxl),
                     child: QuestionProgressBar(questionCount: questionCount),
                   ),
                   const SizedBox(height: AppSpacing.lg),

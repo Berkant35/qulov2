@@ -112,7 +112,7 @@ class _CompactCard extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: AppSpacing.xxs),
                   Text(
                     context.tr('referral_compact_subtitle'),
                     style: theme.textTheme.bodySmall?.copyWith(

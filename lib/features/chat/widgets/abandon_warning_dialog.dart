@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
+import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/data/models/chat_question_model.dart';
 
 /// Shows a warning dialog when the user tries to leave the solve screen
@@ -49,7 +50,7 @@ class _AbandonWarningDialog extends StatelessWidget {
 
     return AlertDialog(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusLg)),
       title: Text(
         context.tr('abandon_title'),
         textAlign: TextAlign.center,
@@ -61,13 +62,13 @@ class _AbandonWarningDialog extends StatelessWidget {
         children: [
           if (features.isNotEmpty) ...[
             Text(context.tr('abandon_features_added')),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             ...features,
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
           ],
           Text(context.tr('abandon_flee_warning')),
           if (question.hasUnmatchRisk) ...[
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               context.tr('abandon_unmatch_warning'),
               style: TextStyle(
@@ -110,11 +111,11 @@ class _FeatureItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = isDestructive ? context.appColors.error : null;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
       child: Row(
         children: [
           Icon(icon, size: 20, color: color),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Text(
             label,
             style: TextStyle(

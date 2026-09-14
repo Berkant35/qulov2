@@ -302,7 +302,7 @@ class _CostBadge extends StatelessWidget {
 
     if (option.hasInventory) {
       return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 3),
         decoration: BoxDecoration(
           color: context.appColors.success.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
@@ -321,7 +321,7 @@ class _CostBadge extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 3),
       decoration: BoxDecoration(
         color: context.appColors.primary.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(AppSpacing.radiusSm),

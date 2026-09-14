@@ -17,7 +17,7 @@ class ChatDaySeparator extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
       child: Center(
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
           decoration: BoxDecoration(
             color: context.appColors.surfaceElevated,
             borderRadius: BorderRadius.circular(AppSpacing.radiusFull),

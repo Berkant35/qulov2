@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/l10n/app_localizations.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
+import 'package:qulo_v2/core/theme/app_spacing.dart';
 
 class ChatPopupMenu extends StatelessWidget {
   final VoidCallback onReport;
@@ -44,7 +45,7 @@ class ChatPopupMenu extends StatelessWidget {
                 children: [
                   Icon(Icons.no_photography,
                       color: context.appColors.textSecondary, size: 20),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   Text(l10n.get('chat_disable_media')),
                 ],
               ),
@@ -56,7 +57,7 @@ class ChatPopupMenu extends StatelessWidget {
                 children: [
                   Icon(Icons.heart_broken,
                       color: context.appColors.error, size: 20),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   Text(l10n.get('unmatch')),
                 ],
               ),
@@ -67,7 +68,7 @@ class ChatPopupMenu extends StatelessWidget {
               children: [
                 Icon(Icons.flag_outlined,
                     color: context.appColors.warning, size: 20),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 Text(l10n.get('report')),
               ],
             ),
@@ -77,7 +78,7 @@ class ChatPopupMenu extends StatelessWidget {
             child: Row(
               children: [
                 Icon(Icons.block, color: context.appColors.error, size: 20),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 Text(l10n.get('block')),
               ],
             ),

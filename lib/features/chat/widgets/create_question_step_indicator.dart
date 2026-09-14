@@ -21,7 +21,7 @@ class CreateQuestionStepIndicator extends StatelessWidget {
               height: 3,
               decoration: BoxDecoration(
                 color: context.appColors.primary,
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusXxs),
               ),
             ),
           ),
@@ -33,7 +33,7 @@ class CreateQuestionStepIndicator extends StatelessWidget {
                 color: currentStep >= 1
                     ? context.appColors.primary
                     : context.appColors.textHint.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusXxs),
               ),
             ),
           ),

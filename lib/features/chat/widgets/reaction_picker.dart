@@ -11,7 +11,7 @@ class ReactionPicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
       decoration: BoxDecoration(
         color: context.appColors.surfaceElevated,
         borderRadius: BorderRadius.circular(AppSpacing.radiusFull),

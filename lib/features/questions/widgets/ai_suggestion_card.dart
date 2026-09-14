@@ -34,7 +34,7 @@ class AiSuggestionCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.sm,
-                vertical: 2,
+                vertical: AppSpacing.xxs,
               ),
               decoration: BoxDecoration(
                 color: context.appColors.primarySurface,

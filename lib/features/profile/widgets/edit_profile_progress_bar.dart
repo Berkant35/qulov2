@@ -41,7 +41,7 @@ class EditProfileProgressBar extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.sm),
         ClipRRect(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusXs),
           child: LinearProgressIndicator(
             value: percentage / 100.0,
             minHeight: 8,

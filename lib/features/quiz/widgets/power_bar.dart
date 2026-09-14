@@ -162,13 +162,13 @@ class PowerBarButton extends StatelessWidget {
               ),
               if (showCost)
                 Padding(
-                  padding: const EdgeInsets.only(top: 2),
+                  padding: const EdgeInsets.only(top: AppSpacing.xxs),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const DiamondIcon.purple(size: 8, showGlow: false),
-                      const SizedBox(width: 2),
+                      const SizedBox(width: AppSpacing.xxs),
                       Text(
                         '$purpleCost',
                         style: TextStyle(

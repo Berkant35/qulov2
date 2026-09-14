@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
+import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 
 enum PowerType {
@@ -61,10 +62,10 @@ class PowerIcon extends StatelessWidget {
           top: -4,
           right: -8,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs, vertical: 1),
             decoration: BoxDecoration(
               color: type.color,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
             ),
             child: Text(
               '×$count',

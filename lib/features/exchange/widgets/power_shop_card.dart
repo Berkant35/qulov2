@@ -83,7 +83,7 @@ class _PowerShopCardState extends ConsumerState<PowerShopCard>
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: AppSpacing.xxs),
                 Text(
                   powerDesc,
                   style: theme.textTheme.bodySmall?.copyWith(
@@ -197,7 +197,7 @@ class _StepperButton extends StatelessWidget {
       onTap: enabled ? onTap : null,
       borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
       child: Padding(
-        padding: const EdgeInsets.all(4),
+        padding: const EdgeInsets.all(AppSpacing.xs),
         child: Icon(
           icon,
           size: 16,

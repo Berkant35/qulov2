@@ -191,7 +191,7 @@ class _PaywallBottomSheetContentState
                   height: 4,
                   decoration: BoxDecoration(
                     color: theme.hintColor,
-                    borderRadius: BorderRadius.circular(2),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusXxs),
                   ),
                 ),
                 Align(
@@ -503,11 +503,11 @@ class _PlanLabel extends StatelessWidget {
           ),
           if (isCurrent)
             Container(
-              margin: const EdgeInsets.only(top: 2),
+              margin: const EdgeInsets.only(top: AppSpacing.xxs),
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
               decoration: BoxDecoration(
                 color: context.appColors.primarySurface,
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusXs),
               ),
               child: Text(
                 context.tr('sub_current_plan'),
@@ -603,7 +603,7 @@ class _CellValue extends StatelessWidget {
                 children: [
                   if (showDiamondIcon) ...[
                     const DiamondIcon.purple(size: 10),
-                    const SizedBox(width: 2),
+                    const SizedBox(width: AppSpacing.xxs),
                   ],
                   Flexible(
                     child: Text(

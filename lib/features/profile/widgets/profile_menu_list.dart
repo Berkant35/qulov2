@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
+import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/diamond_icon.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/providers/subscription_provider.dart';
@@ -71,9 +72,9 @@ class ProfileMenuList extends ConsumerWidget {
           title: context.tr('passport'),
           onTap: onPassport,
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Padding(
-          padding: const EdgeInsets.only(left: 16, top: 8, bottom: 4),
+          padding: const EdgeInsets.only(left: AppSpacing.lg, top: AppSpacing.sm, bottom: AppSpacing.xs),
           child: Text(
             context.tr('legal'),
             style: Theme.of(context).textTheme.labelSmall?.copyWith(

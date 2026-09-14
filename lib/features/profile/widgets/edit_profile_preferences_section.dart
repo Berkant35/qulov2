@@ -45,7 +45,7 @@ class EditProfilePreferencesSection extends ConsumerWidget {
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
               color: theme.colorScheme.surfaceContainerLow,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
               border: Border.all(color: context.appColors.border),
             ),
             child: Row(

@@ -121,7 +121,7 @@ class _TicketListItem extends StatelessWidget with TicketListItemWidgetMixin {
           if (hasReply) ...[
             const SizedBox(width: AppSpacing.sm),
             Icon(Icons.reply, size: 14, color: context.appColors.success),
-            const SizedBox(width: 2),
+            const SizedBox(width: AppSpacing.xxs),
             Text(
               context.tr('ticket_replied'),
               style: theme.textTheme.bodySmall?.copyWith(

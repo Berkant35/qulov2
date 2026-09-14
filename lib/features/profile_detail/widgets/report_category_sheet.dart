@@ -35,7 +35,7 @@ class ReportCategorySheet extends StatelessWidget {
             height: 4,
             decoration: BoxDecoration(
               color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.3),
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusXxs),
             ),
           ),
           const SizedBox(height: AppSpacing.md),

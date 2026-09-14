@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
+import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/features/chat/mixins/photo_viewer_mixin.dart';
@@ -25,7 +26,7 @@ class PhotoMessageWidget extends ConsumerWidget with PhotoViewerMixin {
           constraints: const BoxConstraints(maxWidth: 200),
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           ),
           child: CachedNetworkImage(
             imageUrl: imageUrl,

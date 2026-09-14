@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
+import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 
 enum AppButtonVariant { primary, secondary, text }
@@ -37,7 +38,7 @@ class AppButton extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   leadingWidget ?? Icon(icon, size: 18),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   Text(label),
                 ],
               )
@@ -69,7 +70,7 @@ class AppButton extends StatelessWidget {
         ? Container(
             decoration: BoxDecoration(
               gradient: context.appColors.primaryButtonGradient,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             ),
             child: button,
           )

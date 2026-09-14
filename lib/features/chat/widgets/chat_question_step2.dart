@@ -461,7 +461,7 @@ class _SettingSwitch extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.sm,
-                  vertical: 2,
+                  vertical: AppSpacing.xxs,
                 ),
                 decoration: BoxDecoration(
                   color: (badgeColor ?? activeColor).withValues(alpha: 0.2),
@@ -477,7 +477,7 @@ class _SettingSwitch extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(width: 2),
+                    const SizedBox(width: AppSpacing.xxs),
                     DiamondIcon.purple(size: 12, showGlow: false),
                   ],
                 ),

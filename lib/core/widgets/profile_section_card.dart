@@ -68,7 +68,7 @@ class ProfileSectionCard extends StatelessWidget {
                     children: [
                       if (isComplete)
                         Icon(Icons.check, color: context.appColors.secondary, size: 14),
-                      if (isComplete) const SizedBox(width: 2),
+                      if (isComplete) const SizedBox(width: AppSpacing.xxs),
                       Text(
                         completionText!,
                         style: theme.textTheme.labelSmall?.copyWith(

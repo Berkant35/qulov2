@@ -53,7 +53,7 @@ class TimePresetCard extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: AppSpacing.xxs),
             Text(
               description,
               style: theme.textTheme.labelSmall?.copyWith(

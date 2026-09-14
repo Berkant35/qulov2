@@ -207,7 +207,7 @@ class _BenefitRow extends StatelessWidget {
                     if (progress != null) ...[
                       const SizedBox(height: AppSpacing.xs),
                       ClipRRect(
-                        borderRadius: BorderRadius.circular(2),
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusXxs),
                         child: LinearProgressIndicator(
                           value: progress!.clamp(0.0, 1.0),
                           backgroundColor: theme.colorScheme.outline.withValues(alpha: 0.2),

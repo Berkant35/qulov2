@@ -85,9 +85,9 @@ class MatchCard extends StatelessWidget with MatchCardMixin {
                 style: theme.textTheme.labelSmall?.copyWith(color: context.appColors.secondary),
               ),
             if (hasUnread) ...[
-              const SizedBox(height: 4),
+              const SizedBox(height: AppSpacing.xs),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: AppSpacing.xxs),
                 decoration: BoxDecoration(
                   color: context.appColors.primary,
                   borderRadius: BorderRadius.circular(10),

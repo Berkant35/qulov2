@@ -123,7 +123,7 @@ class _DraftHistorySheetState extends ConsumerState<DraftHistorySheet>
               height: 4,
               decoration: BoxDecoration(
                 color: context.appColors.textHint,
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusXxs),
               ),
             ),
           ),
@@ -337,7 +337,7 @@ class _DraftItem extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.sm,
-                vertical: 2,
+                vertical: AppSpacing.xxs,
               ),
               decoration: BoxDecoration(
                 color: context.appColors.primarySurface,

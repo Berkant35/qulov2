@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/theme/app_spacing.dart';
 
 /// [MessageContent] turetmeleri: gruplu baloncuk kose yaricapi.
 mixin MessageContentMixin {
@@ -9,8 +10,8 @@ mixin MessageContentMixin {
     required bool isGroupStart,
     required bool isGroupEnd,
   }) {
-    const full = Radius.circular(16);
-    const tight = Radius.circular(4);
+    const full = Radius.circular(AppSpacing.radiusLg);
+    const tight = Radius.circular(AppSpacing.radiusXs);
 
     if (isMe) {
       // Right-aligned bubbles: the right side gets tight corners in the middle

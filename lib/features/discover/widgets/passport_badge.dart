@@ -91,7 +91,7 @@ class _PassportBadgeState extends ConsumerState<PassportBadge>
               return Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.sm,
-                  vertical: 4,
+                  vertical: AppSpacing.xs,
                 ),
                 decoration: BoxDecoration(
                   color: isActive
@@ -129,7 +129,7 @@ class _PassportBadgeState extends ConsumerState<PassportBadge>
                       ? context.appColors.primary
                       : context.appColors.textSecondary,
                 ),
-                const SizedBox(width: 4),
+                const SizedBox(width: AppSpacing.xs),
                 Text(
                   city,
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(

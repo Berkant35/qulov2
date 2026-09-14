@@ -27,7 +27,7 @@ class OnboardingIndicators extends StatelessWidget {
             curve: Curves.easeInOut,
             width: isActive ? 24 : 8,
             height: 8,
-            margin: const EdgeInsets.symmetric(horizontal: 4),
+            margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
             decoration: BoxDecoration(
               color: isActive
                   ? colors.primary

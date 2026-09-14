@@ -373,7 +373,7 @@ class _GreenRewardDetailCardState extends State<_GreenRewardDetailCard> {
                   ? context.tr('result_correct_answer')
                   : entry.key;
               return Padding(
-                padding: const EdgeInsets.only(bottom: 4),
+                padding: const EdgeInsets.only(bottom: AppSpacing.xs),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -491,7 +491,7 @@ class _PurpleSpentCardState extends State<_PurpleSpentCard> {
             ),
             const SizedBox(height: AppSpacing.sm),
             ...grouped.entries.map((entry) => Padding(
-                  padding: const EdgeInsets.only(bottom: 4),
+                  padding: const EdgeInsets.only(bottom: AppSpacing.xs),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -636,7 +636,7 @@ class _AnswerDetailsCard extends StatelessWidget {
                       fontSize: 10,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: AppSpacing.xxs),
                   Text(
                     context.fmt.seconds(timeSpent!),
                     style: theme.textTheme.titleMedium?.copyWith(
@@ -675,7 +675,7 @@ class _OptionBadge extends StatelessWidget {
             fontSize: 10,
           ),
         ),
-        const SizedBox(height: 2),
+        const SizedBox(height: AppSpacing.xxs),
         Container(
           width: 32,
           height: 32,

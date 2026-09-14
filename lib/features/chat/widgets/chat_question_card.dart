@@ -164,7 +164,7 @@ class _Badge extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 3),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
@@ -307,7 +307,7 @@ class _AnsweredOptions extends StatelessWidget {
                 final type = PowerType.fromApiName(entry.key);
                 if (type == null) return const SizedBox.shrink();
                 return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: AppSpacing.xxs),
                   decoration: BoxDecoration(
                     color: type.color.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
@@ -318,7 +318,7 @@ class _AnsweredOptions extends StatelessWidget {
                     children: [
                       PowerIcon(type: type, size: 12),
                       if (entry.value > 1) ...[
-                        const SizedBox(width: 2),
+                        const SizedBox(width: AppSpacing.xxs),
                         Text(
                           '×${entry.value}',
                           style: TextStyle(fontSize: 9, color: type.color, fontWeight: FontWeight.w600),

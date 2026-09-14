@@ -117,7 +117,7 @@ class ChatAppBarActions extends StatelessWidget {
                 children: [
                   Icon(Icons.no_photography,
                       color: context.appColors.textSecondary, size: 20),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   Text(ctx.tr('chat_disable_media')),
                 ],
               ),
@@ -127,7 +127,7 @@ class ChatAppBarActions extends StatelessWidget {
             child: Row(
               children: [
                 Icon(Icons.heart_broken, color: context.appColors.error, size: 20),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 Text(ctx.tr('unmatch')),
               ],
             ),

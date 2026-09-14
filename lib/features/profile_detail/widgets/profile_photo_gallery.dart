@@ -137,7 +137,7 @@ class _ProfilePhotoGalleryState extends State<ProfilePhotoGallery> {
                         horizontal: _photos.length > 6 ? 1 : 2,
                       ),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(2),
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusXxs),
                         color: i == _current
                             ? AppColors.onScrim
                             : AppColors.onScrim.withValues(alpha: 0.4),

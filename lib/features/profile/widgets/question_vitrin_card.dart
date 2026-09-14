@@ -130,7 +130,7 @@ class _VitrinStat extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 2),
+        const SizedBox(height: AppSpacing.xxs),
         Text(
           label,
           style: theme.textTheme.labelSmall?.copyWith(

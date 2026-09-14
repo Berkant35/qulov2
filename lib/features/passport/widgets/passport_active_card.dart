@@ -30,7 +30,7 @@ class PassportActiveCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(city, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
-                const SizedBox(height: 2),
+                const SizedBox(height: AppSpacing.xxs),
                 Text(context.tr('passport_active_desc'), style: theme.textTheme.bodySmall?.copyWith(color: context.appColors.textSecondary)),
               ],
             ),

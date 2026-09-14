@@ -19,11 +19,11 @@ class ReactionsRow extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Wrap(
-        spacing: 4,
-        runSpacing: 4,
+        spacing: AppSpacing.xs,
+        runSpacing: AppSpacing.xs,
         children: groupReactions(reactions).entries.map((entry) {
           return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: AppSpacing.xxs),
             decoration: BoxDecoration(
               color: context.appColors.surfaceElevated,
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),

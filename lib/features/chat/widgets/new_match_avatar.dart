@@ -20,7 +20,7 @@ class NewMatchAvatar extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(2),
+            padding: const EdgeInsets.all(AppSpacing.xxs),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(color: context.appColors.primary, width: 2),

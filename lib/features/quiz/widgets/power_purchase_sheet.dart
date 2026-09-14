@@ -106,7 +106,7 @@ class _PowerPurchaseSheetState extends ConsumerState<PowerPurchaseSheet> {
                 height: 4,
                 decoration: BoxDecoration(
                   color: theme.colorScheme.outline.withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusXxs),
                 ),
               ),
             ),
@@ -320,7 +320,7 @@ class _PowerRowState extends State<_PowerRow>
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: AppSpacing.xxs),
                   Text(
                     _powerDesc(context),
                     style: theme.textTheme.bodySmall?.copyWith(
@@ -424,7 +424,7 @@ class _StepperButton extends StatelessWidget {
       onTap: enabled ? onTap : null,
       borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
       child: Padding(
-        padding: const EdgeInsets.all(4),
+        padding: const EdgeInsets.all(AppSpacing.xs),
         child: Icon(
           icon,
           size: 16,
@@ -479,7 +479,7 @@ class _BuyChip extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   icon,
-                  const SizedBox(width: 4),
+                  const SizedBox(width: AppSpacing.xs),
                   Text(
                     '$cost',
                     style: theme.textTheme.labelSmall?.copyWith(

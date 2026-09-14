@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:qulo_v2/core/l10n/app_localizations.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
+import 'package:qulo_v2/core/theme/app_spacing.dart';
 
 class AppDatePicker extends StatelessWidget {
   final DateTime? selectedDate;
@@ -28,7 +29,7 @@ class AppDatePicker extends StatelessWidget {
       children: [
         InkWell(
           onTap: () => _showPicker(context),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           child: InputDecorator(
             decoration: InputDecoration(
               labelText: l10n.get('birthday'),
@@ -77,7 +78,7 @@ class AppDatePicker extends StatelessWidget {
       context: context,
       backgroundColor: theme.colorScheme.surfaceContainerHigh,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusLg)),
       ),
       builder: (context) {
         return SafeArea(
@@ -86,7 +87,7 @@ class AppDatePicker extends StatelessWidget {
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

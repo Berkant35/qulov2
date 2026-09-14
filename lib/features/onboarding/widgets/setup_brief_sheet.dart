@@ -45,7 +45,7 @@ class _SetupBriefSheetState extends State<SetupBriefSheet> {
               height: 4,
               decoration: BoxDecoration(
                 color: theme.hintColor.withValues(alpha: 0.4),
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusXxs),
               ),
             ),
             const SizedBox(height: AppSpacing.lg),

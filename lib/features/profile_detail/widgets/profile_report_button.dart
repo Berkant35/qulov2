@@ -52,7 +52,7 @@ class ProfileReportButton extends ConsumerWidget {
               height: 4,
               decoration: BoxDecoration(
                 color: context.appColors.textSecondary.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusXxs),
               ),
             ),
             const SizedBox(height: AppSpacing.lg),

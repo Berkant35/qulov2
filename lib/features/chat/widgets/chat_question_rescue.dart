@@ -45,7 +45,7 @@ class ChatQuestionRescue extends StatelessWidget {
               height: 4,
               decoration: BoxDecoration(
                 color: context.appColors.textHint,
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusXxs),
               ),
             ),
             const SizedBox(height: AppSpacing.xl),
@@ -134,7 +134,7 @@ class ChatQuestionRescue extends StatelessWidget {
                               const SizedBox(width: AppSpacing.sm),
                               if (unblockCount > 0)
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xxs),
                                   decoration: BoxDecoration(
                                     color: AppColors.scrimBase.withValues(alpha: 0.15),
                                     borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
@@ -143,7 +143,7 @@ class ChatQuestionRescue extends StatelessWidget {
                                 )
                               else if (unblockCost > 0)
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xxs),
                                   decoration: BoxDecoration(
                                     color: AppColors.scrimBase.withValues(alpha: 0.15),
                                     borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
@@ -190,7 +190,7 @@ class ChatQuestionRescue extends StatelessWidget {
                               const SizedBox(width: AppSpacing.sm),
                               if (skipCount > 0)
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xxs),
                                   decoration: BoxDecoration(
                                     color: AppColors.inkOnDark.withValues(alpha: 0.2),
                                     borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
@@ -199,7 +199,7 @@ class ChatQuestionRescue extends StatelessWidget {
                                 )
                               else if (skipCost > 0)
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xxs),
                                   decoration: BoxDecoration(
                                     color: AppColors.inkOnDark.withValues(alpha: 0.2),
                                     borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
