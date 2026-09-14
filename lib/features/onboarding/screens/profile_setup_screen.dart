@@ -5,6 +5,7 @@ import 'package:qulo_v2/core/navigation/navigation_provider.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_button.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
+import 'package:qulo_v2/features/onboarding/mixins/profile_setup_magic_fill_mixin.dart';
 import 'package:qulo_v2/features/onboarding/mixins/profile_setup_mixin.dart';
 import 'package:qulo_v2/features/onboarding/widgets/setup_gender_pref_card.dart';
 import 'package:qulo_v2/features/onboarding/widgets/setup_hurry_hint_card.dart';
@@ -17,7 +18,9 @@ import 'package:qulo_v2/routing/route_names.dart';
 /// the minimum question count and pick a gender preference before they can
 /// enter the main app.
 ///
-/// All business logic lives in [ProfileSetupMixin] — this widget is a thin
+/// All business logic lives in [ProfileSetupMixin] (photo, gender pref,
+/// quick assign, exit) and [ProfileSetupMagicFillMixin] (AI magic fill) —
+/// this widget is a thin
 /// orchestrator that wires user state to the setup cards. Card readiness
 /// comes from the same `UserModel` getters the router gate uses
 /// (`setupComplete`), so the finish button can never disagree with the gate.
@@ -29,7 +32,7 @@ class ProfileSetupScreen extends ConsumerStatefulWidget {
 }
 
 class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen>
-    with ProfileSetupMixin {
+    with ProfileSetupMixin, ProfileSetupMagicFillMixin {
   @override
   void initState() {
     super.initState();

@@ -5,15 +5,13 @@ import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/widgets/image_picker_permission_dialog.dart';
-import 'package:qulo_v2/features/onboarding/widgets/setup_ai_preview_sheet.dart';
-import 'package:qulo_v2/features/onboarding/widgets/setup_brief_sheet.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
-import 'package:qulo_v2/providers/question_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 
-/// Orchestrates gate screen state + photo/magic-fill/quick-assign/manual flows.
+/// Orchestrates gate screen state + photo/quick-assign/manual flows.
+/// The magic-fill flow lives in `ProfileSetupMagicFillMixin`.
 /// Setup completion is auto-detected via the router guard reading
 /// `userProvider.setupComplete`; provider methods refresh user state on success.
 mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
@@ -21,7 +19,6 @@ mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
   bool isUploadingPhoto = false;
   bool isSubmittingGenderPref = false;
   String? selectedGenderPref;
-  List<Map<String, dynamic>> _previewSuggestions = const [];
 
   void initMixin() {
     AnalyticsManager.instance.logEvent(AnalyticsEvents.setupGateView);
@@ -97,167 +94,18 @@ mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
           }
           if (!mounted) return;
           AnalyticsManager.instance.logEvent(AnalyticsEvents.setupPhotoSuccess);
-          _maybeCompleteSetup();
+          maybeCompleteSetup();
         },
         failure: (_) async {
           AnalyticsManager.instance.logEvent(AnalyticsEvents.setupPhotoFail);
-          if (mounted) _showSnack(context.tr('setup_photo_upload_error'));
+          if (mounted) showSetupSnack(context.tr('setup_photo_upload_error'));
         },
       );
     } catch (_) {
       AnalyticsManager.instance.logEvent(AnalyticsEvents.setupPhotoFail);
-      if (mounted) _showSnack(context.tr('setup_photo_upload_error'));
+      if (mounted) showSetupSnack(context.tr('setup_photo_upload_error'));
     } finally {
       if (mounted) setState(() => isUploadingPhoto = false);
-    }
-  }
-
-  // ─── Magic Fill Flow ──────────────────────────────────────────────
-
-  Future<void> handleMagicFill() async {
-    if (isProcessing) return;
-    AnalyticsManager.instance.logEvent(AnalyticsEvents.setupMagicFillStart);
-
-    final navigation = ref.read(navigationServiceProvider);
-    await navigation.showAppBottomSheet<void>(
-      CustomBottomSheet(
-        name: 'setup_brief',
-        maxHeightFactor: 0.85,
-        builder: (ctx) => SetupBriefSheet(
-          onGenerate: (interests) async {
-            Navigator.of(ctx).pop();
-            await _afterInterests(interests);
-          },
-          onSkip: () async {
-            Navigator.of(ctx).pop();
-            AnalyticsManager.instance.logEvent(AnalyticsEvents.setupMagicFillSkip);
-            await _afterInterests(const []);
-          },
-        ),
-      ),
-    );
-  }
-
-  Future<void> _afterInterests(List<String> interests) async {
-    if (!mounted) return;
-    setState(() => isProcessing = true);
-    try {
-      if (interests.isNotEmpty) {
-        final result =
-            await ref.read(userProvider.notifier).setInterests(interests);
-        if (!mounted) return;
-        if (result.isFailure) {
-          _showSnack(context.tr('preview_sheet_error'));
-          return;
-        }
-      }
-    } finally {
-      if (mounted) setState(() => isProcessing = false);
-    }
-    await _showPreviewSheet();
-  }
-
-  Future<void> _showPreviewSheet() async {
-    final user = ref.read(userProvider).valueOrNull;
-    if (user == null || !mounted) return;
-
-    setState(() => isProcessing = true);
-    late final List<Map<String, dynamic>> suggestions;
-    try {
-      // Prefer the app's active UI locale over user.locale (DB column) — user
-      // may have signed up in EN but switched UI to TR; question content should
-      // follow what they actually see in the app.
-      final appLocale = Localizations.localeOf(context).languageCode;
-      final repoResult =
-          await ref.read(questionRepositoryProvider).getAiSuggestions({
-        'profile_based': true,
-        'count': 2,
-        'locale': appLocale,
-      });
-      if (!mounted) return;
-      suggestions = repoResult.when<List<Map<String, dynamic>>>(
-        success: (data) {
-          final list = data['suggestions'];
-          if (list is List) {
-            return list
-                .whereType<Map>()
-                .map((e) => Map<String, dynamic>.from(e))
-                .toList();
-          }
-          return const [];
-        },
-        failure: (_) => const [],
-      );
-    } finally {
-      if (mounted) setState(() => isProcessing = false);
-    }
-
-    if (suggestions.isEmpty) {
-      _showSnack(context.tr('preview_sheet_error'));
-      return;
-    }
-
-    _previewSuggestions = suggestions;
-    final navigation = ref.read(navigationServiceProvider);
-    await navigation.showAppBottomSheet<void>(
-      CustomBottomSheet(
-        name: 'setup_ai_preview',
-        maxHeightFactor: 0.85,
-        builder: (ctx) => SetupAiPreviewSheet(
-          suggestions: _previewSuggestions,
-          onAssign: (edited) async {
-            Navigator.of(ctx).pop();
-            await _assignSuggestions(edited);
-          },
-          onRegenerate: () async {
-            Navigator.of(ctx).pop();
-            AnalyticsManager.instance
-                .logEvent(AnalyticsEvents.setupMagicFillRegen);
-            await _showPreviewSheet();
-          },
-          onSkip: () async {
-            Navigator.of(ctx).pop();
-            await handleQuickAssign();
-          },
-        ),
-      ),
-    );
-  }
-
-  Future<void> _assignSuggestions(List<Map<String, dynamic>> edited) async {
-    if (edited.isEmpty || !mounted) return;
-    setState(() => isProcessing = true);
-    try {
-      final notifier = ref.read(questionProvider.notifier);
-      final user = ref.read(userProvider).valueOrNull;
-      final start = (user?.questionCount ?? 0) + 1;
-      // Match the locale used at suggestion fetch time (app UI locale).
-      final locale = Localizations.localeOf(context).languageCode;
-
-      for (int i = 0; i < edited.length; i++) {
-        final s = edited[i];
-        final answers = (s['answers'] as List?) ?? const [];
-        if (answers.length < 4) continue;
-        // Server validator rejects explicit null on optional fields — omit if null
-        final body = <String, dynamic>{
-          'order_num': start + i,
-          'question_text': s['question_text'],
-          'answer_1': answers[0],
-          'answer_2': answers[1],
-          'answer_3': answers[2],
-          'answer_4': answers[3],
-          'correct_answer': s['correct_answer'],
-          'locale': locale,
-          'time_limit': 30,
-        };
-        if (s['hint'] != null) body['hint_text'] = s['hint'];
-        if (s['category'] != null) body['category'] = s['category'];
-        await notifier.createQuestion(body);
-      }
-      AnalyticsManager.instance.logEvent(AnalyticsEvents.setupMagicFillAssign);
-      _maybeCompleteSetup();
-    } finally {
-      if (mounted) setState(() => isProcessing = false);
     }
   }
 
@@ -282,11 +130,11 @@ mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
           AnalyticsEvents.setupGenderPrefSelected,
           params: {'value': value, 'entry_point': 'gate'},
         );
-        _maybeCompleteSetup();
+        maybeCompleteSetup();
       },
       failure: (_) {
         setState(() => selectedGenderPref = null);
-        _showSnack(context.tr('setup_gender_pref_error'));
+        showSetupSnack(context.tr('setup_gender_pref_error'));
       },
     );
 
@@ -305,8 +153,8 @@ mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
           await ref.read(userProvider.notifier).quickAssignQuestions();
       if (!mounted) return;
       result.when(
-        success: (_) => _maybeCompleteSetup(),
-        failure: (_) => _showSnack(context.tr('setup_quick_assign_error')),
+        success: (_) => maybeCompleteSetup(),
+        failure: (_) => showSetupSnack(context.tr('setup_quick_assign_error')),
       );
     } finally {
       if (mounted) setState(() => isProcessing = false);
@@ -323,7 +171,9 @@ mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
 
   // ─── Setup Completion Detection ───────────────────────────────────
 
-  void _maybeCompleteSetup() {
+  /// Shared with `ProfileSetupMagicFillMixin` — not part of the screen API.
+  @protected
+  void maybeCompleteSetup() {
     final user = ref.read(userProvider).valueOrNull;
     if (user?.setupComplete ?? false) {
       AnalyticsManager.instance.logEvent(AnalyticsEvents.setupComplete);
@@ -365,7 +215,8 @@ mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
 
   // ─── Helpers ──────────────────────────────────────────────────────
 
-  void _showSnack(String message) {
+  @protected
+  void showSetupSnack(String message) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),

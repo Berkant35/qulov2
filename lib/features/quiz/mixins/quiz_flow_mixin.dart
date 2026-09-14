@@ -81,7 +81,7 @@ mixin QuizFlowMixin on QuizScreenStateMixin {
     nav.showAppBottomSheet(
       CustomBottomSheet(
         name: 'premium_suggestion',
-        maxHeightFactor: 0.85,
+        maxHeightFactor: AppBottomSheet.tallHeightFactor,
         builder: (context) => const PremiumSuggestionSheet(),
       ),
     ).then((_) {

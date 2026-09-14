@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:qulo_v2/data/models/public_profile_model.dart';
 
 part 'discover_model.g.dart';
 
@@ -126,6 +127,26 @@ class ProfileCardModel extends Equatable {
         relationshipGoal,
         questionInfo,
       ];
+}
+
+/// Discover kartindan detay ekraninin on-yukleme profili: detay yuklenirken
+/// ekran bos kalmaz. `UserModelToPublicProfile` ile simetrik.
+extension ProfileCardToPublicProfile on ProfileCardModel {
+  PublicProfileModel toPublicProfile() {
+    return PublicProfileModel(
+      userId: userId,
+      name: name,
+      age: age,
+      bio: bio,
+      city: city,
+      photos: photos ?? const [],
+      distanceKm: distanceKm,
+      relationshipGoal: relationshipGoal,
+      profileCompletion: profileCompletion,
+      isBoosted: isBoosted,
+      questionInfo: questionInfo,
+    );
+  }
 }
 
 @JsonSerializable()

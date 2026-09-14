@@ -134,7 +134,7 @@ mixin SettingsScreenMixin on ConsumerState<SettingsScreen> {
         // Dokuz secenek + gorunurluk karti, varsayilan yukseklige (ekranin
         // 9/16'si) sigmiyor; faktor verilmeden `isScrollControlled` da false
         // kaliyor ve sheet buyuyemiyor.
-        maxHeightFactor: 0.85,
+        maxHeightFactor: AppBottomSheet.tallHeightFactor,
         builder: (_) => const DeleteReasonSheet(),
       ),
     );

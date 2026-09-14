@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 sealed class AppBottomSheet {
+  /// Uzun icerikli (form, oneri listesi) sheet'ler icin ekran yuksekligi orani.
+  static const double tallHeightFactor = 0.85;
+
   final String name;
   final bool isDismissible;
   final bool enableDrag;

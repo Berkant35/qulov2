@@ -14,6 +14,7 @@ import 'package:qulo_v2/providers/user_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/features/profile/mixins/profile_screen_mixin.dart';
 import 'package:qulo_v2/features/profile/widgets/detail_chips.dart';
+import 'package:qulo_v2/features/profile/widgets/profile_about_card.dart';
 import 'package:qulo_v2/features/profile/widgets/notification_bell_button.dart';
 import 'package:qulo_v2/features/profile/widgets/photo_grid.dart';
 import 'package:qulo_v2/features/profile/widgets/power_inventory_grid.dart';
@@ -74,7 +75,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
             ErrorRetryWidget(onRetry: () => ref.invalidate(userProvider)),
         data: (user) {
           if (user == null) return Center(child: Text(context.tr('profile_no_data')));
-          final photos = user.photos ?? [];
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(AppSpacing.pagePadding),
@@ -85,7 +85,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
 
                 // ─── Photo Grid ───
                 PhotoGridFull(
-                  photos: photos.map<String?>((e) => e).toList(),
+                  photos: user.photos ?? const [],
                   onSlotTap: (_) => navigateTo(RouteNames.editProfile),
                 ),
                 const SizedBox(height: AppSpacing.xl),
@@ -120,15 +120,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                 // ─── Progress ───
                 ProfileProgressCard(
                   user: user,
-                  onEditProfile: () => navigateTo(RouteNames.editProfile),
-                  onNavigate: (route) {
-                    switch (route) {
-                      case 'editProfile':
-                        navigateTo(RouteNames.editProfile);
-                      case 'questions':
-                        pushTo(RouteNames.questions);
-                    }
-                  },
+                  onEditProfile: openEditProfile,
+                  onNavigate: onProgressNavigate,
                   onClaimReward: handleClaimReward,
                 ),
                 const SizedBox(height: AppSpacing.lg),
@@ -138,30 +131,20 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                 const SizedBox(height: AppSpacing.xl),
 
                 // ─── About Me ───
-                SectionCard(
-                  title: context.tr('about_me'),
-                  onTap: () => navigateTo(RouteNames.editProfile),
-                  child: Text(
-                    user.bio != null && user.bio!.isNotEmpty
-                        ? user.bio!
-                        : context.tr('hint_add_bio'),
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: user.bio != null && user.bio!.isNotEmpty
-                          ? null
-                          : theme.hintColor,
-                    ),
-                  ),
+                ProfileAboutCard(
+                  bio: user.bio,
+                  onTap: openEditProfile,
                 ),
                 const SizedBox(height: AppSpacing.md),
 
                 // ─── Details ───
                 SectionCard(
                   title: context.tr('details'),
-                  onTap: () => navigateTo(RouteNames.editProfile),
+                  onTap: openEditProfile,
                   child: DetailChips(
                     user: user,
                     isOwnProfile: true,
-                    onTap: () => navigateTo(RouteNames.editProfile),
+                    onTap: openEditProfile,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.md),
@@ -169,7 +152,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                 // ─── Preferences ───
                 SectionCard(
                   title: context.tr('preferences'),
-                  onTap: () => navigateTo(RouteNames.editProfile),
+                  onTap: openEditProfile,
                   child: ProfilePreferencesSection(
                     user: user,
                     genderPrefLabel:
@@ -184,7 +167,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                 // ─── Menu Items ───
                 ProfileMenuList(
                   questionCount: user.questionCount,
-                  onEditProfile: () => navigateTo(RouteNames.editProfile),
+                  onEditProfile: openEditProfile,
                   onQuestions: () => navigateTo(RouteNames.questions),
                   onPerformance: openPerformance,
                   onDiamonds: () => navigateTo(RouteNames.diamonds),

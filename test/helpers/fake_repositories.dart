@@ -152,11 +152,13 @@ class FakeDiamondRepository implements DiamondRepository {
   }
 }
 
-/// Soru repository'si — 9 metot; yalnizca `getMyQuestions` ve
-/// `reorderQuestions` acik (UserRepository stili, gerisi noSuchMethod ile patlar).
+/// Soru repository'si — 9 metot; yalnizca `getMyQuestions`, `reorderQuestions`,
+/// `getAiSuggestions` ve `createQuestion` acik (UserRepository stili, gerisi
+/// noSuchMethod ile patlar).
 ///
 /// `reorderCompleter` verilirse `reorderQuestions` onu bekler: iyimser
 /// guncellemenin sunucu cevabindan ONCE gorundugunu test edebilmek icin.
+/// `createFailures`: 0 tabanli cagri sirasi → o cagrida donecek hata.
 class FakeQuestionRepository implements QuestionRepository {
   FakeQuestionRepository({
     this.questions = const [],
@@ -166,6 +168,7 @@ class FakeQuestionRepository implements QuestionRepository {
     this.reorderCompleter,
     this.aiResponse = const {},
     this.aiFailure,
+    this.createFailures = const {},
   });
 
   final List<QuestionModel> questions;
@@ -175,10 +178,34 @@ class FakeQuestionRepository implements QuestionRepository {
   final Completer<void>? reorderCompleter;
   final Map<String, dynamic> aiResponse;
   final AppFailure? aiFailure;
+  final Map<int, AppFailure> createFailures;
 
   int reorderCallCount = 0;
   List<String>? lastOrderedIds;
   Map<String, dynamic>? lastAiBody;
+  int createCallCount = 0;
+
+  /// Basariyla kaydedilen soru govdeleri, cagri sirasiyla.
+  final List<Map<String, dynamic>> createdBodies = [];
+
+  @override
+  Future<Result<QuestionModel>> createQuestion(Map<String, dynamic> data) async {
+    final call = createCallCount++;
+    final failure = createFailures[call];
+    if (failure != null) return Failure(failure);
+    createdBodies.add(data);
+    return Success(QuestionModel(
+      id: 'created_$call',
+      userId: 'u1',
+      orderNum: data['order_num'] as int,
+      questionText: data['question_text'] as String,
+      correctAnswer: data['correct_answer'] as int,
+      answer1: data['answer_1'] as String,
+      answer2: data['answer_2'] as String,
+      answer3: data['answer_3'] as String,
+      answer4: data['answer_4'] as String,
+    ));
+  }
 
   @override
   Future<Result<Map<String, dynamic>>> getAiSuggestions(Map<String, dynamic> body) async {

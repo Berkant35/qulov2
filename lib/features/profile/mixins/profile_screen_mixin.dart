@@ -47,7 +47,7 @@ mixin ProfileScreenMixin on ConsumerState<ProfileScreen> {
               name: 'acquisition',
               isDismissible: false,
               enableDrag: false,
-              maxHeightFactor: 0.85,
+              maxHeightFactor: AppBottomSheet.tallHeightFactor,
               builder: (_) => const AcquisitionSheet(),
             ),
           );
@@ -98,6 +98,18 @@ mixin ProfileScreenMixin on ConsumerState<ProfileScreen> {
 
   void pushTo(String route) {
     ref.read(navigationServiceProvider).push(route);
+  }
+
+  void openEditProfile() => navigateTo(RouteNames.editProfile);
+
+  /// [ProfileProgressCard] adim anahtarini ilgili ekrana yonlendirir.
+  void onProgressNavigate(String step) {
+    switch (step) {
+      case 'editProfile':
+        openEditProfile();
+      case 'questions':
+        pushTo(RouteNames.questions);
+    }
   }
 
   void openPerformance() {

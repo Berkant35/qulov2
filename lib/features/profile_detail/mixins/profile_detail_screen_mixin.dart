@@ -7,6 +7,8 @@ import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/utils/block_flow.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/data/models/discover_model.dart';
+import 'package:qulo_v2/data/models/public_profile_model.dart';
 import 'package:qulo_v2/features/diamonds/widgets/paywall_bottom_sheet.dart';
 import 'package:qulo_v2/features/profile_detail/models/profile_detail_args.dart';
 import 'package:qulo_v2/features/profile_detail/screens/profile_detail_screen.dart';
@@ -29,6 +31,27 @@ mixin ProfileDetailScreenMixin on ConsumerState<ProfileDetailScreen> {
   }
 
   void disposeMixin() {}
+
+  // ─── Derived View State ───
+
+  ProfileDetailContext get detailContext =>
+      widget.args?.context ?? ProfileDetailContext.discover;
+
+  bool get isMatchContext =>
+      detailContext == ProfileDetailContext.match ||
+      detailContext == ProfileDetailContext.chat;
+
+  /// Soru bilgisi yalniz henuz eslesilmemis baglamlarda (kesif / quiz sonucu).
+  bool get showQuestionInfo =>
+      detailContext == ProfileDetailContext.discover ||
+      detailContext == ProfileDetailContext.quizResult;
+
+  /// Detay yuklenirken gosterilecek, discover kartindan turetilmis profil.
+  PublicProfileModel? get preloadedProfile =>
+      widget.args?.preloadedCard?.toPublicProfile();
+
+  void retryLoad() =>
+      ref.read(profileDetailProvider(widget.userId).notifier).refresh();
 
   // ─── Photo Navigation ───
 
@@ -78,19 +101,13 @@ mixin ProfileDetailScreenMixin on ConsumerState<ProfileDetailScreen> {
     if (!mounted) return;
     // Kimlik TEK kaynaktan: yuklu profil varsa o (mesafesi null olsa bile — bilinmiyor
     // demektir, kartin degeriyle ezilmez), yoksa discover'dan gelen on yuklenmis kart.
-    final profile = ref.read(profileDetailProvider(widget.userId)).valueOrNull;
-    final card = widget.args?.preloadedCard;
-    final target = profile != null
-        ? QuizTargetArgs(
-            name: profile.name,
-            photoUrl: profile.photos.firstOrNull,
-            distanceKm: profile.distanceKm,
-          )
-        : QuizTargetArgs(
-            name: card?.name,
-            photoUrl: card?.photos?.firstOrNull,
-            distanceKm: card?.distanceKm,
-          );
+    final profile =
+        ref.read(profileDetailProvider(widget.userId)).valueOrNull ?? preloadedProfile;
+    final target = QuizTargetArgs(
+      name: profile?.name,
+      photoUrl: profile?.photos.firstOrNull,
+      distanceKm: profile?.distanceKm,
+    );
     nav.pop();
     nav.push(
       RouteNames.quiz,

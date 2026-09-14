@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:qulo_v2/core/constants/app_constants.dart';
 
 part 'question_model.g.dart';
 
@@ -26,7 +27,10 @@ class QuestionModel extends Equatable {
   final String? hintText;
   @JsonKey(name: 'category')
   final String? category;
-  @JsonKey(name: 'time_limit', defaultValue: 30)
+  @JsonKey(
+    name: 'time_limit',
+    defaultValue: AppConstants.defaultQuestionTimeLimitSeconds,
+  )
   final int timeLimit;
   @JsonKey(name: 'stats_correct')
   final int statsCorrect;
@@ -73,7 +77,7 @@ class QuestionModel extends Equatable {
     this.hintText,
     this.category,
     this.locale,
-    this.timeLimit = 30,
+    this.timeLimit = AppConstants.defaultQuestionTimeLimitSeconds,
     this.statsCorrect = 0,
     this.statsWrong = 0,
     this.statsSolveCount = 0,

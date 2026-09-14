@@ -1,5 +1,6 @@
 import 'dart:developer' as dev;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/data/models/question_model.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
@@ -47,6 +48,46 @@ class QuestionNotifier extends AsyncNotifier<List<QuestionModel>> {
       failure: (f) => dev.log('createQuestion failed: $f', name: 'QuestionNotifier'),
     );
     return result;
+  }
+
+  /// Kurulum kapisinda (sihirli doldurma) AI onerilerini soru olarak kaydeder.
+  ///
+  /// Cevabi eksik oneri atlanir. Sira numarasi yalniz basarili kayitta ilerler:
+  /// sunucu sirayi 1..n tutar, atlanan/basarisiz kayit bosluk birakmamali.
+  /// Eskiden sonuc hic kontrol edilmiyordu — kayit hatasi sessizce yutulup
+  /// "atandi" analitigi yine de atiliyordu; artik cagiran sayilara bakar.
+  Future<({int created, int failed})> createFromSuggestions(
+    List<Map<String, dynamic>> suggestions, {
+    required int startOrder,
+    required String locale,
+  }) async {
+    var created = 0;
+    var failed = 0;
+    for (final s in suggestions) {
+      final answers = (s['answers'] as List?) ?? const [];
+      if (answers.length < AppConstants.answersPerQuestion) continue;
+      // Server validator rejects explicit null on optional fields — omit if null
+      final body = <String, dynamic>{
+        'order_num': startOrder + created,
+        'question_text': s['question_text'],
+        'answer_1': answers[0],
+        'answer_2': answers[1],
+        'answer_3': answers[2],
+        'answer_4': answers[3],
+        'correct_answer': s['correct_answer'],
+        'locale': locale,
+        'time_limit': AppConstants.defaultQuestionTimeLimitSeconds,
+      };
+      if (s['hint'] != null) body['hint_text'] = s['hint'];
+      if (s['category'] != null) body['category'] = s['category'];
+      final result = await createQuestion(body);
+      if (result.isSuccess) {
+        created++;
+      } else {
+        failed++;
+      }
+    }
+    return (created: created, failed: failed);
   }
 
   Future<Result<QuestionModel>> updateQuestion(int orderNum, Map<String, dynamic> data) async {

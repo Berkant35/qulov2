@@ -16,6 +16,13 @@ abstract final class AppConstants {
   static const int minPhotos = 1;
   static const int minQuestions = 2;
 
+  /// Her sorunun cevap sayisi — sunucu `answer_1..answer_4` alanlarini bekler.
+  static const int answersPerQuestion = 4;
+
+  /// Soru cevaplama suresi varsayilani (sn) — `QuestionModel.timeLimit`
+  /// JSON varsayilani ile ayni olmali.
+  static const int defaultQuestionTimeLimitSeconds = 30;
+
   /// Kullanicinin kayitli arama yaricapi yokken kullanilan varsayilan (km).
   /// `UserModel.matchRadiusKm` ile ayni deger olmali — iki yerde ayri sabit
   /// tutulursa biri degisince sessizce sapar.
