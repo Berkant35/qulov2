@@ -53,7 +53,7 @@ void main() {
       );
     });
 
-    test('desteklenen 16 dilin hepsinde bayrak var — kod fallback\'e düşmez', () {
+    test('desteklenen 18 dilin hepsinde bayrak var — kod fallback\'e düşmez', () {
       for (final locale in AppConstants.supportedQuestionLocales) {
         final summary = subject.questionLocaleSummary({locale: 1});
         expect(

@@ -70,6 +70,7 @@ mixin LoginScreenMixin
         .showAppBottomSheet<List<String>>(
           CustomBottomSheet(
             name: 'language_picker',
+            maxHeightFactor: AppBottomSheet.tallHeightFactor,
             builder: (_) => LanguagePickerSheet(
               selectedLanguages: [currentLocale],
               multiSelect: false,

@@ -61,7 +61,7 @@ class EditProfileState {
     );
   }
 
-  /// 16 dilin tumu secili mi — "select all" / "reset" buton etiketini belirler.
+  /// 18 dilin tumu secili mi — "select all" / "reset" buton etiketini belirler.
   bool get allLanguagesSelected =>
       selectedLanguages.length == AppConstants.supportedQuestionLocales.length;
 }
@@ -115,7 +115,7 @@ class EditProfileNotifier extends Notifier<EditProfileState> {
     state = state.copyWith(selectedLanguages: current);
   }
 
-  /// Desteklenen 16 dilin tumunu sirasiyla secer ("select all" aksiyonu).
+  /// Desteklenen 18 dilin tumunu sirasiyla secer ("select all" aksiyonu).
   void selectAllLanguages() => state = state.copyWith(
         selectedLanguages: List.of(AppConstants.supportedQuestionLocales),
       );

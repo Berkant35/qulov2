@@ -43,35 +43,42 @@ class _LanguagePickerSheetState extends State<LanguagePickerSheet> {
             style: theme.textTheme.titleMedium,
           ),
           const SizedBox(height: AppSpacing.lg),
-          Wrap(
-            spacing: AppSpacing.sm,
-            runSpacing: AppSpacing.sm,
-            children: AppConstants.supportedQuestionLocales.map((locale) {
-              final isSelected = _selected.contains(locale);
-              final flag = AppConstants.localeFlagEmojis[locale] ?? '';
-              return FilterChip(
-                label: Text('$flag ${context.tr('locale_$locale')}'),
-                selected: isSelected,
-                onSelected: (selected) {
-                  setState(() {
-                    if (widget.multiSelect) {
-                      if (selected) {
-                        _selected.add(locale);
-                      } else if (_selected.length > 1) {
-                        _selected.remove(locale);
-                      }
-                    } else {
-                      _selected = [locale];
-                    }
-                  });
-                },
-                selectedColor: context.appColors.primarySurface,
-                checkmarkColor: context.appColors.primary,
-                side: BorderSide(
-                  color: isSelected ? context.appColors.primary : context.appColors.border,
-                ),
-              );
-            }).toList(),
+          // 18 çip küçük ekranda sayfa tavanını aşar: çipler kaydırılır, Kaydet sabit kalır.
+          Flexible(
+            child: SingleChildScrollView(
+              child: Wrap(
+                spacing: AppSpacing.sm,
+                runSpacing: AppSpacing.sm,
+                children: AppConstants.supportedQuestionLocales.map((locale) {
+                  final isSelected = _selected.contains(locale);
+                  final flag = AppConstants.localeFlagEmojis[locale] ?? '';
+                  return FilterChip(
+                    label: Text('$flag ${context.tr('locale_$locale')}'),
+                    selected: isSelected,
+                    onSelected: (selected) {
+                      setState(() {
+                        if (widget.multiSelect) {
+                          if (selected) {
+                            _selected.add(locale);
+                          } else if (_selected.length > 1) {
+                            _selected.remove(locale);
+                          }
+                        } else {
+                          _selected = [locale];
+                        }
+                      });
+                    },
+                    selectedColor: context.appColors.primarySurface,
+                    checkmarkColor: context.appColors.primary,
+                    side: BorderSide(
+                      color: isSelected
+                          ? context.appColors.primary
+                          : context.appColors.border,
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
           ),
           const SizedBox(height: AppSpacing.lg),
           if (widget.multiSelect)

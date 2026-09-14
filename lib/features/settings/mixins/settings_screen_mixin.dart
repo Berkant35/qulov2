@@ -31,6 +31,7 @@ mixin SettingsScreenMixin on ConsumerState<SettingsScreen> {
     final result = await nav.showAppBottomSheet<List<String>>(
       CustomBottomSheet(
         name: 'language_picker',
+        maxHeightFactor: AppBottomSheet.tallHeightFactor,
         builder: (_) => LanguagePickerSheet(
           selectedLanguages: [locale.languageCode],
           multiSelect: false,

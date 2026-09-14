@@ -79,7 +79,7 @@ mixin OnboardingScreenMixin on ConsumerState<OnboardingScreen>,
     });
   }
 
-  /// Desteklenen 16 dilin tumunu sirasiyla secer ("select all" aksiyonu).
+  /// Desteklenen 18 dilin tumunu sirasiyla secer ("select all" aksiyonu).
   void selectAllLanguages() {
     setState(() {
       selectedLanguages = List.of(AppConstants.supportedQuestionLocales);
@@ -147,7 +147,7 @@ mixin OnboardingScreenMixin on ConsumerState<OnboardingScreen>,
   bool get isLastPage => currentPage == _totalPages - 1;
   int get totalPages => _totalPages;
 
-  /// 16 dilin tumu secili mi — "select all" / "reset" buton etiketini belirler.
+  /// 18 dilin tumu secili mi — "select all" / "reset" buton etiketini belirler.
   bool get allLanguagesSelected =>
       selectedLanguages.length == AppConstants.supportedQuestionLocales.length;
 }

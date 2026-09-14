@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:qulo_v2/core/l10n/translations/en.dart';
 
 /// Kodda `tr('anahtar')` / `plural('anahtar', n)` ile kullanilan her statik
-/// anahtar en.dart'ta olmali (parite testi 16 dile yayar).
+/// anahtar en.dart'ta olmali (parite testi 18 dile yayar).
 ///
 /// Parite testi yalnizca diller arasi anahtar kumesini karsilastirir; kodun
 /// OLMAYAN bir anahtari istemesini gormez. `AppLocalizations.get` bulunamayan

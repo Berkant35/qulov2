@@ -8,7 +8,7 @@ import 'package:qulo_v2/core/constants/app_constants.dart';
 mixin VisibilityChecklistCardMixin {
   /// `{ 'tr': 3, 'en': 1 }` → `"🇹🇷 3 · 🇬🇧 1"`, çoktan aza sıralı.
   ///
-  /// Bayrak kullanmak bilinçli: dil adlarını göstermek 16 dil × 16 arayüz dili
+  /// Bayrak kullanmak bilinçli: dil adlarını göstermek 18 dil × 16 arayüz dili
   /// çeviri gerektirirdi ve satır telefon kartına sığmazdı. Bayrak + sayı
   /// çevirisiz okunuyor.
   ///

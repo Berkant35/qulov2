@@ -8,7 +8,7 @@ import 'package:qulo_v2/providers/edit_profile_provider.dart';
 /// ekstra override gerekmiyor, setLanguages ile taze durum kuruyoruz.
 void main() {
   group('EditProfileNotifier dil secimi', () {
-    test('selectAllLanguages tum 16 dili sirayla secer', () {
+    test('selectAllLanguages tum 18 dili sirayla secer', () {
       final container = ProviderContainer();
       addTearDown(container.dispose);
       final notifier = container.read(editProfileProvider.notifier);

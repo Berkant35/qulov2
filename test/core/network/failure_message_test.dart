@@ -46,7 +46,7 @@ void main() {
       expect(const UnauthorizedFailure().userMessageKey('error_general'), 'error_general');
     });
 
-    test('yeni anahtarlar ceviride var (parite testi 16 dile yayar)', () {
+    test('yeni anahtarlar ceviride var (parite testi 18 dile yayar)', () {
       expect(enTranslations.keys, containsAll(['error_no_connection', 'error_timeout']));
     });
   });

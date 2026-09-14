@@ -5,14 +5,14 @@ import 'package:qulo_v2/core/constants/power_labels.dart';
 import 'package:qulo_v2/core/l10n/translations/en.dart';
 
 /// `context.tr('prefix_$deger')` ile kurulan dinamik anahtarlar: her deger
-/// kumesinin tum elemanlari en.dart'ta olmali (parite testi 16 dile yayar).
+/// kumesinin tum elemanlari en.dart'ta olmali (parite testi 18 dile yayar).
 void main() {
   void expectKeys(String family, Iterable<String> keys) {
     final missing = keys.where((k) => !enTranslations.containsKey(k)).toList();
     expect(missing, isEmpty, reason: '$family eksik anahtarlar: $missing');
   }
 
-  test('locale_<dil> — 16 soru dili', () {
+  test('locale_<dil> — 18 soru dili', () {
     expectKeys('locale', AppConstants.supportedQuestionLocales.map((l) => 'locale_$l'));
   });
 
