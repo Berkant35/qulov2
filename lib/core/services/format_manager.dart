@@ -193,8 +193,8 @@ class FormatManager {
   /// Bugun / Dun / tarih — yerel takvim gunune gore.
   String dayLabel(DateTime dt, {DateTime? now}) {
     final local = dt.toLocal();
-    final today = _dayOf(now ?? DateTime.now());
-    final diff = today.difference(_dayOf(local)).inDays;
+    final today = dayOf(now ?? DateTime.now());
+    final diff = today.difference(dayOf(local)).inDays;
     if (diff == 0) return _l10n.get('today');
     if (diff == 1) return _l10n.get('yesterday');
     return date(dt);
@@ -231,5 +231,6 @@ class FormatManager {
     return raw.isNegative ? Duration.zero : raw;
   }
 
-  static DateTime _dayOf(DateTime d) => DateTime(d.year, d.month, d.day);
+  /// Saatsiz takvim gunu (verilen saat diliminde). Yerel gun icin once `toLocal()`.
+  static DateTime dayOf(DateTime d) => DateTime(d.year, d.month, d.day);
 }

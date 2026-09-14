@@ -163,33 +163,6 @@ class ChatNotifier extends FamilyAsyncNotifier<ChatState, String> {
     );
   }
 
-  /// Updates the chat-lock state based on whether there is an unanswered
-  /// chat-locked question where [currentUserId] is the answerer (not sender).
-  void updateChatLock({
-    required String currentUserId,
-    required Map<String, ChatQuestionModel> questionCache,
-  }) {
-    final current = state.valueOrNull ?? const ChatState();
-    // Find any message that is a question marker
-    const prefix = '__QUESTION__:';
-    bool locked = false;
-    for (final msg in current.messages) {
-      if (!msg.content.startsWith(prefix)) continue;
-      final qId = msg.content.replaceFirst(prefix, '');
-      final question = questionCache[qId];
-      if (question == null) continue;
-      if (question.hasChatLock &&
-          !question.isAnswered &&
-          question.senderId != currentUserId) {
-        locked = true;
-        break;
-      }
-    }
-    if (locked != current.hasChatLock) {
-      state = AsyncData(current.copyWith(hasChatLock: locked));
-    }
-  }
-
   Future<void> disableMedia() async {
     final repo = ref.read(chatRepositoryProvider);
     await repo.disableMedia(arg);
@@ -222,9 +195,6 @@ class ChatState {
   final int page;
   final bool mediaEnabled;
   final MediaRequestModel? pendingMediaRequest;
-  /// True when there is an unanswered chat-locked question that the current
-  /// user must answer before they can send new messages.
-  final bool hasChatLock;
 
   const ChatState({
     this.messages = const [],
@@ -232,8 +202,28 @@ class ChatState {
     this.page = 1,
     this.mediaEnabled = false,
     this.pendingMediaRequest,
-    this.hasChatLock = false,
   });
+
+  /// Karsi tarafin sordugu, cevaplanmamis ve sohbet kilitli bir soru varsa
+  /// [currentUserId] cevaplayana kadar yeni mesaj gonderemez.
+  ///
+  /// Durumdan TURETILIR, saklanmaz: eskiden ayri bir `hasChatLock` alani vardi
+  /// ama onu guncelleyen metot hic cagrilmiyordu (hep false) ve ekran ayni
+  /// hesabi kendi kopyasiyla yapiyordu.
+  bool isLockedFor({
+    required String currentUserId,
+    required Map<String, ChatQuestionModel> questionCache,
+  }) {
+    return messages.any((msg) {
+      final questionId = msg.questionId;
+      if (questionId == null) return false;
+      final question = questionCache[questionId];
+      return question != null &&
+          question.hasChatLock &&
+          !question.isAnswered &&
+          question.senderId != currentUserId;
+    });
+  }
 
   ChatState copyWith({
     List<MessageModel>? messages,
@@ -242,7 +232,6 @@ class ChatState {
     bool? mediaEnabled,
     MediaRequestModel? pendingMediaRequest,
     bool clearPendingMediaRequest = false,
-    bool? hasChatLock,
   }) {
     return ChatState(
       messages: messages ?? this.messages,
@@ -252,7 +241,6 @@ class ChatState {
       pendingMediaRequest: clearPendingMediaRequest
           ? null
           : (pendingMediaRequest ?? this.pendingMediaRequest),
-      hasChatLock: hasChatLock ?? this.hasChatLock,
     );
   }
 }

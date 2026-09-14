@@ -70,7 +70,6 @@ class ChatMessageList extends StatelessWidget {
               message: msg,
               isMe: isMe,
               matchId: matchId,
-              myId: myId,
               nextMessage: nextMsg,
               isLast: i == state.messages.length - 1,
               onLongPress: onLongPress,

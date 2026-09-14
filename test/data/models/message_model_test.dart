@@ -114,4 +114,25 @@ void main() {
       expect((same.reactions, same.deletedAt), (original.reactions, null));
     });
   });
+
+  group('questionId (soru mesaji onegi — tek kaynak)', () {
+    MessageModel withContent(String content) =>
+        MessageModel(id: 'm', matchId: 'x', senderId: 'u', content: content);
+
+    test('onekli mesajdan soru kimligi cikar', () {
+      expect(withContent('__QUESTION__:q-42').questionId, 'q-42');
+    });
+
+    test('duz metin soru degil', () {
+      expect(withContent('selam').questionId, isNull);
+    });
+
+    test('onek ortada gecerse soru degil — yalniz basta sayilir', () {
+      expect(withContent('bak: __QUESTION__:q1').questionId, isNull);
+    });
+
+    test('yalniz onek → bos kimlik (null degil; soru mesaji olarak islenir)', () {
+      expect(withContent('__QUESTION__:').questionId, '');
+    });
+  });
 }

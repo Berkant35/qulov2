@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
-import 'package:qulo_v2/core/navigation/navigation_provider.dart';
-import 'package:qulo_v2/core/navigation/models/app_dialog.dart';
+import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/network/failure_message.dart';
 import 'package:qulo_v2/core/utils/block_flow.dart';
-import 'package:qulo_v2/core/theme/app_colors.dart';
-import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/data/models/message_model.dart';
 import 'package:qulo_v2/providers/chat_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
-import 'package:qulo_v2/features/chat/widgets/reaction_picker.dart';
+import 'package:qulo_v2/features/chat/widgets/message_actions_sheet.dart';
 import 'package:qulo_v2/features/profile_detail/widgets/report_category_sheet.dart';
 import 'package:qulo_v2/features/chat/mixins/chat_screen_mixin.dart';
 
@@ -24,76 +21,33 @@ mixin ChatModerationMixin on ChatScreenMixin {
   // ─── Message Menu ───
 
   void showMessageMenu(MessageModel msg, bool isMe) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (_) => Container(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        decoration: BoxDecoration(
-          color: context.appColors.surfaceElevated,
-          borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(AppSpacing.radiusLg)),
-        ),
-        child: SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ReactionPicker(
-                onReactionSelected: (emoji) {
-                  Navigator.pop(context);
-                  ref
-                      .read(chatProvider(widget.matchId).notifier)
-                      .addReaction(msg.id, emoji);
-                },
-              ),
-              if (isMe) ...[
-                const SizedBox(height: AppSpacing.lg),
-                ListTile(
-                  leading: Icon(Icons.delete_outline,
-                      color: context.appColors.error),
-                  title: Text(
-                    AppLocalizations.of(context).get('chat_delete_message'),
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyLarge
-                        ?.copyWith(color: context.appColors.error),
-                  ),
-                  onTap: () {
-                    Navigator.pop(context);
-                    ref
-                        .read(chatProvider(widget.matchId).notifier)
-                        .deleteMessage(msg.id);
-                  },
-                ),
-              ],
-            ],
+    final notifier = ref.read(chatProvider(widget.matchId).notifier);
+    ref.read(navigationServiceProvider).showAppBottomSheet<void>(
+          CustomBottomSheet(
+            name: 'chat_message_menu',
+            builder: (_) => MessageActionsSheet(
+              canDelete: isMe,
+              onReaction: (emoji) => notifier.addReaction(msg.id, emoji),
+              onDelete: () => notifier.deleteMessage(msg.id),
+            ),
           ),
-        ),
-      ),
-    );
+        );
   }
 
   // ─── Report & Block ───
 
-  String? _getTargetUserId() {
-    return ref.read(matchListProvider).valueOrNull
-        ?.where((m) => m.matchId == widget.matchId)
-        .firstOrNull
-        ?.user
-        ?.userId;
-  }
+  String? _getTargetUserId() =>
+      matchUserIn(ref.read(matchListProvider).valueOrNull)?.userId;
 
   void onChatReport() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (_) => ReportCategorySheet(
-        onSelected: _showChatReportReasonDialog,
-      ),
-    );
+    ref.read(navigationServiceProvider).showAppBottomSheet<void>(
+          CustomBottomSheet(
+            name: 'chat_report_category',
+            builder: (_) => ReportCategorySheet(
+              onSelected: _showChatReportReasonDialog,
+            ),
+          ),
+        );
   }
 
   void _showChatReportReasonDialog(String category) {

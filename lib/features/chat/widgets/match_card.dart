@@ -4,9 +4,9 @@ import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/data/models/match_model.dart';
-import 'package:qulo_v2/features/chat/widgets/chat_message_item.dart' show questionPrefix;
+import 'package:qulo_v2/features/chat/mixins/match_card_mixin.dart';
 
-class MatchCard extends StatelessWidget {
+class MatchCard extends StatelessWidget with MatchCardMixin {
   final MatchModel match;
   final VoidCallback onTap;
   final VoidCallback? onLongPress;
@@ -15,7 +15,7 @@ class MatchCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final u = match.user;
-    final photo = u?.photos?.isNotEmpty == true ? u!.photos!.first : null;
+    final photo = u?.photos?.firstOrNull;
     final theme = Theme.of(context);
     final hasUnread = match.unreadCount > 0;
 
@@ -57,7 +57,7 @@ class MatchCard extends StatelessWidget {
           ),
         ),
         subtitle: Text(
-          _displayLastMessage(context),
+          lastMessagePreview(context, match),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: theme.textTheme.bodySmall?.copyWith(
@@ -73,7 +73,7 @@ class MatchCard extends StatelessWidget {
           children: [
             if (match.lastMessageSentAt != null)
               Text(
-                _formatRelativeTime(context, match.lastMessageSentAt!),
+                relativeTime(context, match.lastMessageSentAt!),
                 style: theme.textTheme.labelSmall?.copyWith(
                   color: hasUnread ? context.appColors.primary : theme.colorScheme.onSurfaceVariant,
                   fontWeight: hasUnread ? FontWeight.w600 : FontWeight.normal,
@@ -108,17 +108,5 @@ class MatchCard extends StatelessWidget {
         onLongPress: onLongPress,
       ),
     );
-  }
-
-  String _displayLastMessage(BuildContext context) {
-    final msg = match.lastMessage;
-    if (msg == null || msg.isEmpty) return match.user?.city ?? '';
-    if (msg.startsWith(questionPrefix)) return '🎯 ${context.tr('chat_question_sent')}';
-    return msg;
-  }
-
-  String _formatRelativeTime(BuildContext context, String isoTime) {
-    final dt = DateTime.tryParse(isoTime);
-    return dt == null ? '' : context.fmt.relativeShort(dt);
   }
 }

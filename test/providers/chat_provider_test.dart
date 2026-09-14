@@ -206,8 +206,7 @@ void main() {
         page: 1,
         limit: 30,
       ));
-      h.notifier.updateChatLock(currentUserId: 'me', questionCache: {question.id: question});
-      return h.state.hasChatLock;
+      return h.state.isLockedFor(currentUserId: 'me', questionCache: {question.id: question});
     }
 
     test('karsi tarafin cevaplanmamis kilitli sorusu sohbeti kilitler', () async {
@@ -234,9 +233,7 @@ void main() {
         limit: 30,
       ));
 
-      h.notifier.updateChatLock(currentUserId: 'me', questionCache: const {});
-
-      expect(h.state.hasChatLock, isFalse);
+      expect(h.state.isLockedFor(currentUserId: 'me', questionCache: const {}), isFalse);
     });
   });
 }

@@ -43,8 +43,17 @@ class MessageModel extends Equatable {
       _$MessageModelFromJson(json);
   Map<String, dynamic> toJson() => _$MessageModelToJson(this);
 
+  /// Sunucunun sohbet sorusu mesajlarini isaretledigi onek:
+  /// `content = '__QUESTION__:<soruId>'`.
+  static const questionPrefix = '__QUESTION__:';
+
   bool get isDeleted => deletedAt != null;
   bool get isAudio => audioUrl != null;
+
+  /// Soru mesajiysa sorunun kimligi, degilse null.
+  String? get questionId => content.startsWith(questionPrefix)
+      ? content.substring(questionPrefix.length)
+      : null;
 
   /// Yerel guncellemeler (tepki, silme) icin. Alanlari elle kopyalamak,
   /// modele yeni alan eklendiginde onu sessizce dusururdu.

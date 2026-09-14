@@ -10,10 +10,12 @@ import 'package:qulo_v2/core/network/failure_message.dart';
 import 'package:qulo_v2/core/utils/block_flow.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/data/models/match_model.dart';
 import 'package:qulo_v2/data/models/message_model.dart';
 import 'package:qulo_v2/providers/chat_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/features/chat/screens/chat_screen.dart';
+import 'package:qulo_v2/features/profile_detail/models/profile_detail_args.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 
 /// Chat ekraninin ortak state'i ve yasam dongusu: metin/scroll kontrolcusu,
@@ -209,6 +211,28 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
         },
       );
     }
+  }
+
+  // ─── Header ───
+
+  /// Sohbetteki karsi taraf; eslesme listesi henuz yuklenmemisse null.
+  MatchUserModel? matchUserIn(List<MatchModel>? matches) =>
+      matches?.where((m) => m.matchId == widget.matchId).firstOrNull?.user;
+
+  String statusTextFor(MatchUserModel? user) => (user?.isOnline ?? false)
+      ? context.tr('online')
+      : formatLastSeen(user?.lastSeen);
+
+  void openMatchProfile(MatchUserModel user) {
+    ref.read(navigationServiceProvider).push(
+          RouteNames.profileDetail,
+          params: {'userId': user.userId},
+          extra: ProfileDetailArgs(
+            context: ProfileDetailContext.chat,
+            userId: user.userId,
+            matchId: widget.matchId,
+          ),
+        );
   }
 
   // ─── Helpers ───

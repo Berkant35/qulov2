@@ -5,12 +5,9 @@ import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/services/image_picker_manager.dart';
 import 'package:qulo_v2/core/widgets/image_picker_permission_dialog.dart';
-import 'package:qulo_v2/core/navigation/navigation_provider.dart';
-import 'package:qulo_v2/core/navigation/models/app_dialog.dart';
+import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
-import 'package:qulo_v2/core/theme/app_colors.dart';
-import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/providers/chat_provider.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/features/chat/mixins/chat_screen_mixin.dart';
@@ -32,7 +29,7 @@ mixin ChatMediaMixin on ChatScreenMixin {
       chatState = ref.read(chatProvider(widget.matchId)).valueOrNull;
     }
     if (chatState?.mediaEnabled == true) {
-      _showPhotoSourceSheet();
+      await _showPhotoSourceSheet();
     } else {
       _autoRequestMedia();
     }
@@ -74,42 +71,33 @@ mixin ChatMediaMixin on ChatScreenMixin {
     );
   }
 
-  void _showPhotoSourceSheet() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (_) => Container(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        decoration: BoxDecoration(
-          color: context.appColors.surfaceElevated,
-          borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(AppSpacing.radiusLg)),
-        ),
-        child: SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.photo_library_outlined),
-                title: Text(AppLocalizations.of(context).get('from_gallery')),
-                onTap: () {
-                  Navigator.pop(context);
-                  _pickAndSendPhoto(ImageSource.gallery);
-                },
+  Future<void> _showPhotoSourceSheet() async {
+    final source =
+        await ref.read(navigationServiceProvider).showAppBottomSheet<ImageSource>(
+              ListBottomSheet<ImageSource>(
+                name: 'chat_photo_source',
+                options: [
+                  SheetOption(
+                    label: context.tr('from_gallery'),
+                    icon: Icons.photo_library_outlined,
+                    value: ImageSource.gallery,
+                  ),
+                  SheetOption(
+                    label: context.tr('from_camera'),
+                    icon: Icons.camera_alt_outlined,
+                    value: ImageSource.camera,
+                  ),
+                ],
               ),
-              ListTile(
-                leading: const Icon(Icons.camera_alt_outlined),
-                title: Text(AppLocalizations.of(context).get('from_camera')),
-                onTap: () {
-                  Navigator.pop(context);
-                  _pickAndSendPhoto(ImageSource.camera);
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+            );
+    if (source == null || !mounted) return;
+    await _pickAndSendPhoto(source);
+  }
+
+  void respondToMediaRequest(String requestId, {required bool accept}) {
+    ref
+        .read(chatProvider(widget.matchId).notifier)
+        .respondToMediaRequest(requestId, accept ? 'accept' : 'reject');
   }
 
   Future<void> _pickAndSendPhoto(ImageSource source) async {

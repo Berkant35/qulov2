@@ -169,16 +169,14 @@ mixin ProfileDetailScreenMixin on ConsumerState<ProfileDetailScreen> {
   // ─── Dialogs ───
 
   void _showReportDialog() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (_) => ReportCategorySheet(
-        onSelected: _showReportReasonDialog,
-      ),
-    );
+    ref.read(navigationServiceProvider).showAppBottomSheet<void>(
+          CustomBottomSheet(
+            name: 'report_category',
+            builder: (_) => ReportCategorySheet(
+              onSelected: _showReportReasonDialog,
+            ),
+          ),
+        );
   }
 
   void _showReportReasonDialog(String category) {
