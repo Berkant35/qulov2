@@ -688,9 +688,7 @@ const plTranslations = <String, String>{
 
   // Language system
   'question_language': 'J\u0119zyk pytania',
-  'language_picker_title': 'W jakich j\u0119zykach mo\u017cesz odpowiada\u0107 na pytania?',
   'language_picker_select_one': 'Wybierz j\u0119zyk pytania',
-  'language_picker_hint': 'Musisz wybra\u0107 co najmniej jeden j\u0119zyk',
   'settings_question_languages': 'J\u0119zyki pyta\u0144',
   'settings_question_languages_none': 'Nie wybrano jeszcze \u017cadnych j\u0119zyk\u00f3w',
   'onboarding_questions_slide4_title': 'Jakie j\u0119zyki znasz?',

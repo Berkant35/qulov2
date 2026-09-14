@@ -688,9 +688,7 @@ const koTranslations = <String, String>{
 
   // Language system
   'question_language': '질문 언어',
-  'language_picker_title': '어떤 언어의 질문에 답할 수 있나요?',
   'language_picker_select_one': '질문 언어 선택',
-  'language_picker_hint': '최소 한 가지 언어를 선택해야 해요',
   'settings_question_languages': '질문 언어',
   'settings_question_languages_none': '아직 선택한 언어가 없어요',
   'onboarding_questions_slide4_title': '어떤 언어를 할 수 있나요?',

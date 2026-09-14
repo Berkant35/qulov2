@@ -702,9 +702,7 @@ const idTranslations = <String, String>{
 
   // Language system
   'question_language': 'Bahasa pertanyaan',
-  'language_picker_title': 'Dalam bahasa apa saja kamu bisa menjawab pertanyaan?',
   'language_picker_select_one': 'Pilih bahasa pertanyaan',
-  'language_picker_hint': 'Pilih minimal satu bahasa',
   'settings_question_languages': 'Bahasa Pertanyaan',
   'settings_question_languages_none': 'Belum ada bahasa yang dipilih',
   'onboarding_questions_slide4_title': 'Bahasa Apa Saja yang Kamu Kuasai?',

@@ -702,9 +702,7 @@ const thTranslations = <String, String>{
 
   // Language system
   'question_language': 'ภาษาของคำถาม',
-  'language_picker_title': 'คุณตอบคำถามได้ในภาษาใดบ้าง?',
   'language_picker_select_one': 'เลือกภาษาของคำถาม',
-  'language_picker_hint': 'ต้องเลือกอย่างน้อยหนึ่งภาษา',
   'settings_question_languages': 'ภาษาของคำถาม',
   'settings_question_languages_none': 'ยังไม่ได้เลือกภาษา',
   'onboarding_questions_slide4_title': 'คุณรู้ภาษาอะไรบ้าง?',

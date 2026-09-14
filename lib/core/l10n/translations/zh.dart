@@ -688,9 +688,7 @@ const zhTranslations = <String, String>{
 
   // Language system
   'question_language': '问题语言',
-  'language_picker_title': '你能用哪些语言回答问题？',
   'language_picker_select_one': '选择问题语言',
-  'language_picker_hint': '至少选择一种语言',
   'settings_question_languages': '问题语言',
   'settings_question_languages_none': '尚未选择语言',
   'onboarding_questions_slide4_title': '你会哪些语言？',

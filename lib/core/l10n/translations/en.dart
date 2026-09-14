@@ -702,9 +702,7 @@ const enTranslations = <String, String>{
 
   // Language system
   'question_language': 'Question language',
-  'language_picker_title': 'Which languages can you answer questions in?',
   'language_picker_select_one': 'Select question language',
-  'language_picker_hint': 'At least one language must be selected',
   'settings_question_languages': 'Question Languages',
   'settings_question_languages_none': 'No languages selected yet',
   'onboarding_questions_slide4_title': 'Which Languages Do You Know?',

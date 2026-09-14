@@ -690,9 +690,7 @@ const ptTranslations = <String, String>{
 
   // Language system
   'question_language': 'Idioma da pergunta',
-  'language_picker_title': 'Em quais idiomas você pode responder perguntas?',
   'language_picker_select_one': 'Selecione o idioma da pergunta',
-  'language_picker_hint': 'Pelo menos um idioma deve ser selecionado',
   'settings_question_languages': 'Idiomas das Perguntas',
   'settings_question_languages_none': 'Nenhum idioma selecionado ainda',
   'onboarding_questions_slide4_title': 'Quais Idiomas Você Conhece?',

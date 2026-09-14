@@ -98,8 +98,10 @@ class _QuestionCreateScreenState extends ConsumerState<QuestionCreateScreen>
                 ),
                 QuestionStepSettings(
                   selectedTimeLimit: selectedTimeLimit,
-                  timePresets:
-                      ref.read(economyConfigProvider).timing.timePresets,
+                  timePresets: ref
+                      .read(economyConfigProvider)
+                      .timing
+                      .timePresets,
                   onTimeLimitChanged: (v) =>
                       setState(() => selectedTimeLimit = v),
                 ),

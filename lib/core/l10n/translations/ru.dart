@@ -688,9 +688,7 @@ const ruTranslations = <String, String>{
 
   // Language system
   'question_language': 'Язык вопроса',
-  'language_picker_title': 'На каких языках вы можете отвечать на вопросы?',
   'language_picker_select_one': 'Выберите язык вопроса',
-  'language_picker_hint': 'Нужно выбрать хотя бы один язык',
   'settings_question_languages': 'Языки вопросов',
   'settings_question_languages_none': 'Языки ещё не выбраны',
   'onboarding_questions_slide4_title': 'Какие языки вы знаете?',

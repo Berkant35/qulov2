@@ -702,9 +702,7 @@ const trTranslations = <String, String>{
 
   // Language system
   'question_language': 'Soru dili',
-  'language_picker_title': 'Hangi dillerde soru \u00e7\u00f6zebilirsin?',
   'language_picker_select_one': 'Soru dilini se\u00e7',
-  'language_picker_hint': 'En az bir dil se\u00e7ili olmal\u0131',
   'settings_question_languages': 'Soru Dilleri',
   'settings_question_languages_none': 'Hen\u00fcz dil se\u00e7ilmedi',
   'onboarding_questions_slide4_title': 'Hangi Dilleri Biliyorsun?',

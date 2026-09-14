@@ -72,14 +72,15 @@ void main() {
         m.group(1)!: m.group(2)!,
     };
     final notes = File('scripts/asc_whatsnew.mjs').readAsStringSync();
+    // Iki tanim bicimi var: literal (`'th': \`...\``) ve turetme (`NOTES['pt-BR'] = ...`).
     final noteKeys = RegExp(
-      r"^  '([^']+)': `",
+      r"(?:^  '([^']+)': `|NOTES\['([^']+)'\])",
       multiLine: true,
-    ).allMatches(notes).map((m) => m.group(1)!).toSet();
+    ).allMatches(notes).map((m) => m.group(1) ?? m.group(2)!).toSet();
     for (final code in expected) {
       final asc = ascOf[code] ?? code;
       // asc_whatsnew ASC kodlarini kullanir (en-US, de-DE...); TestFlight haritasi ile ayni.
-      final candidates = {asc, code, if (code == 'pt') 'pt-PT'};
+      final candidates = {asc, code};
       expect(
         candidates.any(noteKeys.contains),
         isTrue,
@@ -87,6 +88,35 @@ void main() {
       );
     }
   });
+
+  test(
+    'asc_keywords.mjs K, LOCALE_MAP üzerinden her dil için keyword seti taşır',
+    () {
+      // 6. senkron noktası: mağaza arama kelimeleri. th/id 18 dile çıkarken burada unutulmuştu.
+      final map = RegExp(r'const LOCALE_MAP = \{([\s\S]*?)\};')
+          .firstMatch(
+            File('scripts/push_testflight_notes.mjs').readAsStringSync(),
+          )!
+          .group(1)!;
+      final ascOf = {
+        for (final m in RegExp(r"([a-z]{2}):\s*'([^']+)'").allMatches(map))
+          m.group(1)!: m.group(2)!,
+      };
+      final k = RegExp(r'const K = \{([\s\S]*?)\n\};')
+          .firstMatch(File('scripts/asc_keywords.mjs').readAsStringSync())!
+          .group(1)!;
+      final keywordKeys = RegExp(
+        r"'([A-Za-z-]+)':",
+      ).allMatches(k).map((m) => m.group(1)!).toSet();
+      for (final code in expected) {
+        expect(
+          keywordKeys,
+          contains(ascOf[code] ?? code),
+          reason: '$code için keyword seti yok',
+        );
+      }
+    },
+  );
 
   test('testflight_release_notes.json her dil için not içerir', () {
     final json = File(

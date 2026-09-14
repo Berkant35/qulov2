@@ -49,16 +49,10 @@ mixin QuestionEasyModeScreenMixin on ConsumerState<QuestionEasyModeScreen> {
   }
 
   Future<void> onLanguageChipPressed() async {
-    final result = await ref
-        .read(navigationServiceProvider)
-        .showAppBottomSheet<List<String>>(
-          LanguagePickerSheet.sheet(
-            selectedLanguages: [selectedLocale],
-            multiSelect: false,
-          ),
-        );
-    if (mounted && result != null && result.isNotEmpty) {
-      setState(() => selectedLocale = result.first);
-    }
+    final picked = await LanguagePickerSheet.pickOne(
+      ref.read(navigationServiceProvider),
+      selectedLocale,
+    );
+    if (mounted && picked != null) setState(() => selectedLocale = picked);
   }
 }

@@ -690,9 +690,7 @@ const jaTranslations = <String, String>{
 
   // Language system
   'question_language': '質問の言語',
-  'language_picker_title': 'どの言語で質問に答えられますか？',
   'language_picker_select_one': '質問の言語を選択',
-  'language_picker_hint': '最低1つの言語を選択してください',
   'settings_question_languages': '質問の言語',
   'settings_question_languages_none': 'まだ言語が選択されていません',
   'onboarding_questions_slide4_title': 'どの言語を知っていますか？',

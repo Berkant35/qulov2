@@ -67,18 +67,12 @@ mixin LoginScreenMixin
   }
 
   Future<void> showLanguagePicker() async {
-    final currentLocale = ref.read(localeProvider).languageCode;
-    final result = await ref
-        .read(navigationServiceProvider)
-        .showAppBottomSheet<List<String>>(
-          LanguagePickerSheet.sheet(
-            selectedLanguages: [currentLocale],
-            multiSelect: false,
-          ),
-        );
-    if (result != null && result.isNotEmpty) {
-      ref.read(localeProvider.notifier).setLocale(Locale(result.first));
-    }
+    final picked = await LanguagePickerSheet.pickOne(
+      ref.read(navigationServiceProvider),
+      ref.read(localeProvider).languageCode,
+    );
+    if (!mounted || picked == null) return;
+    ref.read(localeProvider.notifier).setLocale(Locale(picked));
   }
 
   Future<void> login() => withLoading(() async {

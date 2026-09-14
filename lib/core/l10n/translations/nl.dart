@@ -688,9 +688,7 @@ const nlTranslations = <String, String>{
 
   // Language system
   'question_language': 'Vraagtaal',
-  'language_picker_title': 'In welke talen kun je vragen beantwoorden?',
   'language_picker_select_one': 'Selecteer vraagtaal',
-  'language_picker_hint': 'Minimaal \u00e9\u00e9n taal moet worden geselecteerd',
   'settings_question_languages': 'Vraagtalen',
   'settings_question_languages_none': 'Nog geen talen geselecteerd',
   'onboarding_questions_slide4_title': 'Welke talen ken je?',

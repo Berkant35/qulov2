@@ -5,43 +5,32 @@ import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 
+/// Tek dil secimi (uygulama dili, soru dili). Coklu secim dali hicbir cagri
+/// yerinde kullanilmiyordu; eslesme dilleri tek kaynak sunucudaki
+/// `set_user_languages` RPC'sidir, bu sayfa ona dokunmaz.
 class LanguagePickerSheet extends StatefulWidget {
-  final List<String> selectedLanguages;
-  final bool multiSelect;
+  final String selected;
 
-  const LanguagePickerSheet({
-    super.key,
-    required this.selectedLanguages,
-    this.multiSelect = true,
-  });
+  const LanguagePickerSheet({super.key, required this.selected});
 
-  /// Tek acilis yolu: `nav.showAppBottomSheet<List<String>>(LanguagePickerSheet.sheet(...))`.
+  /// Tek acilis yolu. Secim yapilmadan kapatilirsa null doner.
   /// 18 cip kucuk ekranda tavani astigi icin yukseklik faktoru burada sabitlenir;
   /// cagri yerleri (ayarlar, giris, soru olusturma, kolay mod) bunu bilmek zorunda kalmaz.
-  static CustomBottomSheet sheet({
-    required List<String> selectedLanguages,
-    bool multiSelect = true,
-  }) => CustomBottomSheet(
-    name: 'language_picker',
-    maxHeightFactor: AppBottomSheet.tallHeightFactor,
-    builder: (_) => LanguagePickerSheet(
-      selectedLanguages: selectedLanguages,
-      multiSelect: multiSelect,
-    ),
-  );
+  static Future<String?> pickOne(NavigationService nav, String current) =>
+      nav.showAppBottomSheet<String>(
+        CustomBottomSheet(
+          name: 'language_picker',
+          maxHeightFactor: AppBottomSheet.tallHeightFactor,
+          builder: (_) => LanguagePickerSheet(selected: current),
+        ),
+      );
 
   @override
   State<LanguagePickerSheet> createState() => _LanguagePickerSheetState();
 }
 
 class _LanguagePickerSheetState extends State<LanguagePickerSheet> {
-  late List<String> _selected;
-
-  @override
-  void initState() {
-    super.initState();
-    _selected = List.from(widget.selectedLanguages);
-  }
+  late String _selected = widget.selected;
 
   @override
   Widget build(BuildContext context) {
@@ -53,9 +42,7 @@ class _LanguagePickerSheetState extends State<LanguagePickerSheet> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            widget.multiSelect
-                ? context.tr('language_picker_title')
-                : context.tr('language_picker_select_one'),
+            context.tr('language_picker_select_one'),
             style: theme.textTheme.titleMedium,
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -66,24 +53,12 @@ class _LanguagePickerSheetState extends State<LanguagePickerSheet> {
                 spacing: AppSpacing.sm,
                 runSpacing: AppSpacing.sm,
                 children: AppConstants.supportedQuestionLocales.map((locale) {
-                  final isSelected = _selected.contains(locale);
+                  final isSelected = _selected == locale;
                   final flag = AppConstants.localeFlagEmojis[locale] ?? '';
                   return FilterChip(
                     label: Text('$flag ${context.tr('locale_$locale')}'),
                     selected: isSelected,
-                    onSelected: (selected) {
-                      setState(() {
-                        if (widget.multiSelect) {
-                          if (selected) {
-                            _selected.add(locale);
-                          } else if (_selected.length > 1) {
-                            _selected.remove(locale);
-                          }
-                        } else {
-                          _selected = [locale];
-                        }
-                      });
-                    },
+                    onSelected: (_) => setState(() => _selected = locale),
                     selectedColor: context.appColors.primarySurface,
                     checkmarkColor: context.appColors.primary,
                     side: BorderSide(
@@ -97,14 +72,6 @@ class _LanguagePickerSheetState extends State<LanguagePickerSheet> {
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
-          if (widget.multiSelect)
-            Text(
-              context.tr('language_picker_hint'),
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-          if (widget.multiSelect) const SizedBox(height: AppSpacing.lg),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(_selected),
             style: FilledButton.styleFrom(

@@ -690,9 +690,7 @@ const hiTranslations = <String, String>{
 
   // Language system
   'question_language': 'सवाल की भाषा',
-  'language_picker_title': 'आप किन भाषाओं में सवालों के जवाब दे सकते हैं?',
   'language_picker_select_one': 'सवाल की भाषा चुनें',
-  'language_picker_hint': 'कम से कम एक भाषा चुनें',
   'settings_question_languages': 'सवाल की भाषाएं',
   'settings_question_languages_none': 'अभी कोई भाषा नहीं चुनी',
   'onboarding_questions_slide4_title': 'आपको कौन सी भाषाएं आती हैं?',

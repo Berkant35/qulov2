@@ -26,33 +26,25 @@ mixin SettingsScreenMixin on ConsumerState<SettingsScreen> {
   void disposeMixin() {}
 
   Future<void> onLanguageTap() async {
-    final locale = ref.read(localeProvider);
-    final nav = ref.read(navigationServiceProvider);
-    final result = await nav.showAppBottomSheet<List<String>>(
-      LanguagePickerSheet.sheet(
-        selectedLanguages: [locale.languageCode],
-        multiSelect: false,
-      ),
+    final oldLang = ref.read(localeProvider).languageCode;
+    final newLang = await LanguagePickerSheet.pickOne(
+      ref.read(navigationServiceProvider),
+      oldLang,
     );
-    if (result != null && result.isNotEmpty) {
-      final oldLang = locale.languageCode;
-      final newLang = result.first;
-      if (oldLang != newLang) {
-        AnalyticsManager.instance.logEvent(
-          AnalyticsEvents.settingsLanguageChange,
-          params: {AnalyticsEvents.paramLanguage: newLang},
-        );
-        AnalyticsManager.instance.logEvent(
-          AnalyticsEvents.settingsChange,
-          params: {
-            AnalyticsEvents.paramSettingName: 'language',
-            AnalyticsEvents.paramOldValue: oldLang,
-            AnalyticsEvents.paramNewValue: newLang,
-          },
-        );
-        ref.read(localeProvider.notifier).setLocale(Locale(newLang));
-      }
-    }
+    if (!mounted || newLang == null || newLang == oldLang) return;
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.settingsLanguageChange,
+      params: {AnalyticsEvents.paramLanguage: newLang},
+    );
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.settingsChange,
+      params: {
+        AnalyticsEvents.paramSettingName: 'language',
+        AnalyticsEvents.paramOldValue: oldLang,
+        AnalyticsEvents.paramNewValue: newLang,
+      },
+    );
+    ref.read(localeProvider.notifier).setLocale(Locale(newLang));
   }
 
   void onThemeChanged(Set<AppThemeMode> selection) {

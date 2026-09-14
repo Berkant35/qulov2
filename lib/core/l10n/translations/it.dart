@@ -690,9 +690,7 @@ const itTranslations = <String, String>{
 
   // Language system
   'question_language': 'Lingua delle domande',
-  'language_picker_title': 'In quali lingue puoi rispondere alle domande?',
   'language_picker_select_one': 'Seleziona la lingua delle domande',
-  'language_picker_hint': 'Almeno una lingua deve essere selezionata',
   'settings_question_languages': 'Lingue delle domande',
   'settings_question_languages_none': 'Nessuna lingua selezionata',
   'onboarding_questions_slide4_title': 'Quali lingue conosci?',

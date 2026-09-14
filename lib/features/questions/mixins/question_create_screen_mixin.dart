@@ -106,17 +106,11 @@ mixin QuestionCreateScreenMixin on ConsumerState<QuestionCreateScreen> {
 
   /// Soru dili secimi — kolay mod ile ayni sheet, ayni yol (NavigationService).
   Future<void> onLanguageChipPressed() async {
-    final result = await ref
-        .read(navigationServiceProvider)
-        .showAppBottomSheet<List<String>>(
-          LanguagePickerSheet.sheet(
-            selectedLanguages: [selectedLocale],
-            multiSelect: false,
-          ),
-        );
-    if (mounted && result != null && result.isNotEmpty) {
-      setState(() => selectedLocale = result.first);
-    }
+    final picked = await LanguagePickerSheet.pickOne(
+      ref.read(navigationServiceProvider),
+      selectedLocale,
+    );
+    if (mounted && picked != null) setState(() => selectedLocale = picked);
   }
 
   void onDependenciesChanged() {

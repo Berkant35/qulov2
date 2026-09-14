@@ -54,6 +54,10 @@ const K = {
   'ko': '데이팅,채팅,소개팅,연애,만남,사랑,싱글,친구,궁합,소개,연인,데이트',
   'zh-Hans': '约会,聊天,交友,单身,恋爱,脱单,缘分,配对,测试,情侣,相亲,浪漫',
   'hi': 'shaadi,rishta,desi,डेटिंग,चैट,प्यार,सिंगल,मुलाकात,रोमांस,दोस्ती,जोड़ी,प्रेम',
+  // TH/ID: yerel kullanici icin; turist hedefi ev vitrinlerinin (en-US/GB/AU, ru, de) setinde.
+  // Kaynak: docs/marketing/th-id-2026-09/research-turist-aso.md §C (Tinder TH / ThaiFriendly / TanTan / Omi metadata).
+  'th': 'หาคู่,หาแฟน,แอปหาคู่,แอพหาคู่,หาคนคุย,ออกเดท,แมทช์,เดท,แชท,โสด,ความรัก,หาแฟนฝรั่ง',
+  'id': 'kencan,kenalan,jodoh,cari,pacar,jomblo,cinta,teman,bertemu,orang,baru,chat,kuis,single',
 };
 
 const app = (await api(`/v1/apps?filter[bundleId]=${BUNDLE_ID}`)).data?.[0];

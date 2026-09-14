@@ -688,9 +688,7 @@ const arTranslations = <String, String>{
 
   // Language system
   'question_language': 'لغة السؤال',
-  'language_picker_title': 'بأي لغات يمكنك الإجابة على الأسئلة؟',
   'language_picker_select_one': 'اختر لغة السؤال',
-  'language_picker_hint': 'يجب اختيار لغة واحدة على الأقل',
   'settings_question_languages': 'لغات الأسئلة',
   'settings_question_languages_none': 'لم يتم اختيار لغات بعد',
   'onboarding_questions_slide4_title': 'ما اللغات التي تعرفها؟',

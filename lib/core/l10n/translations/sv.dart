@@ -690,9 +690,7 @@ const svTranslations = <String, String>{
 
   // Language system
   'question_language': 'Frågespråk',
-  'language_picker_title': 'Vilka språk kan du svara på frågor i?',
   'language_picker_select_one': 'Välj frågespråk',
-  'language_picker_hint': 'Minst ett språk måste väljas',
   'settings_question_languages': 'Frågespråk',
   'settings_question_languages_none': 'Inga språk valda ännu',
   'onboarding_questions_slide4_title': 'Vilka språk kan du?',

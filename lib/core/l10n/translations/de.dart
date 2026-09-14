@@ -690,9 +690,7 @@ const deTranslations = <String, String>{
 
   // Language system
   'question_language': 'Fragensprache',
-  'language_picker_title': 'In welchen Sprachen kannst du Fragen beantworten?',
   'language_picker_select_one': 'Fragensprache auswählen',
-  'language_picker_hint': 'Mindestens eine Sprache muss ausgewählt sein',
   'settings_question_languages': 'Fragensprachen',
   'settings_question_languages_none': 'Noch keine Sprachen ausgewählt',
   'onboarding_questions_slide4_title': 'Welche Sprachen sprichst du?',
