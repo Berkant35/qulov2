@@ -711,6 +711,8 @@ const koTranslations = <String, String>{
   'locale_pl': 'Polski',
   'locale_sv': 'Svenska',
   'locale_hi': 'Hindi',
+  'locale_th': 'ไทย',
+  'locale_id': 'Bahasa Indonesia',
 
   // Profile sections
   'first_photo_is_profile': '첫 번째 사진이 프로필 사진이에요',

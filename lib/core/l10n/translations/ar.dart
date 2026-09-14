@@ -711,6 +711,8 @@ const arTranslations = <String, String>{
   'locale_pl': 'Polski',
   'locale_sv': 'Svenska',
   'locale_hi': 'Hindi',
+  'locale_th': 'ไทย',
+  'locale_id': 'Bahasa Indonesia',
 
   // Profile sections
   'first_photo_is_profile': 'صورتك الأولى هي صورة ملفك الشخصي',

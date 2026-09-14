@@ -13,7 +13,8 @@ void main() {
     });
 
     test('desteklenmeyen dil en\'e düşer, tr\'ye değil', () {
-      expect(AppConstants.defaultQuestionLocale('th'), 'en');
+      // 'th' artık destekleniyor (2026-09-14); desteklenmeyen örnek Vietnamca.
+      expect(AppConstants.defaultQuestionLocale('vi'), 'en');
       expect(AppConstants.defaultQuestionLocale(''), 'en');
     });
 

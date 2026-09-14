@@ -888,6 +888,8 @@ echo "SUCCESS" &gt; "${SCRIPT_OUTPUT_FILE_0}"
 				<string>pl</string>
 				<string>sv</string>
 				<string>hi</string>
+				<string>th</string>
+				<string>id</string>
 			</array>
 			<key>mainGroup</key>
 			<string>97C146E51CF9000F007C117D</string>
@@ -1710,6 +1712,8 @@ echo "SUCCESS" &gt; "${SCRIPT_OUTPUT_FILE_0}"
 				<string>AA000000000000000051000D</string>
 				<string>AA000000000000000051000E</string>
 				<string>AA000000000000000051000F</string>
+				<string>AA0000000000000000510012</string>
+				<string>AA0000000000000000510013</string>
 			</array>
 			<key>isa</key>
 			<string>PBXVariantGroup</string>
@@ -1848,6 +1852,32 @@ echo "SUCCESS" &gt; "${SCRIPT_OUTPUT_FILE_0}"
 			<string>F04C24AB2671390B00CDB270</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
+		</dict>
+		<key>AA0000000000000000510012</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.plist.strings</string>
+			<key>name</key>
+			<string>th</string>
+			<key>path</key>
+			<string>th.lproj/InfoPlist.strings</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AA0000000000000000510013</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.plist.strings</string>
+			<key>name</key>
+			<string>id</string>
+			<key>path</key>
+			<string>id.lproj/InfoPlist.strings</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
 		</dict>
 	</dict>
 	<key>rootObject</key>

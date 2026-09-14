@@ -1,0 +1,6 @@
+"CFBundleDisplayName" = "Qulo";
+"NSCameraUsageDescription" = "Akses kamera diperlukan untuk mengambil foto profil.";
+"NSPhotoLibraryUsageDescription" = "Akses galeri foto diperlukan untuk memilih foto profil.";
+"NSLocationWhenInUseUsageDescription" = "Qulo menggunakan lokasimu untuk: (1) menemukan profil di Jelajahi dalam jarak yang kamu pilih, (2) menampilkan kotamu di profilmu, dan (3) menampilkan jarak setiap profil darimu (mis. \"Jakarta · 2,5 km\").";
+"NSMicrophoneUsageDescription" = "Akses mikrofon diperlukan untuk mengirim pesan suara.";
+"NSUserTrackingUsageDescription" = "Qulo menggunakan pengenal ini untuk: (1) mengukur performa iklan (mis. mengetahui kamu menemukan Qulo lewat iklan), dan (2) meningkatkan pengalaman aplikasimu. Data ini hanya dibagikan dengan mitra pengukuran iklan kami.";

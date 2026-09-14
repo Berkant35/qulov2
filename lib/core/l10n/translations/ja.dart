@@ -713,6 +713,8 @@ const jaTranslations = <String, String>{
   'locale_pl': 'Polski',
   'locale_sv': 'Svenska',
   'locale_hi': 'Hindi',
+  'locale_th': 'ไทย',
+  'locale_id': 'Bahasa Indonesia',
 
   // Profile sections
   'first_photo_is_profile': '最初の写真がプロフィール写真になります',

@@ -16,6 +16,8 @@ import 'package:qulo_v2/core/l10n/translations/nl.dart';
 import 'package:qulo_v2/core/l10n/translations/pl.dart';
 import 'package:qulo_v2/core/l10n/translations/sv.dart';
 import 'package:qulo_v2/core/l10n/translations/hi.dart';
+import 'package:qulo_v2/core/l10n/translations/th.dart';
+import 'package:qulo_v2/core/l10n/translations/id.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
 
 class AppLocalizations {
@@ -91,6 +93,8 @@ class AppLocalizations {
     'pl': plTranslations,
     'sv': svTranslations,
     'hi': hiTranslations,
+    'th': thTranslations,
+    'id': idTranslations,
   };
 }
 

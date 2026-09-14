@@ -713,6 +713,8 @@ const hiTranslations = <String, String>{
   'locale_pl': 'Polski',
   'locale_sv': 'Svenska',
   'locale_hi': 'Hindi',
+  'locale_th': 'ไทย',
+  'locale_id': 'Bahasa Indonesia',
 
   // Profile sections
   'first_photo_is_profile': 'आपकी पहली फ़ोटो आपकी प्रोफ़ाइल फ़ोटो है',

@@ -57,6 +57,7 @@ abstract final class AppConstants {
   static const supportedQuestionLocales = [
     'tr', 'en', 'de', 'fr', 'es', 'ar', 'ru',
     'pt', 'it', 'ja', 'ko', 'zh', 'nl', 'pl', 'sv', 'hi',
+    'th', 'id',
   ];
 
   /// Uygulama dili ve eşleşme dili için ortak fallback — LocaleProvider, app.dart
@@ -88,6 +89,8 @@ abstract final class AppConstants {
     'pl': '\u{1F1F5}\u{1F1F1}',
     'sv': '\u{1F1F8}\u{1F1EA}',
     'hi': '\u{1F1EE}\u{1F1F3}',
+    'th': '\u{1F1F9}\u{1F1ED}',
+    'id': '\u{1F1EE}\u{1F1E9}',
   };
 }
 

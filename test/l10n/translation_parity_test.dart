@@ -5,6 +5,8 @@ import 'package:qulo_v2/core/l10n/translations/en.dart';
 import 'package:qulo_v2/core/l10n/translations/es.dart';
 import 'package:qulo_v2/core/l10n/translations/fr.dart';
 import 'package:qulo_v2/core/l10n/translations/hi.dart';
+import 'package:qulo_v2/core/l10n/translations/th.dart';
+import 'package:qulo_v2/core/l10n/translations/id.dart';
 import 'package:qulo_v2/core/l10n/translations/it.dart';
 import 'package:qulo_v2/core/l10n/translations/ja.dart';
 import 'package:qulo_v2/core/l10n/translations/ko.dart';
@@ -35,6 +37,8 @@ const _translations = <String, Map<String, String>>{
   'pl': plTranslations,
   'sv': svTranslations,
   'hi': hiTranslations,
+  'th': thTranslations,
+  'id': idTranslations,
 };
 
 /// Referans dil: fallback zinciri de buraya düşüyor (AppLocalizations.get).
@@ -50,8 +54,8 @@ void main() {
   final referenceKeys = _translations[_reference]!.keys.toSet();
 
   group('translation parity', () {
-    test('AppLocalizations ile aynı 16 dili kapsıyor', () {
-      expect(_translations.length, 16);
+    test('AppLocalizations ile aynı 18 dili kapsıyor', () {
+      expect(_translations.length, 18);
     });
 
     test('her dil $_reference ile birebir aynı key setine sahip', () {

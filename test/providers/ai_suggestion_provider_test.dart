@@ -23,6 +23,7 @@ const _serverCategories = {
 };
 const _serverLocales = {
   'tr', 'en', 'de', 'fr', 'es', 'ar', 'ru', 'pt', 'it', 'ja', 'ko', 'zh', 'nl', 'pl', 'sv', 'hi',
+  'th', 'id',
 };
 
 (ProviderContainer, FakeQuestionRepository) _setup({

@@ -30,6 +30,7 @@ const LOCALE_MAP = {
   fr: 'fr-FR', hi: 'hi',   it: 'it',    ja: 'ja',
   ko: 'ko',    nl: 'nl-NL', pl: 'pl',   pt: 'pt-BR',
   ru: 'ru',    sv: 'sv',   tr: 'tr',    zh: 'zh-Hans',
+  th: 'th',    id: 'id',
 };
 
 const notes = JSON.parse(readFileSync(NOTES_FILE, 'utf8'));
