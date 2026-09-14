@@ -27,35 +27,36 @@ mixin QuestionEasyModeScreenMixin on ConsumerState<QuestionEasyModeScreen> {
 
   void fetchByCategory(String category) {
     setState(() => selectedCategory = category);
-    ref.read(aiSuggestionProvider.notifier).fetchSuggestions(
-          category: category,
-          locale: selectedLocale,
-        );
+    ref
+        .read(aiSuggestionProvider.notifier)
+        .fetchSuggestions(category: category, locale: selectedLocale);
   }
 
   void fetchByProfile() {
     setState(() => selectedCategory = null);
-    ref.read(aiSuggestionProvider.notifier).fetchSuggestions(
-          profileBased: true,
-          locale: selectedLocale,
-        );
+    ref
+        .read(aiSuggestionProvider.notifier)
+        .fetchSuggestions(profileBased: true, locale: selectedLocale);
   }
 
   void selectSuggestion(AiSuggestionModel suggestion) {
-    ref.read(navigationServiceProvider).push(
-      RouteNames.questionCreate,
-      extra: suggestion.withLocale(selectedLocale),
-    );
+    ref
+        .read(navigationServiceProvider)
+        .push(
+          RouteNames.questionCreate,
+          extra: suggestion.withLocale(selectedLocale),
+        );
   }
 
   Future<void> onLanguageChipPressed() async {
-    final result = await showModalBottomSheet<List<String>>(
-      context: context,
-      builder: (_) => LanguagePickerSheet(
-        selectedLanguages: [selectedLocale],
-        multiSelect: false,
-      ),
-    );
+    final result = await ref
+        .read(navigationServiceProvider)
+        .showAppBottomSheet<List<String>>(
+          LanguagePickerSheet.sheet(
+            selectedLanguages: [selectedLocale],
+            multiSelect: false,
+          ),
+        );
     if (mounted && result != null && result.isNotEmpty) {
       setState(() => selectedLocale = result.first);
     }

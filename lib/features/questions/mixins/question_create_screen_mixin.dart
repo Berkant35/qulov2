@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
+import 'package:qulo_v2/core/widgets/language_picker_sheet.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
@@ -29,15 +30,16 @@ mixin QuestionCreateScreenMixin on ConsumerState<QuestionCreateScreen> {
   bool get isEditMode => widget.editQuestion != null;
 
   /// Soru metni yazilmaya baslandi ama sunucunun alt sinirindan kisa.
-  bool get questionTooShort => isQuestionTextTooShort(questionTextController.text);
+  bool get questionTooShort =>
+      isQuestionTextTooShort(questionTextController.text);
   bool didComplete = false;
 
   List<TextEditingController> get _answerControllers => [
-        answer1Controller,
-        answer2Controller,
-        answer3Controller,
-        answer4Controller,
-      ];
+    answer1Controller,
+    answer2Controller,
+    answer3Controller,
+    answer4Controller,
+  ];
 
   /// Metin degistikce yeniden ciz. Bu listener yoktu: yazarken ne onizleme karti
   /// ne de "Ileri" butonu guncelleniyordu — sadece dogru cevap radio'suna basinca
@@ -86,8 +88,7 @@ mixin QuestionCreateScreenMixin on ConsumerState<QuestionCreateScreen> {
 
   void disposeMixin() {
     if (!didComplete) {
-      AnalyticsManager.instance
-          .logEvent(AnalyticsEvents.questionCreateAbandon);
+      AnalyticsManager.instance.logEvent(AnalyticsEvents.questionCreateAbandon);
     }
     questionTextController.removeListener(_onFieldChanged);
     hintController.removeListener(_onFieldChanged);
@@ -101,6 +102,21 @@ mixin QuestionCreateScreenMixin on ConsumerState<QuestionCreateScreen> {
     answer3Controller.dispose();
     answer4Controller.dispose();
     hintController.dispose();
+  }
+
+  /// Soru dili secimi — kolay mod ile ayni sheet, ayni yol (NavigationService).
+  Future<void> onLanguageChipPressed() async {
+    final result = await ref
+        .read(navigationServiceProvider)
+        .showAppBottomSheet<List<String>>(
+          LanguagePickerSheet.sheet(
+            selectedLanguages: [selectedLocale],
+            multiSelect: false,
+          ),
+        );
+    if (mounted && result != null && result.isNotEmpty) {
+      setState(() => selectedLocale = result.first);
+    }
   }
 
   void onDependenciesChanged() {
@@ -236,8 +252,8 @@ mixin QuestionCreateScreenMixin on ConsumerState<QuestionCreateScreen> {
       messageKey = 'question_save_failed';
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.tr(messageKey))),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(context.tr(messageKey))));
   }
 }

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Pushes "What to Test" release notes to TestFlight in 16 languages
+// Pushes "What to Test" release notes to TestFlight in 18 languages
 // via App Store Connect API.
 //
 // Requires: APP_STORE_API_KEY, APP_STORE_API_ISSUER env vars
@@ -24,7 +24,7 @@ if (!KEY_ID || !ISSUER_ID || !VERSION || !BUILD_NUMBER) {
 const KEY_PATH = `${homedir()}/.private_keys/AuthKey_${KEY_ID}.p8`;
 const PRIVATE_KEY = readFileSync(KEY_PATH, 'utf8');
 
-// 16 dil → TestFlight locale eşleştirmesi
+// 18 dil → TestFlight locale eşleştirmesi
 const LOCALE_MAP = {
   ar: 'ar-SA', de: 'de-DE', en: 'en-US', es: 'es-ES',
   fr: 'fr-FR', hi: 'hi',   it: 'it',    ja: 'ja',

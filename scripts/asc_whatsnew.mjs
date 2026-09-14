@@ -37,7 +37,7 @@ async function api(path, opts = {}) {
   return text ? JSON.parse(text) : {};
 }
 
-// App Store Connect locale -> "What's New" metni (16 dil).
+// App Store Connect locale -> "What's New" metni (18 dil; th/id ASC kodlari "th" ve "id").
 const NOTES = {
   'tr': `Uygulama içi rehber turu iyileştirildi — ipuçları artık tam ihtiyacın olan ekranda görünüyor
 Davet bağlantılarıyla ilgili düzeltmeler
@@ -103,6 +103,14 @@ Diverse buggfixar och prestandaförbättringar`,
 आमंत्रण लिंक से जुड़े सुधार
 खाता हटाते समय नया फ़ीडबैक चरण — जाने से पहले हमें कारण बताएं
 विभिन्न बग समाधान और प्रदर्शन सुधार`,
+  'th': `ปรับปรุงทัวร์แนะนำในแอป — เคล็ดลับจะแสดงตรงหน้าที่คุณต้องใช้พอดี
+แก้ไขปัญหาลิงก์คำเชิญ
+เพิ่มขั้นตอนความคิดเห็นตอนลบบัญชี — บอกเหตุผลก่อนไป
+แก้ไขข้อผิดพลาดและปรับปรุงประสิทธิภาพหลายจุด`,
+  'id': `Tur panduan dalam aplikasi ditingkatkan — tips kini muncul tepat di layar yang kamu butuhkan
+Perbaikan untuk tautan undangan
+Langkah masukan baru saat menghapus akun — ceritakan alasanmu sebelum pergi
+Berbagai perbaikan bug dan peningkatan performa`,
 };
 
 // App Store Connect submit için zorunlu ek diller:

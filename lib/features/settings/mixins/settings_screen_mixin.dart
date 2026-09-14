@@ -29,13 +29,9 @@ mixin SettingsScreenMixin on ConsumerState<SettingsScreen> {
     final locale = ref.read(localeProvider);
     final nav = ref.read(navigationServiceProvider);
     final result = await nav.showAppBottomSheet<List<String>>(
-      CustomBottomSheet(
-        name: 'language_picker',
-        maxHeightFactor: AppBottomSheet.tallHeightFactor,
-        builder: (_) => LanguagePickerSheet(
-          selectedLanguages: [locale.languageCode],
-          multiSelect: false,
-        ),
+      LanguagePickerSheet.sheet(
+        selectedLanguages: [locale.languageCode],
+        multiSelect: false,
       ),
     );
     if (result != null && result.isNotEmpty) {
@@ -99,10 +95,9 @@ mixin SettingsScreenMixin on ConsumerState<SettingsScreen> {
 
   Future<void> onHelp() async {
     final locale = ref.read(localeProvider).languageCode;
-    ref.read(navigationServiceProvider).push(
-      RouteNames.help,
-      extra: '${Env.legalBaseUrl}/$locale/help/',
-    );
+    ref
+        .read(navigationServiceProvider)
+        .push(RouteNames.help, extra: '${Env.legalBaseUrl}/$locale/help/');
   }
 
   Future<void> onLogout() async {
@@ -122,7 +117,9 @@ mixin SettingsScreenMixin on ConsumerState<SettingsScreen> {
   }
 
   Future<void> onDeleteAccount() async {
-    AnalyticsManager.instance.logEvent(AnalyticsEvents.settingsDeleteAccountStart);
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.settingsDeleteAccountStart,
+    );
     final nav = ref.read(navigationServiceProvider);
     final userNotifier = ref.read(userProvider.notifier);
     final authNotifier = ref.read(authProvider.notifier);
@@ -162,8 +159,9 @@ mixin SettingsScreenMixin on ConsumerState<SettingsScreen> {
         // Kullanici silerken profili gercekten gorunmez miydi? Kontrol
         // listesinin etkisi ancak bu ayrimla olculebilir.
         if (user != null)
-          AnalyticsEvents.paramMissingGates:
-              missingVisibilityGates(user).length,
+          AnalyticsEvents.paramMissingGates: missingVisibilityGates(
+            user,
+          ).length,
       },
     );
     final appVersion = await ref.read(appInfoManagerProvider).version;

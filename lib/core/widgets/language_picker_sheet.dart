@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 
@@ -13,6 +14,21 @@ class LanguagePickerSheet extends StatefulWidget {
     required this.selectedLanguages,
     this.multiSelect = true,
   });
+
+  /// Tek acilis yolu: `nav.showAppBottomSheet<List<String>>(LanguagePickerSheet.sheet(...))`.
+  /// 18 cip kucuk ekranda tavani astigi icin yukseklik faktoru burada sabitlenir;
+  /// cagri yerleri (ayarlar, giris, soru olusturma, kolay mod) bunu bilmek zorunda kalmaz.
+  static CustomBottomSheet sheet({
+    required List<String> selectedLanguages,
+    bool multiSelect = true,
+  }) => CustomBottomSheet(
+    name: 'language_picker',
+    maxHeightFactor: AppBottomSheet.tallHeightFactor,
+    builder: (_) => LanguagePickerSheet(
+      selectedLanguages: selectedLanguages,
+      multiSelect: multiSelect,
+    ),
+  );
 
   @override
   State<LanguagePickerSheet> createState() => _LanguagePickerSheetState();

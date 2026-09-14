@@ -30,9 +30,12 @@ mixin LoginScreenMixin
     defaultValue: 'Test1234!',
   );
 
-  final emailCtrl = TextEditingController(text: kDebugMode ? _debugEmail : null);
-  final passwordCtrl =
-      TextEditingController(text: kDebugMode ? _debugPassword : null);
+  final emailCtrl = TextEditingController(
+    text: kDebugMode ? _debugEmail : null,
+  );
+  final passwordCtrl = TextEditingController(
+    text: kDebugMode ? _debugPassword : null,
+  );
   bool obscure = true;
   String? loginError;
   String appVersion = '';
@@ -68,13 +71,9 @@ mixin LoginScreenMixin
     final result = await ref
         .read(navigationServiceProvider)
         .showAppBottomSheet<List<String>>(
-          CustomBottomSheet(
-            name: 'language_picker',
-            maxHeightFactor: AppBottomSheet.tallHeightFactor,
-            builder: (_) => LanguagePickerSheet(
-              selectedLanguages: [currentLocale],
-              multiSelect: false,
-            ),
+          LanguagePickerSheet.sheet(
+            selectedLanguages: [currentLocale],
+            multiSelect: false,
           ),
         );
     if (result != null && result.isNotEmpty) {
@@ -83,20 +82,20 @@ mixin LoginScreenMixin
   }
 
   Future<void> login() => withLoading(() async {
-        setState(() => loginError = null);
-        if (!validateForm()) return;
-        final result = await ref
-            .read(authProvider.notifier)
-            .login(email: emailCtrl.text.trim(), password: passwordCtrl.text);
-        if (!mounted) return;
-        result.when(
-          success: (_) {},
-          failure: (f) {
-            final errorCode = errorCodeOf(f) ?? 'UNKNOWN';
-            setState(() => loginError = context.l10n.errorMessage(errorCode));
-          },
-        );
-      });
+    setState(() => loginError = null);
+    if (!validateForm()) return;
+    final result = await ref
+        .read(authProvider.notifier)
+        .login(email: emailCtrl.text.trim(), password: passwordCtrl.text);
+    if (!mounted) return;
+    result.when(
+      success: (_) {},
+      failure: (f) {
+        final errorCode = errorCodeOf(f) ?? 'UNKNOWN';
+        setState(() => loginError = context.l10n.errorMessage(errorCode));
+      },
+    );
+  });
 
   @override
   void onSocialAuthError(String errorCode) {

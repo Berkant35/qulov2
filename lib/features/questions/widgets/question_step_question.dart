@@ -6,13 +6,14 @@ import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_icon.dart';
 import 'package:qulo_v2/core/widgets/app_text_field.dart';
-import 'package:qulo_v2/core/widgets/language_picker_sheet.dart';
 
 class QuestionStepQuestion extends StatelessWidget {
   final TextEditingController questionTextController;
   final String selectedLocale;
   final String? selectedCategory;
-  final ValueChanged<String> onLocaleChanged;
+
+  /// Dil cipine dokunma; sheet'i mixin acar (widget navigasyon yapmaz).
+  final VoidCallback onLanguageTap;
   final ValueChanged<String?> onCategoryChanged;
 
   /// Soru metni sunucunun alt sinirindan kisa — alanin altinda uyari.
@@ -23,7 +24,7 @@ class QuestionStepQuestion extends StatelessWidget {
     required this.questionTextController,
     required this.selectedLocale,
     required this.selectedCategory,
-    required this.onLocaleChanged,
+    required this.onLanguageTap,
     required this.onCategoryChanged,
     required this.showTooShort,
   });
@@ -52,7 +53,11 @@ class QuestionStepQuestion extends StatelessWidget {
             ),
             child: Column(
               children: [
-                AppIcon(QIcons.wand, size: 28, color: context.appColors.primary),
+                AppIcon(
+                  QIcons.wand,
+                  size: 28,
+                  color: context.appColors.primary,
+                ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
                   context.tr('question_create_motto'),
@@ -93,8 +98,11 @@ class QuestionStepQuestion extends StatelessWidget {
             maxLength: 500,
             errorText: showTooShort
                 ? context
-                    .tr('question_min_chars')
-                    .replaceAll('{count}', '${AppConstants.minQuestionTextLength}')
+                      .tr('question_min_chars')
+                      .replaceAll(
+                        '{count}',
+                        '${AppConstants.minQuestionTextLength}',
+                      )
                 : null,
             textCapitalization: TextCapitalization.sentences,
             textInputAction: TextInputAction.done,
@@ -117,18 +125,7 @@ class QuestionStepQuestion extends StatelessWidget {
                   style: theme.textTheme.bodyMedium,
                 ),
                 label: Text(context.tr('locale_$selectedLocale')),
-                onPressed: () async {
-                  final result = await showModalBottomSheet<List<String>>(
-                    context: context,
-                    builder: (_) => LanguagePickerSheet(
-                      selectedLanguages: [selectedLocale],
-                      multiSelect: false,
-                    ),
-                  );
-                  if (result != null && result.isNotEmpty) {
-                    onLocaleChanged(result.first);
-                  }
-                },
+                onPressed: onLanguageTap,
                 side: BorderSide(color: context.appColors.primary),
               ),
             ],
@@ -157,7 +154,9 @@ class QuestionStepQuestion extends StatelessWidget {
                 selectedColor: context.appColors.primarySurface,
                 checkmarkColor: context.appColors.primary,
                 side: BorderSide(
-                  color: isSelected ? context.appColors.primary : context.appColors.border,
+                  color: isSelected
+                      ? context.appColors.primary
+                      : context.appColors.border,
                 ),
               );
             }).toList(),

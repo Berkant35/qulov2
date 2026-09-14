@@ -80,7 +80,7 @@ class _QuestionCreateScreenState extends ConsumerState<QuestionCreateScreen>
                   questionTextController: questionTextController,
                   selectedLocale: selectedLocale,
                   selectedCategory: selectedCategory,
-                  onLocaleChanged: (v) => setState(() => selectedLocale = v),
+                  onLanguageTap: onLanguageChipPressed,
                   onCategoryChanged: (v) =>
                       setState(() => selectedCategory = v),
                   showTooShort: questionTooShort,

@@ -29,7 +29,7 @@ envanteri: root `CLAUDE.md` → "Test Disiplini" + `tasks/test-cases.md`.
   Gerçek ağ/prefs kullanma; `SharedPreferences.setMockInitialValues` kullan.
 - **Model testi:** `fromJson` eksik/null alanlarla çökmemeli; computed getter'ların
   (örn. `setupComplete`) HER koşulu ayrı test edilir.
-- **i18n:** yeni locale key eklenince 16 dile de eklenir —
+- **i18n:** yeni locale key eklenince 18 dile de eklenir —
   `test/l10n/translation_parity_test.dart` key seti, boş çeviri, placeholder ve
   snake_case kontrolü yapar. Sadece `tr`+`en` yazıp geçme.
 - **Widget testi:** sadece kritik akışlar (paywall, soru çözme, setup gate, boş discover).
