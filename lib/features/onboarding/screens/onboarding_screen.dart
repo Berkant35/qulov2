@@ -68,7 +68,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                                 .textTheme
                                 .bodyMedium
                                 ?.copyWith(
-                                  color: Colors.white.withValues(alpha: 0.5),
+                                  color: AppColors.inkOnDark
+                                      .withValues(alpha: 0.5),
                                 ),
                           ),
                         ),

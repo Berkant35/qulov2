@@ -59,7 +59,7 @@ class OnboardingBottomBar extends StatelessWidget {
                         ? context.tr('onboarding_v2_start')
                         : context.tr('onboarding_v2_next'),
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.onPrimary,
                           fontWeight: FontWeight.w600,
                         ),
                   ),

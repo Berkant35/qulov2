@@ -83,11 +83,11 @@ class _InAppBannerState extends State<InAppBanner>
             decoration: BoxDecoration(
               color: context.appColors.surfaceElevated,
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-              boxShadow: const [
+              boxShadow: [
                 BoxShadow(
-                  color: Colors.black26,
+                  color: AppColors.scrimBase.withValues(alpha: 0.26),
                   blurRadius: 8,
-                  offset: Offset(0, 2),
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),

@@ -132,7 +132,7 @@ class _BadgesRow extends StatelessWidget {
       badges.add(_Badge(
         icon: '\ud83c\udfc3',
         label: context.tr('question_fled'),
-        color: Colors.grey,
+        color: context.appColors.textSecondary,
       ));
     }
 
@@ -204,7 +204,7 @@ class _OpenButton extends StatelessWidget {
         label: Text(AppLocalizations.of(context).get('chat_open_question')),
         style: ElevatedButton.styleFrom(
           backgroundColor: context.appColors.primary,
-          foregroundColor: Colors.white,
+          foregroundColor: Theme.of(context).colorScheme.onPrimary,
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
@@ -359,7 +359,7 @@ class _AbandonedOptions extends StatelessWidget {
               vertical: AppSpacing.sm,
             ),
             decoration: BoxDecoration(
-              color: Colors.grey.withValues(alpha: 0.12),
+              color: context.appColors.textSecondary.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
             ),
             child: Row(
@@ -369,13 +369,13 @@ class _AbandonedOptions extends StatelessWidget {
                   height: 24,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: Colors.grey.withValues(alpha: 0.2),
+                    color: context.appColors.textSecondary.withValues(alpha: 0.2),
                     shape: BoxShape.circle,
                   ),
                   child: Text(
                     opt.$1,
                     style: theme.textTheme.labelSmall?.copyWith(
-                      color: Colors.grey,
+                      color: context.appColors.textSecondary,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -385,7 +385,7 @@ class _AbandonedOptions extends StatelessWidget {
                   child: Text(
                     opt.$2,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: Colors.grey,
+                      color: context.appColors.textSecondary,
                     ),
                   ),
                 ),

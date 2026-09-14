@@ -159,7 +159,7 @@ class AppDatePicker extends StatelessWidget {
             datePickerTheme: DatePickerThemeData(
               backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
               headerBackgroundColor: context.appColors.primaryDark,
-              headerForegroundColor: Colors.white,
+              headerForegroundColor: Theme.of(context).colorScheme.onPrimary,
             ),
           ),
           child: child!,

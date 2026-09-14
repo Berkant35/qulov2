@@ -38,7 +38,7 @@ class LockedFeatureButton extends ConsumerWidget {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.2),
+                      color: AppColors.scrimLight,
                       blurRadius: 4,
                     ),
                   ],

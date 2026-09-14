@@ -95,7 +95,7 @@ class MatchCard extends StatelessWidget with MatchCardMixin {
                 child: Text(
                   match.unreadCount > 99 ? '99+' : context.fmt.integer(match.unreadCount),
                   style: theme.textTheme.labelSmall?.copyWith(
-                    color: Colors.white,
+                    color: theme.colorScheme.onPrimary,
                     fontWeight: FontWeight.w700,
                     fontSize: 11,
                   ),

@@ -115,7 +115,7 @@ class _ProfilePhotoGalleryState extends State<ProfilePhotoGallery> {
                   end: Alignment.bottomCenter,
                   colors: [
                     Colors.transparent,
-                    Colors.black.withValues(alpha: 0.6),
+                    AppColors.scrimBase.withValues(alpha: 0.6),
                   ],
                 ),
               ),
@@ -139,8 +139,8 @@ class _ProfilePhotoGalleryState extends State<ProfilePhotoGallery> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(2),
                         color: i == _current
-                            ? Colors.white
-                            : Colors.white.withValues(alpha: 0.4),
+                            ? AppColors.onScrim
+                            : AppColors.onScrim.withValues(alpha: 0.4),
                       ),
                     ),
                   );
@@ -157,10 +157,10 @@ class _ProfilePhotoGalleryState extends State<ProfilePhotoGallery> {
               child: Container(
                 padding: const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.5),
+                  color: AppColors.scrimDark,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.close, color: Colors.white, size: 20),
+                child: const Icon(Icons.close, color: AppColors.onScrim, size: 20),
               ),
             ),
           ),
@@ -176,13 +176,13 @@ class _ProfilePhotoGalleryState extends State<ProfilePhotoGallery> {
                   vertical: AppSpacing.xs,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.5),
+                  color: AppColors.scrimDark,
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
                 child: Text(
                   '${_current + 1}/${_photos.length}',
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: AppColors.onScrim,
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                   ),

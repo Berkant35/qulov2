@@ -72,7 +72,7 @@ class PowerGridItem extends StatelessWidget {
           Text(
             label,
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: Colors.white.withAlpha(179),
+                  color: AppColors.inkOnDark.withAlpha(179),
                 ),
             textAlign: TextAlign.center,
           ),

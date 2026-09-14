@@ -69,7 +69,7 @@ class PowerIcon extends StatelessWidget {
             child: Text(
               '×$count',
               style: TextStyle(
-                color: Colors.white,
+                color: AppColors.inkOnDark,
                 fontSize: size * 0.4,
                 fontWeight: FontWeight.bold,
               ),

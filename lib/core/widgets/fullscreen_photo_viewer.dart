@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 
 class FullscreenPhotoViewer extends StatelessWidget {
@@ -17,12 +18,12 @@ class FullscreenPhotoViewer extends StatelessWidget {
     final tag = heroTag ?? imageUrl;
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.scrimBase,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: AppColors.onScrim),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -40,10 +41,10 @@ class FullscreenPhotoViewer extends StatelessWidget {
               placeholder: (context, url) => const Center(
                 child: AppLoadingWidget.small(),
               ),
-              errorWidget: (context, url, error) => const Center(
+              errorWidget: (context, url, error) => Center(
                 child: Icon(
                   Icons.broken_image_outlined,
-                  color: Colors.white54,
+                  color: AppColors.onScrim.withValues(alpha: 0.54),
                   size: 48,
                 ),
               ),

@@ -110,7 +110,7 @@ class _AnswerFeedbackOverlayState extends State<AnswerFeedbackOverlay>
         return Opacity(
           opacity: _opacityAnimation.value,
           child: Container(
-            color: Colors.black54,
+            color: AppColors.scrimBase.withValues(alpha: 0.54),
             child: Center(
               child: Transform.scale(
                 scale: _scaleAnimation.value,
@@ -131,13 +131,13 @@ class _AnswerFeedbackOverlayState extends State<AnswerFeedbackOverlay>
                           ),
                         ],
                       ),
-                      child: Icon(icon, color: Colors.white, size: 52),
+                      child: Icon(icon, color: AppColors.inkOnDark, size: 52),
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     Text(
                       label,
                       style: theme.textTheme.headlineSmall?.copyWith(
-                        color: Colors.white,
+                        color: AppColors.onScrim,
                         fontWeight: FontWeight.w700,
                       ),
                     ),

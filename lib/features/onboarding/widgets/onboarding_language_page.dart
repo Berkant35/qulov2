@@ -47,7 +47,7 @@ class OnboardingLanguagePage extends StatelessWidget {
                 child: Text(
                   context.tr('onboarding_v2_page5_title'),
                   style: textTheme.headlineSmall?.copyWith(
-                    color: Colors.white,
+                    color: AppColors.inkOnDark,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -83,7 +83,7 @@ class OnboardingLanguagePage extends StatelessWidget {
                 ),
                 checkmarkColor: colors.primary,
                 labelStyle: textTheme.bodyMedium?.copyWith(
-                  color: isSelected ? colors.primary : Colors.white,
+                  color: isSelected ? colors.primary : AppColors.inkOnDark,
                 ),
               );
             }).toList(),

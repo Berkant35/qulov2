@@ -25,7 +25,7 @@ class QuestionsFab extends ConsumerWidget {
           : context.appColors.primaryDark,
       onPressed: onPressed,
       child: isAtLimit
-          ? AppIcon(QIcons.lock, size: 22, color: Colors.white)
+          ? AppIcon(QIcons.lock, size: 22, color: AppColors.inkOnDark)
           : const Icon(Icons.add),
     );
   }

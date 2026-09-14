@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:qulo_v2/core/services/video_manager.dart';
+import 'package:qulo_v2/core/theme/app_colors.dart';
 
 /// Tam ekran arka plan video widget'ı.
 ///
@@ -96,11 +97,11 @@ class _BackgroundVideoState extends State<BackgroundVideo> {
               ),
             )
           else
-            const ColoredBox(color: Colors.black),
+            const ColoredBox(color: AppColors.scrimBase),
 
           // Koyu overlay — form okunurluğu için
           ColoredBox(
-            color: Colors.black.withValues(alpha: widget.overlayOpacity),
+            color: AppColors.scrimBase.withValues(alpha: widget.overlayOpacity),
           ),
         ],
       ),

@@ -95,13 +95,13 @@ class _VoiceMessageWidgetState extends ConsumerState<VoiceMessageWidget> {
                               overlayRadius: 12,
                             ),
                             activeTrackColor: widget.isMine
-                                ? Colors.white
+                                ? Theme.of(context).colorScheme.onPrimary
                                 : context.appColors.primary,
                             inactiveTrackColor: widget.isMine
-                                ? Colors.white38
+                                ? Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.38)
                                 : context.appColors.textHint,
                             thumbColor: widget.isMine
-                                ? Colors.white
+                                ? Theme.of(context).colorScheme.onPrimary
                                 : context.appColors.primary,
                           ),
                           child: Slider(
@@ -123,7 +123,7 @@ class _VoiceMessageWidgetState extends ConsumerState<VoiceMessageWidget> {
                         style: TextStyle(
                           fontSize: 11,
                           color: widget.isMine
-                              ? Colors.white70
+                              ? Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.7)
                               : context.appColors.textSecondary,
                         ),
                       ),
@@ -173,12 +173,12 @@ class _PlayPauseButton extends StatelessWidget {
         height: 36,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: isMine ? Colors.white24 : context.appColors.primarySurface,
+          color: isMine ? Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.24) : context.appColors.primarySurface,
         ),
         child: Icon(
           isPlaying ? Icons.pause : Icons.play_arrow,
           size: 20,
-          color: isMine ? Colors.white : context.appColors.primary,
+          color: isMine ? Theme.of(context).colorScheme.onPrimary : context.appColors.primary,
         ),
       ),
     );

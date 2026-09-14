@@ -117,7 +117,7 @@ class ChatQuestionRescue extends StatelessWidget {
                     onPressed: onTap,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: context.appColors.warning,
-                      foregroundColor: Colors.black,
+                      foregroundColor: AppColors.inkOnBright,
                       shape: RoundedRectangleBorder(
                         borderRadius:
                             BorderRadius.circular(AppSpacing.radiusMd),
@@ -136,7 +136,7 @@ class ChatQuestionRescue extends StatelessWidget {
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                   decoration: BoxDecoration(
-                                    color: Colors.black.withValues(alpha: 0.15),
+                                    color: AppColors.scrimBase.withValues(alpha: 0.15),
                                     borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
                                   ),
                                   child: Text('×$unblockCount', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
@@ -145,7 +145,7 @@ class ChatQuestionRescue extends StatelessWidget {
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                   decoration: BoxDecoration(
-                                    color: Colors.black.withValues(alpha: 0.15),
+                                    color: AppColors.scrimBase.withValues(alpha: 0.15),
                                     borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
                                   ),
                                   child: Row(
@@ -173,7 +173,7 @@ class ChatQuestionRescue extends StatelessWidget {
                     onPressed: onTap,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: context.appColors.info,
-                      foregroundColor: Colors.white,
+                      foregroundColor: AppColors.inkOnDark,
                       shape: RoundedRectangleBorder(
                         borderRadius:
                             BorderRadius.circular(AppSpacing.radiusMd),
@@ -192,7 +192,7 @@ class ChatQuestionRescue extends StatelessWidget {
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withValues(alpha: 0.2),
+                                    color: AppColors.inkOnDark.withValues(alpha: 0.2),
                                     borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
                                   ),
                                   child: Text('×$skipCount', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
@@ -201,7 +201,7 @@ class ChatQuestionRescue extends StatelessWidget {
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withValues(alpha: 0.2),
+                                    color: AppColors.inkOnDark.withValues(alpha: 0.2),
                                     borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
                                   ),
                                   child: Row(

@@ -73,7 +73,7 @@ class QuestionStepAnswers extends StatelessWidget {
                       ),
                       child: isCorrect
                           ? const Icon(Icons.check,
-                              size: 14, color: Colors.white)
+                              size: 14, color: AppColors.inkOnDark)
                           : null,
                     ),
                   ),

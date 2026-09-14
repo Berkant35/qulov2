@@ -131,7 +131,7 @@ class _ConvertSectionState extends ConsumerState<ConvertSection>
                   : null,
               style: FilledButton.styleFrom(
                 backgroundColor: context.appColors.secondary,
-                foregroundColor: Colors.black,
+                foregroundColor: AppColors.inkOnBright,
                 padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppSpacing.radiusMd),

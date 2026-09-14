@@ -113,12 +113,12 @@ class _ProfileCardState extends State<ProfileCard> with ProfileCardMixin {
           // Gradient overlay — IgnorePointer so it doesn't block photo taps
           IgnorePointer(
             child: Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Colors.transparent, Colors.black54],
-                  stops: [0.5, 1.0],
+                  colors: [Colors.transparent, AppColors.scrimBase.withValues(alpha: 0.54)],
+                  stops: const [0.5, 1.0],
                 ),
               ),
             ),
@@ -141,8 +141,8 @@ class _ProfileCardState extends State<ProfileCard> with ProfileCardMixin {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(2),
                         color: i == _current
-                            ? Colors.white
-                            : Colors.white.withValues(alpha: 0.4),
+                            ? AppColors.onScrim
+                            : AppColors.onScrim.withValues(alpha: 0.4),
                       ),
                     ),
                   );
@@ -167,7 +167,7 @@ class _ProfileCardState extends State<ProfileCard> with ProfileCardMixin {
                       Text(
                         '${widget.card.name ?? context.tr('unknown_user')}, ${widget.card.age ?? ''}',
                         style: theme.textTheme.headlineSmall?.copyWith(
-                          color: Colors.white,
+                          color: AppColors.onScrim,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -181,11 +181,11 @@ class _ProfileCardState extends State<ProfileCard> with ProfileCardMixin {
                   if (locationText != null)
                     Row(
                       children: [
-                        AppIcon(QIcons.mapPin, color: Colors.white70, size: 16),
+                        AppIcon(QIcons.mapPin, color: AppColors.onScrim.withValues(alpha: 0.7), size: 16),
                         const SizedBox(width: AppSpacing.xs),
                         Text(
                           locationText,
-                          style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white70),
+                          style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.onScrim.withValues(alpha: 0.7)),
                         ),
                       ],
                     ),
@@ -234,7 +234,7 @@ class _QuestionInfoSection extends StatelessWidget {
         ),
         child: Text(
           context.tr('questions_count').replaceAll('{count}', '${card.questionCount}'),
-          style: theme.textTheme.labelSmall?.copyWith(color: Colors.white),
+          style: theme.textTheme.labelSmall?.copyWith(color: AppColors.onScrim),
         ),
       );
     }
@@ -254,7 +254,7 @@ class _QuestionInfoSection extends StatelessWidget {
               ),
               child: Text(
                 context.tr('discover_questions_count').replaceAll('{count}', '${info.count}'),
-                style: theme.textTheme.labelSmall?.copyWith(color: Colors.white),
+                style: theme.textTheme.labelSmall?.copyWith(color: AppColors.onScrim),
               ),
             ),
             const SizedBox(width: AppSpacing.sm),
@@ -276,14 +276,14 @@ class _QuestionInfoSection extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.15),
+                      color: AppColors.onScrim.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.25)),
+                      border: Border.all(color: AppColors.onScrim.withValues(alpha: 0.25)),
                     ),
                     child: Text(
                       context.tr('question_category_$category'),
                       style: theme.textTheme.labelSmall?.copyWith(
-                        color: Colors.white,
+                        color: AppColors.onScrim,
                         fontSize: 10,
                       ),
                     ),
@@ -301,14 +301,14 @@ class _QuestionInfoSection extends StatelessWidget {
             children: info.languages.map((lang) => Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.15),
+                color: AppColors.onScrim.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.25)),
+                border: Border.all(color: AppColors.onScrim.withValues(alpha: 0.25)),
               ),
               child: Text(
                 '${AppConstants.localeFlagEmojis[lang] ?? ''} ${lang.toUpperCase()}',
                 style: theme.textTheme.labelSmall?.copyWith(
-                  color: Colors.white,
+                  color: AppColors.onScrim,
                   fontSize: 10,
                 ),
               ),

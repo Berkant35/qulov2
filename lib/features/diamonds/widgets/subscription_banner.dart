@@ -89,7 +89,7 @@ class _UpgradeBanner extends StatelessWidget {
                   Text(
                     context.tr('premium_cta'),
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: Colors.white,
+                      color: theme.colorScheme.onPrimary,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -97,7 +97,7 @@ class _UpgradeBanner extends StatelessWidget {
                   Text(
                     context.tr('premium_benefits'),
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: Colors.white.withValues(alpha: 0.6),
+                      color: theme.colorScheme.onPrimary.withValues(alpha: 0.6),
                       fontSize: 11,
                     ),
                     maxLines: 1,
@@ -115,7 +115,7 @@ class _UpgradeBanner extends StatelessWidget {
               ),
               child: QIcon(
                 QIcons.icChevronRight,
-                color: Colors.white.withValues(alpha: 0.8),
+                color: theme.colorScheme.onPrimary.withValues(alpha: 0.8),
                 size: 16,
               ),
             ),

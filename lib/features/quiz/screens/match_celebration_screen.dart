@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/features/quiz/models/badge_config.dart';
 import 'package:qulo_v2/features/quiz/widgets/celebration_badge_section.dart';
@@ -122,7 +123,7 @@ class _MatchCelebrationScreenState extends State<MatchCelebrationScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black.withValues(alpha: 0.95),
+      backgroundColor: AppColors.scrimBase.withValues(alpha: 0.95),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(

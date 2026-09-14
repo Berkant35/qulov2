@@ -36,7 +36,7 @@ class NotificationBellButton extends StatelessWidget {
               constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
               child: Text(
                 unreadCount > 99 ? '99+' : '$unreadCount',
-                style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                style: const TextStyle(color: AppColors.inkOnDark, fontSize: 10, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
             ),

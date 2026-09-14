@@ -55,8 +55,8 @@ class _PrimaryButton extends StatelessWidget {
       child: Text(
         label,
         textAlign: TextAlign.center,
-        style: const TextStyle(
-          color: Colors.white,
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onPrimary,
           fontSize: 15,
           fontWeight: FontWeight.w700,
         ),

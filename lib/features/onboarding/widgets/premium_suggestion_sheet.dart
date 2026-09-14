@@ -40,7 +40,7 @@ class PremiumSuggestionSheet extends ConsumerWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.white.withAlpha(40),
+                color: AppColors.inkOnDark.withAlpha(40),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
               ),
             ),
@@ -61,7 +61,7 @@ class PremiumSuggestionSheet extends ConsumerWidget {
                   height: 28,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white.withAlpha(15),
+                    color: AppColors.inkOnDark.withAlpha(15),
                   ),
                   child: const Icon(Icons.close, size: 16, color: AppColors.textHint),
                 ),
@@ -77,7 +77,7 @@ class PremiumSuggestionSheet extends ConsumerWidget {
             Text(
               context.tr('paywall_onboarding_title'),
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    color: Colors.white,
+                    color: AppColors.inkOnDark,
                     fontWeight: FontWeight.bold,
                   ),
               textAlign: TextAlign.center,

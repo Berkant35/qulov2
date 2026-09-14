@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/features/onboarding/widgets/power_grid_item.dart';
 
@@ -51,7 +52,7 @@ class _OnboardingPowersPageState extends State<OnboardingPowersPage>
           Text(
             context.tr('onboarding_v2_page3_title'),
             style: textTheme.headlineSmall?.copyWith(
-              color: Colors.white,
+              color: AppColors.inkOnDark,
               fontWeight: FontWeight.bold,
             ),
             textAlign: TextAlign.center,
@@ -81,7 +82,7 @@ class _OnboardingPowersPageState extends State<OnboardingPowersPage>
           Text(
             context.tr('onboarding_v2_page3_desc'),
             style: textTheme.bodyLarge?.copyWith(
-              color: Colors.white.withAlpha(179),
+              color: AppColors.inkOnDark.withAlpha(179),
             ),
             textAlign: TextAlign.center,
           ),

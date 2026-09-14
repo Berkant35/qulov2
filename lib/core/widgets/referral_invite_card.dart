@@ -108,7 +108,7 @@ class _CompactCard extends StatelessWidget {
                   Text(
                     context.tr('referral_compact_cta'),
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: Colors.white,
+                      color: theme.colorScheme.onPrimary,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -116,7 +116,7 @@ class _CompactCard extends StatelessWidget {
                   Text(
                     context.tr('referral_compact_subtitle'),
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: Colors.white.withValues(alpha: 0.6),
+                      color: theme.colorScheme.onPrimary.withValues(alpha: 0.6),
                       fontSize: 11,
                     ),
                   ),
@@ -133,7 +133,7 @@ class _CompactCard extends StatelessWidget {
               ),
               child: QIcon(
                 QIcons.icChevronRight,
-                color: Colors.white.withValues(alpha: 0.8),
+                color: theme.colorScheme.onPrimary.withValues(alpha: 0.8),
                 size: 16,
               ),
             ),
@@ -212,7 +212,7 @@ class _FullCard extends StatelessWidget {
               Text(
                 context.tr('referral_title'),
                 style: theme.textTheme.titleSmall?.copyWith(
-                  color: Colors.white,
+                  color: theme.colorScheme.onPrimary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -222,7 +222,7 @@ class _FullCard extends StatelessWidget {
           Text(
             context.tr('referral_description'),
             style: theme.textTheme.bodySmall?.copyWith(
-              color: Colors.white.withValues(alpha: 0.8),
+              color: theme.colorScheme.onPrimary.withValues(alpha: 0.8),
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -236,7 +236,7 @@ class _FullCard extends StatelessWidget {
                 horizontal: AppSpacing.lg,
               ),
               decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.3),
+                color: AppColors.scrimBase.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
               ),
               child: Center(
@@ -261,9 +261,9 @@ class _FullCard extends StatelessWidget {
                     icon: const Icon(Icons.copy, size: 16),
                     label: Text(context.tr('referral_copy')),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.white,
+                      foregroundColor: theme.colorScheme.onPrimary,
                       side: BorderSide(
-                        color: Colors.white.withValues(alpha: 0.4),
+                        color: theme.colorScheme.onPrimary.withValues(alpha: 0.4),
                       ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
@@ -279,7 +279,7 @@ class _FullCard extends StatelessWidget {
                     label: Text(context.tr('referral_share')),
                     style: FilledButton.styleFrom(
                       backgroundColor: context.appColors.primary,
-                      foregroundColor: Colors.white,
+                      foregroundColor: theme.colorScheme.onPrimary,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                       ),
@@ -299,7 +299,7 @@ class _FullCard extends StatelessWidget {
               Text(
                 context.tr('referral_progress'),
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: Colors.white.withValues(alpha: 0.7),
+                  color: theme.colorScheme.onPrimary.withValues(alpha: 0.7),
                 ),
               ),
               Text(
@@ -317,7 +317,7 @@ class _FullCard extends StatelessWidget {
             child: LinearProgressIndicator(
               value: progress,
               minHeight: 6,
-              backgroundColor: Colors.white.withValues(alpha: 0.15),
+              backgroundColor: theme.colorScheme.onPrimary.withValues(alpha: 0.15),
               valueColor: AlwaysStoppedAnimation<Color>(context.appColors.primary),
             ),
           ),
@@ -327,7 +327,7 @@ class _FullCard extends StatelessWidget {
           // Divider
           Container(
             height: 1,
-            color: Colors.white.withValues(alpha: 0.15),
+            color: theme.colorScheme.onPrimary.withValues(alpha: 0.15),
           ),
           const SizedBox(height: AppSpacing.lg),
 
@@ -369,7 +369,7 @@ class _ReferredBySection extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.08),
+        color: theme.colorScheme.onPrimary.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
       ),
       child: Column(
@@ -387,7 +387,7 @@ class _ReferredBySection extends StatelessWidget {
                 child: Text(
                   '${context.tr('referral_invited_by')}$referredBy',
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: Colors.white,
+                    color: theme.colorScheme.onPrimary,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -402,7 +402,7 @@ class _ReferredBySection extends StatelessWidget {
             style: theme.textTheme.bodySmall?.copyWith(
               color: isCompleted
                   ? context.appColors.success
-                  : Colors.amber.shade300,
+                  : context.appColors.warning,
             ),
           ),
         ],
@@ -457,7 +457,7 @@ class _ApplyCodeSectionState extends State<_ApplyCodeSection> {
         Text(
           context.tr('referral_enter_code'),
           style: theme.textTheme.bodySmall?.copyWith(
-            color: Colors.white.withValues(alpha: 0.8),
+            color: theme.colorScheme.onPrimary.withValues(alpha: 0.8),
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
@@ -469,22 +469,22 @@ class _ApplyCodeSectionState extends State<_ApplyCodeSection> {
                 textCapitalization: TextCapitalization.characters,
                 maxLength: 10,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: Colors.white,
+                  color: theme.colorScheme.onPrimary,
                   letterSpacing: 2,
                 ),
                 decoration: InputDecoration(
                   hintText: context.tr('referral_code_hint'),
                   counterText: "",
                   hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.4),
+                    color: theme.colorScheme.onPrimary.withValues(alpha: 0.4),
                   ),
                   prefixIcon: Icon(
                     Icons.card_giftcard_outlined,
-                    color: Colors.white.withValues(alpha: 0.5),
+                    color: theme.colorScheme.onPrimary.withValues(alpha: 0.5),
                     size: 20,
                   ),
                   filled: true,
-                  fillColor: Colors.black.withValues(alpha: 0.3),
+                  fillColor: AppColors.scrimBase.withValues(alpha: 0.3),
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.md,
                     vertical: AppSpacing.sm,
@@ -512,7 +512,7 @@ class _ApplyCodeSectionState extends State<_ApplyCodeSection> {
                       },
                 style: FilledButton.styleFrom(
                   backgroundColor: context.appColors.primary,
-                  foregroundColor: Colors.white,
+                  foregroundColor: theme.colorScheme.onPrimary,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                   ),

@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/constants/q_icons.dart';
+import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/core/widgets/compact_diamond_balance.dart';
 import 'package:qulo_v2/core/widgets/power_icon.dart';
@@ -111,7 +112,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
                       child: BackdropFilter(
                         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                         child: Container(
-                          color: Colors.black.withValues(alpha: 0.3),
+                          color: AppColors.scrimBase.withValues(alpha: 0.3),
                         ),
                       ),
                     ),

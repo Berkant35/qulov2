@@ -213,7 +213,7 @@ class _ConfirmButton extends StatelessWidget {
               : Text(
                   context.tr('quiz_confirm_answer'),
                   style: theme.textTheme.titleMedium?.copyWith(
-                    color: Colors.white,
+                    color: theme.colorScheme.onPrimary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

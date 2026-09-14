@@ -60,7 +60,7 @@ class OnboardingDiamondsPage extends StatelessWidget {
               const SizedBox(width: AppSpacing.md),
               Icon(
                 Icons.arrow_forward,
-                color: Colors.white.withAlpha(128),
+                color: AppColors.inkOnDark.withAlpha(128),
                 size: 20,
               ),
               const SizedBox(width: AppSpacing.md),
@@ -102,7 +102,7 @@ class OnboardingDiamondsPage extends StatelessWidget {
           Text(
             context.tr('onboarding_v2_page4_desc'),
             style: textTheme.bodyLarge?.copyWith(
-              color: Colors.white.withAlpha(179),
+              color: AppColors.inkOnDark.withAlpha(179),
             ),
             textAlign: TextAlign.center,
           ),

@@ -168,7 +168,7 @@ class _TableRow extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: isEven
-            ? Colors.white.withAlpha(5)
+            ? AppColors.inkOnDark.withAlpha(5)
             : Colors.transparent,
         borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
       ),
@@ -289,7 +289,7 @@ class _CellContent extends StatelessWidget {
           ),
           child: const Icon(
             Icons.check,
-            color: Colors.white,
+            color: AppColors.inkOnDark,
             size: 13,
           ),
         );

@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/theme/app_colors.dart';
 
 /// Renders a [ui.Image] with horizontal-slice displacement and RGB channel
 /// separation.  [progress] drives the animation:
@@ -62,13 +63,15 @@ class GlitchPainter extends CustomPainter {
       canvas.clipRect(Rect.fromLTWH(0, dstTop, size.width, dstH));
 
       // Red channel
+      // Theme exception: Colors.red/green/blue below are RGB channel-split
+      // masks for BlendMode.modulate (an effect value), not UI theme colors.
       canvas.drawImageRect(
         image,
         srcRect,
         Rect.fromLTWH(dx - rgbOffset, dstTop, imgW * scaleX, dstH),
         Paint()
           ..colorFilter = const ColorFilter.mode(Colors.red, BlendMode.modulate)
-          ..color = Colors.white.withValues(alpha: flickerAlpha * 0.5),
+          ..color = AppColors.inkOnDark.withValues(alpha: flickerAlpha * 0.5),
       );
 
       // Green channel (center)
@@ -79,7 +82,7 @@ class GlitchPainter extends CustomPainter {
         Paint()
           ..colorFilter =
               const ColorFilter.mode(Colors.green, BlendMode.modulate)
-          ..color = Colors.white.withValues(alpha: flickerAlpha * 0.5),
+          ..color = AppColors.inkOnDark.withValues(alpha: flickerAlpha * 0.5),
       );
 
       // Blue channel (shifted right)
@@ -90,7 +93,7 @@ class GlitchPainter extends CustomPainter {
         Paint()
           ..colorFilter =
               const ColorFilter.mode(Colors.blue, BlendMode.modulate)
-          ..color = Colors.white.withValues(alpha: flickerAlpha * 0.5),
+          ..color = AppColors.inkOnDark.withValues(alpha: flickerAlpha * 0.5),
       );
 
       canvas.restore();
@@ -99,7 +102,7 @@ class GlitchPainter extends CustomPainter {
     // Scan lines overlay during chaos
     if (chaos > 0.05) {
       final scanPaint = Paint()
-        ..color = Colors.white.withValues(alpha: 0.08 * chaos)
+        ..color = AppColors.inkOnDark.withValues(alpha: 0.08 * chaos)
         ..strokeWidth = 1;
       for (var y = 0.0; y < size.height; y += 3) {
         canvas.drawLine(Offset(0, y), Offset(size.width, y), scanPaint);
@@ -116,7 +119,7 @@ class GlitchPainter extends CustomPainter {
         Rect.fromLTWH(0, 0, size.width, size.height),
         Paint()
           ..colorFilter = ColorFilter.mode(tintColor, BlendMode.srcIn)
-          ..color = Colors.white.withValues(alpha: cleanAlpha),
+          ..color = AppColors.inkOnDark.withValues(alpha: cleanAlpha),
       );
     }
   }

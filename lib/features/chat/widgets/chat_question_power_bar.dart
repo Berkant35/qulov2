@@ -164,7 +164,7 @@ class _ChatPowerButton extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 9,
                               fontWeight: FontWeight.w700,
-                              color: Colors.white,
+                              color: AppColors.inkOnDark,
                             ),
                           ),
                         ),

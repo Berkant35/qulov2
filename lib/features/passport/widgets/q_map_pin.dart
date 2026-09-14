@@ -20,7 +20,7 @@ class QMapPin extends StatelessWidget {
             child: Text(
               'Q',
               style: TextStyle(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.onPrimary,
                 fontSize: size * 0.38,
                 fontWeight: FontWeight.w900,
                 letterSpacing: -1,
@@ -44,7 +44,7 @@ class _QMapPinPainter extends CustomPainter {
 
     // Shadow
     final shadowPaint = Paint()
-      ..color = Colors.black.withValues(alpha: 0.5)
+      ..color = AppColors.scrimDark
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10);
 
     final shadowPath = _buildPinPath(centerX, centerY + 3, circleRadius, h);
@@ -67,7 +67,7 @@ class _QMapPinPainter extends CustomPainter {
 
     // White circle highlight (inner)
     final highlightPaint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.15)
+      ..color = AppColors.inkOnDark.withValues(alpha: 0.15)
       ..style = PaintingStyle.fill;
     canvas.drawCircle(
       Offset(centerX - circleRadius * 0.15, centerY - circleRadius * 0.15),

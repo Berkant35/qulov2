@@ -35,7 +35,7 @@ class CelebrationButtons extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: context.appColors.primary,
-                foregroundColor: Colors.white,
+                foregroundColor: theme.colorScheme.onPrimary,
                 padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
@@ -44,7 +44,7 @@ class CelebrationButtons extends StatelessWidget {
               child: Text(
                 context.tr('quiz_send_message'),
                 style: theme.textTheme.titleMedium?.copyWith(
-                  color: Colors.white,
+                  color: theme.colorScheme.onPrimary,
                   fontWeight: FontWeight.w600,
                 ),
               ),

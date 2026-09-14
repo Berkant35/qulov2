@@ -130,7 +130,7 @@ mixin PowerShopCardMixin on ConsumerState<PowerShopCard>
                 backgroundColor: context.appColors.error,
                 action: SnackBarAction(
                   label: context.tr('purchase_get_diamonds'),
-                  textColor: Colors.white,
+                  textColor: AppColors.inkOnDark,
                   onPressed: () {
                     ref.read(navigationServiceProvider).go(RouteNames.diamonds);
                   },

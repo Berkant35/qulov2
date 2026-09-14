@@ -67,6 +67,15 @@ abstract final class AppColors {
   /// Icon/text color placed on top of a dark scrim
   static const onScrim = Color(0xFFFFFFFF);
   static const onScrimSubtle = Color(0xCCFFFFFF); // white 80%
+  /// Base for scrims/shadows that need their own alpha: `scrimBase.withValues(alpha: x)`.
+  static const scrimBase = Color(0xFF000000);
+
+  // ─── Ink on fixed accent fills (both themes) ───
+  /// Text/icons on saturated fills that stay dark in both themes (info/success
+  /// buttons, match badges). Primary fills use `colorScheme.onPrimary` instead.
+  static const inkOnDark = Color(0xFFFFFFFF);
+  /// Text/icons on bright fills (e.g. the orange warning button).
+  static const inkOnBright = Color(0xFF000000);
 
   // ─── Gradients ───
   static const purpleGradient = LinearGradient(

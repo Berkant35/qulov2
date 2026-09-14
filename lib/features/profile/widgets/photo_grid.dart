@@ -5,6 +5,7 @@ import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/widgets/app_icon.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
+import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 
 class PhotoGridFull extends StatelessWidget {
@@ -196,13 +197,13 @@ class _PhotoSlot extends StatelessWidget {
               width: 28,
               height: 28,
               decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.59),
+                color: AppColors.scrimBase.withValues(alpha: 0.59),
                 shape: BoxShape.circle,
               ),
               child: Center(
                 child: QIcon(
                   QIcons.icPencil,
-                  color: Colors.white,
+                  color: AppColors.onScrim,
                   size: 14,
                 ),
               ),

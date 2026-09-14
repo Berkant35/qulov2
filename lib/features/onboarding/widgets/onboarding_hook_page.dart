@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:qulo_v2/core/constants/app_assets.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 
 class OnboardingHookPage extends StatelessWidget {
@@ -25,7 +26,7 @@ class OnboardingHookPage extends StatelessWidget {
           Text(
             context.tr('onboarding_v2_page1_title'),
             style: textTheme.headlineSmall?.copyWith(
-              color: Colors.white,
+              color: AppColors.inkOnDark,
               fontWeight: FontWeight.bold,
             ),
             textAlign: TextAlign.center,
@@ -34,7 +35,7 @@ class OnboardingHookPage extends StatelessWidget {
           Text(
             context.tr('onboarding_v2_page1_desc'),
             style: textTheme.bodyLarge?.copyWith(
-              color: Colors.white.withAlpha(179),
+              color: AppColors.inkOnDark.withAlpha(179),
             ),
             textAlign: TextAlign.center,
           ),

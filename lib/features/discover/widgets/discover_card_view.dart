@@ -186,7 +186,7 @@ class _DiscoverCardViewState extends ConsumerState<DiscoverCardView>
                                       : context.appColors.error.withValues(alpha: 0.9),
                                   borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                                   border: Border.all(
-                                    color: Colors.white,
+                                    color: AppColors.onScrim,
                                     width: 2,
                                   ),
                                 ),
@@ -195,7 +195,7 @@ class _DiscoverCardViewState extends ConsumerState<DiscoverCardView>
                                       ? context.tr('solve_questions')
                                       : context.tr('reject'),
                                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                    color: Colors.white,
+                                    color: AppColors.inkOnDark,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),

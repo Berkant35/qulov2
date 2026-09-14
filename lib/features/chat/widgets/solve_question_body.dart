@@ -92,7 +92,7 @@ class SolveQuestionBody extends StatelessWidget {
             PowerBanner(
               icon: Icons.lightbulb_outline,
               text: hintText!,
-              color: Colors.amber,
+              color: context.appColors.warning,
             ),
           ...List.generate(options.length, (i) {
             final optionKey = _optionLabels[i];
@@ -171,7 +171,7 @@ class _SubmitButton extends StatelessWidget {
               : Text(
                   context.tr('quiz_confirm_answer'),
                   style: theme.textTheme.titleMedium?.copyWith(
-                    color: Colors.white,
+                    color: theme.colorScheme.onPrimary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

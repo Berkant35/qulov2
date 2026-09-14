@@ -189,7 +189,7 @@ class _NotifLeading extends StatelessWidget {
                   width: 2,
                 ),
               ),
-              child: Icon(meta.icon, size: 10, color: Colors.white),
+              child: Icon(meta.icon, size: 10, color: AppColors.inkOnDark),
             ),
           ),
         ],

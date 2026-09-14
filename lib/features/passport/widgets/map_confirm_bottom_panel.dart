@@ -35,7 +35,7 @@ class MapConfirmBottomPanel extends StatelessWidget {
           color: theme.colorScheme.surface,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusLg)),
           boxShadow: [
-            BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 10, offset: const Offset(0, -2)),
+            BoxShadow(color: AppColors.scrimBase.withValues(alpha: 0.1), blurRadius: 10, offset: const Offset(0, -2)),
           ],
         ),
         child: Column(

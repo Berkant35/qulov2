@@ -84,12 +84,12 @@ class _BadgeChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(config.icon, size: 24, color: Colors.white),
+          Icon(config.icon, size: 24, color: AppColors.inkOnDark),
           const SizedBox(width: AppSpacing.sm),
           Text(
             context.tr(config.labelKey),
             style: theme.textTheme.titleMedium?.copyWith(
-              color: Colors.white,
+              color: AppColors.inkOnDark,
               fontWeight: FontWeight.w800,
               letterSpacing: 1.2,
             ),
