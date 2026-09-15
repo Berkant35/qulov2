@@ -1,0 +1,5 @@
+• Thai and Indonesian added — Qulo now speaks 18 languages
+• When you run out of people nearby, the search widens on its own — new profiles instead of an empty screen
+• If nobody writes questions in your language, we now tell you — adding languages brings more people your way
+• Your matching languages now always include your app language, and your profile shows every language you picked
+• Plenty of fixes across chat, notifications and sign-in; error messages now appear in your language
