@@ -8,11 +8,7 @@ class PrefChip extends StatelessWidget {
   final dynamic iconPath; // String (old icons) or IconRef (new icons)
   final String label;
 
-  const PrefChip({
-    super.key,
-    required this.iconPath,
-    required this.label,
-  });
+  const PrefChip({super.key, required this.iconPath, required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +20,9 @@ class PrefChip extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: context.appColors.secondarySurface,
-        border: Border.all(color: context.appColors.secondary.withValues(alpha: 0.3)),
+        border: Border.all(
+          color: context.appColors.secondary.withValues(alpha: 0.3),
+        ),
         borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
       ),
       child: Row(
@@ -35,10 +33,15 @@ class PrefChip extends StatelessWidget {
           else
             AppIcon(iconPath, size: 14, color: context.appColors.secondary),
           const SizedBox(width: AppSpacing.xs),
-          Text(
-            label,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: context.appColors.secondary,
+          // Wrap satır genişliğini verir ama Row metni sıkıştırmaz; 18 dil kodu tek
+          // etikette birleşince çip sağa taşıyordu. Flexible: metin satır atlar, çip
+          // satıra sığar, kısa etiketlerde yine içerik kadar kalır.
+          Flexible(
+            child: Text(
+              label,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: context.appColors.secondary,
+              ),
             ),
           ),
         ],

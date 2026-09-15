@@ -42,7 +42,9 @@ mixin ProfileScreenMixin on ConsumerState<ProfileScreen> {
     _acqTried = true;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) return;
-      await ref.read(navigationServiceProvider).showAppBottomSheet<void>(
+      await ref
+          .read(navigationServiceProvider)
+          .showAppBottomSheet<void>(
             CustomBottomSheet(
               name: 'acquisition',
               isDismissible: false,
@@ -77,18 +79,8 @@ mixin ProfileScreenMixin on ConsumerState<ProfileScreen> {
     };
   }
 
-  String languageFlag(String code) {
-    return switch (code) {
-      'tr' => 'TR',
-      'en' => 'EN',
-      'de' => 'DE',
-      'fr' => 'FR',
-      'ar' => 'AR',
-      'ru' => 'RU',
-      'es' => 'ES',
-      _ => code.toUpperCase(),
-    };
-  }
+  /// Tercih çipi dil kodunu büyük harfle gösterir (TR, EN, TH…); 18 dil için tek kural.
+  String languageFlag(String code) => code.toUpperCase();
 
   // ─── Callbacks ───
 
@@ -122,14 +114,15 @@ mixin ProfileScreenMixin on ConsumerState<ProfileScreen> {
   }
 
   void onPreviewProfile() {
-    ref.read(navigationServiceProvider).push(
-      RouteNames.profilePreview,
-      extra: 'profile_screen',
-    );
+    ref
+        .read(navigationServiceProvider)
+        .push(RouteNames.profilePreview, extra: 'profile_screen');
   }
 
   Future<void> handleClaimReward(String level) async {
-    final result = await ref.read(userProvider.notifier).claimBadgeReward(level);
+    final result = await ref
+        .read(userProvider.notifier)
+        .claimBadgeReward(level);
     if (!mounted) return;
     result.when(
       success: (_) {
