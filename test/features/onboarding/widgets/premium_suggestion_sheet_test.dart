@@ -9,8 +9,11 @@ import 'package:qulo_v2/features/onboarding/widgets/premium_suggestion_sheet.dar
 import 'package:qulo_v2/providers/store_prices_provider.dart';
 
 /// Fiyat bilinmezken satın alma butonları dead-end olmasın (review I2).
-Widget _wrap(Widget child, {required Map<String, String> prices}) => ProviderScope(
-      overrides: [storePricesLoaderProvider.overrideWithValue(() async => prices)],
+Widget _wrap(Widget child, {required Map<String, String> prices}) =>
+    ProviderScope(
+      overrides: [
+        storePricesLoaderProvider.overrideWithValue(() async => prices),
+      ],
       child: MaterialApp(
         theme: AppTheme.dark,
         localizationsDelegates: const [AppLocalizationsDelegate()],
@@ -21,28 +24,38 @@ Widget _wrap(Widget child, {required Map<String, String> prices}) => ProviderSco
     );
 
 void main() {
-  testWidgets('fiyat yoksa Plus/Premium butonları disabled (onTap null)', (tester) async {
-    await tester.pumpWidget(_wrap(const PremiumSuggestionSheet(), prices: const {}));
+  testWidgets('fiyat yoksa Plus/Premium butonları disabled (onTap null)', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_wrap(const PremiumSuggestionSheet(), prices: {}));
     await tester.pump();
     await tester.pump();
 
-    final buttons = tester.widgetList<PaywallPlanButton>(find.byType(PaywallPlanButton)).toList();
+    final buttons = tester
+        .widgetList<PaywallPlanButton>(find.byType(PaywallPlanButton))
+        .toList();
     expect(buttons.length, 2);
     expect(buttons.every((b) => b.onTap == null), isTrue);
   });
 
-  testWidgets('fiyat varsa Plus/Premium butonları enabled (onTap dolu)', (tester) async {
-    await tester.pumpWidget(_wrap(
-      const PremiumSuggestionSheet(),
-      prices: const {
-        RevenueCatService.plusProductId: '\$4.99',
-        RevenueCatService.premiumProductId: '\$9.99',
-      },
-    ));
+  testWidgets('fiyat varsa Plus/Premium butonları enabled (onTap dolu)', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _wrap(
+        const PremiumSuggestionSheet(),
+        prices: {
+          RevenueCatService.plusProductId: '\$4.99',
+          RevenueCatService.premiumProductId: '\$9.99',
+        },
+      ),
+    );
     await tester.pump();
     await tester.pump();
 
-    final buttons = tester.widgetList<PaywallPlanButton>(find.byType(PaywallPlanButton)).toList();
+    final buttons = tester
+        .widgetList<PaywallPlanButton>(find.byType(PaywallPlanButton))
+        .toList();
     expect(buttons.length, 2);
     expect(buttons.every((b) => b.onTap != null), isTrue);
   });

@@ -7,7 +7,8 @@ import 'package:qulo_v2/core/services/meta_events_manager.dart';
 
 class RevenueCatNotConfiguredException implements Exception {
   @override
-  String toString() => 'RevenueCat is not configured. Please set API keys via --dart-define.';
+  String toString() =>
+      'RevenueCat is not configured. Please set API keys via --dart-define.';
 }
 
 class RevenueCatService {
@@ -59,7 +60,9 @@ class RevenueCatService {
   /// fiyatlar hic gelmiyordu — satin alma calisirken kartlar sonsuz iskelet
   /// gosteriyordu. Ayni kaynagi kullanmak bu asimetriyi yapisal olarak kapatir:
   /// satin alinabilen her urunun fiyati da gorunur.
-  static Future<Map<String, String>> getPrices(Iterable<String> productIds) async {
+  static Future<Map<String, String>> getPrices(
+    Iterable<String> productIds,
+  ) async {
     if (!_isConfigured) return const {};
     final groups = partitionProductIds(productIds);
     final lists = await Future.wait([
@@ -88,7 +91,9 @@ class RevenueCatService {
       final result = await Purchases.purchase(PurchaseParams.package(package));
       AnalyticsManager.instance.logEvent(
         AnalyticsEvents.diamondsPurchaseSuccess,
-        params: {AnalyticsEvents.paramProductId: package.storeProduct.identifier},
+        params: {
+          AnalyticsEvents.paramProductId: package.storeProduct.identifier,
+        },
       );
       return result.customerInfo;
     } catch (e) {
@@ -104,16 +109,43 @@ class RevenueCatService {
   }
 
   static const plusProductId = 'quloplusmonthly2';
-  static const premiumProductId = 'qulopremiummonthly2';
-  static const subscriptionProductIds = {plusProductId, premiumProductId};
+
+  /// Premium'un magaza kimligi platforma gore FARKLI: App Store `qulopremiummonthly2`,
+  /// Google Play `qulopremiummonthly` (base plan qulopremium-monthly, legacyCompatible).
+  /// 2026-09-15'e kadar tek sabit her iki magazada 2'li kimligi soruyordu; Play'de o
+  /// urun olmadigi icin Android'de Premium fiyati "—", buton kapali, satin alma
+  /// imkansizdi. Sunucu haritasi (SUBSCRIPTION_PRODUCT_MAP) iki kimligi de tanir.
+  static const _premiumProductIdApple = 'qulopremiummonthly2';
+  static const _premiumProductIdGoogle = 'qulopremiummonthly';
+
+  static String premiumProductIdFor({required bool android}) =>
+      android ? _premiumProductIdGoogle : _premiumProductIdApple;
+
+  static String get premiumProductId =>
+      premiumProductIdFor(android: Platform.isAndroid);
+
+  /// Bu cihazin magazasinda sorgulanacak abonelik kimlikleri.
+  static List<String> get subscriptionProductIdsForStore => [
+    plusProductId,
+    premiumProductId,
+  ];
+
+  /// Her iki magazanin bilinen abonelik kimlikleri — `getProducts` kategori ayrimi icin.
+  static const subscriptionProductIds = {
+    plusProductId,
+    _premiumProductIdApple,
+    _premiumProductIdGoogle,
+  };
 
   /// `getProducts` kategori istedigi icin kimlikleri ikiye ayirir.
   static ({List<String> subscriptions, List<String> consumables})
-      partitionProductIds(Iterable<String> productIds) {
+  partitionProductIds(Iterable<String> productIds) {
     final subscriptions = <String>[];
     final consumables = <String>[];
     for (final id in productIds) {
-      (subscriptionProductIds.contains(id) ? subscriptions : consumables).add(id);
+      (subscriptionProductIds.contains(id) ? subscriptions : consumables).add(
+        id,
+      );
     }
     return (subscriptions: subscriptions, consumables: consumables);
   }
@@ -124,10 +156,9 @@ class RevenueCatService {
       final category = subscriptionProductIds.contains(productId)
           ? ProductCategory.subscription
           : ProductCategory.nonSubscription;
-      final products = await Purchases.getProducts(
-        [productId],
-        productCategory: category,
-      );
+      final products = await Purchases.getProducts([
+        productId,
+      ], productCategory: category);
       if (products.isEmpty) {
         throw Exception('Product not found: $productId');
       }

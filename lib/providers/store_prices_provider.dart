@@ -9,22 +9,25 @@ typedef StorePricesLoader = Future<Map<String, String>> Function();
 /// bu listedir. Satin alma yollari (`purchaseByProductId`) ayni kimlikleri
 /// kullanir; liste tek yerde durdugu icin ikisi ayrisamaz.
 List<String> get purchasableProductIds => [
-      ...DiamondTier.values.map((tier) => tier.productId),
-      ...RevenueCatService.subscriptionProductIds,
-    ];
+  ...DiamondTier.values.map((tier) => tier.productId),
+  ...RevenueCatService.subscriptionProductIdsForStore,
+];
 
 Future<Map<String, String>> loadStorePricesFromRevenueCat() =>
     RevenueCatService.getPrices(purchasableProductIds);
 
 /// Testte override edilir; uretimde RevenueCat.
-final storePricesLoaderProvider =
-    Provider<StorePricesLoader>((_) => loadStorePricesFromRevenueCat);
+final storePricesLoaderProvider = Provider<StorePricesLoader>(
+  (_) => loadStorePricesFromRevenueCat,
+);
 
 /// Fiyat koda gomulu DEGIL: magaza yoksa bos map, ekran `—` gosterir.
 /// `autoDispose` + kosullu `keepAlive`: bos sonuc (magaza henuz hazir degil)
 /// kalici cache'lenmez — dinleyicisiz kalinca dusurulur ve bir sonraki
 /// okumada tekrar denenir. Dolu sonuc `keepAlive()` ile oturum boyunca sabit kalir.
-final storePricesProvider = FutureProvider.autoDispose<Map<String, String>>((ref) async {
+final storePricesProvider = FutureProvider.autoDispose<Map<String, String>>((
+  ref,
+) async {
   Map<String, String> prices;
   try {
     prices = await ref.read(storePricesLoaderProvider)();
