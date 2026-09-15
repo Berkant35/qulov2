@@ -95,6 +95,19 @@ platform :ios do
     UI.important("App Store Connect'ten build'i secip 'Incelemeye Gonder' demen gerekiyor.")
   end
 
+  desc "Surumu App Store incelemesine GONDER (geri alinamaz sayilir) — yalniz kullanici 'yayinla' deyince"
+  lane :submit_review do
+    load_env!
+    ensure_key!
+    info = version_info
+    Dir.chdir(FLUTTER_ROOT) do
+      # Once kuru calistirma: onkosul eksikse (build bagli degil, encryption bos,
+      # acik gonderim var) script 1 doner ve burada durur.
+      sh({ "IOS_BUNDLE_ID" => BUNDLE_ID }, "node scripts/asc_submit_review.mjs #{info[:name]}")
+      sh({ "IOS_BUNDLE_ID" => BUNDLE_ID }, "node scripts/asc_submit_review.mjs #{info[:name]} --apply")
+    end
+  end
+
   desc "Tam akis: preflight -> IPA build -> TestFlight -> 16 dil not"
   lane :ship_beta do
     preflight
