@@ -1,0 +1,5 @@
+• Tayca ve Endonezce eklendi — Qulo artık 18 dilde
+• Keşfette yakınındakiler bittiğinde arama kendiliğinden genişliyor — boş ekran yerine yeni profiller
+• Senin dilinde soru yazan kimse yoksa artık bunu söylüyoruz; dil tercihini genişletince daha fazla kişi karşına çıkıyor
+• Eşleşme dillerin artık her zaman uygulama dilini içeriyor; profilinde seçtiğin tüm diller görünüyor
+• Sohbet, bildirim ve giriş akışında birçok düzeltme; hata mesajları artık kendi dilinde
