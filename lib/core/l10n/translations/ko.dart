@@ -1186,10 +1186,8 @@ const koTranslations = <String, String>{
   // Acquisition ("저희를 어떻게 알게 되셨나요?")
   'acq_title': '저희를 어떻게 알게 되셨나요?',
   'acq_subtitle': 'Qulo를 어떻게 찾으셨는지 알려주시면 큰 도움이 됩니다.',
-  'acq_skip': '건너뛰기',
   'acq_continue': '계속',
   'acq_other_hint': '조금 더 알려주세요 (선택)',
-  'acq_thanks': '감사합니다!',
   'acq_error': '문제가 발생했습니다.',
   'chars_remaining': '{count}자 남음',
 

@@ -8,9 +8,9 @@ import 'package:qulo_v2/data/repositories/acquisition_repository.dart';
 /// "Bizi nereden duydun?" — edinim kanali verisi (pazarlama kararlarini besliyor).
 ///
 /// Sunucu sozlesmesi (qulo-server `acquisition.validator.ts`): `channel_id`
-/// (uuid) YA DA `skipped: true` zorunlu, **ikisi birlikte yasak**;
-/// `freeform_text` en fazla 280. Yanit `{channels}`.
-/// Tek cagiran `acquisition_sheet.dart`: atlarken kanali null gonderiyor,
+/// (uuid) YA DA `skipped: true` zorunlu; `freeform_text` en fazla 280. Yanit
+/// `{channels}`. Istemci 2.0.12'den itibaren `skipped` GONDERMEZ (Atla kalkti,
+/// kacis yolu `dont_remember` kanali). Tek cagiran `acquisition_sheet.dart`,
 /// serbest metin alani `maxLength: 280`.
 class _FakeAcquisitionService implements AcquisitionService {
   _FakeAcquisitionService({this.channelsResponse, this.error});
@@ -34,14 +34,10 @@ class _FakeAcquisitionService implements AcquisitionService {
   }
 }
 
-Future<Map<String, dynamic>?> _payloadOf({
-  String? channelId,
-  bool skipped = false,
-  String? freeformText,
-}) async {
+Future<Map<String, dynamic>?> _payloadOf({String? channelId, String? freeformText}) async {
   final service = _FakeAcquisitionService();
   await AcquisitionRepository(service)
-      .submitAnswer(channelId: channelId, skipped: skipped, freeformText: freeformText);
+      .submitAnswer(channelId: channelId, freeformText: freeformText);
   return service.lastAnswer;
 }
 
@@ -74,10 +70,6 @@ void main() {
       expect(await _payloadOf(channelId: 'c1'), {'channel_id': 'c1'});
     });
 
-    test('atlama yalnizca skipped tasir — channel_id ile birlikte gonderilmez', () async {
-      expect(await _payloadOf(skipped: true), {'skipped': true});
-    });
-
     test('serbest metin eklenir', () async {
       expect(await _payloadOf(channelId: 'c2', freeformText: 'Arkadasim onerdi'),
           {'channel_id': 'c2', 'freeform_text': 'Arkadasim onerdi'});
@@ -88,8 +80,8 @@ void main() {
     });
 
     test('hicbir alan verilmezse bos govde gider — sunucu 400 verir (sessiz varsayim)', () async {
-      // Tip sistemi tutmuyor; bugun guvenli cunku tek cagiran ya kanal ya
-      // skipped veriyor. Bu test varsayimi gorunur kilar.
+      // Tip sistemi tutmuyor; bugun guvenli cunku Devam butonu kanal secilmeden
+      // kapali. Bu test varsayimi gorunur kilar.
       expect(await _payloadOf(), isEmpty);
     });
 

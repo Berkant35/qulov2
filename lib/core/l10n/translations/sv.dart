@@ -1188,10 +1188,8 @@ const svTranslations = <String, String>{
   // Acquisition ("Bizi nereden duydunuz?")
   'acq_title': 'Hur hörde du talas om oss?',
   'acq_subtitle': 'Att veta hur du hittade Qulo hjälper oss mycket.',
-  'acq_skip': 'Hoppa över',
   'acq_continue': 'Fortsätt',
   'acq_other_hint': 'Berätta gärna lite mer (valfritt)',
-  'acq_thanks': 'Tack!',
   'acq_error': 'Något gick fel.',
   'chars_remaining': '{count} tecken kvar',
 

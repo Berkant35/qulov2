@@ -25,15 +25,12 @@ class AcquisitionRepository implements IAcquisitionRepository {
   }
 
   @override
-  Future<Result<void>> submitAnswer({
-    String? channelId,
-    bool skipped = false,
-    String? freeformText,
-  }) async {
+  /// `skipped` sunucu sözleşmesinde duruyor (eski istemciler) ama 2.0.12'den
+  /// itibaren istemci göndermiyor: Atla butonu kalktı, kaçış yolu `dont_remember` kanalı.
+  Future<Result<void>> submitAnswer({String? channelId, String? freeformText}) async {
     try {
       await _service.submitAnswer({
         if (channelId != null) 'channel_id': channelId,
-        if (skipped) 'skipped': true,
         if (freeformText != null && freeformText.isNotEmpty)
           'freeform_text': freeformText,
       });

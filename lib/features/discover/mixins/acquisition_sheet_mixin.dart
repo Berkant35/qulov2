@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/data/models/acquisition_channel_model.dart';
 import 'package:qulo_v2/features/discover/widgets/acquisition_sheet.dart';
 import 'package:qulo_v2/providers/acquisition_provider.dart';
@@ -18,12 +19,13 @@ mixin AcquisitionSheetMixin on ConsumerState<AcquisitionSheet> {
   void selectChannel(AcquisitionChannel channel) =>
       setState(() => selectedChannel = channel);
 
-  Future<void> submit({required bool skip}) async {
+  /// Seçilen kanalı gönderir; başarıda profil bayrağı (acquisition_answered)
+  /// yenilenir ki anket bir daha kuyruğa girmesin.
+  Future<void> submit() async {
     if (submitting) return;
     setState(() => submitting = true);
     final result = await ref.read(acquisitionProvider.notifier).submit(
-          channelId: skip ? null : selectedChannel?.id,
-          skipped: skip,
+          channelId: selectedChannel?.id,
           freeformText: isFreeformSelected ? freeformController.text.trim() : null,
         );
     if (!mounted) return;
@@ -31,6 +33,9 @@ mixin AcquisitionSheetMixin on ConsumerState<AcquisitionSheet> {
       success: (_) => ref.read(userProvider.notifier).fetchMe(),
       failure: (_) {},
     );
-    Navigator.of(context).pop();
+    ref.read(navigationServiceProvider).closeOverlay();
   }
+
+  /// Kanal listesi yüklenemediğinde cevapsız kapatır; sonraki girişte yeniden sorulur.
+  void dismiss() => ref.read(navigationServiceProvider).closeOverlay();
 }

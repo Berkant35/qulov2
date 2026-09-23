@@ -1188,10 +1188,8 @@ const itTranslations = <String, String>{
   // Acquisition ("Come ci hai conosciuti?")
   'acq_title': 'Come ci hai conosciuti?',
   'acq_subtitle': 'Sapere come hai trovato Qulo ci aiuta molto.',
-  'acq_skip': 'Salta',
   'acq_continue': 'Continua',
   'acq_other_hint': 'Raccontaci qualcosa in più (facoltativo)',
-  'acq_thanks': 'Grazie!',
   'acq_error': 'Qualcosa è andato storto.',
   'chars_remaining': '{count} caratteri rimanenti',
 

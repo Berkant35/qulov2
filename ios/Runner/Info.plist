@@ -107,6 +107,11 @@
 	<string>Qulo uses this identifier to: (1) measure ad performance (e.g., knowing you discovered Qulo through an ad), and (2) improve your app experience. It is shared only with our advertising measurement partners.</string>
 	<key>SKAdNetworkItems</key>
 	<array>
+		<!-- Google Ads (App campaigns) — bu kimlik olmadan iOS yükleme postback'i Google'a gitmez -->
+		<dict>
+			<key>SKAdNetworkIdentifier</key>
+			<string>cstr6suwn9.skadnetwork</string>
+		</dict>
 		<dict>
 			<key>SKAdNetworkIdentifier</key>
 			<string>v9wttpbfk9.skadnetwork</string>

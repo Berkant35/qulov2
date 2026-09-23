@@ -1186,10 +1186,8 @@ const nlTranslations = <String, String>{
   // Acquisition ("Bizi nereden duydunuz?")
   'acq_title': 'Hoe heb je over ons gehoord?',
   'acq_subtitle': 'Weten hoe je Qulo hebt gevonden helpt ons enorm.',
-  'acq_skip': 'Overslaan',
   'acq_continue': 'Doorgaan',
   'acq_other_hint': 'Vertel ons iets meer (optioneel)',
-  'acq_thanks': 'Bedankt!',
   'acq_error': 'Er is iets misgegaan.',
   'chars_remaining': 'Nog {count} tekens over',
 

@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:qulo_v2/core/network/result.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/data/models/quiz_model.dart';
 import 'package:qulo_v2/data/repositories/quiz_repository.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
@@ -136,6 +138,72 @@ void main() {
 
       expect(h.repo.failedSession, 's1');
       expect(h.state.lastAnswer?.sessionStatus, 'FAILED');
+    });
+  });
+
+  group('match_new — eslesme aninda, ekran degil provider', () {
+    late List<Map<String, Object?>> events;
+
+    setUp(() {
+      events = [];
+      AnalyticsManager.debugEventSink =
+          (name, params) => events.add({'event': name, ...?params});
+    });
+    tearDown(() => AnalyticsManager.debugEventSink = null);
+
+    test('sunucu matched=true donunce match_new solver rolu ve rozetle atilir', () async {
+      // Kutlama ekrani gorulmese de eslesme sayilir; reklam kalitesi buna bakar.
+      final h = _Harness();
+      await h.notifier.startSession('target-1');
+      h.repo.answerResult = const Success(QuizAnswerResponse(
+        isCorrect: true, matched: true, sessionStatus: 'COMPLETED', badge: 'gold',
+      ));
+
+      await h.notifier.answer(1);
+
+      expect(events.where((e) => e['event'] == AnalyticsEvents.matchNew).toList(), [
+        {'event': AnalyticsEvents.matchNew, AnalyticsEvents.paramRole: 'solver', AnalyticsEvents.paramBadge: 'gold'},
+      ]);
+    });
+
+    test('dogru cevap ama oturum surerken atilmaz', () async {
+      final h = _Harness();
+      await h.notifier.startSession('target-1');
+
+      await h.notifier.answer(1);
+
+      expect(events.map((e) => e['event']), isNot(contains(AnalyticsEvents.matchNew)));
+    });
+
+    test('kurtarma ile tamamlanan oturumda da atilir — rozet yoksa none', () async {
+      final h = _Harness();
+      await h.notifier.startSession('target-1');
+      h.repo.answerResult = const Success(QuizAnswerResponse(matched: true, sessionStatus: 'COMPLETED'));
+
+      await h.notifier.rescue();
+
+      expect(events.single,
+          {'event': AnalyticsEvents.matchNew, AnalyticsEvents.paramRole: 'solver', AnalyticsEvents.paramBadge: 'none'});
+    });
+
+    test('pes etmede (FAILED) atilmaz — ayni _applyAnswer yolu', () async {
+      final h = _Harness();
+      await h.notifier.startSession('target-1');
+      h.repo.answerResult = const Success(QuizAnswerResponse(sessionStatus: 'FAILED'));
+
+      await h.notifier.fail();
+
+      expect(events, isEmpty);
+    });
+
+    test('cevap hatasinda atilmaz', () async {
+      final h = _Harness();
+      await h.notifier.startSession('target-1');
+      h.repo.answerResult = const Failure(ServerFailure(code: 'SERVER_ERROR', statusCode: 500));
+
+      await h.notifier.answer(1);
+
+      expect(events, isEmpty);
     });
   });
 

@@ -32,7 +32,8 @@ class CoachMarkService {
   bool _listeningRoutes = false;
 
   /// True while a tour is in progress — on screen OR hidden waiting for its
-  /// trigger screen to become visible again.
+  /// trigger screen to become visible again. Gözlemlenebilirlik için (testler);
+  /// çakışma guard'ı olarak kullanma — sıralamayı OverlayQueueService çözer.
   bool get isTourActive => _activeCompleter != null;
 
   String _flag(String tourId) => 'coach_${tourId}_seen';

@@ -202,9 +202,7 @@ class AuthNotifier extends Notifier<AuthState> {
     );
     result.when(
       success: (_) {
-        AnalyticsManager.instance.logEvent(AnalyticsEvents.authRegisterSuccess, params: {
-          AnalyticsEvents.paramMethod: 'email',
-        });
+        _logRegistration('email');
         MetaEventsManager.instance.logCompleteRegistration(method: 'email');
         state = state.copyWith(isLoading: false);
       },
@@ -294,10 +292,24 @@ class AuthNotifier extends Notifier<AuthState> {
     ref.read(presenceManagerProvider).start();
   }
 
+  /// Kayıt tamamlandı: özel `auth_register_success` (panolar) + GA4/Google Ads
+  /// standart `sign_up` (dönüşüm içe aktarımı bu adı bekler) yan yana.
+  void _logRegistration(String method) {
+    AnalyticsManager.instance
+      ..logEvent(AnalyticsEvents.authRegisterSuccess, params: {
+        AnalyticsEvents.paramMethod: method,
+      })
+      ..logEvent(AnalyticsEvents.signUp, params: {
+        AnalyticsEvents.paramMethod: method,
+      });
+  }
+
   /// Called after social login profile completion.
   /// Re-emits auth state to trigger GoRouter redirect (profile-completion → discover).
   Future<void> onProfileCompleted() async {
-    // Social signup'ta kayıt burada tamamlanır (profil tamamlama adımı sonu)
+    // Social signup'ta kayıt burada tamamlanır (profil tamamlama adımı sonu).
+    // Yalnız yeni sosyal kullanıcı bu yoldan geçer; giriş/kayıt GA4'te böyle ayrışır.
+    _logRegistration('social');
     MetaEventsManager.instance.logCompleteRegistration(method: 'social');
     await _postLoginInit();
     // Re-emit authenticated state so GoRouter re-evaluates redirect

@@ -24,6 +24,7 @@ void main() {
       expect(h.state.isLoading, isFalse);
       expect(h.state.error, isNull);
       expect(h.users.sent, (41.0, 29.0, 'Istanbul'));
+      expect(h.users.sentCountry, 'TR', reason: 'users.country hep NULL kaliyordu');
       expect(h.location.requestCalls, 0);
     });
 
@@ -245,7 +246,8 @@ class _FakeLocationManager implements LocationManager {
   bool serviceEnabled = true;
   LocationPermissionStatus checkResult = LocationPermissionStatus.granted;
   LocationPermissionStatus requestResult = LocationPermissionStatus.granted;
-  LocationResult position = const LocationResult(lat: 41.0, lng: 29.0, city: 'Istanbul');
+  LocationResult position =
+      const LocationResult(lat: 41.0, lng: 29.0, city: 'Istanbul', countryCode: 'TR');
   Object? positionError;
   Completer<LocationResult>? positionGate;
 
@@ -285,11 +287,13 @@ class _FakeUserRepository implements UserRepository {
   Result<void> result = const Success(null);
   bool throwOnUpdate = false;
   (double, double, String?)? sent;
+  String? sentCountry;
 
   @override
-  Future<Result<void>> updateLocation({required double lat, required double lng, String? city}) async {
+  Future<Result<void>> updateLocation({required double lat, required double lng, String? city, String? country}) async {
     if (throwOnUpdate) throw Exception('beklenmeyen');
     sent = (lat, lng, city);
+    sentCountry = country;
     return result;
   }
 

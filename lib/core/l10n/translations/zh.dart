@@ -1186,10 +1186,8 @@ const zhTranslations = <String, String>{
   // Acquisition ("Bizi nereden duydunuz?")
   'acq_title': '你是怎么知道我们的？',
   'acq_subtitle': '了解你如何找到 Qulo 对我们很有帮助。',
-  'acq_skip': '跳过',
   'acq_continue': '继续',
   'acq_other_hint': '再多告诉我们一点（可选）',
-  'acq_thanks': '谢谢！',
   'acq_error': '出错了。',
   'chars_remaining': '还剩 {count} 个字符',
 

@@ -1188,10 +1188,8 @@ const hiTranslations = <String, String>{
   // Acquisition ("Bizi nereden duydunuz?")
   'acq_title': 'आपने हमारे बारे में कैसे सुना?',
   'acq_subtitle': 'आपने Qulo को कैसे पाया, यह जानना हमें बहुत मदद करता है।',
-  'acq_skip': 'छोड़ें',
   'acq_continue': 'जारी रखें',
   'acq_other_hint': 'थोड़ा और बताएं (वैकल्पिक)',
-  'acq_thanks': 'धन्यवाद!',
   'acq_error': 'कुछ गलत हो गया।',
   'chars_remaining': '{count} अक्षर शेष',
 

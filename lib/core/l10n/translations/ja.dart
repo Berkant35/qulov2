@@ -1188,10 +1188,8 @@ const jaTranslations = <String, String>{
   // Acquisition ("どこで私たちを知りましたか？")
   'acq_title': 'どこで私たちを知りましたか？',
   'acq_subtitle': 'Quloをどう見つけたか教えていただけると助かります。',
-  'acq_skip': 'スキップ',
   'acq_continue': '続ける',
   'acq_other_hint': 'もう少し教えてください（任意）',
-  'acq_thanks': 'ありがとう！',
   'acq_error': '問題が発生しました。',
   'chars_remaining': '残り{count}文字',
 

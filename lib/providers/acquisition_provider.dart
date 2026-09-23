@@ -13,14 +13,9 @@ class AcquisitionNotifier extends AsyncNotifier<List<AcquisitionChannel>> {
     );
   }
 
-  Future<Result<void>> submit({
-    String? channelId,
-    bool skipped = false,
-    String? freeformText,
-  }) {
+  Future<Result<void>> submit({String? channelId, String? freeformText}) {
     return ref.read(acquisitionRepositoryProvider).submitAnswer(
           channelId: channelId,
-          skipped: skipped,
           freeformText: freeformText,
         );
   }

@@ -1186,10 +1186,8 @@ const ruTranslations = <String, String>{
   // Acquisition ("Откуда вы о нас узнали?")
   'acq_title': 'Откуда вы о нас узнали?',
   'acq_subtitle': 'Нам очень помогает знать, как вы нашли Qulo.',
-  'acq_skip': 'Пропустить',
   'acq_continue': 'Продолжить',
   'acq_other_hint': 'Расскажите подробнее (необязательно)',
-  'acq_thanks': 'Спасибо!',
   'acq_error': 'Что-то пошло не так.',
   'chars_remaining': 'Осталось {count} символов',
 

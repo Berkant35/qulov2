@@ -28,7 +28,17 @@ class AnalyticsManager {
 
   // ─── Core Event Logging ───
 
+  /// Test kancası: `init()` çağrılmayan testlerde event'ler sessizce düşer; bu
+  /// sink ile hangi event'in hangi param'larla atıldığı doğrulanır. Yalnız
+  /// debug/test derlemesinde çalışır (assert), release'te derlenmez.
+  @visibleForTesting
+  static void Function(String name, Map<String, Object>? params)? debugEventSink;
+
   void logEvent(String name, {Map<String, Object>? params}) {
+    assert(() {
+      debugEventSink?.call(name, params);
+      return true;
+    }());
     if (!_initialized) return;
 
     final sanitized = _sanitizeParams(params);

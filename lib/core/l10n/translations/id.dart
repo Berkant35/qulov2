@@ -1191,10 +1191,8 @@ const idTranslations = <String, String>{
   // Acquisition ("How did you hear about us?")
   'acq_title': 'Dari mana kamu tahu Qulo?',
   'acq_subtitle': 'Tahu bagaimana kamu menemukan Qulo sangat membantu kami.',
-  'acq_skip': 'Lewati',
   'acq_continue': 'Lanjutkan',
   'acq_other_hint': 'Ceritakan sedikit (opsional)',
-  'acq_thanks': 'Terima kasih!',
   'acq_error': 'Terjadi kesalahan.',
   'chars_remaining': '{count} karakter tersisa',
 

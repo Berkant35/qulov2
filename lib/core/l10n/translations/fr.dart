@@ -1188,10 +1188,8 @@ const frTranslations = <String, String>{
   // Acquisition ("Comment avez-vous entendu parler de nous ?")
   'acq_title': 'Comment avez-vous entendu parler de nous ?',
   'acq_subtitle': 'Savoir comment vous avez découvert Qulo nous aide beaucoup.',
-  'acq_skip': 'Passer',
   'acq_continue': 'Continuer',
   'acq_other_hint': 'Dites-nous en un peu plus (facultatif)',
-  'acq_thanks': 'Merci !',
   'acq_error': 'Une erreur est survenue.',
   'chars_remaining': '{count} caractères restants',
 

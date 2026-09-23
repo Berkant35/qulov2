@@ -1186,10 +1186,8 @@ const plTranslations = <String, String>{
   // Acquisition ("Bizi nereden duydunuz?")
   'acq_title': 'Skąd o nas wiesz?',
   'acq_subtitle': 'Wiedza o tym, jak trafiłeś do Qulo, bardzo nam pomaga.',
-  'acq_skip': 'Pomiń',
   'acq_continue': 'Dalej',
   'acq_other_hint': 'Powiedz nam coś więcej (opcjonalnie)',
-  'acq_thanks': 'Dziękujemy!',
   'acq_error': 'Coś poszło nie tak.',
   'chars_remaining': 'Pozostało {count} znaków',
 

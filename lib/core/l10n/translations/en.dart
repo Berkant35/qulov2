@@ -1191,10 +1191,8 @@ const enTranslations = <String, String>{
   // Acquisition ("How did you hear about us?")
   'acq_title': 'How did you hear about us?',
   'acq_subtitle': 'Knowing how you found Qulo really helps us.',
-  'acq_skip': 'Skip',
   'acq_continue': 'Continue',
   'acq_other_hint': 'Tell us a bit more (optional)',
-  'acq_thanks': 'Thanks!',
   'acq_error': 'Something went wrong.',
   'chars_remaining': '{count} characters left',
 

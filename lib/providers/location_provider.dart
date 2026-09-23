@@ -96,6 +96,7 @@ class LocationNotifier extends Notifier<LocationState> {
           lat: result.lat,
           lng: result.lng,
           city: result.city,
+          country: result.countryCode,
         );
       } catch (_) {
         // 401 veya network hatası lokal GPS state'ini bozmamalı

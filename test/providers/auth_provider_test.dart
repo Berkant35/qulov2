@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:qulo_v2/core/network/result.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/notification_manager.dart';
 import 'package:qulo_v2/core/services/presence_manager.dart';
 import 'package:qulo_v2/data/models/auth_model.dart';
@@ -14,6 +16,7 @@ import 'package:qulo_v2/data/repositories/user_repository.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
 import 'package:qulo_v2/providers/deep_link_provider.dart';
+import 'package:qulo_v2/providers/notification_provider.dart';
 
 import '../helpers/scripted_http_adapter.dart';
 
@@ -179,6 +182,61 @@ void main() {
     });
   });
 
+  group('register — GA4 standart sign_up', () {
+    late List<Map<String, Object?>> events;
+
+    setUp(() {
+      events = [];
+      AnalyticsManager.debugEventSink =
+          (name, params) => events.add({'event': name, ...?params});
+    });
+    tearDown(() => AnalyticsManager.debugEventSink = null);
+
+    Future<Result<RegisterResponse>> register(_Harness h) => h.notifier.register(
+          email: 'a@b.test', password: 'x', name: 'Ada', surname: 'L',
+          age: 25, gender: 'WOMAN', genderPref: 'MAN',
+        );
+
+    test('e-posta kaydi basarili: ozel auth_register_success YANINA sign_up{method:email}', () async {
+      // Google Ads donusum ice aktarimi standart adi bekler; ozel event kalir (panolar).
+      final h = _Harness();
+
+      await register(h);
+
+      expect(events, containsAll([
+        {'event': AnalyticsEvents.authRegisterSuccess, AnalyticsEvents.paramMethod: 'email'},
+        {'event': AnalyticsEvents.signUp, AnalyticsEvents.paramMethod: 'email'},
+      ]));
+      expect(h.state.isLoading, isFalse);
+    });
+
+    test('kayit hatasinda sign_up atilmaz', () async {
+      final h = _Harness(auth: _FakeAuthRepository(
+        registerResult: const Failure(ServerFailure(code: 'EMAIL_TAKEN', statusCode: 409)),
+      ));
+
+      await register(h);
+
+      expect(events.map((e) => e['event']), isNot(contains(AnalyticsEvents.signUp)));
+      expect(events.map((e) => e['event']), contains(AnalyticsEvents.authRegisterFail));
+    });
+
+    test('sosyal kayit profil tamamlaninca biter: auth_register_success + sign_up{method:social}', () async {
+      // socialLogin her seferinde auth_login_success atar (yeni/mevcut ayirt edilemez);
+      // kayit sinyali profil tamamlama adiminda — yalniz yeni sosyal kullanici buradan gecer.
+      final h = _Harness(initial: AuthStatus.authenticated);
+
+      await h.notifier.onProfileCompleted();
+
+      expect(events, containsAll([
+        {'event': AnalyticsEvents.authRegisterSuccess, AnalyticsEvents.paramMethod: 'social'},
+        {'event': AnalyticsEvents.signUp, AnalyticsEvents.paramMethod: 'social'},
+      ]));
+      expect(h.state.status, AuthStatus.authenticated);
+      expect(h.presence.startCalls, 1, reason: 'post-login init calisti');
+    });
+  });
+
   group('logout', () {
     test('refresh token sunucuya gider, yerel oturum temizlenir', () async {
       final h = _Harness(stored: _session(), initial: AuthStatus.authenticated);
@@ -270,6 +328,8 @@ class _Harness {
       authRepositoryProvider.overrideWithValue(this.auth),
       presenceManagerProvider.overrideWithValue(presence),
       notificationManagerProvider.overrideWithValue(notifications),
+      // _postLoginInit → NotificationNotifier.init → fetchUnreadCount ağa (Dio) gider; testte yok.
+      notificationProvider.overrideWith(_NoopNotificationNotifier.new),
       refreshDioFactoryProvider.overrideWithValue(() => scriptedDio(this.refresh)),
     ]);
     addTearDown(container.dispose);
@@ -306,11 +366,31 @@ class _MeRepository implements UserRepository {
 }
 
 class _FakeAuthRepository implements AuthRepository {
-  _FakeAuthRepository({this.loginResult, this.logoutResult = const Success(null)});
+  _FakeAuthRepository({
+    this.loginResult,
+    this.logoutResult = const Success(null),
+    this.registerResult = const Success(RegisterResponse(userId: 'u1', email: 'a@b.test')),
+  });
 
   final Result<AuthTokens>? loginResult;
   final Result<void> logoutResult;
+  final Result<RegisterResponse> registerResult;
   String? lastLogoutRefreshToken;
+
+  @override
+  Future<Result<RegisterResponse>> register({
+    required String email,
+    required String password,
+    required String name,
+    required String surname,
+    required int age,
+    required String gender,
+    required String genderPref,
+    double? lat,
+    double? lng,
+    String locale = 'tr',
+  }) async =>
+      registerResult;
 
   @override
   Future<Result<AuthTokens>> login({required String email, required String password}) async =>
@@ -327,7 +407,17 @@ class _FakeAuthRepository implements AuthRepository {
       throw UnimplementedError('_FakeAuthRepository.${invocation.memberName}');
 }
 
+class _NoopNotificationNotifier extends NotificationNotifier {
+  @override
+  Future<void> init() async {}
+}
+
 class _FakePresence implements PresenceManager {
+  int startCalls = 0;
+
+  @override
+  void start() => startCalls++;
+
   int pauseCalls = 0;
   int stopCalls = 0;
 

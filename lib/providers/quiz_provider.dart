@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/data/models/quiz_model.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
@@ -111,13 +113,7 @@ class QuizNotifier extends Notifier<QuizState> {
       powerUsed: powerUsed,
       timeSpent: timeSpent,
     );
-    // Sadece success'i state'e yansıt — answer/rescue API hatasında state.failure
-    // setlemek QuizErrorView'a yönlendirir; rescue popup'tan paywall'a geçiş bozulur.
-    // Caller (mixin) failure'u Result üzerinden handle eder.
-    result.when(
-      success: (data) => state = state.copyWith(lastAnswer: data),
-      failure: (_) {},
-    );
+    _applyAnswer(result);
     return result;
   }
 
@@ -125,10 +121,7 @@ class QuizNotifier extends Notifier<QuizState> {
     final sessionId = state.sessionId;
     if (sessionId == null) return Failure(const UnknownFailure(message: 'No active session'));
     final result = await ref.read(quizRepositoryProvider).rescueWithSkip(sessionId, powerType: powerType);
-    result.when(
-      success: (data) => state = state.copyWith(lastAnswer: data),
-      failure: (_) {},
-    );
+    _applyAnswer(result);
     return result;
   }
 
@@ -136,11 +129,30 @@ class QuizNotifier extends Notifier<QuizState> {
     final sessionId = state.sessionId;
     if (sessionId == null) return Failure(const UnknownFailure(message: 'No active session'));
     final result = await ref.read(quizRepositoryProvider).failSession(sessionId);
+    _applyAnswer(result);
+    return result;
+  }
+
+  /// Sadece success'i state'e yansıt — answer/rescue API hatasında state.failure
+  /// setlemek QuizErrorView'a yönlendirir; rescue popup'tan paywall'a geçiş bozulur.
+  /// Caller (mixin) failure'u Result üzerinden handle eder.
+  ///
+  /// Eşleşme sunucuda bu yanıtla oluşur (`matched: true`, quiz.service); ürünün
+  /// kuzey yıldızı `match_new` ekran değil burada atılır — kutlama ekranı
+  /// görülmese de sayılır, reklam kalitesi ve huni optimizasyonu buna bakar.
+  void _applyAnswer(Result<QuizAnswerResponse> result) {
     result.when(
-      success: (data) => state = state.copyWith(lastAnswer: data),
+      success: (data) {
+        state = state.copyWith(lastAnswer: data);
+        if (data.matched == true) {
+          AnalyticsManager.instance.logEvent(AnalyticsEvents.matchNew, params: {
+            AnalyticsEvents.paramRole: 'solver',
+            AnalyticsEvents.paramBadge: data.badge ?? 'none',
+          });
+        }
+      },
       failure: (_) {},
     );
-    return result;
   }
 
   Future<Result<QuizResultModel>> getResult() async {

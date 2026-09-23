@@ -1186,10 +1186,8 @@ const arTranslations = <String, String>{
   // Acquisition ("كيف سمعت عنّا؟")
   'acq_title': 'كيف سمعت عنّا؟',
   'acq_subtitle': 'معرفة كيف وجدت Qulo تساعدنا كثيرًا.',
-  'acq_skip': 'تخطّي',
   'acq_continue': 'متابعة',
   'acq_other_hint': 'أخبرنا المزيد (اختياري)',
-  'acq_thanks': 'شكرًا!',
   'acq_error': 'حدث خطأ ما.',
   'chars_remaining': 'بقي {count} حرف',
 

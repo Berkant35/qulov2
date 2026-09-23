@@ -1191,10 +1191,8 @@ const thTranslations = <String, String>{
   // Acquisition ("How did you hear about us?")
   'acq_title': 'คุณรู้จักเราจากไหน?',
   'acq_subtitle': 'การรู้ว่าคุณเจอ Qulo ได้อย่างไรช่วยเราได้มาก',
-  'acq_skip': 'ข้าม',
   'acq_continue': 'ดำเนินการต่อ',
   'acq_other_hint': 'เล่าเพิ่มเติมสักหน่อย (ไม่บังคับ)',
-  'acq_thanks': 'ขอบคุณ!',
   'acq_error': 'เกิดข้อผิดพลาด',
   'chars_remaining': 'เหลืออีก {count} ตัวอักษร',
 

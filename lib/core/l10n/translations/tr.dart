@@ -1191,10 +1191,8 @@ const trTranslations = <String, String>{
   // Acquisition ("Bizi nereden duydunuz?")
   'acq_title': 'Bizi nereden duydun?',
   'acq_subtitle': 'Qulo\'ya nasıl ulaştığını öğrenmek bize çok yardımcı olur.',
-  'acq_skip': 'Atla',
   'acq_continue': 'Devam',
   'acq_other_hint': 'İstersen biraz daha anlat (opsiyonel)',
-  'acq_thanks': 'Teşekkürler!',
   'acq_error': 'Bir şeyler ters gitti.',
   'chars_remaining': 'Son {count} karakter kaldı',
 

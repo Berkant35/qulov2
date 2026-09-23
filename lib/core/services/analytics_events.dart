@@ -12,6 +12,8 @@ abstract class AnalyticsEvents {
   static const String authLoginFail = 'auth_login_fail';
   static const String authRegisterStart = 'auth_register_start';
   static const String authRegisterSuccess = 'auth_register_success';
+  /// GA4 / Google Ads standart kayıt olayı — dönüşüm içe aktarımı bu adı bekler.
+  static const String signUp = 'sign_up';
   static const String authRegisterFail = 'auth_register_fail';
   static const String authLogout = 'auth_logout';
   static const String authForgotPassword = 'auth_forgot_password';
@@ -367,6 +369,7 @@ abstract class AnalyticsEvents {
   static const String paramErrorType = 'error_type';
   static const String paramScreen = 'screen';
   static const String paramStatus = 'status';
+  static const String paramRole = 'role';
   static const String paramEndpoint = 'endpoint';
   static const String paramStatusCode = 'status_code';
   static const String paramUrl = 'url';
@@ -441,6 +444,10 @@ abstract class AnalyticsEvents {
   static const String paramUri = 'uri';
   static const String paramTargetPath = 'target_path';
   static const String paramNavType = 'nav_type';
+
+  // ─── ATT (iOS) — istem sonucu; opt-in oranı ve (direct) şişkinliği buradan okunur ─
+  static const String attPromptResult = 'att_prompt_result';
+  static const String userPropAttStatus = 'att_status';
 
   // ─── Faz 1 SharedPreferences flag key'leri ────────────────────────
   static const String flagPaywallFirstMatch = 'paywall_after_first_match_shown';

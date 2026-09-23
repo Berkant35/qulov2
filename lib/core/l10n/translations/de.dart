@@ -1188,10 +1188,8 @@ const deTranslations = <String, String>{
   // Acquisition ("Wie hast du von uns erfahren?")
   'acq_title': 'Wie hast du von uns erfahren?',
   'acq_subtitle': 'Zu wissen, wie du Qulo gefunden hast, hilft uns sehr.',
-  'acq_skip': 'Überspringen',
   'acq_continue': 'Weiter',
   'acq_other_hint': 'Erzähl uns etwas mehr (optional)',
-  'acq_thanks': 'Danke!',
   'acq_error': 'Etwas ist schiefgelaufen.',
   'chars_remaining': 'Noch {count} Zeichen übrig',
 

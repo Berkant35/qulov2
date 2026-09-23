@@ -19,6 +19,8 @@ class OverlayRequest {
 
 /// Standard priority tiers. Higher = shown first.
 abstract final class OverlayPriority {
+  /// Tek dokunuşluk anketler (edinim kanalı): onboarding turundan hemen ÖNCE.
+  static const int survey = 310;
   static const int onboarding = 300;
   static const int campaign = 200;
   static const int notification = 100;

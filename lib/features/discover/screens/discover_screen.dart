@@ -11,6 +11,7 @@ import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
+import 'package:qulo_v2/features/discover/mixins/acquisition_prompt_mixin.dart';
 import 'package:qulo_v2/features/discover/mixins/discover_screen_mixin.dart';
 import 'package:qulo_v2/data/models/discover_model.dart';
 import 'package:qulo_v2/features/discover/widgets/discover_card_view.dart';
@@ -29,15 +30,17 @@ class DiscoverScreen extends ConsumerStatefulWidget {
 }
 
 class _DiscoverScreenState extends ConsumerState<DiscoverScreen>
-    with DiscoverScreenMixin {
+    with DiscoverScreenMixin, AcquisitionPromptMixin {
   @override
   void initState() {
     super.initState();
     initMixin();
+    initAcquisitionPrompt();
   }
 
   @override
   void dispose() {
+    disposeAcquisitionPrompt();
     disposeMixin();
     super.dispose();
   }

@@ -191,7 +191,13 @@ abstract class IUserRepository {
 
   Future<Result<UserDetailsModel>> updateDetails(Map<String, dynamic> data);
 
-  Future<Result<void>> updateLocation({required double lat, required double lng, String? city});
+  Future<Result<void>> updateLocation({
+    required double lat,
+    required double lng,
+    String? city,
+    /// ISO 3166-1 alpha-2; sunucu şeması `^[A-Z]{2}$` bekler.
+    String? country,
+  });
 
   Future<Result<void>> updatePushToken(String token);
 
@@ -243,9 +249,5 @@ abstract class ISupportTicketRepository {
 // ─── Acquisition ───
 abstract class IAcquisitionRepository {
   Future<Result<List<AcquisitionChannel>>> getChannels();
-  Future<Result<void>> submitAnswer({
-    String? channelId,
-    bool skipped,
-    String? freeformText,
-  });
+  Future<Result<void>> submitAnswer({String? channelId, String? freeformText});
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,11 +35,7 @@ Future<void> main() async {
   // icin SharedPreferences'i runApp'ten once preload edip override ile inject et.
   final prefs = await SharedPreferences.getInstance();
 
-  // ATT izni — splash bitmeden iOS tracking dialog göster
-  await AttManager.instance.requestPermission();
-
-  // ATT kararını Meta SDK'ya bildir (prompt'tan sonra çağrılmalı)
-  await MetaEventsManager.instance.syncAdvertiserTracking();
+  unawaited(_initTracking());
 
   runApp(
     ProviderScope(
@@ -47,4 +45,17 @@ Future<void> main() async {
       child: const QuloApp(),
     ),
   );
+}
+
+/// ATT izni — iOS diyaloğu yalnızca uygulama aktifken (ilk frame sonrası)
+/// çıkar; `runApp`'ten önce await edilince hiç görünmüyordu. Karar alınınca
+/// Meta SDK'ya iletilir (prompt'tan SONRA çağrılmalı). Açılışı bloklamaz;
+/// her iki manager hatayı içeride non-fatal loglar, burası son emniyet.
+Future<void> _initTracking() async {
+  try {
+    await AttManager.instance.requestWhenActive();
+    await MetaEventsManager.instance.syncAdvertiserTracking();
+  } catch (e, stack) {
+    AnalyticsManager.instance.logNonFatalError(e, stack, context: 'att_init');
+  }
 }

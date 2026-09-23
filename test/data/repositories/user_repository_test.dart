@@ -194,6 +194,14 @@ void main() {
       expect(fake.lastLocation!['city'], 'Istanbul');
     });
 
+    test('ulke kodu verilince `country` anahtari eklenir — users.country hep NULL kaliyordu', () async {
+      final fake = _FakeUserService();
+
+      await _repo(fake).updateLocation(lat: 41.0, lng: 29.0, city: 'Istanbul', country: 'TR');
+
+      expect(fake.lastLocation, {'lat': 41.0, 'lng': 29.0, 'city': 'Istanbul', 'country': 'TR'});
+    });
+
     test('ag hatasi Failure olur — konum sessizce guncellenmis sayilmasin', () async {
       final fake = _FakeUserService(error: _dio(DioExceptionType.connectionError));
 

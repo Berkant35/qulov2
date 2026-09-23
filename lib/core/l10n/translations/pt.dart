@@ -1188,10 +1188,8 @@ const ptTranslations = <String, String>{
   // Acquisition ("Como ouviu falar de nós?")
   'acq_title': 'Como ouviu falar de nós?',
   'acq_subtitle': 'Saber como você encontrou o Qulo nos ajuda muito.',
-  'acq_skip': 'Pular',
   'acq_continue': 'Continuar',
   'acq_other_hint': 'Conte-nos um pouco mais (opcional)',
-  'acq_thanks': 'Obrigado!',
   'acq_error': 'Algo deu errado.',
   'chars_remaining': '{count} caracteres restantes',
 
