@@ -1,0 +1,2 @@
+• Fotos werden jetzt über die Systemauswahl gewählt; keine Galerie-Berechtigung nötig
+• Absturzbehebungen und Stabilitätsverbesserungen

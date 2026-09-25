@@ -1,0 +1,2 @@
+• Photo selection now uses the system photo picker; no gallery permission needed
+• Crash fixes and stability improvements

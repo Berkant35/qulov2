@@ -1,0 +1,2 @@
+• Fotoğraf seçimi artık sistem fotoğraf seçiciyle yapılıyor; galeri iznine gerek yok
+• Çökme düzeltmeleri ve kararlılık iyileştirmeleri
