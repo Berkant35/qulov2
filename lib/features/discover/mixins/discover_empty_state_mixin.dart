@@ -16,6 +16,7 @@ mixin DiscoverEmptyStateMixin<T extends ConsumerStatefulWidget> on ConsumerState
     await ref.read(userProvider.notifier).updateProfile({
       'match_radius_km': radiusKm.round(),
     });
+    if (!mounted) return;
     await ref.read(discoverProvider.notifier).loadCards();
   }
 }

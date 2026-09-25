@@ -103,18 +103,18 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
 
   Future<void> updateLocation() async {
     await ref.read(locationProvider.notifier).getCurrentLocation();
+    if (!mounted) return;
     final loc = ref.read(locationProvider);
-    if (loc.lat != null && loc.lng != null) {
-      await ref
-          .read(userProvider.notifier)
-          .updateLocation(lat: loc.lat!, lng: loc.lng!);
-      await ref.read(userProvider.notifier).fetchMe();
-      final user = ref.read(userProvider).valueOrNull;
-      if (user != null && user.city != null) {
-        setState(() {
-          cityController.text = user.city!;
-        });
-      }
+    if (loc.lat == null || loc.lng == null) return;
+
+    await ref.read(userProvider.notifier).updateLocation(lat: loc.lat!, lng: loc.lng!);
+    if (!mounted) return;
+    await ref.read(userProvider.notifier).fetchMe();
+    if (!mounted) return;
+
+    final city = ref.read(userProvider).valueOrNull?.city;
+    if (city != null) {
+      setState(() => cityController.text = city);
     }
   }
 

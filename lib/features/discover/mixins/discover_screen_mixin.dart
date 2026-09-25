@@ -123,6 +123,8 @@ mixin DiscoverScreenMixin on ConsumerState<DiscoverScreen> {
       ref.read(locationProvider.notifier).getCurrentLocation();
     } else {
       await ref.read(locationProvider.notifier).getCurrentLocation();
+      // Izin diyalogu + GPS sirasinda ekran kapanmis olabilir (setup-gate redirect, sekme).
+      if (!mounted) return;
       // Skip loadCards when location failed — backend throws PROFILE_INCOMPLETE without lat/lng.
       final updatedLocation = ref.read(locationProvider);
       if (updatedLocation.lat == null) return;

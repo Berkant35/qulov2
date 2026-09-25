@@ -4,6 +4,7 @@ import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_progress_bar.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
+import 'package:qulo_v2/features/auth/mixins/location_request_mixin.dart';
 import 'package:qulo_v2/features/auth/mixins/profile_completion_mixin.dart';
 import 'package:qulo_v2/features/auth/widgets/register_step_birthday.dart';
 import 'package:qulo_v2/features/auth/widgets/register_step_gender.dart';
@@ -19,7 +20,7 @@ class ProfileCompletionScreen extends ConsumerStatefulWidget {
 }
 
 class _ProfileCompletionScreenState extends ConsumerState<ProfileCompletionScreen>
-    with ProfileCompletionMixin {
+    with LocationRequestMixin, ProfileCompletionMixin {
   @override
   void initState() {
     super.initState();

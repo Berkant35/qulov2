@@ -9,6 +9,7 @@ import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_progress_bar.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
+import 'package:qulo_v2/features/auth/mixins/location_request_mixin.dart';
 import 'package:qulo_v2/features/auth/mixins/register_screen_mixin.dart';
 import 'package:qulo_v2/features/auth/widgets/register_step_birthday.dart';
 import 'package:qulo_v2/features/auth/widgets/register_step_email.dart';
@@ -26,7 +27,7 @@ class RegisterScreen extends ConsumerStatefulWidget {
 }
 
 class _RegisterScreenState extends ConsumerState<RegisterScreen>
-    with RegisterScreenMixin {
+    with LocationRequestMixin, RegisterScreenMixin {
   @override
   void initState() {
     super.initState();

@@ -33,6 +33,11 @@ class _BackgroundVideoState extends State<BackgroundVideo> {
   VideoPlayerController? _controller;
   bool _isInitialized = false;
 
+  /// acquire tamamlandı ve bu widget bir referans tutuyor; dispose yalnızca
+  /// o zaman release eder (acquire beklerken kapanırsa `_initVideo` bırakır —
+  /// iki kez bırakmak ortak controller'ı başkasının elinden alır).
+  bool _acquired = false;
+
   @override
   void initState() {
     super.initState();
@@ -47,6 +52,7 @@ class _BackgroundVideoState extends State<BackgroundVideo> {
         VideoManager.instance.release(widget.assetPath);
         return;
       }
+      _acquired = true;
       setState(() {
         _controller = controller;
         _isInitialized = controller.value.isInitialized;
@@ -65,7 +71,7 @@ class _BackgroundVideoState extends State<BackgroundVideo> {
 
   @override
   void dispose() {
-    VideoManager.instance.release(widget.assetPath);
+    if (_acquired) VideoManager.instance.release(widget.assetPath);
     super.dispose();
   }
 
@@ -86,8 +92,12 @@ class _BackgroundVideoState extends State<BackgroundVideo> {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          // Video veya siyah placeholder
-          if (_isInitialized && _controller != null)
+          // Video veya siyah placeholder. Manager controller'ı düşürdüyse
+          // (max 1 kuralı) ölü controller'la VideoPlayer kurulmaz — platform
+          // "No active player" ile fırlatır.
+          if (_isInitialized &&
+              _controller != null &&
+              VideoManager.instance.isActive(widget.assetPath))
             FittedBox(
               fit: BoxFit.cover,
               child: SizedBox(

@@ -5,13 +5,13 @@ import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/utils/age_utils.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
-import 'package:qulo_v2/core/services/location_manager.dart';
-import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
+import 'package:qulo_v2/features/auth/mixins/location_request_mixin.dart';
 import 'package:qulo_v2/features/auth/screens/register_screen.dart';
 
-mixin RegisterScreenMixin on ConsumerState<RegisterScreen> {
+mixin RegisterScreenMixin
+    on ConsumerState<RegisterScreen>, LocationRequestMixin<RegisterScreen> {
   static const totalSteps = 7;
 
   final pageController = PageController();
@@ -23,10 +23,6 @@ mixin RegisterScreenMixin on ConsumerState<RegisterScreen> {
   DateTime? birthday;
   String? gender;
   String? genderPref;
-  double? lat;
-  double? lng;
-  bool locationGranted = false;
-  bool isRequestingLocation = false;
   bool termsAccepted = false;
   bool obscurePassword = true;
   bool isLoading = false;
@@ -39,7 +35,6 @@ mixin RegisterScreenMixin on ConsumerState<RegisterScreen> {
   String? birthdayError;
   String? genderError;
   String? genderPrefError;
-  String? locationError;
   String? termsError;
 
   void initMixin() {}
@@ -145,63 +140,6 @@ mixin RegisterScreenMixin on ConsumerState<RegisterScreen> {
   int calculateAge() {
     if (birthday == null) return 0;
     return ageOn(birthday: birthday!, today: DateTime.now());
-  }
-
-  Future<void> requestLocation() async {
-    final l10n = AppLocalizations.of(context);
-    setState(() {
-      isRequestingLocation = true;
-      locationError = null;
-    });
-
-    try {
-      final manager = ref.read(locationManagerProvider);
-
-      final serviceEnabled = await manager.isServiceEnabled();
-      if (!serviceEnabled) {
-        setState(() {
-          isRequestingLocation = false;
-          locationError = l10n.get('location_service_disabled');
-        });
-        return;
-      }
-
-      var permission = await manager.checkPermission();
-      if (permission == LocationPermissionStatus.denied) {
-        permission = await manager.requestPermission();
-        if (permission == LocationPermissionStatus.denied) {
-          setState(() {
-            isRequestingLocation = false;
-            locationError = l10n.get('location_permission_denied');
-          });
-          return;
-        }
-      }
-
-      if (permission == LocationPermissionStatus.deniedForever) {
-        setState(() {
-          isRequestingLocation = false;
-          locationError = l10n.get('location_permission_denied_forever');
-        });
-        return;
-      }
-
-      final result = await manager.getCurrentPosition();
-
-      setState(() {
-        lat = result.lat;
-        lng = result.lng;
-        locationGranted = true;
-        isRequestingLocation = false;
-      });
-    } catch (_) {
-      // Ham istisna metni (Ingilizce, platforma ozgu) kullaniciya gosterilmez —
-      // profil tamamlama ile ayni.
-      setState(() {
-        isRequestingLocation = false;
-        locationError = l10n.get('error_general');
-      });
-    }
   }
 
   Future<void> register() async {

@@ -51,7 +51,7 @@ platform :ios do
     UI.success("IPA: #{IPA_PATH}")
   end
 
-  desc "IPA'yi TestFlight'a yukle"
+  desc "IPA'yi TestFlight'a yukle + arsivin dSYM'lerini Crashlytics'e gonder (build_ipa'nin hemen ardindan kosulmali — arsiv/IPA ayni build olmali)"
   lane :beta do
     load_env!
     ensure_key!
@@ -66,6 +66,22 @@ platform :ios do
       skip_submission: true,
       distribute_external: false,
     )
+    dsyms
+  end
+
+  # Bitcode kalktigindan beri App Store dSYM uretmiyor; yuklemezsek Crashlytics
+  # native crash'leri sembollestiremiyor. deploy_testflight.sh bunu yapiyordu,
+  # fastlane zinciri yapmiyordu (2.0.11 sembolsuz cikti). Arsiv `flutter build ipa`
+  # ile her seferinde uzerine yazilir — yalniz son build'in dSYM'i yuklenebilir.
+  desc "Arsivdeki dSYM'leri Crashlytics'e yukle (build_ipa sonrasi; beta bunu cagirir)"
+  lane :dsyms do
+    dsym_dir = File.join(FLUTTER_ROOT, "build/ios/archive/Runner.xcarchive/dSYMs")
+    uploader = File.join(FLUTTER_ROOT, "ios/Pods/FirebaseCrashlytics/upload-symbols")
+    gsp = File.join(FLUTTER_ROOT, "ios/Runner/GoogleService-Info.plist")
+    UI.user_error!("dSYM klasoru yok: #{dsym_dir} — once `fastlane ios build_ipa`") unless File.directory?(dsym_dir)
+    UI.user_error!("upload-symbols yok: #{uploader} — `cd ios && pod install`") unless File.executable?(uploader)
+    sh(uploader, "-gsp", gsp, "-p", "ios", dsym_dir)
+    UI.success("dSYM'ler Crashlytics'e yuklendi: #{dsym_dir}")
   end
 
   desc "TestFlight 'What to Test' notlarini 16 dilde yaz"

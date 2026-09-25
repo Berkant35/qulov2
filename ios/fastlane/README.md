@@ -47,6 +47,14 @@ IPA uret (release, prod API)
 
 IPA'yi TestFlight'a yukle
 
+### ios dsyms
+
+```sh
+[bundle exec] fastlane ios dsyms
+```
+
+Arsivdeki dSYM'leri Crashlytics'e yukle (build_ipa sonrasi; beta bunu cagirir)
+
 ### ios notes
 
 ```sh
@@ -62,6 +70,14 @@ TestFlight 'What to Test' notlarini 16 dilde yaz
 ```
 
 App Store 'Yenilikler' metnini tum lokalizasyonlara yaz
+
+### ios submit_review
+
+```sh
+[bundle exec] fastlane ios submit_review
+```
+
+Surumu App Store incelemesine GONDER (geri alinamaz sayilir) — yalniz kullanici 'yayinla' deyince
 
 ### ios ship_beta
 

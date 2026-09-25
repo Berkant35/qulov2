@@ -3,27 +3,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/l10n/app_localizations.dart';
 import 'package:qulo_v2/core/utils/age_utils.dart';
-import 'package:qulo_v2/core/services/location_manager.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
+import 'package:qulo_v2/features/auth/mixins/location_request_mixin.dart';
 import 'package:qulo_v2/features/auth/screens/profile_completion_screen.dart';
 
-mixin ProfileCompletionMixin on ConsumerState<ProfileCompletionScreen> {
+mixin ProfileCompletionMixin
+    on ConsumerState<ProfileCompletionScreen>, LocationRequestMixin<ProfileCompletionScreen> {
   final pageController = PageController();
   int currentStep = 0;
   DateTime? birthday;
   String? gender;
-  double? lat;
-  double? lng;
-  bool locationGranted = false;
-  bool isRequestingLocation = false;
   bool isSubmitting = false;
 
   // Error state
   String? birthdayError;
   String? genderError;
-  String? locationError;
   String? submitError;
 
   final nameCtrl = TextEditingController();
@@ -126,61 +122,6 @@ mixin ProfileCompletionMixin on ConsumerState<ProfileCompletionScreen> {
       }
     }
     if (valid) goToStep(currentStep + 1);
-  }
-
-  Future<void> requestLocation() async {
-    final l10n = AppLocalizations.of(context);
-    setState(() {
-      isRequestingLocation = true;
-      locationError = null;
-    });
-
-    try {
-      final manager = ref.read(locationManagerProvider);
-
-      final serviceEnabled = await manager.isServiceEnabled();
-      if (!serviceEnabled) {
-        setState(() {
-          isRequestingLocation = false;
-          locationError = l10n.get('location_service_disabled');
-        });
-        return;
-      }
-
-      var permission = await manager.checkPermission();
-      if (permission == LocationPermissionStatus.denied) {
-        permission = await manager.requestPermission();
-        if (permission == LocationPermissionStatus.denied) {
-          setState(() {
-            isRequestingLocation = false;
-            locationError = l10n.get('location_permission_denied');
-          });
-          return;
-        }
-      }
-
-      if (permission == LocationPermissionStatus.deniedForever) {
-        setState(() {
-          isRequestingLocation = false;
-          locationError = l10n.get('location_permission_denied_forever');
-        });
-        return;
-      }
-
-      final result = await manager.getCurrentPosition();
-
-      setState(() {
-        lat = result.lat;
-        lng = result.lng;
-        locationGranted = true;
-        isRequestingLocation = false;
-      });
-    } catch (e) {
-      setState(() {
-        isRequestingLocation = false;
-        locationError = l10n.get('error_general');
-      });
-    }
   }
 
   Future<void> completeProfile() async {
