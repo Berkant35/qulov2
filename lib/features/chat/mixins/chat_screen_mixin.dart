@@ -1,21 +1,24 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
-import 'package:qulo_v2/core/services/coach_mark_service.dart';
-import 'package:qulo_v2/features/chat/coach/chat_question_coach_marks.dart';
-import 'package:qulo_v2/core/services/one_time_flag_store.dart';
-import 'package:qulo_v2/core/navigation/navigation_provider.dart';
 import 'package:qulo_v2/core/navigation/models/app_dialog.dart';
+import 'package:qulo_v2/core/navigation/navigation_provider.dart';
 import 'package:qulo_v2/core/network/failure_message.dart';
-import 'package:qulo_v2/core/utils/block_flow.dart';
-import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/app_review_manager.dart';
+import 'package:qulo_v2/core/services/coach_mark_service.dart';
+import 'package:qulo_v2/core/services/one_time_flag_store.dart';
+import 'package:qulo_v2/core/utils/block_flow.dart';
 import 'package:qulo_v2/data/models/match_model.dart';
 import 'package:qulo_v2/data/models/message_model.dart';
-import 'package:qulo_v2/providers/chat_provider.dart';
-import 'package:qulo_v2/providers/match_provider.dart';
+import 'package:qulo_v2/features/chat/coach/chat_question_coach_marks.dart';
 import 'package:qulo_v2/features/chat/screens/chat_screen.dart';
 import 'package:qulo_v2/features/profile_detail/models/profile_detail_args.dart';
+import 'package:qulo_v2/providers/chat_provider.dart';
+import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 
 /// Chat ekraninin ortak state'i ve yasam dongusu: metin/scroll kontrolcusu,
@@ -157,8 +160,12 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
     final text = msgCtrl.text.trim();
     if (text.isEmpty) return;
     msgCtrl.clear();
-    await ref.read(chatProvider(widget.matchId).notifier).sendMessage(text);
+    final result =
+        await ref.read(chatProvider(widget.matchId).notifier).sendMessage(text);
+    // Başarısız gönderim (ağ yok) ne oturum sayacına ne puan istemine sayılır.
+    if (result.isFailure) return;
     messagesSentCount++;
+    unawaited(AppReviewManager.instance.onMessageSent());
     WidgetsBinding.instance.addPostFrameCallback((_) => scrollToBottom());
     AnalyticsManager.instance.logEvent(
       AnalyticsEvents.chatMessageSend,

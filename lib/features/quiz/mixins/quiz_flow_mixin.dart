@@ -1,15 +1,17 @@
-import 'package:qulo_v2/core/services/one_time_flag_store.dart';
+import 'dart:async';
+
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
-import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/app_review_manager.dart';
 import 'package:qulo_v2/core/services/funnel_events.dart';
+import 'package:qulo_v2/core/services/one_time_flag_store.dart';
 import 'package:qulo_v2/features/onboarding/widgets/premium_suggestion_sheet.dart';
+import 'package:qulo_v2/features/quiz/mixins/quiz_screen_state_mixin.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/providers/quiz_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
-import 'package:qulo_v2/features/quiz/mixins/quiz_screen_state_mixin.dart';
 
 /// Ekrandan cikis, kutlama sonrasi yonlendirme ve ilk eslesme paywall'i.
 mixin QuizFlowMixin on QuizScreenStateMixin {
@@ -47,19 +49,22 @@ mixin QuizFlowMixin on QuizScreenStateMixin {
     _maybeShowFirstMatchPaywall(nextRoute: RouteNames.matches);
   }
 
+  // Eslesme olmadan geri donus kotu bir an: degerlendirme istemi sorulmaz
+  // (2026-09-25'e kadar soruluyordu).
   void onGoBack() {
     if (celebrationMatched) {
       _maybeShowFirstMatchPaywall(nextRoute: RouteNames.discover);
     } else {
       ref.read(navigationServiceProvider).go(RouteNames.discover);
-      AppReviewManager.instance.tryShowReview(trigger: 'match_celebration');
     }
   }
 
   // Ilk eslesme celebration cikisinda paywall'i bir kez goster (onboarding
   // yerine buraya ertelendi — carousel artik auth oncesi). Flag zaten set ise
-  // (2. + eslesme) dogrudan yonlendir + mevcut review davranisini koru; ayni
-  // turda paywall + review birlikte acilmasin diye review'i sadece bu dalda cagir.
+  // (2. + eslesme) dogrudan yonlendir + degerlendirme istemini dene. Ilk
+  // eslesmede paywall ile istem ayni turda acilmasin diye istem
+  // `AppReviewManager.returnDelay` sonrasina, Kesfet'e donuse birakilir
+  // (ReturnReviewPromptMixin).
   Future<void> _maybeShowFirstMatchPaywall({required String nextRoute}) async {
     final nav = ref.read(navigationServiceProvider);
     final isFirstTime = await OneTimeFlagStore.markIfUnset(
@@ -68,10 +73,15 @@ mixin QuizFlowMixin on QuizScreenStateMixin {
 
     if (!isFirstTime) {
       nav.go(nextRoute);
-      AppReviewManager.instance.tryShowReview(trigger: 'match_celebration');
+      unawaited(
+        AppReviewManager.instance.tryShowReview(
+          trigger: AppReviewTrigger.matchCelebration,
+        ),
+      );
       return;
     }
 
+    unawaited(AppReviewManager.instance.markPendingReturnReview());
     FunnelEvents.logAuthed(
       AnalyticsEvents.paywallShown,
       params: {AnalyticsEvents.paramTrigger: 'first_match'},
