@@ -156,6 +156,7 @@ const plTranslations = <String, String>{
 
   // Discover Empty State
   'no_more_profiles_hint': 'Zwi\u0119ksz zasi\u0119g odleg\u0142o\u015bci, aby zobaczy\u0107 wi\u0119cej os\u00f3b',
+  'discover_invite_friend': 'Zaproś znajomego — po @reward fioletowych diamentów',
   'match_radius': 'Odleg\u0142o\u015b\u0107 dopasowania',
   'search_again': 'Szukaj ponownie',
 

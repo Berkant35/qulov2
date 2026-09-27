@@ -2,12 +2,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/data/models/match_model.dart';
+import 'package:qulo_v2/data/models/referral_model.dart';
 import 'package:qulo_v2/data/models/subscription_model.dart';
 import 'package:qulo_v2/data/repositories/match_repository.dart';
+import 'package:qulo_v2/data/repositories/referral_repository.dart';
 import 'package:qulo_v2/data/repositories/subscription_repository.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
+import 'package:qulo_v2/providers/referral_provider.dart';
 import 'package:qulo_v2/providers/subscription_provider.dart';
 
 /// Logout sırasında provider'lar invalidate edilirken alttaki ekranlar hâlâ
@@ -49,14 +52,43 @@ class _CountingSubscriptionRepository implements SubscriptionRepository {
       throw UnimplementedError('_CountingSubscriptionRepository.${invocation.memberName}');
 }
 
-ProviderContainer _unauthenticatedContainer({
+class _CountingReferralRepository implements ReferralRepository {
+  int calls = 0;
+
+  @override
+  Future<Result<String>> getMyCode() async {
+    calls++;
+    return const Success('ABC123');
+  }
+
+  @override
+  Future<Result<ReferralStats>> getStats() async =>
+      const Success(ReferralStats(total: 0, pending: 0, completed: 0, remaining: 10));
+
+  @override
+  Future<Result<List<ReferralItem>>> getHistory() async => const Success([]);
+
+  @override
+  Future<Result<MyReferrerResponse>> getMyReferrer() async =>
+      const Success(MyReferrerResponse());
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) =>
+      throw UnimplementedError('_CountingReferralRepository.${invocation.memberName}');
+}
+
+ProviderContainer _container(
+  AuthStatus status, {
   required _CountingMatchRepository matchRepo,
   required _CountingSubscriptionRepository subRepo,
+  _CountingReferralRepository? referralRepo,
 }) {
   final container = ProviderContainer(overrides: [
-    authProvider.overrideWith(() => _FakeAuthNotifier(AuthStatus.unauthenticated)),
+    authProvider.overrideWith(() => _FakeAuthNotifier(status)),
     matchRepositoryProvider.overrideWithValue(matchRepo),
     subscriptionRepositoryProvider.overrideWithValue(subRepo),
+    if (referralRepo != null)
+      referralRepositoryProvider.overrideWithValue(referralRepo),
   ]);
   addTearDown(container.dispose);
   return container;
@@ -65,7 +97,8 @@ ProviderContainer _unauthenticatedContainer({
 void main() {
   test('kimliksizken eşleşme listesi ağa çıkmaz, boş döner', () async {
     final matchRepo = _CountingMatchRepository();
-    final container = _unauthenticatedContainer(
+    final container = _container(
+      AuthStatus.unauthenticated,
       matchRepo: matchRepo,
       subRepo: _CountingSubscriptionRepository(),
     );
@@ -78,7 +111,8 @@ void main() {
 
   test('kimliksizken abonelik durumu ağa çıkmaz, free döner', () async {
     final subRepo = _CountingSubscriptionRepository();
-    final container = _unauthenticatedContainer(
+    final container = _container(
+      AuthStatus.unauthenticated,
       matchRepo: _CountingMatchRepository(),
       subRepo: subRepo,
     );
@@ -88,5 +122,38 @@ void main() {
     expect(info.isPlus, isFalse);
     expect(info.isPremium, isFalse);
     expect(subRepo.calls, 0);
+  });
+
+  test('kimliksizken davet verisi ağa çıkmaz, boş döner', () async {
+    final referralRepo = _CountingReferralRepository();
+    final container = _container(
+      AuthStatus.unauthenticated,
+      matchRepo: _CountingMatchRepository(),
+      subRepo: _CountingSubscriptionRepository(),
+      referralRepo: referralRepo,
+    );
+
+    final state = await container.read(referralProvider.future);
+
+    expect(state.code, isNull);
+    expect(referralRepo.calls, 0);
+  });
+
+  /// `referralProvider` 27.09.2026'ya kadar `build()`'de boş state dönüyordu ve
+  /// onu dolduran tek yer Elmaslar ekranıydı; başka bir ekran davet kodunu
+  /// okumak istediğinde kod hep `null` geliyordu. Bu case o gerilemeyi tutar.
+  test('kimlikliyken davet verisi kendiliğinden yüklenir', () async {
+    final referralRepo = _CountingReferralRepository();
+    final container = _container(
+      AuthStatus.authenticated,
+      matchRepo: _CountingMatchRepository(),
+      subRepo: _CountingSubscriptionRepository(),
+      referralRepo: referralRepo,
+    );
+
+    final state = await container.read(referralProvider.future);
+
+    expect(state.code, 'ABC123');
+    expect(referralRepo.calls, 1, reason: 'çağıranın fetchAll() demesi gerekmemeli');
   });
 }

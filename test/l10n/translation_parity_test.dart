@@ -1,53 +1,23 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:qulo_v2/core/l10n/translations/ar.dart';
-import 'package:qulo_v2/core/l10n/translations/de.dart';
-import 'package:qulo_v2/core/l10n/translations/en.dart';
-import 'package:qulo_v2/core/l10n/translations/es.dart';
-import 'package:qulo_v2/core/l10n/translations/fr.dart';
-import 'package:qulo_v2/core/l10n/translations/hi.dart';
-import 'package:qulo_v2/core/l10n/translations/th.dart';
-import 'package:qulo_v2/core/l10n/translations/id.dart';
-import 'package:qulo_v2/core/l10n/translations/it.dart';
-import 'package:qulo_v2/core/l10n/translations/ja.dart';
-import 'package:qulo_v2/core/l10n/translations/ko.dart';
-import 'package:qulo_v2/core/l10n/translations/nl.dart';
-import 'package:qulo_v2/core/l10n/translations/pl.dart';
-import 'package:qulo_v2/core/l10n/translations/pt.dart';
-import 'package:qulo_v2/core/l10n/translations/ru.dart';
-import 'package:qulo_v2/core/l10n/translations/sv.dart';
-import 'package:qulo_v2/core/l10n/translations/tr.dart';
-import 'package:qulo_v2/core/l10n/translations/zh.dart';
 
-/// AppLocalizations._localizedValues private — burada aynı listeyi tutuyoruz.
-/// Yeni dil eklenince bu map de güncellenmeli (aksi halde parity testi o dili atlar).
-const _translations = <String, Map<String, String>>{
-  'tr': trTranslations,
-  'en': enTranslations,
-  'de': deTranslations,
-  'fr': frTranslations,
-  'es': esTranslations,
-  'ar': arTranslations,
-  'ru': ruTranslations,
-  'pt': ptTranslations,
-  'it': itTranslations,
-  'ja': jaTranslations,
-  'ko': koTranslations,
-  'zh': zhTranslations,
-  'nl': nlTranslations,
-  'pl': plTranslations,
-  'sv': svTranslations,
-  'hi': hiTranslations,
-  'th': thTranslations,
-  'id': idTranslations,
-};
+import '../helpers/translations.dart';
+
+const _translations = allTranslations;
 
 /// Referans dil: fallback zinciri de buraya düşüyor (AppLocalizations.get).
 const _reference = 'en';
 
 /// "{name} sana {count} mesaj gönderdi" → {count, name}
-Set<String> _placeholders(String text) => RegExp(r'\{(\w+)\}')
+///
+/// İki stil de taranır: baskın `{name}` biçimi (41 anahtar) ve `@name` biçimi
+/// (`referral_share_message`, `discover_invite_friend`,
+/// `milestone_profile_completed`). `@` stili 2026-09-27'ye kadar bu regex'in
+/// dışındaydı; bir çevirmen `@reward`'ı düşürse ya da `@odul` yazsa kullanıcı
+/// ödül sayısı olmayan bir cümle ya da ham `@reward` metni görür, hiçbir test
+/// kırmızıya dönmezdi.
+Set<String> _placeholders(String text) => RegExp(r'\{(\w+)\}|@(\w+)')
     .allMatches(text)
-    .map((m) => m.group(1)!)
+    .map((m) => m.group(1) ?? m.group(2)!)
     .toSet();
 
 void main() {

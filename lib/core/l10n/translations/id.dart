@@ -156,6 +156,7 @@ const idTranslations = <String, String>{
 
   // Discover Empty State
   'no_more_profiles_hint': 'Perluas jarak pencarianmu untuk melihat lebih banyak orang',
+  'discover_invite_friend': 'Undang teman — @reward diamond ungu untuk keduanya',
   'match_radius': 'Jarak Pencarian',
   'search_again': 'Cari Lagi',
 

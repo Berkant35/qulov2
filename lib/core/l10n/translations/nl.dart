@@ -156,6 +156,7 @@ const nlTranslations = <String, String>{
 
   // Discover Empty State
   'no_more_profiles_hint': 'Vergroot je afstandsbereik om meer mensen te zien',
+  'discover_invite_friend': 'Nodig een vriend uit — @reward paarse diamanten elk',
   'match_radius': 'Match afstand',
   'search_again': 'Opnieuw zoeken',
 

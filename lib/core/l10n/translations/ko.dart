@@ -156,6 +156,7 @@ const koTranslations = <String, String>{
 
   // Discover Empty State
   'no_more_profiles_hint': '거리 범위를 늘려서 더 많은 사람을 만나보세요',
+  'discover_invite_friend': '친구 초대 — 서로 보라 다이아 @reward개',
   'match_radius': '매칭 거리',
   'search_again': '다시 검색',
 

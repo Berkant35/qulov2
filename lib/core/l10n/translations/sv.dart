@@ -156,6 +156,7 @@ const svTranslations = <String, String>{
 
   // Discover Empty State
   'no_more_profiles_hint': 'Öka ditt avstånd för att se fler personer',
+  'discover_invite_friend': 'Bjud in en vän — @reward lila diamanter var',
   'match_radius': 'Matchavstånd',
   'search_again': 'Sök igen',
 

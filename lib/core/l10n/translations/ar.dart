@@ -156,6 +156,7 @@ const arTranslations = <String, String>{
 
   // Discover Empty State
   'no_more_profiles_hint': 'زد نطاق المسافة لرؤية المزيد من الأشخاص',
+  'discover_invite_friend': 'ادعُ صديقًا — @reward ماسة بنفسجية لكل منكما',
   'match_radius': 'مسافة التوافق',
   'search_again': 'البحث مجدداً',
 

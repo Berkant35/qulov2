@@ -156,6 +156,7 @@ const hiTranslations = <String, String>{
 
   // Discover Empty State
   'no_more_profiles_hint': 'और लोगों को देखने के लिए दूरी बढ़ाएं',
+  'discover_invite_friend': 'दोस्त को बुलाएँ — दोनों को @reward बैंगनी हीरे',
   'match_radius': 'मैच दूरी',
   'search_again': 'फिर से खोजें',
 

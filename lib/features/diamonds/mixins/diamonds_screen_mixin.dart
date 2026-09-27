@@ -8,7 +8,6 @@ import 'package:qulo_v2/data/models/diamond_model.dart';
 import 'package:qulo_v2/features/diamonds/models/diamond_tier.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
 import 'package:qulo_v2/providers/daily_stats_provider.dart';
-import 'package:qulo_v2/providers/referral_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/features/diamonds/screens/diamonds_screen.dart';
@@ -22,7 +21,7 @@ mixin DiamondsScreenMixin on ConsumerState<DiamondsScreen> {
     Future.microtask(() {
       ref.read(diamondProvider.notifier).fetchBalance();
       ref.read(dailyStatsProvider.notifier).fetchStats();
-      ref.read(referralProvider.notifier).fetchAll();
+      // `referralProvider` artik kendi verisini yukluyor (build()).
       loadHistory();
 
       final balance = ref.read(diamondProvider).valueOrNull;

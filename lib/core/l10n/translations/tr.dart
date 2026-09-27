@@ -156,6 +156,7 @@ const trTranslations = <String, String>{
 
   // Discover Empty State
   'no_more_profiles_hint': 'Mesafe aralığını artırarak daha fazla kişi görebilirsin',
+  'discover_invite_friend': 'Arkadaşını çağır, ikinize de @reward mor elmas',
   'match_radius': 'Eşleşme Mesafesi',
   'search_again': 'Yeniden Ara',
 

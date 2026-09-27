@@ -156,6 +156,7 @@ const ruTranslations = <String, String>{
 
   // Discover Empty State
   'no_more_profiles_hint': 'Увеличьте радиус поиска, чтобы увидеть больше людей',
+  'discover_invite_friend': 'Позови друга — по @reward фиолетовых алмазов',
   'match_radius': 'Радиус поиска',
   'search_again': 'Искать снова',
 

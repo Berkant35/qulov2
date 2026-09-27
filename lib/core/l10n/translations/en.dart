@@ -156,6 +156,7 @@ const enTranslations = <String, String>{
 
   // Discover Empty State
   'no_more_profiles_hint': 'Increase your distance range to see more people',
+  'discover_invite_friend': 'Invite a friend — @reward purple diamonds each',
   'match_radius': 'Match Distance',
   'search_again': 'Search Again',
 

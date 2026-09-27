@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/network/result.dart';
+import 'package:qulo_v2/core/utils/referral_share.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/referral_invite_card.dart';
-import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/economy_config_provider.dart';
 import 'package:qulo_v2/providers/referral_provider.dart';
-import 'package:qulo_v2/providers/api_provider.dart';
 
 class DiamondsReferralSection extends ConsumerStatefulWidget {
   final String? prefillCode;
@@ -49,13 +50,13 @@ class _DiamondsReferralSectionState
         };
         setState(() {
           _applyingCode = false;
-          _applyError = context.tr(
-            errorCode == 'SELF_REFERRAL'
-                ? 'referral_self_error'
-                : errorCode == 'ALREADY_REFERRED'
-                    ? 'referral_already_error'
-                    : 'referral_code_invalid',
-          );
+          // Sekiz satir yukarida zaten `switch (f)` pattern-matching var;
+          // ic ice ternary ayni dosyada iki farkli stil demekti.
+          _applyError = context.tr(switch (errorCode) {
+            'SELF_REFERRAL' => 'referral_self_error',
+            'ALREADY_REFERRED' => 'referral_already_error',
+            _ => 'referral_code_invalid',
+          });
         });
       },
     );
@@ -87,11 +88,13 @@ class _DiamondsReferralSectionState
             final code = referralState.code!;
             final reward =
                 ref.read(economyConfigProvider).rewards.referralPurple;
-            final message = context
-                .tr('referral_share_message')
-                .replaceAll('@reward', '$reward')
-                .replaceAll('@code', code);
-            ref.read(shareManagerProvider).share(message);
+            ref.read(shareManagerProvider).share(
+                  buildReferralShareMessage(
+                    template: context.tr('referral_share_message'),
+                    reward: reward,
+                    code: code,
+                  ),
+                );
           }
         },
       ),

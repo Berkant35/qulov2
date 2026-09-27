@@ -156,6 +156,7 @@ const thTranslations = <String, String>{
 
   // Discover Empty State
   'no_more_profiles_hint': 'เพิ่มระยะทางเพื่อดูผู้คนมากขึ้น',
+  'discover_invite_friend': 'ชวนเพื่อน — ได้เพชรม่วง @reward เม็ดทั้งคู่',
   'match_radius': 'ระยะทางแมตช์',
   'search_again': 'ค้นหาอีกครั้ง',
 

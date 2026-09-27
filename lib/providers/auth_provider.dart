@@ -24,7 +24,6 @@ import 'package:qulo_v2/providers/location_provider.dart';
 import 'package:qulo_v2/providers/passport_provider.dart';
 import 'package:qulo_v2/providers/user_languages_provider.dart';
 import 'package:qulo_v2/providers/exchange_provider.dart';
-import 'package:qulo_v2/providers/referral_provider.dart';
 import 'package:qulo_v2/providers/quiz_provider.dart';
 import 'package:qulo_v2/providers/deep_link_provider.dart';
 import 'package:qulo_v2/providers/notification_preferences_provider.dart';
@@ -535,7 +534,10 @@ class AuthNotifier extends Notifier<AuthState> {
     ref.invalidate(passportProvider);
     ref.invalidate(locationProvider);
     ref.invalidate(exchangeProvider);
-    ref.invalidate(referralProvider);
+    // `referralProvider` BU LISTEDE DEGIL: artik `authProvider`'i izliyor,
+    // yani cikista kendini yeniden kuruyor. Elle invalidate etmek dairesel
+    // bagimlilik (CircularDependencyError) — `subscriptionProvider` de ayni
+    // sebeple listede yok.
     ref.invalidate(quizProvider);
     ref.invalidate(notificationPreferencesProvider);
     ref.read(pendingDeepLinkProvider.notifier).state = null;

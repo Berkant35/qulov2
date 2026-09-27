@@ -7,6 +7,7 @@ import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/empty_state_view.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
+import 'package:qulo_v2/features/discover/widgets/discover_invite_hint.dart';
 import 'package:qulo_v2/features/discover/widgets/discover_passport_hint.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 
@@ -50,6 +51,11 @@ class DiscoverEmptyLanguage extends ConsumerWidget {
         ),
         const SizedBox(height: AppSpacing.md),
         const DiscoverPassportHint(),
+        const SizedBox(height: AppSpacing.sm),
+        // Pasaport ipucunun kendi yorumunun soyledigi ders: bu iki bos durumun
+        // biri unutulunca aylar sonra "eksikti" diye bulunuyor. Dil kapisinda
+        // davet daha da isabetli — cagrilan arkadas kendi dilinde soru yazacak.
+        const DiscoverInviteHint(),
       ],
     );
   }

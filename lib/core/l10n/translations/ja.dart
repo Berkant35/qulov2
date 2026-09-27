@@ -156,6 +156,7 @@ const jaTranslations = <String, String>{
 
   // Discover Empty State
   'no_more_profiles_hint': '距離範囲を広げてもっと多くの人を見ましょう',
+  'discover_invite_friend': '友だちを招待 — おたがいに紫ダイヤ @reward 個',
   'match_radius': 'マッチ距離',
   'search_again': 'もう一度検索',
 

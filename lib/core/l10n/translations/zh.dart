@@ -156,6 +156,7 @@ const zhTranslations = <String, String>{
 
   // Discover Empty State
   'no_more_profiles_hint': '增加距离范围可以看到更多人',
+  'discover_invite_friend': '邀请朋友 — 双方各得 @reward 颗紫钻',
   'match_radius': '匹配距离',
   'search_again': '重新搜索',
 
