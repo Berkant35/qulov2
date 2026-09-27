@@ -17,10 +17,15 @@ import 'package:qulo_v2/core/services/deep_link_parser.dart';
 import 'package:qulo_v2/providers/deep_link_provider.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
 import 'package:qulo_v2/providers/page_messages_provider.dart';
+import 'package:qulo_v2/providers/referral_provider.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/services/install_referrer_manager.dart';
+import 'package:qulo_v2/core/utils/install_referrer_code.dart';
 import 'package:qulo_v2/core/services/pending_languages_store.dart';
+import 'package:qulo_v2/core/services/pending_referral_store.dart';
 import 'package:qulo_v2/core/network/network_manager.dart';
+import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/network/interceptors/session_interceptor.dart';
 import 'package:qulo_v2/core/services/analytics_forwarder.dart';
 import 'package:qulo_v2/core/services/overlay_queue_service.dart';
@@ -71,6 +76,9 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
         ref.read(pageMessagesProvider.notifier).fetch();
         // Faz 1: onboarding'de (pre-auth) seçilen dilleri flush et.
         unawaited(_flushPendingLanguages(ref));
+        // Kurulumla gelen davet kodu (Play Install Referrer) — auth'tan önce
+        // yakalandı, uygulanabildiği ilk an burası.
+        unawaited(_flushPendingReferral(ref));
       }
     });
 
@@ -78,6 +86,7 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _setupNotificationCallbacks();
       _setupDeepLinks();
+      unawaited(_captureInstallReferrer(ref));
       _setupVersionManager();
     });
   }
@@ -362,6 +371,76 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
       routerConfig: router,
     );
   }
+}
+
+/// Kurulumla gelen davet kodunu bir kez okuyup saklar.
+///
+/// Kod, arkadaşın paylaştığı linkle Play'e gidip kuran kullanıcıda cihazda
+/// hazır duruyor (`web/src/lib/constants/links.ts` onu `utm_content`'e koyuyor)
+/// ama uygulama 27.09.2026'ya kadar onu hiç okumuyordu: kodu elle yazmak
+/// gerekiyordu ve `referrals` tablosu boştu.
+///
+/// Bir kez okunur — Play aynı değeri her açılışta döndürüyor; tekrar okumak,
+/// kullanıcı vazgeçip kodu sildikten sonra onu geri getirirdi.
+Future<void> _captureInstallReferrer(WidgetRef ref) async {
+  final wasRead = await PendingReferralStore.wasReferrerRead();
+  if (wasRead) return;
+
+  // Karar (neyin işaretleneceği, neyin saklanacağı) `captureInstallReferrer`
+  // içinde ve test altında — burada yalnız yan etkiler var.
+  final capture = captureInstallReferrer(
+    wasRead: wasRead,
+    raw: await InstallReferrerManager.instance.rawReferrer(),
+  );
+  if (!capture.markRead) return;
+  await PendingReferralStore.markReferrerRead();
+
+  final code = capture.code;
+  if (code == null) return;
+  await PendingReferralStore.write(code);
+
+  // Yakalama, auth geçişi listener'ından SONRA bitmiş olabilir (yeni kurulumda
+  // kayıt akışı çok daha uzun sürdüğü için pratikte olmaz, ama garanti değil).
+  // O durumda kod bir sonraki açılışa kalırdı; zaten girişliysek şimdi uygula.
+  if (ref.read(authProvider).status == AuthStatus.authenticated) {
+    await _flushPendingReferral(ref);
+  }
+}
+
+/// Bekleyen davet kodunu uygular (ilk authenticated an).
+///
+/// Ağ hatasında kod saklanır, sonraki auth geçişinde tekrar denenir; kalıcı
+/// redlerde (kendini davet etme, zaten davet edilmiş, geçersiz kod) silinir —
+/// yoksa her açılışta boşuna istek atılır.
+/// İki çağrı yeri var (yakalama + auth geçişi) ve ikisi üst üste gelebilir;
+/// sunucu ikinciye `ALREADY_REFERRED` döndüğü için sonuç yine doğru olurdu ama
+/// istek boşa gidiyordu.
+bool _flushingReferral = false;
+
+Future<void> _flushPendingReferral(WidgetRef ref) async {
+  if (_flushingReferral) return;
+  final code = await PendingReferralStore.read();
+  if (code == null) return;
+  _flushingReferral = true;
+  try {
+    await _applyPendingReferral(ref, code);
+  } finally {
+    _flushingReferral = false;
+  }
+}
+
+Future<void> _applyPendingReferral(WidgetRef ref, String code) async {
+  final result = await ref.read(referralProvider.notifier).applyCode(code);
+  result.when(
+    success: (_) => PendingReferralStore.clear(),
+    failure: (f) {
+      final errorCode = switch (f) {
+        ServerFailure(:final code) => code,
+        _ => 'NETWORK',
+      };
+      if (shouldDropPendingReferral(errorCode)) PendingReferralStore.clear();
+    },
+  );
 }
 
 /// Onboarding carousel'de (auth öncesi) seçilen dilleri backend'e flush eder.

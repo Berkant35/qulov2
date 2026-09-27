@@ -69,6 +69,10 @@ dependencies:
   package_info_plus: ^9.0.0
   google_maps_flutter: ^2.10.0
   share_plus: ^10.1.4
+  # Android Install Referrer: davet linkiyle gelen kod kurulumda cihaza
+  # ulasiyor (web `storeLinks()` onu `utm_content`'e koyuyor) ama
+  # uygulama okumuyordu. iOS'ta esdegeri YOK — orada kod elle girilir.
+  play_install_referrer: ^0.5.0
   just_audio: ^0.9.42
   record: ^6.2.0
   path_provider: ^2.1.5
