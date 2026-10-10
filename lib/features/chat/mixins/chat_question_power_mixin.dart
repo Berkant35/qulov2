@@ -95,13 +95,8 @@ mixin ChatQuestionPowerMixin on SolveChatQuestionScreenMixin {
         );
 
         // Track power usage for result screen
-        if (data.cost != null && data.cost! > 0) {
-          powerUsages.add(PowerUsageRecord(
-            powerName: powerName,
-            purpleSpent: data.cost!,
-            greenEarned: data.greenReward ?? 0,
-          ));
-        }
+        final record = PowerUsageRecord.fromPowerUse(powerName, data);
+        if (record != null) powerUsages.add(record);
 
         switch (powerName) {
           case 'ORACLE':
@@ -134,6 +129,7 @@ mixin ChatQuestionPowerMixin on SolveChatQuestionScreenMixin {
                 unmatched: false,
                 rewardMediaUrl: widget.question.rewardMediaUrl,
                 greenReward: data.greenReward ?? 0,
+                rainbowReward: data.rainbowReward ?? 0,
                 powersUsed: const ['SKIP'],
                 correctOption: data.question?.answeredOption,
                 answeredOption: data.question?.answeredOption,

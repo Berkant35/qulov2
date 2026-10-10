@@ -10,10 +10,15 @@ DiamondBalance _$DiamondBalanceFromJson(Map<String, dynamic> json) =>
     DiamondBalance(
       green: (json['green'] as num).toInt(),
       purple: (json['purple'] as num).toInt(),
+      rainbow: (json['rainbow'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$DiamondBalanceToJson(DiamondBalance instance) =>
-    <String, dynamic>{'green': instance.green, 'purple': instance.purple};
+    <String, dynamic>{
+      'green': instance.green,
+      'purple': instance.purple,
+      'rainbow': instance.rainbow,
+    };
 
 DiamondTransaction _$DiamondTransactionFromJson(Map<String, dynamic> json) =>
     DiamondTransaction(

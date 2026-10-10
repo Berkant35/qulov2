@@ -69,6 +69,11 @@ ProfileCardModel _$ProfileCardModelFromJson(Map<String, dynamic> json) =>
           : QuestionInfoModel.fromJson(
               json['question_info'] as Map<String, dynamic>,
             ),
+      identity: json['identity'] == null
+          ? null
+          : VisibleIdentityModel.fromJson(
+              json['identity'] as Map<String, dynamic>,
+            ),
     );
 
 Map<String, dynamic> _$ProfileCardModelToJson(ProfileCardModel instance) =>
@@ -86,6 +91,7 @@ Map<String, dynamic> _$ProfileCardModelToJson(ProfileCardModel instance) =>
       'is_boosted': instance.isBoosted,
       'relationship_goal': instance.relationshipGoal,
       'question_info': instance.questionInfo,
+      'identity': instance.identity,
     };
 
 SwipeResponse _$SwipeResponseFromJson(Map<String, dynamic> json) =>

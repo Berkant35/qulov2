@@ -93,6 +93,8 @@ void main() {
       'performance',
       'settings',
       'notifications',
+      'market',
+      'gift-cards',
     ]) {
       test('/profile/$tab kendi sekmesine gider', () {
         final r = _parse('https://quloapp.com/profile/$tab')!;

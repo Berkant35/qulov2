@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qulo_v2/core/navigation/navigation.dart';
-import 'package:qulo_v2/core/services/analytics_manager.dart';
-import 'package:qulo_v2/core/services/analytics_events.dart';
-import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/core/widgets/error_retry_widget.dart';
-import 'package:qulo_v2/providers/match_provider.dart';
-import 'package:qulo_v2/core/l10n/l10n.dart';
-import 'package:qulo_v2/routing/route_names.dart';
-import 'package:qulo_v2/data/models/match_model.dart';
-import 'package:qulo_v2/features/chat/widgets/new_match_avatar.dart';
+import 'package:qulo_v2/features/chat/mixins/matches_screen_mixin.dart';
 import 'package:qulo_v2/features/chat/widgets/match_card.dart';
-import 'package:qulo_v2/features/profile_detail/models/profile_detail_args.dart';
+import 'package:qulo_v2/features/chat/widgets/matches_empty_view.dart';
+import 'package:qulo_v2/features/chat/widgets/new_matches_strip.dart';
+import 'package:qulo_v2/features/email_verification/widgets/email_verify_banner.dart';
+import 'package:qulo_v2/providers/match_provider.dart';
 
 class MatchesScreen extends ConsumerStatefulWidget {
   const MatchesScreen({super.key});
@@ -21,18 +17,16 @@ class MatchesScreen extends ConsumerStatefulWidget {
   ConsumerState<MatchesScreen> createState() => _MatchesScreenState();
 }
 
-class _MatchesScreenState extends ConsumerState<MatchesScreen> {
+class _MatchesScreenState extends ConsumerState<MatchesScreen> with MatchesScreenMixin {
   @override
   void initState() {
     super.initState();
-    AnalyticsManager.instance.logEvent(AnalyticsEvents.matchScreenView);
-    Future.microtask(() => ref.read(matchListProvider.notifier).fetchMatches());
+    initMixin();
   }
 
   @override
   Widget build(BuildContext context) {
     final matchesAsync = ref.watch(matchListProvider);
-    final theme = Theme.of(context);
 
     return AppScaffold(
       title: context.tr('matches'),
@@ -40,125 +34,41 @@ class _MatchesScreenState extends ConsumerState<MatchesScreen> {
       isLoading: matchesAsync is AsyncLoading,
       body: matchesAsync.when(
         loading: () => const SizedBox.shrink(),
-        error: (e, _) => ErrorRetryWidget(
-          onRetry: () => ref.read(matchListProvider.notifier).fetchMatches(),
-        ),
+        error: (e, _) => ErrorRetryWidget(onRetry: refresh),
         data: (matches) {
-          if (matches.isEmpty) {
-            return RefreshIndicator(
-              onRefresh: () => ref.read(matchListProvider.notifier).fetchMatches(),
-              child: ListView(
-                children: [
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.3),
-                  Icon(Icons.favorite_border, size: 64, color: theme.hintColor),
-                  const SizedBox(height: AppSpacing.lg),
-                  Center(child: Text(context.tr('no_matches'), style: theme.textTheme.titleMedium)),
-                  const SizedBox(height: AppSpacing.sm),
-                  Center(
-                    child: Text(
-                      context.tr('start_swiping'),
-                      style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }
+          if (matches.isEmpty) return MatchesEmptyView(onRefresh: refresh);
 
-          // New matches: no messages yet
-          final newMatches = matches.where((m) => m.lastMessage == null).toList();
-
-          // All matches sorted by most recent activity
-          final sortedMatches = List<MatchModel>.from(matches)
-            ..sort((a, b) {
-              final aTime = a.lastMessageSentAt ?? a.matchedAt;
-              final bTime = b.lastMessageSentAt ?? b.matchedAt;
-              return bTime.compareTo(aTime);
-            });
+          final newMatches = newMatchesOf(matches);
+          final sortedMatches = sortedByActivity(matches);
 
           return RefreshIndicator(
-            onRefresh: () => ref.read(matchListProvider.notifier).fetchMatches(),
+            onRefresh: refresh,
             child: CustomScrollView(
-            slivers: [
-              // ─── Top Section: New Matches Horizontal Scroll ───
-              if (newMatches.isNotEmpty)
-                SliverToBoxAdapter(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(AppSpacing.pagePadding, AppSpacing.sm, AppSpacing.pagePadding, AppSpacing.md),
-                        child: Text(
-                          context.tr('new_matches'),
-                          style: theme.textTheme.titleMedium,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 90,
-                        child: ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.pagePadding),
-                          itemCount: newMatches.length,
-                          separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.lg),
-                          itemBuilder: (context, index) {
-                            final m = newMatches[index];
-                            return NewMatchAvatar(
-                              match: m,
-                              onTap: () => _navigateToChat(m),
-                            );
-                          },
-                        ),
-                      ),
-                      Divider(color: theme.colorScheme.outline, height: 1),
-                      const SizedBox(height: AppSpacing.sm),
-                    ],
+              slivers: [
+                // Doğrulanmamış e-posta: mesaj kapısı burada hatırlatılır.
+                const SliverToBoxAdapter(child: EmailVerifyBanner()),
+                if (newMatches.isNotEmpty)
+                  SliverToBoxAdapter(
+                    child: NewMatchesStrip(matches: newMatches, onTap: navigateToChat),
+                  ),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final m = sortedMatches[index];
+                      return MatchCard(
+                        match: m,
+                        onTap: () => navigateToChat(m),
+                        onLongPress: () => navigateToProfile(m),
+                      );
+                    },
+                    childCount: sortedMatches.length,
                   ),
                 ),
-
-              // ─── Bottom Section: Chat List with Dark Cards ───
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final m = sortedMatches[index];
-                    return MatchCard(
-                      match: m,
-                      onTap: () => _navigateToChat(m),
-                      onLongPress: () => _navigateToProfile(m),
-                    );
-                  },
-                  childCount: sortedMatches.length,
-                ),
-              ),
-            ],
-          ),
+              ],
+            ),
           );
         },
       ),
-    );
-  }
-
-  void _navigateToProfile(MatchModel m) {
-    final userId = m.user?.userId;
-    if (userId == null) return;
-    ref.read(navigationServiceProvider).push(
-      RouteNames.profileDetail,
-      params: {'userId': userId},
-      extra: ProfileDetailArgs(
-        context: ProfileDetailContext.match,
-        userId: userId,
-        matchId: m.matchId,
-      ),
-    );
-  }
-
-  void _navigateToChat(MatchModel m) {
-    AnalyticsManager.instance.logEvent(
-      AnalyticsEvents.matchOpenChat,
-      params: {AnalyticsEvents.paramMatchUserId: m.user?.userId ?? ''},
-    );
-    ref.read(navigationServiceProvider).push(
-      RouteNames.chat,
-      params: {'matchId': m.matchId},
     );
   }
 }

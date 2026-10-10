@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/navigation/navigation_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
-import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/pref_analytics.dart';
 import 'package:qulo_v2/core/services/funnel_events.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_progress_bar.dart';
@@ -107,15 +107,16 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                   RegisterStepGenderPref(
                     selectedValue: genderPref,
                     errorText: genderPrefError,
+                    consentGranted: prefConsentGranted,
+                    onConsentChanged: onPrefConsentChanged,
+                    onDeclineConsent: onDeclinePrefConsent,
+                    onOpenPolicy: openPrivacyPolicy,
                     onSelected: (v) {
                       setState(() {
                         genderPref = v;
                         genderPrefError = null;
                       });
-                      AnalyticsManager.instance.logEvent(
-                        AnalyticsEvents.signupGenderPrefSelected,
-                        params: {'value': v, 'entry_point': 'signup'},
-                      );
+                      PrefAnalytics.prefSelected(PrefEntryPoint.signup);
                     },
                     onContinue: nextStep,
                   ),

@@ -6,6 +6,7 @@ import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/widgets/circle_icon_button.dart';
+import 'package:qulo_v2/core/network/failure_message.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/locked_feature_button.dart';
@@ -14,6 +15,7 @@ import 'package:qulo_v2/data/models/discover_model.dart';
 import 'package:qulo_v2/features/diamonds/widgets/paywall_bottom_sheet.dart';
 import 'package:qulo_v2/features/discover/mixins/discover_action_buttons_mixin.dart';
 import 'package:qulo_v2/features/discover/utils/undo_failure_message.dart';
+import 'package:qulo_v2/features/quiz/quiz_retry_lock.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/daily_stats_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
@@ -276,6 +278,21 @@ class _DiscoverCardViewState extends ConsumerState<DiscoverCardView>
         _resetState();
         if (f is ServerFailure && f.code == 'DAILY_LIMIT_EXCEEDED') {
           PaywallBottomSheetContent.show(ref, trigger: 'swipe_limit');
+          return;
+        }
+        // Uyumsuz kart: sağlayıcı desteden düşürdü, kullanıcıya nedeni söylenir.
+        if (isNotCompatibleFailure(f)) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(context.tr(f.userMessageKey('error_general')))),
+            );
+          }
+          return;
+        }
+        // Başarısız quiz'in hedefi kilitli (409 QUIZ_RETRY_LOCKED): ne zaman tekrar denenebileceği.
+        final lockMessage = quizRetryLockMessage(f, context.l10n);
+        if (lockMessage != null && mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(lockMessage)));
         }
       },
     );
@@ -290,7 +307,11 @@ class _DiscoverCardViewState extends ConsumerState<DiscoverCardView>
       failure: (f) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(context.tr(undoFailureMessageKey(f)))),
+            SnackBar(
+              content: Text(
+                quizRetryLockMessage(f, context.l10n) ?? context.tr(undoFailureMessageKey(f)),
+              ),
+            ),
           );
         }
       },

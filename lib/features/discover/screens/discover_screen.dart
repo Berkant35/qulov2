@@ -14,14 +14,17 @@ import 'package:qulo_v2/providers/user_provider.dart';
 import 'package:qulo_v2/features/discover/mixins/acquisition_prompt_mixin.dart';
 import 'package:qulo_v2/features/discover/mixins/discover_screen_mixin.dart';
 import 'package:qulo_v2/features/discover/mixins/return_review_prompt_mixin.dart';
+import 'package:qulo_v2/features/pref_consent/mixins/pref_consent_prompt_mixin.dart';
 import 'package:qulo_v2/data/models/discover_model.dart';
 import 'package:qulo_v2/features/discover/widgets/discover_card_view.dart';
 import 'package:qulo_v2/features/discover/widgets/discover_empty_language.dart';
 import 'package:qulo_v2/features/discover/widgets/discover_empty_state.dart';
-import 'package:qulo_v2/features/discover/widgets/discover_location_error.dart';
+import 'package:qulo_v2/features/discover/utils/discover_location_gate.dart';
+import 'package:qulo_v2/features/discover/widgets/discover_location_prompt.dart';
 import 'package:qulo_v2/features/discover/widgets/discover_scope_chip.dart';
 import 'package:qulo_v2/features/discover/widgets/passport_badge.dart';
 import 'package:qulo_v2/features/page_messages/widgets/page_message_host.dart';
+import 'package:qulo_v2/features/rewards_market/widgets/rainbow_market_button.dart';
 
 class DiscoverScreen extends ConsumerStatefulWidget {
   const DiscoverScreen({super.key});
@@ -31,11 +34,12 @@ class DiscoverScreen extends ConsumerStatefulWidget {
 }
 
 class _DiscoverScreenState extends ConsumerState<DiscoverScreen>
-    with DiscoverScreenMixin, AcquisitionPromptMixin, ReturnReviewPromptMixin {
+    with DiscoverScreenMixin, PrefConsentPromptMixin, AcquisitionPromptMixin, ReturnReviewPromptMixin {
   @override
   void initState() {
     super.initState();
     initMixin();
+    initPrefConsentPrompt();
     initAcquisitionPrompt();
   }
 
@@ -43,6 +47,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen>
   void dispose() {
     disposeReturnReviewPrompt();
     disposeAcquisitionPrompt();
+    disposePrefConsentPrompt();
     disposeMixin();
     super.dispose();
   }
@@ -52,26 +57,23 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen>
     final discoverState = ref.watch(discoverProvider);
     final locationState = ref.watch(locationProvider);
     final isInitialLoad = locationState.lat == null && locationState.error == null;
+    final locationError = blockingLocationError(locationState);
 
     return AppScaffold(
       title: context.tr('discover'),
       padding: EdgeInsets.zero,
       isLoading: discoverState is AsyncLoading || locationState.isLoading || isInitialLoad || (discoverState.valueOrNull?.isPrefetching == true && (discoverState.valueOrNull?.cards.isEmpty ?? false)),
-      actions: const [PassportBadge()],
+      actions: const [RainbowMarketButton(), PassportBadge()],
       body: (locationState.isLoading || isInitialLoad)
           ? const SizedBox.shrink()
-          : locationState.error != null
-              ? DiscoverLocationError(error: locationState.error!)
+          : locationError != null
+              ? DiscoverLocationPrompt(error: locationError)
               : discoverState.when(
               loading: () => const SizedBox.shrink(),
               error: (e, _) => ErrorRetryWidget(
                 onRetry: () => ref.read(discoverProvider.notifier).loadCards(),
               ),
               data: (discover) {
-                if (locationState.error != null) {
-                  return DiscoverLocationError(error: locationState.error!);
-                }
-
                 if (!discover.initialized) return const SizedBox.shrink();
 
                 if (discover.cards.isEmpty) {

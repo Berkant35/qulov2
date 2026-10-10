@@ -39,6 +39,21 @@ void main() {
 
       expect(DiamondBalance.fromJson(balance.toJson()), balance);
     });
+
+    test('rainbow alanı yoksa 0 (eski sunucu yanıtı)', () {
+      expect(DiamondBalance.fromJson({'green': 7, 'purple': 120}).rainbow, 0);
+    });
+
+    test('rainbow parse edilir ve eşitliğe dahildir', () {
+      expect(
+        DiamondBalance.fromJson({'green': 1, 'purple': 2, 'rainbow': 3}),
+        const DiamondBalance(green: 1, purple: 2, rainbow: 3),
+      );
+      expect(
+        const DiamondBalance(green: 1, purple: 2, rainbow: 3),
+        isNot(const DiamondBalance(green: 1, purple: 2)),
+      );
+    });
   });
 
   group('DiamondTransaction', () {

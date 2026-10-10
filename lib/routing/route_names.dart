@@ -31,6 +31,8 @@ abstract final class RouteNames {
   static const performance = 'performance';
   static const profileDetail = 'profile-detail';
   static const profilePreview = 'profile-preview';
+  static const rewardsMarket = 'rewards-market';
+  static const rewardsRedemptions = 'rewards-redemptions';
 
   // Chat
   static const createChatQuestion = 'create-chat-question';

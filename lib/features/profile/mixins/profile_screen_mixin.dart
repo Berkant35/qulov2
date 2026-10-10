@@ -4,6 +4,7 @@ import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
+import 'package:qulo_v2/features/pref_consent/gender_pref_label.dart';
 import 'package:qulo_v2/providers/exchange_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
@@ -28,14 +29,7 @@ mixin ProfileScreenMixin on ConsumerState<ProfileScreen> {
 
   // ─── Label Helpers ───
 
-  String genderPrefLabel(BuildContext context, String? pref) {
-    return switch (pref) {
-      'MAN' => context.tr('men'),
-      'WOMAN' => context.tr('women'),
-      'BOTH' => context.tr('both'),
-      _ => '',
-    };
-  }
+  String genderPrefLabel(BuildContext context, String? pref) => context.tr(genderPrefLabelKey(pref));
 
   String relationshipGoalLabel(BuildContext context, String? goal) {
     return switch (goal) {

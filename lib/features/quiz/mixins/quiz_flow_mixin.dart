@@ -7,14 +7,17 @@ import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/app_review_manager.dart';
 import 'package:qulo_v2/core/services/funnel_events.dart';
 import 'package:qulo_v2/core/services/one_time_flag_store.dart';
+import 'package:qulo_v2/features/notifications/mixins/push_permission_offer_mixin.dart';
 import 'package:qulo_v2/features/onboarding/widgets/premium_suggestion_sheet.dart';
 import 'package:qulo_v2/features/quiz/mixins/quiz_screen_state_mixin.dart';
+import 'package:qulo_v2/features/quiz/screens/quiz_screen.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/providers/quiz_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 
-/// Ekrandan cikis, kutlama sonrasi yonlendirme ve ilk eslesme paywall'i.
-mixin QuizFlowMixin on QuizScreenStateMixin {
+/// Ekrandan cikis, kutlama sonrasi yonlendirme, bildirim izni ve ilk eslesme
+/// paywall'i.
+mixin QuizFlowMixin on QuizScreenStateMixin, PushPermissionOfferMixin<QuizScreen> {
   Future<void> confirmExit() async {
     final nav = ref.read(navigationServiceProvider);
     final questionIndex =
@@ -59,25 +62,32 @@ mixin QuizFlowMixin on QuizScreenStateMixin {
     }
   }
 
-  // Ilk eslesme celebration cikisinda paywall'i bir kez goster (onboarding
-  // yerine buraya ertelendi — carousel artik auth oncesi). Flag zaten set ise
-  // (2. + eslesme) dogrudan yonlendir + degerlendirme istemini dene. Ilk
-  // eslesmede paywall ile istem ayni turda acilmasin diye istem
+  // Kutlama cikisinda once bildirim izni aciklamasi (uygunsa): "eslesmen
+  // cevap verince haber verelim mi?" en anlamli bu anda — login sonrasi soguk
+  // istem kaldirildi. Ilk eslesmede ardindan paywall bir kez gosterilir
+  // (onboarding yerine buraya ertelendi — carousel artik auth oncesi). Flag
+  // zaten set ise (2. + eslesme) dogrudan yonlendir + degerlendirme istemini
+  // dene (bu turda bildirim istemi acildiysa ust uste binmesin diye atlanir).
+  // Ilk eslesmede paywall ile istem ayni turda acilmasin diye istem
   // `AppReviewManager.returnDelay` sonrasina, Kesfet'e donuse birakilir
   // (ReturnReviewPromptMixin).
   Future<void> _maybeShowFirstMatchPaywall({required String nextRoute}) async {
     final nav = ref.read(navigationServiceProvider);
+    final offeredPush = await offerPushPermission(trigger: PushPromptTrigger.match);
+    if (!mounted) return;
     final isFirstTime = await OneTimeFlagStore.markIfUnset(
       AnalyticsEvents.flagPaywallFirstMatch,
     );
 
     if (!isFirstTime) {
       nav.go(nextRoute);
-      unawaited(
-        AppReviewManager.instance.tryShowReview(
-          trigger: AppReviewTrigger.matchCelebration,
-        ),
-      );
+      if (!offeredPush) {
+        unawaited(
+          AppReviewManager.instance.tryShowReview(
+            trigger: AppReviewTrigger.matchCelebration,
+          ),
+        );
+      }
       return;
     }
 

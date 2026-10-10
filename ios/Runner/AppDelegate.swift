@@ -19,8 +19,10 @@ import GoogleMaps
     GeneratedPluginRegistrant.register(with: self)
 
     UNUserNotificationCenter.current().delegate = self
-    let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
-    UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { _, _ in }
+    // Bildirim izni burada ISTENMEZ (ilk acilista soguk istem). Izin, ilk
+    // eslesme / ilk mesaj aninda aciklama ekranindan sonra Dart tarafinda
+    // (NotificationManager.requestPermission) istenir. APNs kaydi izinden
+    // bagimsizdir; token izin verilince bildirim gostermeye baslar.
     application.registerForRemoteNotifications()
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)

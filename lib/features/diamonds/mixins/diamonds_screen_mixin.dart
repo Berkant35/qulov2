@@ -64,6 +64,11 @@ mixin DiamondsScreenMixin on ConsumerState<DiamondsScreen> {
     ref.read(navigationServiceProvider).go(RouteNames.exchange);
   }
 
+  /// `push`: market'ten geri dönünce Elmaslar ekranına dönülür (`go` Profil'e atıyordu).
+  void onRainbowMarketTap() {
+    ref.read(navigationServiceProvider).push(RouteNames.rewardsMarket);
+  }
+
   Future<void> onPurchase(PurchasePackage package) async {
     if (purchasing) return;
     setState(() => purchasing = true);

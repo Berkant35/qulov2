@@ -110,11 +110,31 @@ Video üretim görevleri için: HTML→Puppeteer→ffmpeg pipeline'ını kullan.
 - Örnek: `DetailChips` → `DetailChipsWidgetMixin` (frequencyLabel + buildChips),
   `DetailChipItem` + `ChipData` ayrı dosyada; widget 52 satır saf orchestration (2026-07-19).
 
-## App Resume Permission Re-check Pattern
-- Permission-dependent provider'lara `onAppResumed()` metodu ekle
-- `app.dart` → `didChangeAppLifecycleState(resumed)` içinden çağır
-- Sadece error state varsa re-check yap (gereksiz çağrı önleme)
-- Screen'lerde `ref.listenManual` ile error→success geçişini dinle
+## Katman Sorumlulukları (SOLID / Clean Architecture)
+| Katman | İçerir | İçeremez |
+|---|---|---|
+| `lib/providers/` + feature provider'ları (Notifier) | Use case / repository çağır, sonucu UI state'ine eşle, stream/lifecycle bağla | İş kuralı, ön koşul `if` zincirleri, platform tuhaflıkları |
+| `lib/features/<f>/domain/` (yeni kod) | Use case'ler, saf kural sınıfları, sonuç tipleri (sealed), port'lar (soyut arayüzler) | Flutter, Riverpod, paketler, `dart:io` |
+| `lib/data/` + `lib/core/services/` | Repository'ler, manager'lar, port implementasyonları, platform tuhaflıkları | UI state, iş kararları |
+
+- **İnce Notifier:** metot = çağır → eşle → `state` ata. Sınır: Notifier ≤ ~100 satır, metot ≤ ~30 satır;
+  aşılırsa use case / domain sınıfına çıkar.
+- **Genişlemeye açık:** yeni ön koşul/kural = listeye eklenen yeni sınıf; mevcut metoda yeni `if` değil.
+- **Port'a bağımlılık:** domain soyut arayüze bağlanır, somut implementasyonu provider bağlar; testler
+  paket değil port değiştirir.
+- **Mevcut kod:** kural yeni koddan itibaren geçerli; eski Notifier'lar dokunuldukça taşınır
+  (dokunulan dosyada refactor kuralı).
+
+## App Lifecycle Kuralı (Resume Re-check)
+- **Lifecycle'ı tüketen dinler:** `app.dart` feature/provider çağırmaz. Lifecycle'a tepki vermesi gereken
+  Notifier (ör. Ayarlar'dan dönünce izni yeniden kontrol) `core/services` altındaki
+  `appLifecycleProvider`'ı (`AppLifecycleListener`'ı saran stream) kendi `build()`'inde `ref.listen` ile dinler.
+- Sadece error/blocked state'teyse re-check yap (gereksiz çağrı önleme).
+- Screen'lerde `ref.listenManual` ile error→success geçişini dinle.
+- **Neden:** kök dosya feature'ları tanımaz (bağımlılık yönü), her yeni provider için `app.dart` büyümez,
+  "eklemeyi unuttum" hatası olmaz, test'te sahte lifecycle olayı gönderilebilir.
+- **Eski kalıp (taşınacak):** `app.dart:117` → `locationProvider.onAppResumed()`; dokunulduğunda
+  `appLifecycleProvider` dinleyen yapıya taşı.
 
 ## Hardware/Device Package Rule
 - Donanımsal paketler (image_picker, geolocator, url_launcher, firebase_messaging vb.) ASLA doğrudan ekranlarda/widget'larda kullanılmaz

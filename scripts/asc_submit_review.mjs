@@ -39,7 +39,7 @@ async function api(path, opts = {}) {
     headers: { Authorization: `Bearer ${TOKEN}`, 'Content-Type': 'application/json' },
   });
   const text = await res.text();
-  if (!res.ok) throw new Error(`${res.status} ${path}\n${text.slice(0, 600)}`);
+  if (!res.ok) throw new Error(`${res.status} ${path}\n${text.slice(0, 3000)}`);
   return text ? JSON.parse(text) : {};
 }
 
@@ -53,21 +53,44 @@ console.log(`Surum ${VERSION}: ${state}, releaseType ${ver.attributes.releaseTyp
 console.log(`Bagli build: ${build ? `${build.attributes.version} (${build.attributes.processingState}, usesNonExemptEncryption=${build.attributes.usesNonExemptEncryption})` : 'YOK'}`);
 
 const problems = [];
-if (state !== 'PREPARE_FOR_SUBMISSION') problems.push(`surum durumu ${state}, PREPARE_FOR_SUBMISSION olmali`);
+// READY_FOR_REVIEW = ASC'de "Incelemeye ekle" yapilmis ama gonderilmemis taslak. Icinde BU surum
+// varsa yeni gonderim acmak yerine o taslak gonderilir (2.0.14'te boyleydi; eski akis burada takiliyordu).
+const open = (await api(`/v1/reviewSubmissions?filter[app]=${app.id}&filter[state]=READY_FOR_REVIEW,WAITING_FOR_REVIEW,IN_REVIEW,UNRESOLVED_ISSUES`)).data ?? [];
+let draft = null;
+let empty = null; // onceki --apply ogeyi ekleyemeden kaldiysa bos taslak kalir (2.0.15: eksik URL → 409) — yeniden kullanilir
+for (const s of open) {
+  const items = (await api(`/v1/reviewSubmissions/${s.id}/items?include=appStoreVersion`)).data ?? [];
+  if (s.attributes.state !== 'READY_FOR_REVIEW') {
+    // Apple ayni anda birden cok gonderime izin veriyor (2026-10-06: iki Asset Library gonderimi birlikte
+    // WAITING_FOR_REVIEW). Engel yalniz icinde bir uygulama surumu olan acik gonderim; digerleri bilgi.
+    const withVersion = items.some((it) => it.relationships?.appStoreVersion?.data);
+    if (withVersion) problems.push(`acik inceleme gonderimi var (surum iceriyor): ${s.id} ${s.attributes.state}`);
+    else console.log(`Bilgi: surum icermeyen acik gonderim var: ${s.id} ${s.attributes.state} (${items.length} oge) — engel sayilmadi`);
+    continue;
+  }
+  const hasVersion = items.some((it) => it.relationships?.appStoreVersion?.data?.id === ver.id);
+  if (!items.length && !empty) { empty = s; console.log(`Bilgi: bos taslak gonderim ${s.id} — surum buna eklenecek`); continue; }
+  if (hasVersion && !draft) draft = s;
+  else problems.push(`baska bir taslak gonderim var: ${s.id} (${items.length} oge, bu surum ${hasVersion ? 'icinde' : 'yok'})`);
+}
+const allowedStates = draft ? ['PREPARE_FOR_SUBMISSION', 'READY_FOR_REVIEW'] : ['PREPARE_FOR_SUBMISSION'];
+if (!allowedStates.includes(state)) problems.push(`surum durumu ${state}, ${allowedStates.join(' / ')} olmali`);
 if (!build) problems.push('surume build bagli degil');
 else {
   if (build.attributes.processingState !== 'VALID') problems.push(`build ${build.attributes.processingState}`);
   if (build.attributes.usesNonExemptEncryption === null) problems.push('export compliance (usesNonExemptEncryption) bos');
 }
-const open = (await api(`/v1/reviewSubmissions?filter[app]=${app.id}&filter[state]=READY_FOR_REVIEW,WAITING_FOR_REVIEW,IN_REVIEW,UNRESOLVED_ISSUES`)).data ?? [];
-if (open.length) problems.push(`acik inceleme gonderimi var: ${open.map((s) => `${s.id} ${s.attributes.state}`).join(', ')}`);
 if (problems.length) {
   console.error('GONDERILEMEZ:'); for (const p of problems) console.error(`  - ${p}`);
   process.exit(1);
 }
+if (draft) console.log(`Taslak inceleme gonderimi bulundu: ${draft.id} (bu surumu iceriyor) — o gonderilecek.`);
 if (!APPLY) { console.log('KURU CALISTIRMA: onkosullar tamam, --apply ile incelemeye gonderilir.'); process.exit(0); }
 
-const sub = await api('/v1/reviewSubmissions', { method: 'POST', body: JSON.stringify({ data: { type: 'reviewSubmissions', attributes: { platform: 'IOS' }, relationships: { app: { data: { type: 'apps', id: app.id } } } } }) });
-await api('/v1/reviewSubmissionItems', { method: 'POST', body: JSON.stringify({ data: { type: 'reviewSubmissionItems', relationships: { reviewSubmission: { data: { type: 'reviewSubmissions', id: sub.data.id } }, appStoreVersion: { data: { type: 'appStoreVersions', id: ver.id } } } } }) });
-const done = await api(`/v1/reviewSubmissions/${sub.data.id}`, { method: 'PATCH', body: JSON.stringify({ data: { type: 'reviewSubmissions', id: sub.data.id, attributes: { submitted: true } } }) });
-console.log(`GONDERILDI: reviewSubmission ${sub.data.id} → ${done.data.attributes.state}`);
+let subId = draft?.id;
+if (!subId) {
+  subId = empty?.id ?? (await api('/v1/reviewSubmissions', { method: 'POST', body: JSON.stringify({ data: { type: 'reviewSubmissions', attributes: { platform: 'IOS' }, relationships: { app: { data: { type: 'apps', id: app.id } } } } }) })).data.id;
+  await api('/v1/reviewSubmissionItems', { method: 'POST', body: JSON.stringify({ data: { type: 'reviewSubmissionItems', relationships: { reviewSubmission: { data: { type: 'reviewSubmissions', id: subId } }, appStoreVersion: { data: { type: 'appStoreVersions', id: ver.id } } } } }) });
+}
+const done = await api(`/v1/reviewSubmissions/${subId}`, { method: 'PATCH', body: JSON.stringify({ data: { type: 'reviewSubmissions', id: subId, attributes: { submitted: true } } }) });
+console.log(`GONDERILDI: reviewSubmission ${subId} → ${done.data.attributes.state}`);

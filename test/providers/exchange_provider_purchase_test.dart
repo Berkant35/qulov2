@@ -3,9 +3,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/data/models/diamond_model.dart';
 import 'package:qulo_v2/data/models/exchange_model.dart';
+import 'package:qulo_v2/data/models/user_model.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
 import 'package:qulo_v2/providers/exchange_provider.dart';
+import 'package:qulo_v2/providers/user_provider.dart';
 
 import '../helpers/fake_repositories.dart';
 
@@ -85,6 +87,47 @@ void main() {
       expect(s.exchange.buyPowerCallCount, 1);
       expect(s.exchange.getInventoryCallCount, 0);
       expect(s.diamond.getBalanceCallCount, 0);
+    });
+
+    test('başarıda sunucunun new_balance\'ı AppBar bakiyesine yazılır, ek getMe yok', () async {
+      const after = DiamondBalance(green: 3, purple: 40, rainbow: 9);
+      final exchange = FakeExchangeRepository(buyPowerBalance: after);
+      final user = FakeUserRepository(const UserModel(
+        id: 'u1', email: 'u1@qulo.test', purpleDiamonds: 50, greenDiamonds: 3,
+        rainbowDiamonds: 20, rainbowEnabled: true,
+      ));
+      final container = ProviderContainer(overrides: [
+        exchangeRepositoryProvider.overrideWithValue(exchange),
+        diamondRepositoryProvider.overrideWithValue(FakeDiamondRepository(balance: after)),
+        userRepositoryProvider.overrideWithValue(user),
+      ]);
+      addTearDown(container.dispose);
+      await container.read(userProvider.notifier).fetchMe();
+
+      await container.read(exchangeProvider.notifier).buyPower('HALF', 'RAINBOW', 1);
+
+      final u = container.read(userProvider).valueOrNull!;
+      expect(exchange.lastBuyDiamondType, 'RAINBOW');
+      expect(u.rainbowDiamonds, 9);
+      expect(u.purpleDiamonds, 40);
+      expect(user.getMeCallCount, 1);
+    });
+
+    test('hatada AppBar bakiyesi değişmez', () async {
+      final user = FakeUserRepository(const UserModel(
+        id: 'u1', email: 'u1@qulo.test', rainbowDiamonds: 20, rainbowEnabled: true,
+      ));
+      final container = ProviderContainer(overrides: [
+        exchangeRepositoryProvider.overrideWithValue(FakeExchangeRepository(buyPowerFailure: _insufficient)),
+        diamondRepositoryProvider.overrideWithValue(FakeDiamondRepository(balance: const DiamondBalance(green: 0, purple: 0))),
+        userRepositoryProvider.overrideWithValue(user),
+      ]);
+      addTearDown(container.dispose);
+      await container.read(userProvider.notifier).fetchMe();
+
+      await container.read(exchangeProvider.notifier).buyPower('HALF', 'RAINBOW', 1);
+
+      expect(container.read(userProvider).valueOrNull!.rainbowDiamonds, 20);
     });
   });
 

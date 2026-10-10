@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
+import 'package:qulo_v2/core/constants/pref_consent.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/utils/age_utils.dart';
 import 'package:qulo_v2/core/network/result.dart';
+import 'package:qulo_v2/core/services/pref_analytics.dart';
+import 'package:qulo_v2/features/pref_consent/pref_consent_dialogs.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
@@ -23,6 +26,8 @@ mixin RegisterScreenMixin
   DateTime? birthday;
   String? gender;
   String? genderPref;
+  bool prefConsentGranted = false;
+  bool prefConsentDeclined = false;
   bool termsAccepted = false;
   bool obscurePassword = true;
   bool isLoading = false;
@@ -93,7 +98,8 @@ mixin RegisterScreenMixin
         return err == null;
 
       case 3:
-        final err = genderPref == null ? l10n.get('field_required') : null;
+        final ok = (genderPref != null && prefConsentGranted) || prefConsentDeclined;
+        final err = ok ? null : l10n.get('field_required');
         setState(() => genderPrefError = err);
         return err == null;
 
@@ -154,7 +160,8 @@ mixin RegisterScreenMixin
           surname: surnameCtrl.text.trim(),
           age: calculateAge(),
           gender: gender!,
-          genderPref: genderPref!,
+          genderPref: prefConsentDeclined ? null : genderPref,
+          prefConsentStatus: prefConsentDeclined ? PrefConsent.declined : PrefConsent.granted,
           lat: lat,
           lng: lng,
           locale: Localizations.localeOf(context).languageCode,
@@ -165,7 +172,13 @@ mixin RegisterScreenMixin
 
     final l10n = AppLocalizations.of(context);
     result.when(
-      success: (_) {
+      success: (data) {
+        // DECLINED yanıtı onDeclinePrefConsent'te zaten loglandı.
+        if (!prefConsentDeclined) {
+          PrefAnalytics.consentAnswered(entryPoint: PrefEntryPoint.signup, granted: true);
+        }
+        // Token geldiyse oturum açıldı; router kurulum kapısına yönlendirir.
+        if (data.tokens != null) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.get('check_email'))),
         );
@@ -185,6 +198,30 @@ mixin RegisterScreenMixin
       },
     );
   }
+
+  void onPrefConsentChanged(bool granted) {
+    setState(() {
+      prefConsentGranted = granted;
+      prefConsentDeclined = false;
+      // Rıza kaldırılırsa seçili tercih de düşer — rızasız tercih tutulmaz.
+      if (!granted) genderPref = null;
+    });
+  }
+
+  Future<void> onDeclinePrefConsent() async {
+    final confirmed = await PrefConsentDialogs.confirmDecline(context, ref.read(navigationServiceProvider));
+    if (!confirmed || !mounted) return;
+    setState(() {
+      prefConsentDeclined = true;
+      prefConsentGranted = false;
+      genderPref = null;
+      genderPrefError = null;
+    });
+    PrefAnalytics.consentAnswered(entryPoint: PrefEntryPoint.signup, granted: false);
+    nextStep();
+  }
+
+  void openPrivacyPolicy() => ref.read(navigationServiceProvider).push(RouteNames.privacyPolicy);
 
   void handleBack() {
     if (currentStep > 0) {

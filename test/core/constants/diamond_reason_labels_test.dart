@@ -73,14 +73,33 @@ void main() {
     const samples = [
       'POWER_USED:HALF', 'POWER_REWARD:ORACLE', 'CHAT_QUESTION_REWARD', 'buy_power_HINT',
       'IAP_PURCHASE', 'REFERRAL_REWARD_REFEREE', 'SUBSCRIPTION_BONUS', 'BOOST',
-      'PROFILE_COMPLETION', 'BADGE_GOLD', 'exchange_green_to_purple', 'RETENTION_BONUS', 'x',
+      'PROFILE_COMPLETION', 'BADGE_GOLD', 'exchange_green_to_purple', 'RETENTION_BONUS', 'REWARD_REDEEM', 'REWARD_REFUND', 'STARTER_PURPLE', 'x',
     ];
 
     expect(samples.map(diamondReasonKey).toSet(), diamondReasonKeys.toSet());
   });
 
-  test('diamondTypeKey — GREEN yesil, PURPLE mor', () {
-    expect(diamondTypeKey('GREEN'), 'green_diamonds');
-    expect(diamondTypeKey('PURPLE'), 'purple_diamonds');
+  group('Rainbow market sebepleri (qulo-server rewards-market / rewards-queue)', () {
+    test('REWARD_REDEEM → reason_reward_redeem', () {
+      expect(diamondReasonKey('REWARD_REDEEM'), 'reason_reward_redeem');
+    });
+
+    test('REWARD_REFUND → reason_reward_refund', () {
+      expect(diamondReasonKey('REWARD_REFUND'), 'reason_reward_refund');
+    });
+  });
+
+  group('diamondTypeKey', () {
+    test('GREEN / PURPLE / RAINBOW (büyük-küçük harf fark etmez)', () {
+      expect(diamondTypeKey('GREEN'), 'green_diamonds');
+      expect(diamondTypeKey('PURPLE'), 'purple_diamonds');
+      expect(diamondTypeKey('RAINBOW'), 'rainbow_diamonds');
+      expect(diamondTypeKey('rainbow'), 'rainbow_diamonds');
+    });
+  });
+
+  test('STARTER_PURPLE (yeni hesaba başlangıç moru) → reason_starter_purple, "diğer" değil', () {
+    expect(diamondReasonKey('STARTER_PURPLE'), 'reason_starter_purple');
+    expect(diamondReasonKeys, contains('reason_starter_purple'));
   });
 }

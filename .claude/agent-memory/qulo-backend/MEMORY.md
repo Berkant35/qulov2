@@ -1,0 +1,2 @@
+- [Rainbow ana anahtarı](project_rainbow_ana_anahtar.md) — economy config `rainbow.enabled` (yoksa kapalı); açmadan önce 133 hatalı is_test_admin temizliği
+- [MCP'siz prod salt okuma](reference_salt_okuma_prod_probe.md) — node/tsx `--env-file=.env`, `.mts`; RLS/DDL okunamaz

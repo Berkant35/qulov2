@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:qulo_v2/core/network/result.dart';
+import 'package:qulo_v2/core/services/location_manager.dart';
+import 'package:qulo_v2/data/models/discover_model.dart';
+import 'package:qulo_v2/data/repositories/match_repository.dart';
+import 'package:qulo_v2/data/repositories/user_repository.dart';
 import 'package:qulo_v2/features/discover/mixins/discover_screen_mixin.dart';
 import 'package:qulo_v2/features/discover/screens/discover_screen.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
+import 'package:qulo_v2/providers/location_provider.dart';
 
 import '../../helpers/fake_location_manager.dart';
 
@@ -45,4 +51,73 @@ void main() {
 
     await expectLater(pending, completes);
   });
+
+  testWidgets(
+      'Discover girişinde konum izni SORULMAZ; karttan izin verilince deste yüklenir',
+      (tester) async {
+    final location = FakeLocationManager()
+      ..permission = LocationPermissionStatus.denied;
+    final repo = _CountingMatchRepository();
+    final container = ProviderContainer(overrides: [
+      locationManagerProvider.overrideWithValue(location),
+      matchRepositoryProvider.overrideWithValue(repo),
+      userRepositoryProvider.overrideWithValue(_NoopUserRepository()),
+    ]);
+    addTearDown(container.dispose);
+
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: const MaterialApp(home: _HostScreen()),
+    ));
+    final state = tester.state<_HostState>(find.byType(_HostScreen));
+    state.listenLocationRecovery();
+
+    final init = state.initLocationAndDiscover();
+    await tester.pump();
+    await init;
+
+    expect(location.requestPermissionCalls, 0, reason: 'soğuk sistem istemi yok');
+    expect(container.read(locationProvider).error, LocationErrors.permissionDenied);
+    expect(repo.discoverCalls, 0);
+
+    // Kullanıcı "konumu paylaş"a dokundu, sistem isteminde izin verdi.
+    location.permissionAfterRequest = LocationPermissionStatus.granted;
+    location.position.complete(const LocationResult(lat: 41, lng: 29));
+    final ask = container.read(locationProvider.notifier).getCurrentLocation();
+    await tester.pump();
+    await ask;
+    await tester.pump();
+
+    expect(location.requestPermissionCalls, 1);
+    expect(repo.discoverCalls, 1, reason: 'izin gelince deste yüklenmeli');
+  });
+}
+
+class _CountingMatchRepository implements MatchRepository {
+  int discoverCalls = 0;
+
+  @override
+  Future<Result<DiscoverResponse>> discover({int page = 1}) async {
+    discoverCalls++;
+    return const Success(DiscoverResponse(cards: [], page: 1, hasMore: false));
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) =>
+      throw UnimplementedError('_CountingMatchRepository.${invocation.memberName}');
+}
+
+class _NoopUserRepository implements UserRepository {
+  @override
+  Future<Result<void>> updateLocation({
+    required double lat,
+    required double lng,
+    String? city,
+    String? country,
+  }) async =>
+      const Success(null);
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) =>
+      throw UnimplementedError('_NoopUserRepository.${invocation.memberName}');
 }

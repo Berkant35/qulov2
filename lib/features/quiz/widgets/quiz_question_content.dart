@@ -2,26 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
-import 'package:qulo_v2/core/services/coach_mark_service.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
-import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
-import 'package:qulo_v2/core/widgets/safe_tap_button.dart';
 import 'package:qulo_v2/data/models/quiz_model.dart' show QuizQuestionModel;
-import 'package:qulo_v2/features/quiz/coach/quiz_power_coach_marks.dart';
 import 'package:qulo_v2/features/quiz/widgets/answer_button.dart';
 import 'package:qulo_v2/features/quiz/widgets/power_banner.dart';
 import 'package:qulo_v2/features/quiz/widgets/power_bar.dart';
+import 'package:qulo_v2/features/quiz/widgets/quiz_confirm_button.dart';
 import 'package:qulo_v2/features/quiz/widgets/quiz_timer.dart';
 import 'package:qulo_v2/core/widgets/question_owner_header.dart';
 import 'package:qulo_v2/features/quiz/models/quiz_target_args.dart';
 
 /// Displays the active quiz question, timer, answers, and power bar.
-///
-/// Converted from StatelessWidget to StatefulWidget solely to hold the
-/// [_coachTried] guard that schedules the one-shot power-bar coach-mark tour
-/// on the first build. All rendering behaviour is unchanged.
-class QuizQuestionContent extends StatefulWidget {
+class QuizQuestionContent extends StatelessWidget {
   final QuizQuestionModel question;
   /// Sorusu cozulen kisi — isim/foto/mesafe (yoksa satir gizlenir).
   final QuizTargetArgs? target;
@@ -55,44 +48,6 @@ class QuizQuestionContent extends StatefulWidget {
   });
 
   @override
-  State<QuizQuestionContent> createState() => _QuizQuestionContentState();
-}
-
-class _QuizQuestionContentState extends State<QuizQuestionContent> {
-  /// One-shot guard — ensures the coach tour is scheduled only once per quiz
-  /// session (widget lifetime). The service's SharedPreferences flag prevents
-  /// it from ever showing again in subsequent sessions.
-  bool _coachTried = false;
-
-  @override
-  void dispose() {
-    CoachMarkService.instance.forceClose();
-    super.dispose();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _maybeStartPowerCoach();
-  }
-
-  void _maybeStartPowerCoach() {
-    if (_coachTried) return;
-    _coachTried = true;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      CoachMarkService.instance.maybeStartTour(
-        context,
-        tourId: 'quiz_powers',
-        steps: buildQuizPowerCoachSteps(
-          onPause: () => widget.timerKey.currentState?.pause(),
-          onResume: () => widget.timerKey.currentState?.resume(),
-        ),
-      );
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
@@ -102,21 +57,22 @@ class _QuizQuestionContentState extends State<QuizQuestionContent> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           QuestionOwnerHeader(
-            name: widget.target?.name,
-            photoUrl: widget.target?.photoUrl,
-            distanceKm: widget.target?.distanceKm,
+            name: target?.name,
+            photoUrl: target?.photoUrl,
+            distanceKm: target?.distanceKm,
           ),
           QuizTimer(
-            key: widget.timerKey,
-            seconds: widget.question.timeLimitSeconds,
-            questionId: widget.question.questionId,
-            onTimeout: widget.onTimeout,
+            key: timerKey,
+            seconds: question.startSeconds,
+            totalSeconds: question.timeLimitSeconds,
+            questionId: question.questionId,
+            onTimeout: onTimeout,
             onWarning: () {
               AnalyticsManager.instance.logEvent(
                 AnalyticsEvents.quizTimerWarning,
                 params: {
                   AnalyticsEvents.paramQuestionIndex:
-                      widget.question.questionNumber,
+                      question.questionNumber,
                   AnalyticsEvents.paramSecondsRemaining: 10,
                 },
               );
@@ -126,7 +82,7 @@ class _QuizQuestionContentState extends State<QuizQuestionContent> {
                 AnalyticsEvents.quizTimerCritical,
                 params: {
                   AnalyticsEvents.paramQuestionIndex:
-                      widget.question.questionNumber,
+                      question.questionNumber,
                   AnalyticsEvents.paramSecondsRemaining: 5,
                 },
               );
@@ -134,90 +90,49 @@ class _QuizQuestionContentState extends State<QuizQuestionContent> {
           ),
           const SizedBox(height: AppSpacing.xl),
           Text(
-            widget.question.questionText,
+            question.questionText,
             style: theme.textTheme.titleLarge,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.xxl),
-          if (widget.oracleSuggestedIndex != null)
+          if (oracleSuggestedIndex != null)
             PowerBanner(
               icon: Icons.auto_awesome,
               text: context.tr('power_oracle_desc'),
             ),
-          if (widget.hintText != null && widget.hintText!.isNotEmpty)
+          if (hintText != null && hintText!.isNotEmpty)
             PowerBanner(
               icon: Icons.lightbulb_outline,
-              text: widget.hintText!,
+              text: hintText!,
               color: context.appColors.warning,
             ),
-          ...widget.question.answers.map((a) {
-            final isRemoved = widget.removedIndices.contains(a.index);
+          ...question.answers.map((a) {
+            final isRemoved = removedIndices.contains(a.index);
             return Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.md),
               child: AnswerButton(
                 text: a.text,
                 onTap: () {
-                  if (!isRemoved) widget.onSelectAnswer(a.index);
+                  if (!isRemoved) onSelectAnswer(a.index);
                 },
-                isSelected: widget.selectedAnswerIndex == a.index,
-                isOracleSuggested: widget.oracleSuggestedIndex == a.index,
+                isSelected: selectedAnswerIndex == a.index,
+                isOracleSuggested: oracleSuggestedIndex == a.index,
                 isDisabled: isRemoved,
               ),
             );
           }),
-          if (widget.selectedAnswerIndex != null)
-            _ConfirmButton(
-              isSubmitting: widget.isSubmitting,
-              onSubmitAnswer: widget.onSubmitAnswer,
+          if (selectedAnswerIndex != null)
+            QuizConfirmButton(
+              isSubmitting: isSubmitting,
+              onSubmitAnswer: onSubmitAnswer,
             ),
           const Spacer(),
           PowerBar(
-            sessionId: widget.sessionId,
-            hasHint: widget.question.hasHint,
-            onPowerUsed: widget.onPowerUsed,
+            sessionId: sessionId,
+            hasHint: question.hasHint,
+            onPowerUsed: onPowerUsed,
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _ConfirmButton extends StatelessWidget {
-  final bool isSubmitting;
-  final Future<void> Function() onSubmitAnswer;
-
-  const _ConfirmButton({
-    required this.isSubmitting,
-    required this.onSubmitAnswer,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Padding(
-      padding: const EdgeInsets.only(top: AppSpacing.sm),
-      child: SafeTapButton(
-        onTap: isSubmitting ? null : onSubmitAnswer,
-        builder: (context, isLoading, onTap) => ElevatedButton(
-          onPressed: onTap,
-          style: ElevatedButton.styleFrom(
-            minimumSize: const Size(double.infinity, 52),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-            ),
-            backgroundColor: context.appColors.primary,
-          ),
-          child: (isLoading || isSubmitting)
-              ? AppLoadingWidget.small()
-              : Text(
-                  context.tr('quiz_confirm_answer'),
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    color: theme.colorScheme.onPrimary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-        ),
       ),
     );
   }

@@ -16,13 +16,11 @@ import 'package:qulo_v2/features/settings/models/deletion_reason.dart';
 /// `getDiscoverFeed` koordinatsız kullanıcı için `PROFILE_INCOMPLETE` fırlatıyor,
 /// yani o kullanıcı hem görünmüyor hem de kimseyi göremiyor.
 ///
-/// BURADA OLMAYAN KAPI 1 — e-posta doğrulama. Sunucu bunu aday sorgusunda arıyor
-/// (`email_verified = true`), ama giriş yapmış bir kullanıcıda hiçbir zaman false
-/// olamaz: `register` token döndürmüyor (`auth.service.ts:115`), `login`
-/// doğrulanmamış kullanıcıyı `EMAIL_NOT_VERIFIED` ile reddediyor (satır 176-178),
-/// sosyal giriş `email_verified: true` yazıyor (satır 490) ve alanı tekrar false'a
-/// çeken bir yol yok. Ayarlar ekranına ulaşan kullanıcı tanımı gereği doğrulanmış,
-/// dolayısıyla o kapı listede ölü bir satır olurdu.
+/// BURADA OLMAYAN KAPI 1 — e-posta doğrulama. 2026-10-04'ten (qulo-server
+/// d571dc0) beri aday sorgusunda `email_verified` filtresi yok: doğrulamasız
+/// kullanıcı Keşfet'te görünür ve görür; doğrulama yalnız eşleşmeye yazarken
+/// istenir (403 `EMAIL_VERIFICATION_REQUIRED`, bkz. `EmailVerificationController`).
+/// Görünürlüğü etkilemediği için listede yer almaz.
 ///
 /// BURADA OLMAYAN KAPI 2 — dil kuralı. Profil, ancak sorularından en az ikisi
 /// karşı tarafın okuduğu dillerde yazılmışsa ona ulaşıyor (5.6, "always strict").

@@ -60,6 +60,8 @@ import 'package:qulo_v2/features/auth/screens/banned_screen.dart';
 import 'package:qulo_v2/features/auth/screens/profile_completion_screen.dart';
 import 'package:qulo_v2/core/config/env.dart';
 import 'package:qulo_v2/features/quiz/models/quiz_target_args.dart';
+import 'package:qulo_v2/features/rewards_market/screens/market_screen.dart';
+import 'package:qulo_v2/features/rewards_market/screens/redemptions_screen.dart';
 
 part 'app_routes.dart';
 

@@ -13,6 +13,8 @@ import 'package:qulo_v2/core/services/revenuecat_service.dart';
 import 'package:qulo_v2/core/services/social_auth_service.dart';
 import 'package:qulo_v2/data/models/auth_model.dart';
 import 'package:qulo_v2/data/models/social_login_body.dart';
+import 'package:qulo_v2/features/page_sections/providers/section_event_tracker.dart';
+import 'package:qulo_v2/features/rewards_market/providers/market_provider.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
@@ -26,6 +28,7 @@ import 'package:qulo_v2/providers/user_languages_provider.dart';
 import 'package:qulo_v2/providers/exchange_provider.dart';
 import 'package:qulo_v2/providers/quiz_provider.dart';
 import 'package:qulo_v2/providers/deep_link_provider.dart';
+import 'package:qulo_v2/providers/identity_provider.dart';
 import 'package:qulo_v2/providers/notification_preferences_provider.dart';
 
 enum AuthStatus { initial, authenticated, unauthenticated, banned }
@@ -127,12 +130,12 @@ class AuthNotifier extends Notifier<AuthState> {
         if (user != null) {
           final analytics = AnalyticsManager.instance;
           analytics.updateUserProperties(
-            gender: user.gender ?? '',
             ageRange: AnalyticsManager.ageRange(user.age ?? 0),
             city: user.city ?? '',
             photoCount: (user.photos?.length ?? 0).toString(),
             questionsCount: user.questionCount.toString(),
           );
+          analytics.clearLegacySensitiveProperties();
         }
         // Seed location from user profile so discover works immediately
         if (user != null && user.lat != null && user.lng != null) {
@@ -141,10 +144,11 @@ class AuthNotifier extends Notifier<AuthState> {
             lng: user.lng!,
             city: user.city,
           );
-          // Pre-fetch discover cards while splash is still showing
+          // Splash sürerken deste ön-yüklemesi (cinsiyet tercihi yoksa
+          // DiscoverNotifier atlar — sunucu PROFILE_INCOMPLETE döner).
           ref.read(discoverProvider.notifier).loadCards();
-          // Background GPS update (non-blocking)
-          ref.read(locationProvider.notifier).getCurrentLocation();
+          // Arka plan GPS tazelemesi: izin sorulmaz (soğuk istem yok).
+          ref.read(locationProvider.notifier).getCurrentLocation(askPermission: false);
         }
         // Sync passport state from user profile
         if (user != null) {
@@ -178,7 +182,8 @@ class AuthNotifier extends Notifier<AuthState> {
     required String surname,
     required int age,
     required String gender,
-    required String genderPref,
+    String? genderPref,
+    String? prefConsentStatus,
     double? lat,
     double? lng,
     String locale = 'tr',
@@ -195,25 +200,53 @@ class AuthNotifier extends Notifier<AuthState> {
       age: age,
       gender: gender,
       genderPref: genderPref,
+      prefConsentStatus: prefConsentStatus,
       lat: lat,
       lng: lng,
       locale: locale,
     );
-    result.when(
-      success: (_) {
+    switch (result) {
+      case Success(:final data):
         _logRegistration('email');
         MetaEventsManager.instance.logCompleteRegistration(method: 'email');
-        state = state.copyWith(isLoading: false);
-      },
-      failure: (f) {
+        final tokens = data.tokens;
+        if (tokens == null) {
+          // Eski sunucu sözleşmesi: token yok, kullanıcı girişe yönlenir.
+          state = state.copyWith(isLoading: false);
+        } else {
+          // Doğrulamasız içeri al (2026-10-04): kayıt sonrası giriş ekranı yok.
+          await _startSession(tokens);
+        }
+      case Failure(:final failure):
         AnalyticsManager.instance.logEvent(AnalyticsEvents.authRegisterFail, params: {
           AnalyticsEvents.paramMethod: 'email',
-          AnalyticsEvents.paramErrorCode: f.message ?? 'unknown',
+          AnalyticsEvents.paramErrorCode: failure.message ?? 'unknown',
         });
-        state = state.copyWith(isLoading: false, failure: f);
-      },
-    );
+        state = state.copyWith(isLoading: false, failure: failure);
+    }
     return result;
+  }
+
+  /// Kayıttan dönen token'larla oturumu açar. Profil durum değişmeden ÖNCE
+  /// yüklenir: router yalnız `authProvider`'ı dinler; kurulum kapısı
+  /// (`setupGateRedirect`) kullanıcıyı görmezse yeni hesabı Keşfet'e atardı.
+  Future<void> _startSession(AuthTokens tokens) async {
+    await _saveTokens(tokens);
+    ErrorManager.setUser(tokens.userId);
+    AnalyticsManager.instance.setUserId(tokens.userId);
+    try {
+      await RevenueCatService.init(tokens.userId);
+      await RevenueCatService.logIn(tokens.userId);
+    } catch (_) {
+      // RevenueCat init failure shouldn't block sign-in
+    }
+    await ref.read(userProvider.notifier).fetchMe();
+    state = state.copyWith(
+      status: AuthStatus.authenticated,
+      userId: tokens.userId,
+      isLoading: false,
+    );
+    await _postLoginInit(userLoaded: true);
   }
 
   Future<Result<AuthTokens>> login({
@@ -259,18 +292,18 @@ class AuthNotifier extends Notifier<AuthState> {
     return result;
   }
 
-  Future<void> _postLoginInit() async {
-    await ref.read(userProvider.notifier).fetchMe();
+  Future<void> _postLoginInit({bool userLoaded = false}) async {
+    if (!userLoaded) await ref.read(userProvider.notifier).fetchMe();
     final user = ref.read(userProvider).value;
     if (user != null) {
       final analytics = AnalyticsManager.instance;
       analytics.updateUserProperties(
-        gender: user.gender ?? '',
         ageRange: AnalyticsManager.ageRange(user.age ?? 0),
         city: user.city ?? '',
         photoCount: (user.photos?.length ?? 0).toString(),
         questionsCount: user.questionCount.toString(),
       );
+      analytics.clearLegacySensitiveProperties();
       if (user.lat != null && user.lng != null) {
         ref.read(locationProvider.notifier).seedFromProfile(
           lat: user.lat!,
@@ -278,7 +311,7 @@ class AuthNotifier extends Notifier<AuthState> {
           city: user.city,
         );
         ref.read(discoverProvider.notifier).loadCards();
-        ref.read(locationProvider.notifier).getCurrentLocation();
+        ref.read(locationProvider.notifier).getCurrentLocation(askPermission: false);
       }
       ref.read(passportProvider.notifier).syncFromUser(
         user.passportCity,
@@ -540,6 +573,11 @@ class AuthNotifier extends Notifier<AuthState> {
     // sebeple listede yok.
     ref.invalidate(quizProvider);
     ref.invalidate(notificationPreferencesProvider);
+    ref.invalidate(marketProvider);
+    // Kimlik etiketleri hesaba özel: sonraki hesap önceki hesabın etiketini görmez / onun rızasıyla kaydetmez.
+    ref.invalidate(identityProvider);
+    // Tracker invalidate EDİLMEZ: `onDispose` önceki hesabın olaylarını gönderirdi.
+    if (ref.exists(sectionEventTrackerProvider)) ref.read(sectionEventTrackerProvider).reset();
     ref.read(pendingDeepLinkProvider.notifier).state = null;
   }
 

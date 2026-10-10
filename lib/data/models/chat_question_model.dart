@@ -118,6 +118,10 @@ class ChatQuestionAnswerResponse extends Equatable {
   final ChatQuestionModel? question;
   @JsonKey(name: 'green_reward')
   final int greenReward;
+
+  /// Güç ödülünün ödenmiş mordan gelen payı (sunucu `rainbow_reward`); eski yanıtta 0.
+  @JsonKey(name: 'rainbow_reward')
+  final int rainbowReward;
   @JsonKey(name: 'powers_used')
   final List<String> powersUsed;
   @JsonKey(name: 'correct_option')
@@ -135,6 +139,7 @@ class ChatQuestionAnswerResponse extends Equatable {
     this.rewardMediaUrl,
     this.question,
     this.greenReward = 0,
+    this.rainbowReward = 0,
     this.powersUsed = const [],
     this.correctOption,
     this.answeredOption,
@@ -146,7 +151,7 @@ class ChatQuestionAnswerResponse extends Equatable {
       _$ChatQuestionAnswerResponseFromJson(json);
 
   @override
-  List<Object?> get props => [isCorrect, unmatched, rewardMediaUrl, greenReward, powersUsed, correctOption, answeredOption, isAbandoned];
+  List<Object?> get props => [isCorrect, unmatched, rewardMediaUrl, greenReward, rainbowReward, powersUsed, correctOption, answeredOption, isAbandoned];
 }
 
 @JsonSerializable(createToJson: false)
@@ -164,6 +169,8 @@ class UsePowerResponse extends Equatable {
   final int? cost;
   @JsonKey(name: 'green_reward')
   final int? greenReward;
+  @JsonKey(name: 'rainbow_reward')
+  final int? rainbowReward;
   @JsonKey(name: 'is_correct')
   final bool? isCorrect;
   final ChatQuestionModel? question;
@@ -178,6 +185,7 @@ class UsePowerResponse extends Equatable {
     this.extraSeconds,
     this.cost,
     this.greenReward,
+    this.rainbowReward,
     this.isCorrect,
     this.question,
     this.skipped,
@@ -287,9 +295,58 @@ class PowerUsageRecord {
   final int purpleSpent;
   final int greenEarned;
 
+  /// Soru sahibine kazandırılan Rainbow (ödenmiş mor harcandıysa). Yalnız `rainbowEnabled`
+  /// kullanıcıya gösterilir.
+  final int rainbowEarned;
+
   const PowerUsageRecord({
     required this.powerName,
     required this.purpleSpent,
     required this.greenEarned,
+    this.rainbowEarned = 0,
   });
+
+  /// Bir güç kullanımından kayıt üretir — ücret yoksa/0 ise `null` (ücretsiz güç izlenmez).
+  static PowerUsageRecord? fromPowerUse(String powerName, UsePowerResponse data) {
+    if (data.cost == null || data.cost! <= 0) return null;
+    return PowerUsageRecord(
+      powerName: powerName,
+      purpleSpent: data.cost!,
+      greenEarned: data.greenReward ?? 0,
+      rainbowEarned: data.rainbowReward ?? 0,
+    );
+  }
+
+  /// Doğru cevap ödülünden kayıt üretir — yeşil VE rainbow payı ikisi de 0 ise `null`.
+  static PowerUsageRecord? fromAnswer(ChatQuestionAnswerResponse response) {
+    if (response.greenReward <= 0 && response.rainbowReward <= 0) return null;
+    return PowerUsageRecord(
+      powerName: 'ANSWER',
+      purpleSpent: 0,
+      greenEarned: response.greenReward,
+      rainbowEarned: response.rainbowReward,
+    );
+  }
+}
+
+/// Sonuç ekranındaki toplamlar — widget içinde hesap yapılmasın diye tek yerde.
+extension PowerUsageTotals on Iterable<PowerUsageRecord> {
+  int get totalGreenEarned => fold(0, (sum, p) => sum + p.greenEarned);
+  int get totalRainbowEarned => fold(0, (sum, p) => sum + p.rainbowEarned);
+  int get totalPurpleSpent => fold(0, (sum, p) => sum + p.purpleSpent);
+
+  /// Güç başına yeşil ödül — yeşil kartın satırları. İlk görülme sırası korunur, 0 atlanır.
+  Map<String, int> get greenByPower => _sumByPower((p) => p.greenEarned);
+
+  /// Güç başına harcanan mor — mor kartın satırları. İlk görülme sırası korunur, 0 atlanır.
+  Map<String, int> get purpleByPower => _sumByPower((p) => p.purpleSpent);
+
+  Map<String, int> _sumByPower(int Function(PowerUsageRecord usage) amountOf) {
+    final grouped = <String, int>{};
+    for (final usage in this) {
+      final amount = amountOf(usage);
+      if (amount > 0) grouped[usage.powerName] = (grouped[usage.powerName] ?? 0) + amount;
+    }
+    return grouped;
+  }
 }

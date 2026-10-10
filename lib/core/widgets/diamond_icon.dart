@@ -2,9 +2,10 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qulo_v2/core/constants/app_assets.dart';
+import 'package:qulo_v2/core/constants/diamond_type.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 
-enum DiamondType { purple, green }
+export 'package:qulo_v2/core/constants/diamond_type.dart';
 
 class DiamondIcon extends StatefulWidget {
   final DiamondType type;
@@ -23,6 +24,9 @@ class DiamondIcon extends StatefulWidget {
 
   const DiamondIcon.green({super.key, this.size = 32, this.showGlow = true})
       : type = DiamondType.green;
+
+  const DiamondIcon.rainbow({super.key, this.size = 32, this.showGlow = true})
+      : type = DiamondType.rainbow;
 
   @override
   State<DiamondIcon> createState() => _DiamondIconState();
@@ -69,17 +73,23 @@ class _DiamondIconState extends State<DiamondIcon>
     super.dispose();
   }
 
-  String get _assetPath => widget.type == DiamondType.purple
-      ? AppAssets.purpleDiamond
-      : AppAssets.greenDiamond;
+  String get _assetPath => switch (widget.type) {
+        DiamondType.purple => AppAssets.purpleDiamond,
+        DiamondType.green => AppAssets.greenDiamond,
+        DiamondType.rainbow => AppAssets.rainbowDiamond,
+      };
 
-  Color get _glowColor => widget.type == DiamondType.purple
-      ? AppColors.primary
-      : context.appColors.secondary;
+  Color get _glowColor => switch (widget.type) {
+        DiamondType.purple => context.appColors.primary,
+        DiamondType.green => context.appColors.secondary,
+        DiamondType.rainbow => context.appColors.rainbow,
+      };
 
-  Color get _glowColorDark => widget.type == DiamondType.purple
-      ? context.appColors.primaryDark
-      : context.appColors.secondaryDark;
+  Color get _glowColorDark => switch (widget.type) {
+        DiamondType.purple => context.appColors.primaryDark,
+        DiamondType.green => context.appColors.secondaryDark,
+        DiamondType.rainbow => context.appColors.rainbowDark,
+      };
 
   @override
   Widget build(BuildContext context) {

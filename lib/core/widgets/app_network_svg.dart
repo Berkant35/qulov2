@@ -18,6 +18,10 @@ class AppNetworkSvg extends StatelessWidget {
   final String url;
   final double size;
 
+  /// URL yolu `.svg` ile bitiyor mu (sorgu/parça yok sayılır, büyük-küçük harf duyarsız) —
+  /// ağdan gelen görselin bu widget'la mı, resim yükleyiciyle mi çizileceğine karar verir.
+  static bool isSvgUrl(String url) => Uri.tryParse(url)?.path.toLowerCase().endsWith('.svg') ?? false;
+
   /// Yuklenirken gosterilir; verilmezse ayni boyutta bos alan.
   final Widget? placeholder;
 

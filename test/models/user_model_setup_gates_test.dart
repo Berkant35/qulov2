@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
+import 'package:qulo_v2/core/constants/pref_consent.dart';
 import 'package:qulo_v2/data/models/user_model.dart';
 
 /// Kurulum kapisinin uc parcasi tek kaynaktan: router `setupComplete`'e,
@@ -9,13 +10,14 @@ import 'package:qulo_v2/data/models/user_model.dart';
 /// `AppConstants.minQuestions` degisseydi ekran "Bitir" gosterir, kapi
 /// kullaniciyi geri `/profile-setup`'a atardi. Bugun iki esik esitti —
 /// saha semptomu yok, gerekce sozlesme dogrulugu.
-UserModel _u({int? photos = 1, int questions = 2, bool pref = true}) => UserModel(
+UserModel _u({int? photos = 1, int questions = 2, bool pref = true, String? consent}) => UserModel(
       id: 'u1',
       email: 'u1@qulo.test',
       age: 27,
       photos: photos == null ? null : List.generate(photos, (i) => 'https://cdn.example/p$i.jpg'),
       questionCount: questions,
       genderPrefSetAt: pref ? DateTime.utc(2026, 9, 1) : null,
+      prefConsentStatus: consent,
     );
 
 void main() {
@@ -47,6 +49,31 @@ void main() {
       expect(_u(pref: false).hasGenderPref, isFalse);
       expect(_u(pref: true).hasGenderPref, isTrue);
     });
+
+    test('rıza reddedilmişse (tercih yok, set_at yok) true — "Herkes" modu da bir seçim', () {
+      expect(_u(pref: false, consent: PrefConsent.declined).hasGenderPref, isTrue);
+    });
+  });
+
+  group('needsPrefConsent — bir kerelik rıza sayfası', () {
+    test('rızasız alınmış eski tercih → true', () {
+      expect(_u(pref: true).needsPrefConsent, isTrue);
+    });
+    test('rıza verilmiş → false', () {
+      expect(_u(pref: true, consent: PrefConsent.granted).needsPrefConsent, isFalse);
+    });
+    test('tercih yok (kurulum kapısı soracak) → false', () {
+      expect(_u(pref: false).needsPrefConsent, isFalse);
+    });
+    test('reddedilmiş → false', () {
+      expect(_u(pref: false, consent: PrefConsent.declined).needsPrefConsent, isFalse);
+    });
+  });
+
+  test('pref_consent_status JSON round-trip', () {
+    final u = UserModel.fromJson({'id': 'u1', 'email': 'u1@qulo.test', 'pref_consent_status': 'DECLINED'});
+    expect(u.prefConsentStatus, PrefConsent.declined);
+    expect(u.toJson()['pref_consent_status'], 'DECLINED');
   });
 
   group('setupComplete — uc kapinin tamami', () {

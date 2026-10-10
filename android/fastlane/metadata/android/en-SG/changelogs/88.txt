@@ -1,0 +1,5 @@
+• New: optional identity and orientation labels on your profile — you decide who sees them
+• Matches now fit both people's preferences, and your match preference has its own consent step
+• Start right after signing up; you only need to verify your email before sending messages
+• A free second chance on your first quiz, plus a fairer per-question timer
+• Safety improvements and bug fixes

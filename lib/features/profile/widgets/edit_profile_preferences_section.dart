@@ -6,8 +6,11 @@ import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_button.dart';
 import 'package:qulo_v2/core/widgets/profile_section_card.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/features/pref_consent/gender_pref_label.dart';
+import 'package:qulo_v2/features/pref_consent/widgets/gender_pref_consent_actions.dart';
 import 'package:qulo_v2/providers/edit_profile_provider.dart';
 import 'package:qulo_v2/providers/locale_provider.dart';
+import 'package:qulo_v2/providers/user_provider.dart';
 
 class EditProfilePreferencesSection extends ConsumerWidget {
   final String completionText;
@@ -20,6 +23,8 @@ class EditProfilePreferencesSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final epState = ref.watch(editProfileProvider);
+    // Tercih bu ekranda salt okunur: canlı kaynak userProvider (rıza geri alınınca anında güncellenir).
+    final genderPref = ref.watch(userProvider.select((u) => u.valueOrNull?.genderPref));
     final theme = Theme.of(context);
     final scale = context.fmt.radiusScale;
 
@@ -58,7 +63,7 @@ class EditProfilePreferencesSection extends ConsumerWidget {
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(
-                    _genderPrefLabel(context, epState.selectedGenderPref),
+                    context.tr(genderPrefLabelKey(genderPref)),
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.onSurface,
                     ),
@@ -74,6 +79,7 @@ class EditProfilePreferencesSection extends ConsumerWidget {
               color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
+          const GenderPrefConsentActions(),
           const SizedBox(height: AppSpacing.lg),
 
           // Age range
@@ -176,18 +182,5 @@ class EditProfilePreferencesSection extends ConsumerWidget {
         ],
       ),
     );
-  }
-
-  String _genderPrefLabel(BuildContext context, String? pref) {
-    switch (pref) {
-      case 'MAN':
-        return context.tr('male');
-      case 'WOMAN':
-        return context.tr('female');
-      case 'BOTH':
-        return context.tr('both');
-      default:
-        return context.tr('both');
-    }
   }
 }

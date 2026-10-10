@@ -19,6 +19,9 @@ class OverlayRequest {
 
 /// Standard priority tiers. Higher = shown first.
 abstract final class OverlayPriority {
+  /// Yasal onaylar (eşleşme tercihi açık rızası): her şeyden önce.
+  static const int consent = 320;
+
   /// Tek dokunuşluk anketler (edinim kanalı): onboarding turundan hemen ÖNCE.
   static const int survey = 310;
   static const int onboarding = 300;

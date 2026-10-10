@@ -5,8 +5,7 @@ import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/diamond_icon.dart';
-import 'package:qulo_v2/core/widgets/image_picker_permission_dialog.dart';
-import 'package:qulo_v2/providers/api_provider.dart';
+import 'package:qulo_v2/features/chat/mixins/chat_question_step2_mixin.dart';
 
 class ChatQuestionStep2 extends ConsumerStatefulWidget {
   final String matchId;
@@ -44,29 +43,19 @@ class ChatQuestionStep2 extends ConsumerStatefulWidget {
   ConsumerState<ChatQuestionStep2> createState() => _ChatQuestionStep2State();
 }
 
-class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
-  late final TextEditingController _hintCtrl;
-  bool _isUploading = false;
-
+class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2>
+    with ChatQuestionStep2Mixin {
   static const _timerOptions = [15, 30, 45, 60, 90];
-
-  @override
-  void initState() {
-    super.initState();
-    _hintCtrl = TextEditingController(text: widget.hintText);
-  }
 
   @override
   void didUpdateWidget(covariant ChatQuestionStep2 oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.hintText != _hintCtrl.text) {
-      _hintCtrl.text = widget.hintText;
-    }
+    syncHintText();
   }
 
   @override
   void dispose() {
-    _hintCtrl.dispose();
+    disposeMixin();
     super.dispose();
   }
 
@@ -100,7 +89,7 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
           _Step2SectionLabel(text: context.tr('chat_q_hint_label')),
           const SizedBox(height: AppSpacing.xs),
           TextFormField(
-            controller: _hintCtrl,
+            controller: hintCtrl,
             maxLength: 200,
             maxLines: 2,
             minLines: 1,
@@ -116,8 +105,8 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
           _RewardMediaRow(
             rewardMediaUrl: widget.rewardMediaUrl,
             rewardMediaType: widget.rewardMediaType,
-            isUploading: _isUploading,
-            onPickPhoto: _pickPhoto,
+            isUploading: isUploading,
+            onPickPhoto: pickPhoto,
             onRemove: () {
               widget.onChanged(
                 rewardMediaUrl: '',
@@ -191,40 +180,6 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2> {
         vertical: AppSpacing.sm,
       ),
     );
-  }
-
-  Future<void> _pickPhoto() async {
-    final picker = ref.read(imagePickerManagerProvider);
-    // Izin reddi eskiden yakalanmiyordu: kullanici hicbir geri bildirim almiyordu.
-    final picked = await pickWithPermissionPrompt(ref, context, picker.pickFromGallery);
-    if (picked == null || !mounted) return;
-
-    setState(() => _isUploading = true);
-    try {
-      final repo = ref.read(chatRepositoryProvider);
-      final result = await repo.uploadQuestionMedia(
-        widget.matchId,
-        bytes: picked.bytes,
-        mimeType: picked.mimeType,
-      );
-      result.when(
-        success: (url) {
-          widget.onChanged(
-            rewardMediaUrl: url,
-            rewardMediaType: 'image',
-          );
-        },
-        failure: (_) {
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(AppLocalizations.of(context).get('chat_media_upload_failed'))),
-            );
-          }
-        },
-      );
-    } finally {
-      if (mounted) setState(() => _isUploading = false);
-    }
   }
 }
 

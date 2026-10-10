@@ -18,6 +18,14 @@ abstract class AnalyticsEvents {
   static const String authLogout = 'auth_logout';
   static const String authForgotPassword = 'auth_forgot_password';
 
+  // ─── E-posta doğrulama (2026-10-04, doğrulamasız giriş) ─
+  /// Doğrulama sayfası açıldı (param: trigger = message / upload / redeem / banner ...).
+  static const String emailVerifyPromptShow = 'email_verify_prompt_show';
+  /// "Tekrar gönder" sonucu (param: result = sent / already_verified / rate_limited / failed).
+  static const String emailVerifyResend = 'email_verify_resend';
+  /// "Doğruladım" → sunucu doğrulanmış dedi (param: trigger).
+  static const String emailVerifyConfirmed = 'email_verify_confirmed';
+
   // ─── Auth Landing (Faz 1) ─
   static const String authLandingView = 'auth_landing_view';
   static const String authLandingSocialSelected = 'auth_landing_social_selected';
@@ -30,7 +38,6 @@ abstract class AnalyticsEvents {
   static const String onboardingStepSkip = 'onboarding_step_skip';
   static const String onboardingPhotoAdd = 'onboarding_photo_add';
   static const String onboardingPhotoRemove = 'onboarding_photo_remove';
-  static const String onboardingGenderSelect = 'onboarding_gender_select';
   static const String onboardingBirthdateSet = 'onboarding_birthdate_set';
   static const String onboardingLocationPermit = 'onboarding_location_permit';
   static const String onboardingComplete = 'onboarding_complete';
@@ -61,6 +68,9 @@ abstract class AnalyticsEvents {
   static const String discoverFilterApply = 'discover_filter_apply';
   static const String discoverSessionStart = 'discover_session_start';
   static const String discoverSessionEnd = 'discover_session_end';
+  /// Konum yokken gösterilen "konumu paylaş" kartı (param: reason = hata kodu).
+  static const String discoverLocationPromptShow = 'discover_location_prompt_show';
+  static const String discoverLocationPromptTap = 'discover_location_prompt_tap';
 
   // ─── Match (9) ─────────────────────────────────────────────────────
   static const String matchNew = 'match_new';
@@ -182,6 +192,15 @@ abstract class AnalyticsEvents {
   static const String upsellDismiss = 'upsell_dismiss';
   static const String upsellConvert = 'upsell_convert';
 
+  // ─── Rainbow Market (7) ────────────────────────────────────────────
+  static const String marketView = 'market_view';
+  static const String marketBannerImpression = 'market_banner_impression';
+  static const String marketBannerClick = 'market_banner_click';
+  static const String marketFeaturedClick = 'market_featured_click';
+  static const String marketRedeemStart = 'market_redeem_start';
+  static const String marketRedeemSuccess = 'market_redeem_success';
+  static const String marketRedeemError = 'market_redeem_error';
+
   // ─── Funnel milestones (Faz 1 — post-auth) ─
   static const String paywallShown = 'paywall_shown';
   static const String firstDiscoverView = 'first_discover_view';
@@ -204,6 +223,10 @@ abstract class AnalyticsEvents {
   static const String notificationPermissionAsk = 'notification_permission_ask';
   static const String notificationPermissionGrant = 'notification_permission_grant';
   static const String notificationPermissionDeny = 'notification_permission_deny';
+  /// Sistem isteminden önceki açıklama ekranı (param: trigger = match / first_message).
+  static const String notificationPrePromptShow = 'notification_preprompt_show';
+  static const String notificationPrePromptAccept = 'notification_preprompt_accept';
+  static const String notificationPrePromptDecline = 'notification_preprompt_decline';
   static const String notificationReceiveForeground = 'notification_receive_foreground';
   static const String notificationReceiveBackground = 'notification_receive_background';
   static const String notificationTap = 'notification_tap';
@@ -284,6 +307,10 @@ abstract class AnalyticsEvents {
   static const String paramMethod = 'method';
   static const String paramDurationMs = 'duration_ms';
   static const String paramErrorCode = 'error_code';
+  static const String paramCountry = 'country';
+  static const String paramSectionId = 'section_id';
+  static const String paramItemId = 'item_id';
+  static const String paramBrandKey = 'brand_key';
   static const String paramStep = 'step';
   static const String paramStepName = 'step_name';
   static const String paramStepIndex = 'step_index';
@@ -296,7 +323,11 @@ abstract class AnalyticsEvents {
   /// `quiz_power_used` / `chat_power_used` icin `paramSource` degerleri.
   static const String sourceInventory = 'inventory';
   static const String sourceDiamond = 'diamond';
-  static const String paramGender = 'gender';
+  /// İlk quiz ikinci şansı: SKIP kurtarması bedava (envanter/elmas düşmez).
+  static const String sourceFreeSecondChance = 'free_second_chance';
+  /// `quiz_rescue_shown`: ücretsiz ikinci şans kartı gösterildi mi.
+  static const String paramFreeSecondChance = 'free_second_chance';
+  static const String paramResult = 'result';
   static const String paramAge = 'age';
   static const String paramGranted = 'granted';
   static const String paramPhotosCount = 'photos_count';
@@ -430,9 +461,16 @@ abstract class AnalyticsEvents {
   static const String setupExitAttempt = 'setup_exit_attempt';
   static const String setupExitConfirm = 'setup_exit_confirm';
 
-  // ─── Gender Preference Collection (2) ──────────────────────────────
+  // ─── Gender Preference Collection (3) ──────────────────────────────
+  // Tercih DEĞERİ gönderilmez (KVKK m.6) — PrefAnalytics üzerinden.
   static const String signupGenderPrefSelected = 'signup_gender_pref_selected';
   static const String setupGenderPrefSelected = 'setup_gender_pref_selected';
+  static const String prefConsentAnswered = 'pref_consent_answered';
+
+  // ─── Identity Labels (2) ───────────────────────────────────────────
+  // Etiket DEĞERİ gönderilmez (KVKK m.6) — IdentityAnalytics üzerinden.
+  static const String identityLabelsSaved = 'identity_labels_saved';
+  static const String identityLabelsCleared = 'identity_labels_cleared';
 
   // ─── Deep Link (5) ──────────────────────────────────────────────────
   static const String deepLinkReceived = 'deep_link_received';

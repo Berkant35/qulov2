@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:qulo_v2/core/constants/pref_consent.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/network/services/auth_service.dart';
 import 'package:qulo_v2/data/models/auth_model.dart';
@@ -17,7 +18,8 @@ class AuthRepository implements IAuthRepository {
     required String surname,
     required int age,
     required String gender,
-    required String genderPref,
+    String? genderPref,
+    String? prefConsentStatus,
     double? lat,
     double? lng,
     String locale = 'tr',
@@ -30,7 +32,9 @@ class AuthRepository implements IAuthRepository {
         'surname': surname,
         'age': age,
         'gender': gender,
-        'gender_pref': genderPref,
+        if (genderPref != null) 'gender_pref': genderPref,
+        if (prefConsentStatus != null)
+          'pref_consent': {'status': prefConsentStatus, 'version': PrefConsent.version},
         'locale': locale,
         'tos_accepted': true,
         if (lat != null) 'lat': lat,
@@ -59,10 +63,9 @@ class AuthRepository implements IAuthRepository {
   }
 
   @override
-  Future<Result<void>> verifyEmail(String token) async {
+  Future<Result<ResendVerificationResponse>> resendVerification() async {
     try {
-      await _service.verifyEmail({'token': token});
-      return const Success(null);
+      return Success(await _service.resendVerification());
     } on DioException catch (e) {
       return Failure(e.toAppFailure());
     }

@@ -6,6 +6,8 @@ import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
+import 'package:qulo_v2/features/quiz/quiz_retry_lock.dart';
+import 'package:qulo_v2/providers/match_provider.dart';
 
 class QuizErrorView extends StatelessWidget {
   final AppFailure failure;
@@ -35,9 +37,7 @@ class QuizErrorView extends StatelessWidget {
             Icon(Icons.error_outline, size: 48, color: context.appColors.error),
             const SizedBox(height: AppSpacing.md),
             Text(
-              failure is ServerFailure && (failure as ServerFailure).code == 'NO_QUESTIONS'
-                  ? context.tr('quiz_no_questions')
-                  : context.tr('quiz_start_error'),
+              quizStartErrorMessage(failure, context.l10n),
               style: theme.textTheme.titleMedium,
               textAlign: TextAlign.center,
             ),
@@ -51,4 +51,11 @@ class QuizErrorView extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Quiz başlatılamadı: erişilemeyen profil / soru yok / kilitli hedef (409 QUIZ_RETRY_LOCKED) / genel.
+String quizStartErrorMessage(AppFailure failure, AppLocalizations l10n) {
+  if (isNotCompatibleFailure(failure)) return l10n.get('error_not_compatible');
+  if (failure is ServerFailure && failure.code == 'NO_QUESTIONS') return l10n.get('quiz_no_questions');
+  return quizRetryLockMessage(failure, l10n) ?? l10n.get('quiz_start_error');
 }

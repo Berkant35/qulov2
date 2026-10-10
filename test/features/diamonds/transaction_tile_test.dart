@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:qulo_v2/core/l10n/app_localizations.dart';
 import 'package:qulo_v2/core/theme/app_theme.dart';
+import 'package:qulo_v2/core/widgets/diamond_icon.dart';
 import 'package:qulo_v2/data/models/diamond_model.dart';
 import 'package:qulo_v2/features/diamonds/widgets/transaction_tile.dart';
 import 'package:qulo_v2/features/performance/widgets/diamond_transaction_tile.dart';
@@ -57,6 +58,18 @@ void main() {
       expect(find.text('Green Diamonds'), findsOneWidget);
       expect(find.text('+2'), findsOneWidget);
     });
+
+    testWidgets('rainbow itfa satırı yerel etiketle, ham kod yok', (tester) async {
+      await _pump(
+        tester,
+        TransactionTile(transaction: _tx('REWARD_REDEEM', type: 'RAINBOW', amount: -51)),
+      );
+
+      expect(find.text('Gift card redemption'), findsOneWidget);
+      expect(find.text('Rainbow Diamonds'), findsOneWidget);
+      expect(find.text('-51'), findsOneWidget);
+      expect(find.text('RAINBOW'), findsNothing);
+    });
   });
 
   group('DiamondTransactionTile (performans ekrani)', () {
@@ -73,6 +86,14 @@ void main() {
 
       expect(find.text('Diamond Transaction'), findsOneWidget);
       expect(find.text('something new'), findsNothing);
+    });
+
+    testWidgets('RAINBOW satırı Prizma ikonuyla, mor değil', (tester) async {
+      await _pump(tester, DiamondTransactionTile(transaction: _tx('REWARD_REDEEM', type: 'RAINBOW', amount: -51)));
+
+      final icon = tester.widget<DiamondIcon>(find.byType(DiamondIcon));
+      expect(icon.type, DiamondType.rainbow);
+      expect(find.text('Gift card redemption'), findsOneWidget);
     });
   });
 }

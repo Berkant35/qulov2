@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:qulo_v2/core/constants/pref_consent.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/network/services/auth_service.dart';
 import 'package:qulo_v2/data/models/auth_model.dart';
@@ -22,7 +23,8 @@ class _FakeAuthService implements AuthService {
   Map<String, dynamic>? lastLogin;
   Map<String, dynamic>? lastRefresh;
   Map<String, dynamic>? lastLogout;
-  Map<String, dynamic>? lastVerify;
+  int resendCalls = 0;
+  ResendVerificationResponse resendResponse = const ResendVerificationResponse(sent: true);
   Map<String, dynamic>? lastForgot;
   Map<String, dynamic>? lastReset;
   int loginCallCount = 0;
@@ -46,9 +48,10 @@ class _FakeAuthService implements AuthService {
   }
 
   @override
-  Future<void> verifyEmail(Map<String, dynamic> body) async {
-    lastVerify = body;
+  Future<ResendVerificationResponse> resendVerification() async {
+    resendCalls++;
     if (error != null) throw _err;
+    return resendResponse;
   }
 
   @override
@@ -93,15 +96,23 @@ DioException _dio(DioExceptionType type, {int? status, dynamic body}) => DioExce
             ),
     );
 
-Future<Result<RegisterResponse>> _register(AuthRepository repo, {double? lat, double? lng, String locale = 'tr'}) =>
+Future<Result<RegisterResponse>> _register(
+  AuthRepository repo, {
+  double? lat,
+  double? lng,
+  String locale = 'tr',
+  String? genderPref = 'MAN',
+  String? prefConsentStatus,
+}) =>
     repo.register(
       email: 'a@b.test',
       password: 'Test1234!',
       name: 'Ada',
       surname: 'L',
       age: 27,
-      gender: 'female',
-      genderPref: 'male',
+      gender: 'WOMAN',
+      genderPref: genderPref,
+      prefConsentStatus: prefConsentStatus,
       lat: lat,
       lng: lng,
       locale: locale,
@@ -115,9 +126,23 @@ void main() {
       await _register(AuthRepository(fake));
 
       expect(fake.lastRegister, containsPair('email', 'a@b.test'));
-      expect(fake.lastRegister, containsPair('gender_pref', 'male'));
+      expect(fake.lastRegister, containsPair('gender_pref', 'MAN'));
       expect(fake.lastRegister, containsPair('age', 27));
       expect(fake.lastRegister, containsPair('locale', 'tr'));
+    });
+
+    test('rıza verilmişse pref_consent {status, version} ve tercih gider', () async {
+      final fake = _FakeAuthService();
+      await _register(AuthRepository(fake), prefConsentStatus: PrefConsent.granted);
+      expect(fake.lastRegister, containsPair('gender_pref', 'MAN'));
+      expect(fake.lastRegister, containsPair('pref_consent', {'status': 'GRANTED', 'version': PrefConsent.version}));
+    });
+
+    test('rıza reddedilmişse tercih GÖNDERİLMEZ, pref_consent DECLINED', () async {
+      final fake = _FakeAuthService();
+      await _register(AuthRepository(fake), genderPref: null, prefConsentStatus: PrefConsent.declined);
+      expect(fake.lastRegister!.containsKey('gender_pref'), isFalse);
+      expect(fake.lastRegister, containsPair('pref_consent', {'status': 'DECLINED', 'version': PrefConsent.version}));
     });
 
     test('tos_accepted her zaman true — gercek kapi arayuzde', () async {
@@ -227,12 +252,17 @@ void main() {
   });
 
   group('e-posta dogrulama ve sifre sifirlama', () {
-    test('verifyEmail token gonderir', () async {
+    test('resendVerification yaniti tasinir (gonderildi / zaten dogrulanmis)', () async {
       final fake = _FakeAuthService();
 
-      await AuthRepository(fake).verifyEmail('tok-1');
+      final sent = await AuthRepository(fake).resendVerification();
+      expect(sent.when(success: (r) => r, failure: (_) => null),
+          const ResendVerificationResponse(sent: true));
 
-      expect(fake.lastVerify, {'token': 'tok-1'});
+      fake.resendResponse = const ResendVerificationResponse(emailVerified: true);
+      final verified = await AuthRepository(fake).resendVerification();
+      expect(verified.when(success: (r) => r.emailVerified, failure: (_) => null), isTrue);
+      expect(fake.resendCalls, 2);
     });
 
     test('forgotPassword e-posta gonderir', () async {
@@ -251,18 +281,16 @@ void main() {
       expect(fake.lastReset, {'token': 'tok-2', 'password': 'Yeni1234!'});
     });
 
-    test('suresi dolmus dogrulama baglantisi ServerFailure olur', () async {
+    test('yeniden gonderim hiz sinirina takilirsa (429) RATE_LIMITED tasinir', () async {
       final fake = _FakeAuthService(
         error: _dio(DioExceptionType.badResponse,
-            status: 400, body: {'error': {'code': 'TOKEN_EXPIRED'}}),
+            status: 429, body: {'error': {'code': 'RATE_LIMITED'}}),
       );
 
-      final result = await AuthRepository(fake).verifyEmail('eski');
+      final result = await AuthRepository(fake).resendVerification();
 
-      // `Result<void>` oldugu icin `when`e acik tip veriliyor; cikarim `void`e
-      // duserse ifade kullanilamiyor.
       final failure = result.when<AppFailure?>(success: (_) => null, failure: (f) => f);
-      expect((failure as ServerFailure).code, 'TOKEN_EXPIRED');
+      expect((failure as ServerFailure).code, 'RATE_LIMITED');
     });
   });
 }

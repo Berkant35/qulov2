@@ -6,6 +6,7 @@ import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
 import 'package:qulo_v2/providers/exchange_provider.dart';
+import 'package:qulo_v2/providers/rainbow_flag.dart';
 import 'package:qulo_v2/features/diamonds/widgets/diamond_balance_card.dart';
 import 'package:qulo_v2/features/exchange/widgets/convert_section.dart';
 import 'package:qulo_v2/features/exchange/widgets/power_shop_card.dart';
@@ -31,6 +32,7 @@ class _ExchangeScreenState extends ConsumerState<ExchangeScreen> {
   Widget build(BuildContext context) {
     final balance = ref.watch(diamondProvider);
     final exchange = ref.watch(exchangeProvider);
+    final rainbowEnabled = ref.watchRainbowEnabled();
     final theme = Theme.of(context);
 
     return AppScaffold(
@@ -45,6 +47,7 @@ class _ExchangeScreenState extends ConsumerState<ExchangeScreen> {
               data: (bal) => DiamondBalanceCard(
                 greenCount: bal.green,
                 purpleCount: bal.purple,
+                rainbowCount: rainbowEnabled ? bal.rainbow : null,
               ),
               loading: () =>
                   const Center(child: AppLoadingWidget.large()),

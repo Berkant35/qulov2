@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/core/network/failure_message.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/services/image_picker_manager.dart';
 import 'package:qulo_v2/core/widgets/image_picker_permission_dialog.dart';
@@ -11,6 +12,7 @@ import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/providers/chat_provider.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/features/chat/mixins/chat_screen_mixin.dart';
+import 'package:qulo_v2/features/email_verification/email_verification_controller.dart';
 
 /// Chat ekraninda foto ve sesli mesaj akisi: medya izni istegi, kaynak secimi,
 /// yukleme ve medya iznini kapatma.
@@ -48,27 +50,30 @@ mixin ChatMediaMixin on ChatScreenMixin {
     }
 
     final result = await ref.read(chatProvider(widget.matchId).notifier).requestMedia();
-    result.when(
-      success: (_) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(l10n.get('chat_media_request_sent'))),
-          );
-        }
-      },
-      failure: (failure) {
-        if (!mounted) return;
-        if (failure is ServerFailure && failure.code == 'MEDIA_ALREADY_ENABLED') {
-          ref.read(chatProvider(widget.matchId).notifier).loadMediaStatus();
-          return;
-        }
-        final msg = switch (failure) {
-          ServerFailure(code: 'MEDIA_REQUEST_PENDING') => l10n.get('chat_media_pending'),
-          _ => l10n.get('chat_media_request_failed'),
-        };
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
-      },
-    );
+    if (!mounted) return;
+    final failure = switch (result) {
+      Success() => null,
+      Failure(:final failure) => failure,
+    };
+    if (failure == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.get('chat_media_request_sent'))),
+      );
+      return;
+    }
+    final gated = await ref
+        .read(emailVerificationControllerProvider)
+        .handleFailure(failure, trigger: EmailVerifyTrigger.mediaRequest);
+    if (gated || !mounted) return;
+    if (failure is ServerFailure && failure.code == 'MEDIA_ALREADY_ENABLED') {
+      ref.read(chatProvider(widget.matchId).notifier).loadMediaStatus();
+      return;
+    }
+    final msg = switch (failure) {
+      ServerFailure(code: 'MEDIA_REQUEST_PENDING') => l10n.get('chat_media_pending'),
+      _ => l10n.get('chat_media_request_failed'),
+    };
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 
   Future<void> _showPhotoSourceSheet() async {
@@ -110,18 +115,28 @@ mixin ChatMediaMixin on ChatScreenMixin {
     if (picked == null) return;
 
     try {
-      final uploadResult = await ref.read(chatRepositoryProvider).uploadMedia(
+      final upload = await ref.read(chatRepositoryProvider).uploadMedia(
         widget.matchId,
         bytes: picked.bytes,
         mimeType: picked.mimeType,
       );
-      final url = uploadResult.when(success: (u) => u, failure: (_) => null);
-      if (url == null) throw Exception('Upload failed');
+      final String url;
+      switch (upload) {
+        case Success(:final data):
+          url = data;
+        case Failure(:final failure):
+          await _onMediaFailure(failure, 'chat_photo_send_failed');
+          return;
+      }
 
-      await ref
+      final sent = await ref
           .read(chatProvider(widget.matchId).notifier)
           .sendMessage(url, isImage: true);
-      messagesSentCount++;
+      if (sent case Failure(:final failure)) {
+        await _onMediaFailure(failure, 'chat_photo_send_failed');
+        return;
+      }
+      recordMessageSent();
       AnalyticsManager.instance.logEvent(
         AnalyticsEvents.chatMessageSend,
         params: {
@@ -129,14 +144,22 @@ mixin ChatMediaMixin on ChatScreenMixin {
           AnalyticsEvents.paramType: 'photo',
         },
       );
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(AppLocalizations.of(context).get('chat_photo_send_failed'))),
-        );
-      }
+    } catch (_) {
+      _showMediaError('chat_photo_send_failed');
     }
+  }
+
+  /// Medya gönderim hatası: doğrulama kapısıysa sayfa açılır, değilse snackbar.
+  Future<void> _onMediaFailure(AppFailure failure, String fallbackKey) async {
+    final gated = await ref
+        .read(emailVerificationControllerProvider)
+        .handleFailure(failure, trigger: EmailVerifyTrigger.media);
+    if (!gated) _showMediaError(failure.userMessageKey(fallbackKey));
+  }
+
+  void _showMediaError(String key) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(context.tr(key))));
   }
 
   // ─── Voice ───
@@ -162,19 +185,29 @@ mixin ChatMediaMixin on ChatScreenMixin {
     final file = File(filePath);
 
     try {
-      final uploadResult = await ref.read(chatRepositoryProvider).uploadMedia(
+      final upload = await ref.read(chatRepositoryProvider).uploadMedia(
         widget.matchId,
         file: file,
         mimeType: 'audio/m4a',
       );
-      final url = uploadResult.when(success: (u) => u, failure: (_) => null);
-      if (url == null) throw Exception('Upload failed');
+      final String url;
+      switch (upload) {
+        case Success(:final data):
+          url = data;
+        case Failure(:final failure):
+          await _onMediaFailure(failure, 'chat_voice_send_failed');
+          return;
+      }
 
-      await ref.read(chatProvider(widget.matchId).notifier).sendMessage(
+      final sent = await ref.read(chatProvider(widget.matchId).notifier).sendMessage(
           'Sesli mesaj',
           audioUrl: url,
           audioDurationSeconds: durationSeconds);
-      messagesSentCount++;
+      if (sent case Failure(:final failure)) {
+        await _onMediaFailure(failure, 'chat_voice_send_failed');
+        return;
+      }
+      recordMessageSent();
       AnalyticsManager.instance.logEvent(
         AnalyticsEvents.chatMessageSend,
         params: {
@@ -183,14 +216,8 @@ mixin ChatMediaMixin on ChatScreenMixin {
           AnalyticsEvents.paramDurationMs: durationSeconds * 1000,
         },
       );
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content:
-                  Text(AppLocalizations.of(context).get('chat_voice_send_failed'))),
-        );
-      }
+    } catch (_) {
+      _showMediaError('chat_voice_send_failed');
     }
   }
 

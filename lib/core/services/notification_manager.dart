@@ -30,6 +30,11 @@ class NotificationManager {
   StreamSubscription<RemoteMessage>? _onMessageOpenedAppSub;
   StreamSubscription<String>? _onTokenRefreshSub;
 
+  /// Yerel bildirim kanalı, arka plan işleyicisi ve — izin ZATEN verilmişse —
+  /// FCM token'ı. Sistem izni burada SORULMAZ: login sonrası soğuk istem
+  /// (ATT + konum + push art arda) kaldırıldı; izin değerli anda
+  /// [requestPermission] ile, açıklama ekranından sonra istenir. İzinli
+  /// kullanıcıda token her açılışta tazelenir.
   Future<void> init() async {
     dev.log('[FCM] init() started', name: 'NotificationManager');
 
@@ -39,7 +44,41 @@ class NotificationManager {
     // Register background handler
     FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundHandler);
 
-    // Request permission (iOS + Android 13+)
+    // Listen for token refresh (cancel previous if re-inited)
+    _onTokenRefreshSub?.cancel();
+    _onTokenRefreshSub = _messaging.onTokenRefresh.listen((newToken) {
+      dev.log('[FCM] Token refreshed', name: 'NotificationManager');
+      _token = newToken;
+      _onTokenRefresh?.call(newToken);
+    });
+
+    final granted = await isPermissionGranted();
+    dev.log('[FCM] Permission granted: $granted', name: 'NotificationManager');
+    AnalyticsManager.instance.setUserProperty('notification_enabled', '$granted');
+    if (granted) await _fetchToken();
+
+    dev.log('[FCM] init() completed', name: 'NotificationManager');
+  }
+
+  Future<bool> isPermissionGranted() async {
+    final settings = await _messaging.getNotificationSettings();
+    return _isGranted(settings.authorizationStatus);
+  }
+
+  /// Açıklama ekranı gösterilmeye değer mi? İzin zaten varsa hayır. iOS bir kez
+  /// reddedilen izni bir daha sormaz (yalnız Ayarlar) → yalnız "hiç sorulmadı"
+  /// iken evet. Android 13+ "reddedildi" ile "hiç sorulmadı"yı ayırt ettirmez;
+  /// sistem diyaloğu gösterip göstermeyeceğine kendisi karar verir.
+  Future<bool> canRequestPermission() async {
+    final status = (await _messaging.getNotificationSettings()).authorizationStatus;
+    if (_isGranted(status)) return false;
+    return Platform.isIOS ? status == AuthorizationStatus.notDetermined : true;
+  }
+
+  /// Sistem izin istemini açar (iOS + Android 13+ POST_NOTIFICATIONS). İzin
+  /// verilirse token alınır; [token] üzerinden okunur.
+  Future<bool> requestPermission({required String trigger}) async {
+    final params = {AnalyticsEvents.paramTrigger: trigger};
     final settings = await _messaging.requestPermission(
       alert: true,
       badge: true,
@@ -47,15 +86,25 @@ class NotificationManager {
     );
     dev.log('[FCM] Permission status: ${settings.authorizationStatus}', name: 'NotificationManager');
 
-    AnalyticsManager.instance.logEvent(AnalyticsEvents.notificationPermissionAsk);
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      AnalyticsManager.instance.logEvent(AnalyticsEvents.notificationPermissionGrant);
-      AnalyticsManager.instance.setUserProperty('notification_enabled', 'true');
-    } else {
-      AnalyticsManager.instance.logEvent(AnalyticsEvents.notificationPermissionDeny);
-      AnalyticsManager.instance.setUserProperty('notification_enabled', 'false');
-    }
+    final analytics = AnalyticsManager.instance;
+    analytics.logEvent(AnalyticsEvents.notificationPermissionAsk, params: params);
+    final granted = _isGranted(settings.authorizationStatus);
+    analytics.logEvent(
+      granted
+          ? AnalyticsEvents.notificationPermissionGrant
+          : AnalyticsEvents.notificationPermissionDeny,
+      params: params,
+    );
+    analytics.setUserProperty('notification_enabled', '$granted');
+    if (granted) await _fetchToken();
+    return granted;
+  }
 
+  static bool _isGranted(AuthorizationStatus status) =>
+      status == AuthorizationStatus.authorized ||
+      status == AuthorizationStatus.provisional;
+
+  Future<void> _fetchToken() async {
     // iOS: wait for APNS token before requesting FCM token
     if (Platform.isIOS) {
       dev.log('[FCM] iOS detected — waiting for APNS token...', name: 'NotificationManager');
@@ -72,29 +121,24 @@ class NotificationManager {
       }
     }
 
-    // Get FCM token
     try {
       _token = await _messaging.getToken();
-      dev.log('[FCM] Token: ${_token != null ? '${_token!.substring(0, 20)}...' : 'NULL'}', name: 'NotificationManager');
+      dev.log('[FCM] Token: ${_token != null ? 'OK' : 'NULL'}', name: 'NotificationManager');
     } catch (e) {
       dev.log('[FCM] Token fetch failed: $e', name: 'NotificationManager');
       _token = null;
     }
-
-    // Listen for token refresh (cancel previous if re-inited)
-    _onTokenRefreshSub?.cancel();
-    _onTokenRefreshSub = _messaging.onTokenRefresh.listen((newToken) {
-      dev.log('[FCM] Token refreshed', name: 'NotificationManager');
-      _token = newToken;
-      _onTokenRefresh?.call(newToken);
-    });
-
-    dev.log('[FCM] init() completed', name: 'NotificationManager');
   }
 
   Future<void> _initLocalNotifications() async {
     const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
-    const iosSettings = DarwinInitializationSettings();
+    // Varsayılan (true) iOS'ta initialize anında sistem izin istemini açar —
+    // izin yalnız [requestPermission] ile, açıklama ekranından sonra istenir.
+    const iosSettings = DarwinInitializationSettings(
+      requestAlertPermission: false,
+      requestBadgePermission: false,
+      requestSoundPermission: false,
+    );
     const initSettings = InitializationSettings(
       android: androidSettings,
       iOS: iosSettings,

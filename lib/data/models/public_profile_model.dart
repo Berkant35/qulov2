@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:qulo_v2/data/models/discover_model.dart';
+import 'package:qulo_v2/data/models/identity_model.dart';
 import 'package:qulo_v2/data/models/user_details_model.dart';
 
 part 'public_profile_model.g.dart';
@@ -32,6 +33,9 @@ class PublicProfileModel extends Equatable {
   @JsonKey(name: 'question_info')
   final QuestionInfoModel? questionInfo;
 
+  /// Sahibinin görünür yaptığı etiketler (spec 2026-10-06); yoksa null.
+  final VisibleIdentityModel? identity;
+
   const PublicProfileModel({
     required this.userId,
     this.name,
@@ -48,6 +52,7 @@ class PublicProfileModel extends Equatable {
     this.isBoosted = false,
     this.details,
     this.questionInfo,
+    this.identity,
   });
 
   factory PublicProfileModel.fromJson(Map<String, dynamic> json) =>

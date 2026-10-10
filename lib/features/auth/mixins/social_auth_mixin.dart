@@ -25,8 +25,15 @@ mixin SocialAuthMixin<T extends ConsumerStatefulWidget>
           failure: (f) {
             if (f.message?.contains('cancelled') == true) return;
             final code = errorCodeOf(f);
-            if (code != null) onSocialAuthError(code);
+            if (code != null) onSocialAuthError(socialAuthErrorCode(code));
           },
         );
       });
 }
+
+/// Sosyal girişe özgü hata kodu eşlemesi. 409 `EMAIL_ALREADY_EXISTS` burada
+/// "bu e-posta kayıtlı" değil: Google e-postayı doğrulamamış ve aynı adresle
+/// e-posta/şifre hesabı var — sunucu hesabı bağlamıyor (ön-hesap ele geçirme
+/// koruması). Kullanıcıya e-posta + şifreyle girmesi söylenir.
+String socialAuthErrorCode(String code) =>
+    code == 'EMAIL_ALREADY_EXISTS' ? 'SOCIAL_EMAIL_ALREADY_EXISTS' : code;

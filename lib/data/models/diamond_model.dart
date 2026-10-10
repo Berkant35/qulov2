@@ -8,14 +8,19 @@ class DiamondBalance extends Equatable {
   final int green;
   final int purple;
 
-  const DiamondBalance({required this.green, required this.purple});
+  /// Rainbow bakiyesi (sunucu `diamondService.getBalance` / `new_balance`). Eski yanıtta 0.
+  /// Gösterim `UserModel.rainbowEnabled`'a bağlıdır; bu alan her zaman gelir.
+  @JsonKey(defaultValue: 0)
+  final int rainbow;
+
+  const DiamondBalance({required this.green, required this.purple, this.rainbow = 0});
 
   factory DiamondBalance.fromJson(Map<String, dynamic> json) =>
       _$DiamondBalanceFromJson(json);
   Map<String, dynamic> toJson() => _$DiamondBalanceToJson(this);
 
   @override
-  List<Object?> get props => [green, purple];
+  List<Object?> get props => [green, purple, rainbow];
 }
 
 @JsonSerializable()

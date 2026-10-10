@@ -1,3 +1,5 @@
+import 'package:qulo_v2/core/constants/diamond_type.dart';
+
 /// Elmas islem sebebi (`diamond_transactions.reason`) -> ceviri anahtari.
 /// Tek kaynak; elmas ekrani ve performans ekraninin gecmis satirlari buradan okur.
 ///
@@ -18,6 +20,9 @@ const diamondReasonKeys = [
   'reason_badge',
   'reason_exchange',
   'reason_retention',
+  'reason_reward_redeem',
+  'reason_reward_refund',
+  'reason_starter_purple',
   'reason_other',
 ];
 
@@ -48,10 +53,17 @@ String diamondReasonKey(String reason) {
     'PROFILE_COMPLETION' => 'reason_profile_completion',
     'EXCHANGE_GREEN_TO_PURPLE' => 'reason_exchange',
     'RETENTION_BONUS' => 'reason_retention',
+    'REWARD_REDEEM' => 'reason_reward_redeem',
+    'REWARD_REFUND' => 'reason_reward_refund',
+    // Yeni hesaba tek seferlik başlangıç moru (qulo-server exchange.service, 2026-10-04).
+    'STARTER_PURPLE' => 'reason_starter_purple',
     _ => 'reason_other',
   };
 }
 
-/// `diamond_transactions.type` (GREEN | PURPLE) -> ceviri anahtari.
-String diamondTypeKey(String type) =>
-    type.toUpperCase() == 'GREEN' ? 'green_diamonds' : 'purple_diamonds';
+/// `diamond_transactions.type` (GREEN | PURPLE | RAINBOW) -> ceviri anahtari.
+String diamondTypeKey(String type) => switch (diamondTypeFromApi(type)) {
+      DiamondType.green => 'green_diamonds',
+      DiamondType.purple => 'purple_diamonds',
+      DiamondType.rainbow => 'rainbow_diamonds',
+    };

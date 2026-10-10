@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qulo_v2/core/coach_mark/coach_mark_anchor.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
@@ -36,24 +35,21 @@ class PowerBar extends ConsumerWidget with PowerBarMixin {
 
     final powers = visiblePowers(quiz, hasHint: hasHint);
 
-    return CoachMarkAnchor(
-      anchorId: 'quiz_powerbar',
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: powers.map((type) {
-          final count = exchangeState.getCount(type.apiName);
-          final isUsed = quiz.usedPowers.contains(type.apiName);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: powers.map((type) {
+        final count = exchangeState.getCount(type.apiName);
+        final isUsed = quiz.usedPowers.contains(type.apiName);
 
-          return PowerBarButton(
-            type: type,
-            count: count,
-            isUsed: isUsed,
-            purpleCost: quiz.purpleCostOf(type.apiName),
-            label: powerLabel(context, type),
-            onTap: isUsed ? null : () async => onPowerUsed?.call(type.apiName),
-          );
-        }).toList(),
-      ),
+        return PowerBarButton(
+          type: type,
+          count: count,
+          isUsed: isUsed,
+          purpleCost: quiz.purpleCostOf(type.apiName),
+          label: powerLabel(context, type),
+          onTap: isUsed ? null : () async => onPowerUsed?.call(type.apiName),
+        );
+      }).toList(),
     );
   }
 }

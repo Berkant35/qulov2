@@ -19,8 +19,10 @@ if (!KEY_ID || !ISSUER_ID) {
 const PRIVATE_KEY = readFileSync(`${homedir()}/.private_keys/AuthKey_${KEY_ID}.p8`, 'utf8');
 const notes = JSON.parse(readFileSync(NOTES_FILE, 'utf8'));
 
-// ASC locale → notes key fallback
+// ASC locale → notes key: birebir (zh-Hant, pt-PT), sonra temel dil, sonra en.
+// Birebir eslesme olmadan zh-Hant Basitlestirilmis Cince, pt-PT Brezilya Portekizcesi aliyordu.
 function noteFor(locale) {
+  if (notes[locale]) return notes[locale];
   const base = locale.split('-')[0];
   if (notes[base]) return notes[base];
   // English variants → en

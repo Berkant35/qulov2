@@ -88,13 +88,19 @@ mixin QuizAnswerMixin on QuizScreenStateMixin {
       logQuizComplete(matched: true);
     }
 
-    if (data.canRescue == true) {
-      AnalyticsManager.instance.logEvent(AnalyticsEvents.quizRescueShown);
+    final rescuable = data.canRescue == true;
+    final freeChance = rescuable && data.freeSecondChance == true;
+    if (rescuable) {
+      AnalyticsManager.instance.logEvent(
+        AnalyticsEvents.quizRescueShown,
+        params: {AnalyticsEvents.paramFreeSecondChance: freeChance},
+      );
     }
 
     setState(() {
       feedbackCorrect = isCorrect;
-      canRescue = data.canRescue == true;
+      canRescue = rescuable;
+      freeSecondChance = freeChance;
       pendingSessionStatus = isCorrect ? data.sessionStatus : null;
       pendingBadge = data.badge;
       showFeedback = true;

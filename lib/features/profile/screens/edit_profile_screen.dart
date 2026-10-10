@@ -6,6 +6,7 @@ import 'package:qulo_v2/core/widgets/profile_section_card.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/providers/edit_profile_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
+import 'package:qulo_v2/features/identity/widgets/edit_profile_identity_section.dart';
 import 'package:qulo_v2/features/profile/mixins/edit_profile_screen_mixin.dart';
 import 'package:qulo_v2/features/profile/mixins/edit_profile_photos_mixin.dart';
 import 'package:qulo_v2/features/profile/mixins/edit_profile_labels_mixin.dart';
@@ -116,6 +117,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
             EditProfilePreferencesSection(
               completionText: preferencesCompletionText(epState),
             ),
+            const SizedBox(height: AppSpacing.sectionGap),
+            const EditProfileIdentitySection(),
             const SizedBox(height: AppSpacing.sectionGap),
             const EditProfileRelationshipGoalSection(),
             const SizedBox(height: AppSpacing.sectionGap),

@@ -6,6 +6,7 @@ import 'package:qulo_v2/core/services/coach_mark_service.dart';
 import 'package:qulo_v2/core/services/funnel_events.dart';
 import 'package:qulo_v2/features/discover/coach/discover_coach_marks.dart';
 import 'package:qulo_v2/features/discover/screens/discover_screen.dart';
+import 'package:qulo_v2/features/discover/utils/discover_location_gate.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
 
@@ -71,14 +72,15 @@ mixin DiscoverScreenMixin on ConsumerState<DiscoverScreen> {
     }
   }
 
+  /// İstem kartından izin veren ya da Ayarlar'dan dönen kullanıcının
+  /// destesini yükler (deste henüz yüklenmediyse).
   void listenLocationRecovery() {
     ref.listenManual(locationProvider, (prev, next) {
-      if (prev?.error != null && next.error == null && next.lat != null && !next.isLoading) {
-        final discover = ref.read(discoverProvider).valueOrNull;
-        if (discover == null || !discover.initialized) {
-          ref.read(discoverProvider.notifier).loadCards();
-        }
-      }
+      if (!locationBecameReady(prev, next)) return;
+      final discover = ref.read(discoverProvider);
+      if (discover is AsyncLoading) return;
+      if (discover.valueOrNull?.initialized ?? false) return;
+      ref.read(discoverProvider.notifier).loadCards();
     });
   }
 
@@ -111,29 +113,24 @@ mixin DiscoverScreenMixin on ConsumerState<DiscoverScreen> {
     });
   }
 
+  /// Konum izni Discover girişinde SORULMAZ: izin yoksa ekran "konumu paylaş"
+  /// kartını gösterir (`DiscoverLocationPrompt`), sistem istemi kullanıcı
+  /// karta dokununca gelir; izin gelince [listenLocationRecovery] desteyi yükler.
   Future<void> initLocationAndDiscover() async {
     final locationState = ref.read(locationProvider);
     final discoverState = ref.read(discoverProvider).valueOrNull;
+    final location = ref.read(locationProvider.notifier);
 
     if (locationState.lat != null) {
       final isAlreadyLoading = ref.read(discoverProvider) is AsyncLoading;
       if (!isAlreadyLoading && (discoverState == null || !discoverState.initialized)) {
         ref.read(discoverProvider.notifier).loadCards();
       }
-      ref.read(locationProvider.notifier).getCurrentLocation();
+      location.getCurrentLocation(askPermission: false);
     } else {
-      await ref.read(locationProvider.notifier).getCurrentLocation();
-      // Izin diyalogu + GPS sirasinda ekran kapanmis olabilir (setup-gate redirect, sekme).
-      if (!mounted) return;
-      // Skip loadCards when location failed — backend throws PROFILE_INCOMPLETE without lat/lng.
-      final updatedLocation = ref.read(locationProvider);
-      if (updatedLocation.lat == null) return;
-
-      final isAlreadyLoading = ref.read(discoverProvider) is AsyncLoading;
-      final updatedState = ref.read(discoverProvider).valueOrNull;
-      if (!isAlreadyLoading && (updatedState == null || !updatedState.initialized)) {
-        ref.read(discoverProvider.notifier).loadCards();
-      }
+      // Konum hazır olunca deste [listenLocationRecovery] ile yüklenir
+      // (konumsuz istek sunucuda PROFILE_INCOMPLETE döner).
+      await location.getCurrentLocation(askPermission: false);
     }
   }
 }

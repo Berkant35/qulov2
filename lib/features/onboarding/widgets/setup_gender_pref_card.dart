@@ -3,24 +3,35 @@ import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
+import 'package:qulo_v2/features/pref_consent/widgets/pref_consent_checkbox.dart';
 
 /// Profile Setup Gate's third hard-gate card: collects user's discover gender
 /// preference (MAN/WOMAN/BOTH). Symmetric with [SetupPhotoCard] and
 /// [SetupQuestionCard] — same AnimatedContainer + isComplete + check_circle
-/// pattern. Once selected, the card collapses to the "done" state.
+/// pattern. Once answered (a preference OR a declined consent), the card
+/// collapses to the "done" state. Options stay disabled until the explicit
+/// KVKK consent box is checked; "continue without consent" records DECLINED.
 class SetupGenderPrefCard extends StatelessWidget {
   final String? selectedValue;
+  final bool isComplete;
   final bool isProcessing;
+  final bool consentGranted;
+  final ValueChanged<bool> onConsentChanged;
   final ValueChanged<String> onSelect;
+  final VoidCallback onDecline;
+  final VoidCallback onOpenPolicy;
 
   const SetupGenderPrefCard({
     super.key,
     required this.selectedValue,
+    required this.isComplete,
     required this.isProcessing,
+    required this.consentGranted,
+    required this.onConsentChanged,
     required this.onSelect,
+    required this.onDecline,
+    required this.onOpenPolicy,
   });
-
-  bool get isComplete => selectedValue != null;
 
   @override
   Widget build(BuildContext context) {
@@ -92,6 +103,12 @@ class SetupGenderPrefCard extends StatelessWidget {
           ),
           if (!isComplete) ...[
             const SizedBox(height: AppSpacing.lg),
+            PrefConsentCheckbox(
+              value: consentGranted,
+              onChanged: onConsentChanged,
+              onOpenPolicy: onOpenPolicy,
+            ),
+            const SizedBox(height: AppSpacing.sm),
             Row(
               children: [
                 Expanded(
@@ -99,7 +116,7 @@ class SetupGenderPrefCard extends StatelessWidget {
                     label: context.tr('setup_gender_pref_men'),
                     icon: Icons.male,
                     isSelected: selectedValue == 'MAN',
-                    isDisabled: isProcessing,
+                    isDisabled: isProcessing || !consentGranted,
                     onTap: () => onSelect('MAN'),
                   ),
                 ),
@@ -109,7 +126,7 @@ class SetupGenderPrefCard extends StatelessWidget {
                     label: context.tr('setup_gender_pref_women'),
                     icon: Icons.female,
                     isSelected: selectedValue == 'WOMAN',
-                    isDisabled: isProcessing,
+                    isDisabled: isProcessing || !consentGranted,
                     onTap: () => onSelect('WOMAN'),
                   ),
                 ),
@@ -119,11 +136,16 @@ class SetupGenderPrefCard extends StatelessWidget {
                     label: context.tr('setup_gender_pref_both'),
                     icon: Icons.transgender,
                     isSelected: selectedValue == 'BOTH',
-                    isDisabled: isProcessing,
+                    isDisabled: isProcessing || !consentGranted,
                     onTap: () => onSelect('BOTH'),
                   ),
                 ),
               ],
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            TextButton(
+              onPressed: isProcessing ? null : onDecline,
+              child: Text(context.tr('pref_consent_continue_without')),
             ),
           ],
         ],

@@ -101,13 +101,8 @@ mixin SolveChatQuestionScreenMixin
     apiResult.when(
       success: (response) {
         // Track answer reward in power usages
-        if (response.greenReward > 0) {
-          powerUsages.add(PowerUsageRecord(
-            powerName: 'ANSWER',
-            purpleSpent: 0,
-            greenEarned: response.greenReward,
-          ));
-        }
+        final record = PowerUsageRecord.fromAnswer(response);
+        if (record != null) powerUsages.add(record);
         setState(() {
           answered = true;
           result = response;

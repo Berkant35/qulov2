@@ -33,6 +33,11 @@ PublicProfileModel _$PublicProfileModelFromJson(Map<String, dynamic> json) =>
           : QuestionInfoModel.fromJson(
               json['question_info'] as Map<String, dynamic>,
             ),
+      identity: json['identity'] == null
+          ? null
+          : VisibleIdentityModel.fromJson(
+              json['identity'] as Map<String, dynamic>,
+            ),
     );
 
 Map<String, dynamic> _$PublicProfileModelToJson(PublicProfileModel instance) =>
@@ -52,4 +57,5 @@ Map<String, dynamic> _$PublicProfileModelToJson(PublicProfileModel instance) =>
       'is_boosted': instance.isBoosted,
       'details': instance.details,
       'question_info': instance.questionInfo,
+      'identity': instance.identity,
     };

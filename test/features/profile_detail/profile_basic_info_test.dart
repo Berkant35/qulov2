@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:qulo_v2/core/l10n/app_localizations.dart';
 import 'package:qulo_v2/core/services/format_manager.dart';
 import 'package:qulo_v2/core/theme/app_theme.dart';
+import 'package:qulo_v2/core/constants/identity_labels.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/data/models/identity_model.dart';
 import 'package:qulo_v2/data/models/public_profile_model.dart';
+import 'package:qulo_v2/features/identity/widgets/identity_chips.dart';
 import 'package:qulo_v2/features/profile_detail/widgets/profile_basic_info.dart';
 
 Widget _wrap(Widget child) => MaterialApp(
@@ -14,13 +17,18 @@ Widget _wrap(Widget child) => MaterialApp(
       home: Scaffold(body: child),
     );
 
-PublicProfileModel _profile({String? city, double? distanceKm}) =>
+PublicProfileModel _profile({
+  String? city,
+  double? distanceKm,
+  VisibleIdentityModel? identity,
+}) =>
     PublicProfileModel(
       userId: 'u2',
       name: 'Ada',
       age: 27,
       city: city,
       distanceKm: distanceKm,
+      identity: identity,
     );
 
 /// Mesafe "çok önemli bilgi": şehir alanı boş olsa da görünmeli; bilinmiyorsa
@@ -81,5 +89,33 @@ void main() {
     await tester.pump();
 
     expect(find.text('Boston • 2.0 mi'), findsOneWidget);
+  });
+
+  testWidgets('görünür etiketler çip olarak çizilir', (tester) async {
+    await tester.pumpWidget(_wrap(
+      ProfileBasicInfo(
+        profile: _profile(
+          identity: const VisibleIdentityModel(
+            genderLabels: ['non_binary'],
+            orientationLabels: ['gay'],
+          ),
+        ),
+      ),
+    ));
+    await tester.pump();
+    final ctx = tester.element(find.byType(ProfileBasicInfo));
+
+    expect(find.text(ctx.tr(IdentityLabels.orientationKey('gay'))), findsOneWidget);
+    expect(find.text(ctx.tr(IdentityLabels.genderKey('non_binary'))), findsOneWidget);
+  });
+
+  testWidgets('etiket yoksa (null ya da boş) çip alanı çizilmez', (tester) async {
+    for (final identity in [null, const VisibleIdentityModel()]) {
+      await tester.pumpWidget(_wrap(
+        ProfileBasicInfo(profile: _profile(identity: identity)),
+      ));
+      await tester.pump();
+      expect(find.byType(IdentityChips), findsNothing);
+    }
   });
 }

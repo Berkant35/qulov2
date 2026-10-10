@@ -110,10 +110,16 @@ class AnalyticsManager {
     }
   }
 
+  /// Eski sürümlerin cihazda bıraktığı `gender` kullanıcı özelliğini siler (Firebase'de
+  /// null = kaldır). Cinsiyet, tercihle birlikte yönelim verisi — analitiğe gitmez.
+  void clearLegacySensitiveProperties() {
+    if (!_initialized) return;
+    _analytics.setUserProperty(name: 'gender', value: null);
+  }
+
   void updateUserProperties({
     String? subscriptionTier,
     String? diamondBalance,
-    String? gender,
     String? ageRange,
     String? city,
     String? profileCompletion,
@@ -129,7 +135,6 @@ class AnalyticsManager {
   }) {
     if (subscriptionTier != null) setUserProperty('subscription_tier', subscriptionTier);
     if (diamondBalance != null) setUserProperty('diamond_balance', diamondBalance);
-    if (gender != null) setUserProperty('gender', gender);
     if (ageRange != null) setUserProperty('age_range', ageRange);
     if (city != null) setUserProperty('city', city);
     if (profileCompletion != null) setUserProperty('profile_completion', profileCompletion);

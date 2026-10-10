@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
+import 'package:qulo_v2/core/constants/pref_consent.dart';
 
+import 'package:qulo_v2/data/models/diamond_model.dart';
 import 'package:qulo_v2/data/models/discover_model.dart';
 import 'package:qulo_v2/data/models/public_profile_model.dart';
 import 'package:qulo_v2/data/models/user_details_model.dart';
@@ -23,6 +25,9 @@ class UserModel extends Equatable {
   final String? genderPref;
   @JsonKey(name: 'gender_pref_set_at')
   final DateTime? genderPrefSetAt;
+  /// Eşleşme tercihi rızası: `GRANTED`, `DECLINED` ya da null (sorulmadı).
+  @JsonKey(name: 'pref_consent_status')
+  final String? prefConsentStatus;
   @JsonKey(name: 'match_radius_km', defaultValue: 50)
   final int matchRadiusKm;
   @JsonKey(name: 'age_pref_min')
@@ -41,6 +46,18 @@ class UserModel extends Equatable {
   final int greenDiamonds;
   @JsonKey(name: 'purple_diamonds')
   final int purpleDiamonds;
+  @JsonKey(name: 'rainbow_diamonds', defaultValue: 0)
+  final int rainbowDiamonds;
+
+  /// Sunucunun tek kaynaklı kararı (`rainbowAccessService`): Rainbow bakiyesi, güç alımında
+  /// Rainbow ve market YALNIZ bu true iken görünür. İstemci ülke/platformdan kendisi hesaplamaz.
+  @JsonKey(name: 'rainbow_enabled', defaultValue: false)
+  final bool rainbowEnabled;
+
+  /// Kullanıcının en az bir hediye kartı talebi var. "Hediye kartlarım" girişi Rainbow
+  /// kapalıyken de görünür (market ülkesinden dönen turist teslim edilen koduna ulaşabilsin).
+  @JsonKey(name: 'has_reward_redemptions', defaultValue: false)
+  final bool hasRewardRedemptions;
   @JsonKey(name: 'is_online')
   final bool isOnline;
   @JsonKey(name: 'last_seen_at')
@@ -107,6 +124,7 @@ class UserModel extends Equatable {
     this.gender,
     this.genderPref,
     this.genderPrefSetAt,
+    this.prefConsentStatus,
     this.matchRadiusKm = 50,
     this.agePrefMin,
     this.agePrefMax,
@@ -119,6 +137,9 @@ class UserModel extends Equatable {
     this.profileCompletion = 0,
     this.greenDiamonds = 0,
     this.purpleDiamonds = 0,
+    this.rainbowDiamonds = 0,
+    this.rainbowEnabled = false,
+    this.hasRewardRedemptions = false,
     this.isOnline = false,
     this.lastSeenAt,
     this.pushToken,
@@ -158,6 +179,16 @@ class UserModel extends Equatable {
     return UserModel.fromJson(json..['purple_diamonds'] = purple);
   }
 
+  /// Üç bakiyesi sunucunun bildirdiği değerlerle değiştirilmiş kopya (güç alımı `new_balance`).
+  /// `withPurpleDiamonds` ile aynı JSON round-trip deseni: yeni alanlar otomatik korunur.
+  UserModel withBalances(DiamondBalance balance) {
+    final json = jsonDecode(jsonEncode(this)) as Map<String, dynamic>;
+    return UserModel.fromJson(json
+      ..['green_diamonds'] = balance.green
+      ..['purple_diamonds'] = balance.purple
+      ..['rainbow_diamonds'] = balance.rainbow);
+  }
+
   /// Esikler `AppConstants`'tan geliyor: ayni sunucu kurali
   /// (`matching.service.ts` adim 5.5) `missingVisibilityGates` icinde de
   /// ifade ediliyor ve iki yerde ayri sabit tutmak, sunucu esigi degistiginde
@@ -167,15 +198,22 @@ class UserModel extends Equatable {
   /// kapisi (`setupComplete`) ile ekran ayni esigi kullanir.
   bool get hasSetupPhoto => (photos?.length ?? 0) >= AppConstants.minPhotos;
   bool get hasSetupQuestions => questionCount >= AppConstants.minQuestions;
-  bool get hasGenderPref => genderPrefSetAt != null;
+  bool get prefConsentDeclined => prefConsentStatus == PrefConsent.declined;
+
+  /// Tercih seçilmiş ya da rıza reddedilmiş ("Herkes" modu) — ikisinde de Discover açılır.
+  bool get hasGenderPref => genderPrefSetAt != null || prefConsentDeclined;
+
+  /// Rızasız alınmış tercih (2.0.14 ve öncesi, ya da destekle değişmiş tercih): bir kerelik sor.
+  bool get needsPrefConsent => genderPrefSetAt != null && prefConsentStatus == null;
 
   bool get setupComplete => hasSetupPhoto && hasSetupQuestions && hasGenderPref;
 
   @override
   List<Object?> get props => [
-    id, email, name, surname, bio, age, gender, genderPref, genderPrefSetAt,
+    id, email, name, surname, bio, age, gender, genderPref, genderPrefSetAt, prefConsentStatus,
     matchRadiusKm, agePrefMin, agePrefMax, city, country, locale,
     lat, lng, photos, profileCompletion, greenDiamonds, purpleDiamonds,
+    rainbowDiamonds, rainbowEnabled, hasRewardRedemptions,
     isOnline, lastSeenAt, emailVerified, passportCity, boostUntil,
     likeReceivedCount, timesShownCount, badgeRewardsClaimed, questionCount, questionLocales,
     relationshipGoal, preferredLanguages, completionRewardsClaimed, strictLanguageMode, referralCode,

@@ -7,6 +7,7 @@ import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/services/funnel_events.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/features/diamonds/widgets/paywall_bottom_sheet.dart';
+import 'package:qulo_v2/data/models/quiz_model.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
 import 'package:qulo_v2/providers/exchange_provider.dart';
 import 'package:qulo_v2/providers/quiz_provider.dart';
@@ -126,18 +127,19 @@ mixin QuizPowerMixin on QuizScreenStateMixin {
       success: (data) {
         powersUsed++;
         totalCorrect++;
-        final fromInventory =
-            ref.read(exchangeProvider.notifier).settlePowerSpend(powerType, cost);
+        final source = rescueSpendSource(
+          data,
+          settle: () => ref.read(exchangeProvider.notifier).settlePowerSpend(powerType, cost),
+        );
         resetQuestionState();
 
         AnalyticsManager.instance.logEvent(
           AnalyticsEvents.quizPowerUsed,
           params: {
             AnalyticsEvents.paramPower: powerType,
-            AnalyticsEvents.paramSource: fromInventory
-                ? AnalyticsEvents.sourceInventory
-                : AnalyticsEvents.sourceDiamond,
-            AnalyticsEvents.paramPurpleSpent: fromInventory ? 0 : cost,
+            AnalyticsEvents.paramSource: source,
+            AnalyticsEvents.paramPurpleSpent:
+                source == AnalyticsEvents.sourceDiamond ? cost : 0,
           },
         );
 
@@ -235,4 +237,14 @@ mixin QuizPowerMixin on QuizScreenStateMixin {
     if (!mounted) return;
     await ref.read(userProvider.notifier).fetchMe();
   }
+}
+
+/// Kurtarmanın yerel bakiyeye yansıması ve GA4 `source` değeri.
+///
+/// Sunucu ilk quiz ikinci şansını kullandıysa (`free_second_chance_used`)
+/// envanter ve mor DÜŞÜLMEZ — [settle] hiç çağrılmaz; aksi halde yerel bakiye
+/// sunucudan düşük görünürdü. [settle] `true` = envanterden düşüldü.
+String rescueSpendSource(QuizAnswerResponse data, {required bool Function() settle}) {
+  if (data.freeSecondChanceUsed == true) return AnalyticsEvents.sourceFreeSecondChance;
+  return settle() ? AnalyticsEvents.sourceInventory : AnalyticsEvents.sourceDiamond;
 }

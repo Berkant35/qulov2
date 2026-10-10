@@ -38,6 +38,7 @@ import 'package:qulo_v2/core/network/services/presence_service.dart';
 import 'package:qulo_v2/core/network/services/support_ticket_service.dart';
 import 'package:qulo_v2/core/network/services/acquisition_service.dart';
 import 'package:qulo_v2/core/network/services/page_message_service.dart';
+import 'package:qulo_v2/core/network/services/rewards_service.dart';
 import 'package:qulo_v2/data/repositories/acquisition_repository.dart';
 import 'package:qulo_v2/core/services/presence_manager.dart';
 import 'package:qulo_v2/data/repositories/repositories.dart';
@@ -205,6 +206,13 @@ final exchangeServiceProvider = Provider<ExchangeService>(
 
 final exchangeRepositoryProvider = Provider<ExchangeRepository>(
   (ref) => ExchangeRepository(ref.read(exchangeServiceProvider)),
+);
+
+final rewardsServiceProvider = Provider<RewardsService>(
+  (ref) => RewardsService(ref.read(networkManagerProvider).dio),
+);
+final rewardsRepositoryProvider = Provider<RewardsRepository>(
+  (ref) => RewardsRepository(ref.read(rewardsServiceProvider)),
 );
 
 final blockServiceProvider = Provider<BlockService>(

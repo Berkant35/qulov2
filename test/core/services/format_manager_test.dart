@@ -81,6 +81,11 @@ void main() {
       expect(fm.percent(85), '85%');
       expect(fm.seconds(30), '30s');
     });
+    test('money: sembol + gruplama, tam kupürde kuruş yok', () {
+      expect(fm.money(50, 'THB'), '฿50');
+      expect(fm.money(10000, 'IDR'), 'Rp10,000');
+      expect(fm.money(12.5, 'MYR'), 'RM12.50');
+    });
   });
 
   group('tr_TR (metrik)', () {

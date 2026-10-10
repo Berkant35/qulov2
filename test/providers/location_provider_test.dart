@@ -90,6 +90,42 @@ void main() {
     });
   });
 
+  group('getCurrentLocation — askPermission: false (sessiz kontrol)', () {
+    test('izin yoksa sistem istemi ACILMAZ; DENIED yazilir, konum alinmaz', () async {
+      final h = _Harness()
+        ..location.checkResult = LocationPermissionStatus.denied
+        ..location.requestResult = LocationPermissionStatus.granted;
+
+      await h.notifier.getCurrentLocation(askPermission: false);
+
+      expect(h.location.requestCalls, 0);
+      expect(h.state.error, LocationErrors.permissionDenied);
+      expect(h.location.positionCalls, 0);
+    });
+
+    test('izin zaten varsa konum normal alinir', () async {
+      final h = _Harness();
+
+      await h.notifier.getCurrentLocation(askPermission: false);
+
+      expect(h.state.lat, 41.0);
+      expect(h.location.requestCalls, 0);
+    });
+
+    test('ardindan kullanici karttan isteyince sistem istemi acilir', () async {
+      final h = _Harness()
+        ..location.checkResult = LocationPermissionStatus.denied
+        ..location.requestResult = LocationPermissionStatus.granted;
+      await h.notifier.getCurrentLocation(askPermission: false);
+
+      await h.notifier.getCurrentLocation();
+
+      expect(h.location.requestCalls, 1);
+      expect(h.state.error, isNull);
+      expect(h.state.lat, 41.0);
+    });
+  });
+
   group('getCurrentLocation — veri korunumu', () {
     for (final city in <String?>[null, '']) {
       test('sehir bulunamazsa ("$city") onceki sehir korunur', () async {
@@ -180,6 +216,17 @@ void main() {
 
       expect(h.state.error, isNull);
       expect(h.location.positionCalls, 2);
+    });
+
+    test('resume sistem iznini SORMAZ — her donuste soguk istem cikmaz', () async {
+      final h = _Harness()..location.checkResult = LocationPermissionStatus.denied;
+      await h.notifier.getCurrentLocation(askPermission: false);
+
+      h.notifier.onAppResumed();
+      await _settle();
+
+      expect(h.location.requestCalls, 0);
+      expect(h.state.error, LocationErrors.permissionDenied);
     });
 
     test('yukleme surerken tetiklenmez', () async {

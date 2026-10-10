@@ -10,6 +10,7 @@
 //   node scripts/asc_prepare_version.mjs 2.0.12                    # durum raporu
 //   node scripts/asc_prepare_version.mjs 2.0.12 --apply            # yoksa olusturur
 //   node scripts/asc_prepare_version.mjs 2.0.12 --bind 77 --apply  # build 77'yi baglar
+//   node scripts/asc_prepare_version.mjs 2.0.15 --release-type MANUAL --apply  # onaydan sonra elle yayin
 // Incelemeye GONDERMEZ (o adim: asc_submit_review.mjs --apply, yalniz "yayinla" deyince).
 import { readFileSync } from 'node:fs';
 import { homedir } from 'node:os';
@@ -22,6 +23,13 @@ const VERSION = process.argv[2];
 const APPLY = process.argv.includes('--apply');
 const bindIdx = process.argv.indexOf('--bind');
 const BIND = bindIdx > -1 ? process.argv[bindIdx + 1] : null;
+// --release-type MANUAL | AFTER_APPROVAL — onaydan sonra kendiliginden yayin olsun mu.
+// 2.0.15'te MANUAL gerekti: web gizlilik metni mobil yayindan ONCE canliya cikmaliydi.
+const rtIdx = process.argv.indexOf('--release-type');
+const RELEASE_TYPE = rtIdx > -1 ? process.argv[rtIdx + 1] : null;
+if (RELEASE_TYPE && !['MANUAL', 'AFTER_APPROVAL'].includes(RELEASE_TYPE)) {
+  console.error('--release-type MANUAL ya da AFTER_APPROVAL olmali'); process.exit(2);
+}
 
 if (!KEY_ID || !ISSUER_ID) { console.error('Eksik env: APP_STORE_API_KEY, APP_STORE_API_ISSUER'); process.exit(2); }
 if (!VERSION) { console.error('Kullanim: node scripts/asc_prepare_version.mjs <surum> [--bind <buildNo>] [--apply]'); process.exit(2); }
@@ -90,5 +98,19 @@ if (BIND) {
       method: 'PATCH', body: JSON.stringify({ data: { type: 'builds', id: build.id } }),
     });
     console.log(`✓ Build ${BIND} → ${VERSION} baglandi.`);
+  }
+}
+
+if (RELEASE_TYPE) {
+  if (!ver) { console.error('HATA: surum kaydi yok, releaseType ayarlanamaz.'); process.exit(1); }
+  const cur = ver.attributes.releaseType;
+  if (cur === RELEASE_TYPE) console.log(`releaseType zaten ${RELEASE_TYPE}.`);
+  else if (!APPLY) console.log(`--apply ile releaseType ${cur} → ${RELEASE_TYPE} yapilir.`);
+  else {
+    const upd = (await api(`/v1/appStoreVersions/${ver.id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ data: { type: 'appStoreVersions', id: ver.id, attributes: { releaseType: RELEASE_TYPE } } }),
+    })).data;
+    console.log(`✓ releaseType ${cur} → ${upd.attributes.releaseType}`);
   }
 }

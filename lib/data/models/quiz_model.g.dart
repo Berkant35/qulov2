@@ -53,6 +53,7 @@ QuizQuestionModel _$QuizQuestionModelFromJson(Map<String, dynamic> json) =>
               ?.map((e) => e as String)
               .toList() ??
           const [],
+      remainingSeconds: (json['remaining_seconds'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$QuizQuestionModelToJson(QuizQuestionModel instance) =>
@@ -66,6 +67,7 @@ Map<String, dynamic> _$QuizQuestionModelToJson(QuizQuestionModel instance) =>
       'has_hint': instance.hasHint,
       'time_limit_seconds': instance.timeLimitSeconds,
       'used_powers': instance.usedPowers,
+      'remaining_seconds': instance.remainingSeconds,
     };
 
 QuizAnswerOption _$QuizAnswerOptionFromJson(Map<String, dynamic> json) =>
@@ -87,6 +89,8 @@ QuizAnswerResponse _$QuizAnswerResponseFromJson(Map<String, dynamic> json) =>
       awaitingAnswer: json['awaiting_answer'] as bool?,
       canRescue: json['can_rescue'] as bool?,
       badge: json['badge'] as String?,
+      freeSecondChance: json['free_second_chance'] as bool?,
+      freeSecondChanceUsed: json['free_second_chance_used'] as bool?,
     );
 
 Map<String, dynamic> _$QuizAnswerResponseToJson(QuizAnswerResponse instance) =>
@@ -99,6 +103,8 @@ Map<String, dynamic> _$QuizAnswerResponseToJson(QuizAnswerResponse instance) =>
       'awaiting_answer': instance.awaitingAnswer,
       'can_rescue': instance.canRescue,
       'badge': instance.badge,
+      'free_second_chance': instance.freeSecondChance,
+      'free_second_chance_used': instance.freeSecondChanceUsed,
     };
 
 QuizResultModel _$QuizResultModelFromJson(Map<String, dynamic> json) =>

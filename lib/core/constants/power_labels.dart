@@ -17,6 +17,11 @@ String powerLabelKey(String name) => switch (name) {
       _ => 'power_${name.toLowerCase()}',
     };
 
+/// Sonuç kartı satırının etiketi: `PowerUsageRecord.powerName` bir güç adı ya da
+/// doğru cevap ödülü için `'ANSWER'` (`PowerUsageRecord.fromAnswer`).
+String powerUsageLabelKey(String name) =>
+    name == 'ANSWER' ? 'result_correct_answer' : powerLabelKey(name);
+
 String powerDescKey(String name) => switch (name) {
       'TIME_EXTEND' => 'power_time_extend_desc',
       _ => '${powerLabelKey(name)}_desc',

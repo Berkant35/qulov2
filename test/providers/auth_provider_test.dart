@@ -10,14 +10,20 @@ import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/notification_manager.dart';
 import 'package:qulo_v2/core/services/presence_manager.dart';
 import 'package:qulo_v2/data/models/auth_model.dart';
+import 'package:qulo_v2/data/models/identity_model.dart';
+import 'package:qulo_v2/data/models/rewards_model.dart';
 import 'package:qulo_v2/data/models/user_model.dart';
 import 'package:qulo_v2/data/repositories/auth_repository.dart';
 import 'package:qulo_v2/data/repositories/user_repository.dart';
+import 'package:qulo_v2/features/page_sections/providers/section_event_tracker.dart';
+import 'package:qulo_v2/features/rewards_market/providers/market_provider.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
 import 'package:qulo_v2/providers/deep_link_provider.dart';
+import 'package:qulo_v2/providers/identity_provider.dart';
 import 'package:qulo_v2/providers/notification_provider.dart';
 
+import '../helpers/fake_repositories.dart';
 import '../helpers/scripted_http_adapter.dart';
 
 /// Oturum durumu — acilis (splash → checkAuth), giris hatasi, cikis.
@@ -210,6 +216,15 @@ void main() {
       expect(h.state.isLoading, isFalse);
     });
 
+    test('eski sunucu (kayit yaniti token tasimiyor): oturum acilmaz, giris ekrani akisi', () async {
+      final h = _Harness();
+
+      await register(h);
+
+      expect(h.state.status, isNot(AuthStatus.authenticated));
+      expect(await h.stored(), isEmpty);
+    });
+
     test('kayit hatasinda sign_up atilmaz', () async {
       final h = _Harness(auth: _FakeAuthRepository(
         registerResult: const Failure(ServerFailure(code: 'EMAIL_TAKEN', statusCode: 409)),
@@ -265,6 +280,40 @@ void main() {
       expect(await h.stored(), isEmpty);
       expect(h.state.status, AuthStatus.unauthenticated);
     });
+
+    test('önceki hesabın market görünümü ve bölüm olayları sonraki oturuma taşınmaz', () async {
+      final rewards = FakeRewardsRepository(
+        market: const MarketView(balance: 1000, items: [], monthlyCap: 150, usedThisMonth: 20),
+      );
+      final h = _Harness(
+        stored: _session(),
+        initial: AuthStatus.authenticated,
+        overrides: [rewardsRepositoryProvider.overrideWithValue(rewards)],
+      );
+      await h.container.read(marketProvider.notifier).load();
+      final tracker = h.container.read(sectionEventTrackerProvider)..impression('b1');
+
+      await h.notifier.logout();
+
+      expect(h.container.read(marketProvider).valueOrNull, isNull,
+          reason: 'sonraki hesap önceki bakiye/kullanımı görmez');
+      expect(tracker.pendingCount, 0);
+      expect(rewards.sentEventBatches, isEmpty,
+          reason: 'önceki hesabın olayları sonraki oturumun token\'ıyla gönderilmez');
+      expect(tracker.impression('b1'), isTrue, reason: 'tekilleştirme kümesi de sıfırlanır');
+    });
+
+    test('önceki hesabın kimlik etiketleri sonraki oturuma taşınmaz (logout)', () async {
+      final rig = _identityRig();
+      await rig.h.container.read(identityProvider.future);
+      rig.repo.identity = IdentityModel.empty; // sonraki hesabın sunucudaki kaydı
+
+      await rig.h.notifier.logout();
+
+      expect(await rig.h.container.read(identityProvider.future), IdentityModel.empty,
+          reason: 'sonraki hesap önceki hesabın etiketlerini görmez');
+      expect(rig.repo.identityGetCount, 2, reason: 'sıfırlanıp sunucudan yeniden okunur');
+    });
   });
 
   group('forceLogout — interceptor 401 zinciri', () {
@@ -288,7 +337,31 @@ void main() {
       expect(h.presence.pauseCalls, 0);
       expect(h.notifications.disposeCalls, 0);
     });
+
+    test('önceki hesabın kimlik etiketleri sonraki oturuma taşınmaz (forceLogout)', () async {
+      final rig = _identityRig();
+      await rig.h.container.read(identityProvider.future);
+      rig.repo.identity = IdentityModel.empty; // sonraki hesabın sunucudaki kaydı
+
+      await rig.h.notifier.forceLogout();
+
+      expect(await rig.h.container.read(identityProvider.future), IdentityModel.empty,
+          reason: 'sonraki hesap önceki hesabın etiketlerini görmez');
+      expect(rig.repo.identityGetCount, 2, reason: 'sıfırlanıp sunucudan yeniden okunur');
+    });
   });
+}
+
+/// Kullanıcı A'nın etiketleri yüklü, oturum açık.
+({_Harness h, FakeUserRepository repo}) _identityRig() {
+  final repo = FakeUserRepository(UserModel(id: 'a', email: 'a@qulo.test'))
+    ..identity = const IdentityModel(orientationLabels: ['gay']);
+  final h = _Harness(
+    stored: _session(),
+    initial: AuthStatus.authenticated,
+    overrides: [userRepositoryProvider.overrideWithValue(repo)],
+  );
+  return (h: h, repo: repo);
 }
 
 String _jwt(DateTime exp) {
@@ -318,6 +391,7 @@ class _Harness {
     _FakeAuthRepository? auth,
     ScriptedHttpAdapter? refresh,
     AuthStatus initial = AuthStatus.initial,
+    List<Override> overrides = const [],
   })  : me = _MeRepository(me),
         auth = auth ?? _FakeAuthRepository(),
         refresh = refresh ?? ScriptedHttpAdapter((_) async => jsonResponse(500, {})) {
@@ -331,6 +405,7 @@ class _Harness {
       // _postLoginInit → NotificationNotifier.init → fetchUnreadCount ağa (Dio) gider; testte yok.
       notificationProvider.overrideWith(_NoopNotificationNotifier.new),
       refreshDioFactoryProvider.overrideWithValue(() => scriptedDio(this.refresh)),
+      ...overrides,
     ]);
     addTearDown(container.dispose);
   }
@@ -385,7 +460,8 @@ class _FakeAuthRepository implements AuthRepository {
     required String surname,
     required int age,
     required String gender,
-    required String genderPref,
+    String? genderPref,
+    String? prefConsentStatus,
     double? lat,
     double? lng,
     String locale = 'tr',

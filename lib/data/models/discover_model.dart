@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:qulo_v2/data/models/identity_model.dart';
 import 'package:qulo_v2/data/models/public_profile_model.dart';
 
 part 'discover_model.g.dart';
@@ -91,6 +92,9 @@ class ProfileCardModel extends Equatable {
   @JsonKey(name: 'question_info')
   final QuestionInfoModel? questionInfo;
 
+  /// Sahibinin görünür yaptığı etiketler (spec 2026-10-06); yoksa null.
+  final VisibleIdentityModel? identity;
+
   const ProfileCardModel({
     required this.userId,
     this.name,
@@ -105,6 +109,7 @@ class ProfileCardModel extends Equatable {
     this.isBoosted = false,
     this.relationshipGoal,
     this.questionInfo,
+    this.identity,
   });
 
   factory ProfileCardModel.fromJson(Map<String, dynamic> json) =>
@@ -126,6 +131,7 @@ class ProfileCardModel extends Equatable {
         isBoosted,
         relationshipGoal,
         questionInfo,
+        identity,
       ];
 }
 
@@ -145,6 +151,7 @@ extension ProfileCardToPublicProfile on ProfileCardModel {
       profileCompletion: profileCompletion,
       isBoosted: isBoosted,
       questionInfo: questionInfo,
+      identity: identity,
     );
   }
 }

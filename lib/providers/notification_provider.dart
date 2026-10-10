@@ -2,6 +2,7 @@ import 'dart:developer' as dev;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
+import 'package:qulo_v2/core/services/push_prompt_store.dart';
 import 'package:qulo_v2/data/models/chat_question_model.dart';
 import 'package:qulo_v2/data/models/notification_model.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
@@ -64,7 +65,9 @@ class NotificationNotifier extends Notifier<NotificationState> {
 
       // Send token to backend
       final token = manager.token;
-      dev.log('[NotificationNotifier] FCM token: ${token != null ? "OK (${token.substring(0, 20)}...)" : "NULL — will arrive via onTokenRefresh"}', name: 'Notification');
+      // Token log'a yazılmaz; kısa token'da substring RangeError atıp
+      // gönderimi de düşürüyordu.
+      dev.log('[NotificationNotifier] FCM token: ${token != null ? "OK" : "NULL — no permission yet or arrives via onTokenRefresh"}', name: 'Notification');
 
       if (token != null) {
         dev.log('[NotificationNotifier] Sending token to backend...', name: 'Notification');
@@ -88,6 +91,36 @@ class NotificationNotifier extends Notifier<NotificationState> {
     dev.log('[NotificationNotifier] Fetching unread count...', name: 'Notification');
     await fetchUnreadCount();
     dev.log('[NotificationNotifier] Unread count: ${state.unreadCount}', name: 'Notification');
+  }
+
+  /// Bildirim izni açıklama ekranı şimdi gösterilmeli mi: izin yok, sistem
+  /// hâlâ sorabilir ve sıklık sınırı ([PushPromptStore]) izin veriyor.
+  Future<bool> shouldOfferPushPrompt() async {
+    try {
+      if (!await PushPromptStore.isDue()) return false;
+      return await ref.read(notificationManagerProvider).canRequestPermission();
+    } catch (e) {
+      dev.log('[NotificationNotifier] push prompt check failed: $e', name: 'Notification');
+      return false;
+    }
+  }
+
+  /// Açıklama ekranında "evet" sonrası sistem istemi. İzin gelirse token hemen
+  /// sunucuya yazılır (PATCH /me/push-token); APNs gecikirse token
+  /// `onTokenRefresh` ile gelir.
+  Future<bool> requestPushPermission({required String trigger}) async {
+    try {
+      final manager = ref.read(notificationManagerProvider);
+      final granted = await manager.requestPermission(trigger: trigger);
+      final token = manager.token;
+      if (granted && token != null) {
+        await ref.read(userProvider.notifier).updatePushToken(token);
+      }
+      return granted;
+    } catch (e) {
+      dev.log('[NotificationNotifier] push permission request failed: $e', name: 'Notification');
+      return false;
+    }
   }
 
   void _handleForegroundMessage(RemoteMessage message) {

@@ -66,27 +66,6 @@ void main() {
     expect(_testFlightLocaleMap().keys.toSet(), expected);
   });
 
-  test('asc_whatsnew.mjs NOTES, LOCALE_MAP üzerinden her dili kapsar', () {
-    // 5. senkron noktası: App Store "Yenilikler" metni. th/id eklenirken unutulmuştu (review).
-    final ascOf = _testFlightLocaleMap();
-    final notes = File('scripts/asc_whatsnew.mjs').readAsStringSync();
-    // Iki tanim bicimi var: literal (`'th': \`...\``) ve turetme (`NOTES['pt-BR'] = ...`).
-    final noteKeys = RegExp(
-      r"(?:^  '([^']+)': `|NOTES\['([^']+)'\])",
-      multiLine: true,
-    ).allMatches(notes).map((m) => m.group(1) ?? m.group(2)!).toSet();
-    for (final code in expected) {
-      final asc = ascOf[code] ?? code;
-      // asc_whatsnew ASC kodlarini kullanir (en-US, de-DE...); TestFlight haritasi ile ayni.
-      final candidates = {asc, code};
-      expect(
-        candidates.any(noteKeys.contains),
-        isTrue,
-        reason: '$code için Yenilikler notu yok ($candidates)',
-      );
-    }
-  });
-
   test(
     'asc_keywords.mjs K, LOCALE_MAP üzerinden her dil için keyword seti taşır',
     () {

@@ -5,7 +5,11 @@ import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 
 class QuizTimer extends StatefulWidget {
+  /// Sayacın başladığı saniye (yeniden açılışta sunucunun kalan süresi).
   final int seconds;
+
+  /// İlerleme çubuğunun paydası (sorunun tam süresi); verilmezse [seconds].
+  final int? totalSeconds;
   final String questionId;
   final VoidCallback onTimeout;
   final VoidCallback? onWarning;
@@ -14,6 +18,7 @@ class QuizTimer extends StatefulWidget {
   const QuizTimer({
     super.key,
     required this.seconds,
+    this.totalSeconds,
     required this.questionId,
     required this.onTimeout,
     this.onWarning,
@@ -138,7 +143,8 @@ class QuizTimerState extends State<QuizTimer> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final progress = _remaining / widget.seconds;
+    final total = widget.totalSeconds ?? widget.seconds;
+    final progress = total <= 0 ? 0.0 : (_remaining / total).clamp(0.0, 1.0);
     final color = _barColor;
 
     return AnimatedBuilder(

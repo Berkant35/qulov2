@@ -2,7 +2,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/constants/diamond_reason_labels.dart';
 import 'package:qulo_v2/core/constants/power_labels.dart';
+import 'package:qulo_v2/core/constants/reward_brands.dart';
 import 'package:qulo_v2/core/l10n/translations/en.dart';
+import 'package:qulo_v2/data/models/rewards_model.dart';
+import 'package:qulo_v2/features/rewards_market/domain/redeem_error.dart';
 
 /// `context.tr('prefix_$deger')` ile kurulan dinamik anahtarlar: her deger
 /// kumesinin tum elemanlari en.dart'ta olmali (parite testi 18 dile yayar).
@@ -43,8 +46,32 @@ void main() {
     expectKeys('power desc', powerNames.map(powerDescKey));
   });
 
+  test('sonuç kartı satır etiketi: ANSWER doğru cevap, güçler güç etiketi', () {
+    expect(powerUsageLabelKey('ANSWER'), 'result_correct_answer');
+    expect(powerUsageLabelKey('HALF'), 'power_half');
+    expect(powerUsageLabelKey('TIME_EXTEND'), 'power_time');
+    expectKeys('power usage label', ['ANSWER', ...powerNames].map(powerUsageLabelKey));
+  });
+
   test('elmas işlem sebebi ve türü anahtarları', () {
     expectKeys('diamond reason', diamondReasonKeys);
-    expectKeys('diamond type', ['GREEN', 'PURPLE'].map(diamondTypeKey));
+    expectKeys('diamond type', ['GREEN', 'PURPLE', 'RAINBOW'].map(diamondTypeKey));
+  });
+
+  test('Rainbow ekran anahtarları (Plan 3)', () {
+    expectKeys('rainbow', ['result_rainbow_earned', 'result_rainbow_subtitle', 'rainbow_not_available']);
+  });
+
+  test('Rainbow Market marka anahtarları (Plan 5)', () {
+    expectKeys('reward howto', rewardBrandKeys.map(rewardHowtoKey));
+    expectKeys('reward brand', ['reward_brand_other']);
+  });
+
+  test('talep durumu anahtarları (Plan 5)', () {
+    expectKeys('redemption status', RedemptionStatus.values.map(redemptionStatusKey));
+  });
+
+  test('itfa hatası anahtarları (Plan 5)', () {
+    expectKeys('redeem error', RedeemErrorKind.values.map(redeemErrorKey));
   });
 }

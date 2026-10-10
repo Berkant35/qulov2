@@ -1,12 +1,15 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/services/notification_manager.dart';
 import 'package:qulo_v2/data/models/chat_question_model.dart';
 import 'package:qulo_v2/data/models/notification_model.dart';
 import 'package:qulo_v2/data/repositories/chat_repository.dart';
 import 'package:qulo_v2/data/repositories/notification_repository.dart';
+import 'package:qulo_v2/data/repositories/user_repository.dart';
+import 'package:qulo_v2/core/services/push_prompt_store.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/chat_provider.dart';
 import 'package:qulo_v2/providers/notification_provider.dart';
@@ -18,6 +21,81 @@ import 'package:qulo_v2/providers/notification_provider.dart';
 /// (`deep_link_parser_test`); burada yalnizca action_url'nin dogru anda
 /// dogru yere iletildigi test edilir.
 void main() {
+  setUp(() => SharedPreferences.setMockInitialValues({}));
+
+  group('bildirim izni (acilis istemi yok, degerli anda aciklama + sistem istemi)', () {
+    test('init sistem izni ISTEMEZ; izinli kullanicinin token\'i her acilista sunucuya gider', () async {
+      final h = _Harness()..manager.initToken = 'tok-1';
+
+      await h.notifier.init();
+
+      expect(h.manager.requestCalls, 0);
+      expect(h.users.pushTokens, ['tok-1']);
+    });
+
+    test('izin yokken token yoksa sunucuya bos token gitmez', () async {
+      final h = _Harness();
+
+      await h.notifier.init();
+
+      expect(h.users.pushTokens, isEmpty);
+    });
+
+    test('sistem sorabiliyorsa ve sinir dolmadiysa aciklama gosterilir', () async {
+      final h = _Harness()..manager.canRequest = true;
+
+      expect(await h.notifier.shouldOfferPushPrompt(), isTrue);
+    });
+
+    test('izin zaten var ya da sistem artik sormuyorsa (iOS red) gosterilmez', () async {
+      final h = _Harness()..manager.canRequest = false;
+
+      expect(await h.notifier.shouldOfferPushPrompt(), isFalse);
+    });
+
+    test('yakin zamanda gosterildiyse (ilk eslesme → ilk mesaj) tekrar gosterilmez', () async {
+      final h = _Harness()..manager.canRequest = true;
+      await PushPromptStore.markShown();
+
+      expect(await h.notifier.shouldOfferPushPrompt(), isFalse);
+    });
+
+    test('izin kontrolu hata verirse gosterilmez (akisi bozmaz)', () async {
+      final h = _Harness()..manager.failCanRequest = true;
+
+      expect(await h.notifier.shouldOfferPushPrompt(), isFalse);
+    });
+
+    test('kabul + izin verildi → token hemen sunucuya yazilir, tetikleyici iletilir', () async {
+      final h = _Harness()
+        ..manager.grant = true
+        ..manager.tokenAfterGrant = 'tok-2';
+
+      final granted = await h.notifier.requestPushPermission(trigger: 'match');
+
+      expect(granted, isTrue);
+      expect(h.manager.lastTrigger, 'match');
+      expect(h.users.pushTokens, ['tok-2']);
+    });
+
+    test('sistem isteminde red → token gonderilmez', () async {
+      final h = _Harness()..manager.grant = false;
+
+      final granted = await h.notifier.requestPushPermission(trigger: 'first_message');
+
+      expect(granted, isFalse);
+      expect(h.users.pushTokens, isEmpty);
+    });
+
+    test('izin verildi ama APNs token gecikti → simdilik gonderilmez (onTokenRefresh getirir)', () async {
+      final h = _Harness()..manager.grant = true;
+
+      await h.notifier.requestPushPermission(trigger: 'match');
+
+      expect(h.users.pushTokens, isEmpty);
+    });
+  });
+
   test('FCM kurulamasa da okunmamis sayisi cekilir', () async {
     final h = _Harness()..manager.failInit = true;
 
@@ -212,6 +290,7 @@ class _Harness {
       notificationManagerProvider.overrideWithValue(manager),
       notificationRepositoryProvider.overrideWithValue(repo),
       chatRepositoryProvider.overrideWithValue(_FakeChatRepository()),
+      userRepositoryProvider.overrideWithValue(users),
     ]);
     addTearDown(container.dispose);
   }
@@ -226,6 +305,7 @@ class _Harness {
 
   final manager = _FakeNotificationManager();
   final repo = _FakeNotificationRepository();
+  final users = _FakeUserRepository();
   late final ProviderContainer container;
   final navigated = <String>[];
   int banners = 0;
@@ -262,13 +342,38 @@ class _FakeNotificationManager implements NotificationManager {
     onLocalTap = onLocalNotificationTap;
   }
 
+  /// init sonrasi token (izin zaten verilmis kullanici).
+  String? initToken;
+  bool canRequest = false;
+  bool failCanRequest = false;
+  bool grant = false;
+  String? tokenAfterGrant;
+  int requestCalls = 0;
+  String? lastTrigger;
+  String? _token;
+
   @override
   Future<void> init() async {
     if (failInit) throw Exception('FCM yok');
+    _token = initToken;
   }
 
   @override
-  String? get token => null;
+  String? get token => _token;
+
+  @override
+  Future<bool> canRequestPermission() async {
+    if (failCanRequest) throw Exception('ayarlar okunamadi');
+    return canRequest;
+  }
+
+  @override
+  Future<bool> requestPermission({required String trigger}) async {
+    requestCalls++;
+    lastTrigger = trigger;
+    if (grant) _token = tokenAfterGrant;
+    return grant;
+  }
 
   @override
   Future<RemoteMessage?> getInitialMessage() async => initialMessage;
@@ -321,4 +426,18 @@ class _FakeChatRepository implements ChatRepository {
   @override
   dynamic noSuchMethod(Invocation invocation) =>
       throw UnimplementedError('_FakeChatRepository.${invocation.memberName}');
+}
+
+class _FakeUserRepository implements UserRepository {
+  final pushTokens = <String>[];
+
+  @override
+  Future<Result<void>> updatePushToken(String token) async {
+    pushTokens.add(token);
+    return const Success(null);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) =>
+      throw UnimplementedError('_FakeUserRepository.${invocation.memberName}');
 }

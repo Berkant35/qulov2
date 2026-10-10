@@ -55,57 +55,73 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen>
       },
       child: AppScaffold(
         isLoading: isProcessing,
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: AppSpacing.lg),
-            Text(
-              context.tr('setup_title'),
-              style: theme.textTheme.headlineMedium,
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              context.tr('setup_subtitle'),
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
+        // Onay kutusu + 'rıza vermeden devam' düğmesi kartı uzattı: küçük ekran / büyük
+        // yazı tipinde içerik kaydırılır; yer varsa CTA altta kalır (Spacer).
+        body: LayoutBuilder(
+          builder: (context, constraints) => SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: IntrinsicHeight(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: AppSpacing.lg),
+                    Text(
+                      context.tr('setup_title'),
+                      style: theme.textTheme.headlineMedium,
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(
+                      context.tr('setup_subtitle'),
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xxl),
+                    SetupPhotoCard(
+                      isComplete: user?.hasSetupPhoto ?? false,
+                      isUploading: isUploadingPhoto,
+                      onTap: handlePhotoTap,
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    SetupQuestionCard(
+                      isComplete: questionsReady,
+                      isProcessing: isProcessing,
+                      onMagicFill: handleMagicFill,
+                      onQuickAssign: handleQuickAssign,
+                      onManualCreate: handleManualCreate,
+                      onEdit: () => ref
+                          .read(navigationServiceProvider)
+                          .push(RouteNames.questions),
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    SetupGenderPrefCard(
+                      selectedValue: genderPrefValue,
+                      isComplete: user?.hasGenderPref ?? false,
+                      isProcessing: isSubmittingGenderPref,
+                      consentGranted: prefConsentGranted,
+                      onConsentChanged: onSetupPrefConsentChanged,
+                      onSelect: handleGenderPrefSelect,
+                      onDecline: handleGenderPrefDecline,
+                      onOpenPolicy: openPrivacyPolicy,
+                    ),
+                    const Spacer(),
+                    if (user?.setupComplete ?? false)
+                      AppButton(
+                        label: context.tr('setup_finish_cta'),
+                        onPressed: handleFinish,
+                        fullWidth: true,
+                      )
+                    else if (!questionsReady)
+                      SetupHurryHintCard(
+                        onTap: isProcessing ? null : handleQuickAssign,
+                      ),
+                    const SizedBox(height: AppSpacing.md),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: AppSpacing.xxl),
-            SetupPhotoCard(
-              isComplete: user?.hasSetupPhoto ?? false,
-              isUploading: isUploadingPhoto,
-              onTap: handlePhotoTap,
-            ),
-            const SizedBox(height: AppSpacing.md),
-            SetupQuestionCard(
-              isComplete: questionsReady,
-              isProcessing: isProcessing,
-              onMagicFill: handleMagicFill,
-              onQuickAssign: handleQuickAssign,
-              onManualCreate: handleManualCreate,
-              onEdit: () => ref
-                  .read(navigationServiceProvider)
-                  .push(RouteNames.questions),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            SetupGenderPrefCard(
-              selectedValue: genderPrefValue,
-              isProcessing: isSubmittingGenderPref,
-              onSelect: handleGenderPrefSelect,
-            ),
-            const Spacer(),
-            if (user?.setupComplete ?? false)
-              AppButton(
-                label: context.tr('setup_finish_cta'),
-                onPressed: handleFinish,
-                fullWidth: true,
-              )
-            else if (!questionsReady)
-              SetupHurryHintCard(
-                onTap: isProcessing ? null : handleQuickAssign,
-              ),
-            const SizedBox(height: AppSpacing.md),
-          ],
+          ),
         ),
       ),
     );

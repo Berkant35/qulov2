@@ -126,6 +126,14 @@ class FormatManager {
 
   String _oneDecimal(double v) => _oneDecimalFormat.format(v);
 
+  /// Hediye kartı kupürü: yerel sayı biçimi + para birimi sembolü (THB ฿, IDR Rp, MYR RM).
+  /// Tam sayı kupürde kuruş gösterilmez.
+  String money(num amount, String currency) => NumberFormat.simpleCurrency(
+        locale: _tag,
+        name: currency,
+        decimalDigits: amount == amount.roundToDouble() ? 0 : 2,
+      ).format(amount);
+
   String _withN(String key, int n) => _l10n.get(key).replaceAll('{n}', integer(n));
 
   /// `30s` / `30sn` — sure soneki (mevcut `analytics_seconds` anahtari).

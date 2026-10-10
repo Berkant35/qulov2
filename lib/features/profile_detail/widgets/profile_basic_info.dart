@@ -5,6 +5,7 @@ import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_icon.dart';
 import 'package:qulo_v2/data/models/public_profile_model.dart';
+import 'package:qulo_v2/features/identity/widgets/identity_chips.dart';
 
 class ProfileBasicInfo extends StatelessWidget {
   final PublicProfileModel profile;
@@ -97,6 +98,10 @@ class ProfileBasicInfo extends StatelessWidget {
                 ),
             ],
           ),
+          if (profile.identity case final identity? when !identity.isEmpty) ...[
+            const SizedBox(height: AppSpacing.sm),
+            IdentityChips(identity: identity),
+          ],
         ],
       ),
     );

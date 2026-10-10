@@ -29,6 +29,10 @@ class CoachMarkService {
   CoachMarkController? _activeController;
   BuildContext? _tourContext;
   String? _queuedTourId;
+
+  /// Kuyrukta bekleyen turun kapanış sinyali; kuyruktan iptal edilirse
+  /// ([forceClose]) burada tamamlanır, [runTour] bekleyeni takılı kalmaz.
+  Completer<void>? _queuedClosed;
   bool _listeningRoutes = false;
 
   /// True while a tour is in progress — on screen OR hidden waiting for its
@@ -54,20 +58,49 @@ class CoachMarkService {
     required String tourId,
     required List<CoachMarkStep> steps,
   }) async {
-    if (_activeCompleter != null) return; // a tour is already in progress
-    if (_queuedTourId != null) return; // a tour is already queued
-    if (steps.isEmpty) return;
-    if (await isSeen(tourId)) return;
-    if (!context.mounted) return;
+    await _enqueue(context, tourId: tourId, steps: steps);
+  }
 
+  /// [maybeStartTour] gibi; dönen Future tur KAPANINCA (görüldü, atlandı ya da
+  /// ekran kapandı — [forceClose]) tamamlanır. Tur başlatılamazsa (zaten
+  /// görüldü, başka tur sürüyor) hemen tamamlanır — bekleyen akış asla takılmaz.
+  /// Bir işlemi turdan sonraya bırakmak için (ör. quiz süresi tur bitince
+  /// başlasın).
+  Future<void> runTour(
+    BuildContext context, {
+    required String tourId,
+    required List<CoachMarkStep> steps,
+  }) async {
+    final closed = await _enqueue(context, tourId: tourId, steps: steps);
+    await closed?.future;
+  }
+
+  /// Turu kuyruğa koyar; kapanışta tamamlanan sinyali döner (kuyruğa
+  /// girmediyse null).
+  Future<Completer<void>?> _enqueue(
+    BuildContext context, {
+    required String tourId,
+    required List<CoachMarkStep> steps,
+  }) async {
+    if (_activeCompleter != null) return null; // a tour is already in progress
+    if (_queuedTourId != null) return null; // a tour is already queued
+    if (steps.isEmpty) return null;
+    if (await isSeen(tourId)) return null;
+    if (!context.mounted) return null;
+
+    final closed = Completer<void>();
+    _queuedClosed = closed;
     _queuedTourId = tourId;
     OverlayQueueService.instance.enqueue(
       OverlayRequest(
         id: _queueId(tourId),
         priority: OverlayPriority.onboarding,
-        show: () => _show(context, tourId, steps),
+        show: () => _show(context, tourId, steps).whenComplete(() {
+          if (!closed.isCompleted) closed.complete();
+        }),
       ),
     );
+    return closed;
   }
 
   Future<void> _show(
@@ -76,6 +109,7 @@ class CoachMarkService {
     List<CoachMarkStep> steps,
   ) {
     _queuedTourId = null;
+    _queuedClosed = null; // artık kapanışı _activeCompleter taşıyor
     final completer = Completer<void>();
     // Context may have unmounted while waiting in the queue.
     if (!context.mounted) {
@@ -160,6 +194,8 @@ class CoachMarkService {
     if (_queuedTourId != null) {
       OverlayQueueService.instance.cancel(_queueId(_queuedTourId!));
       _queuedTourId = null;
+      final closed = _queuedClosed;
+      if (closed != null && !closed.isCompleted) closed.complete();
     }
     _cleanup();
   }

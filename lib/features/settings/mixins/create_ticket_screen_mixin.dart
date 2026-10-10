@@ -15,6 +15,11 @@ mixin CreateTicketScreenMixin on ConsumerState<CreateTicketScreen> {
   String selectedCategory = ticketCategories.first;
   bool isSubmitting = false;
 
+  void initTicketForm() {
+    final subject = widget.initialSubject;
+    if (subject != null) subjectCtrl.text = subject;
+  }
+
   void disposeMixin() {
     subjectCtrl.dispose();
     messageCtrl.dispose();

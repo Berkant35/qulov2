@@ -2,6 +2,7 @@ import 'dart:developer' as dev;
 import 'dart:math' as math;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/network/result.dart';
+import 'package:qulo_v2/data/models/diamond_model.dart';
 import 'package:qulo_v2/data/models/user_model.dart';
 import 'package:qulo_v2/data/models/retention_eligibility_model.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
@@ -39,6 +40,21 @@ class UserNotifier extends AsyncNotifier<UserModel?> {
     );
   }
 
+  /// Sunucunun işlem sonrası bildirdiği bakiyeyi (ör. güç alımı `new_balance`) yerelde
+  /// uygular — AppBar bakiyesi ek `getMe` isteği olmadan güncellenir.
+  void applyBalance(DiamondBalance balance) {
+    final user = state.valueOrNull;
+    if (user == null) return;
+    state = AsyncData(user.withBalances(balance));
+  }
+
+  /// İtfa sonrası sunucunun döndürdüğü Rainbow bakiyesi (ek istek yok); diğer bakiyeler aynen kalır.
+  void applyRainbow(int rainbow) {
+    final user = state.valueOrNull;
+    if (user == null) return;
+    applyBalance(DiamondBalance(green: user.greenDiamonds, purple: user.purpleDiamonds, rainbow: rainbow));
+  }
+
   /// Returns the old completionRewardsClaimed map (snapshot before any update).
   Map<String, dynamic> get currentRewardsClaimed =>
       Map<String, dynamic>.from(state.value?.completionRewardsClaimed ?? {});
@@ -51,6 +67,21 @@ class UserNotifier extends AsyncNotifier<UserModel?> {
       result.when(
         success: (_) {},
         failure: (f) => dev.log('updateProfile failed: $f', name: 'UserNotifier'),
+      );
+    }
+    return result;
+  }
+
+  Future<Result<void>> setPrefConsent({required String status, String? genderPref}) async {
+    final result = await ref
+        .read(userRepositoryProvider)
+        .setPrefConsent(status: status, genderPref: genderPref);
+    if (result.isSuccess) {
+      await fetchMe();
+    } else {
+      result.when(
+        success: (_) {},
+        failure: (f) => dev.log('setPrefConsent failed: $f', name: 'UserNotifier'),
       );
     }
     return result;
@@ -161,12 +192,20 @@ class UserNotifier extends AsyncNotifier<UserModel?> {
     return result;
   }
 
+  /// Basarida profil `getMe` ile tazelenir: PATCH `/users/me` yaniti getMe'ye ozel
+  /// alanlari (`rainbow_diamonds`, `rainbow_enabled`, bakiyeler) tasimaz — eskiden
+  /// state dogrudan PATCH yanitiyla yaziliyor, Rainbow yuzeyleri bir sonraki
+  /// `fetchMe`'ye kadar kayboluyordu.
   Future<Result<UserModel>> reorderPhotos(List<String> photos) async {
     final result = await ref.read(userRepositoryProvider).reorderPhotos(photos);
-    result.when(
-      success: (updated) => state = AsyncData(updated),
-      failure: (f) => dev.log('reorderPhotos failed: $f', name: 'UserNotifier'),
-    );
+    if (result.isSuccess) {
+      await fetchMe();
+    } else {
+      result.when(
+        success: (_) {},
+        failure: (f) => dev.log('reorderPhotos failed: $f', name: 'UserNotifier'),
+      );
+    }
     return result;
   }
 

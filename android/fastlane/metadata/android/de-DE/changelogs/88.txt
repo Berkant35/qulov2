@@ -1,0 +1,5 @@
+• Neu: optionale Labels für Identität und Orientierung im Profil – du entscheidest, wer sie sieht
+• Matches passen jetzt zu den Vorlieben beider Seiten; für deine Match-Präferenz gibt es eine eigene Einwilligung
+• Direkt nach der Registrierung loslegen – deine E-Mail bestätigst du erst, bevor du Nachrichten sendest
+• Eine kostenlose zweite Chance bei deinem ersten Quiz und ein faireres Zeitlimit pro Frage
+• Sicherheitsverbesserungen und Fehlerbehebungen

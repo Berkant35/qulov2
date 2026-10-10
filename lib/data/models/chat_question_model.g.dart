@@ -78,6 +78,7 @@ ChatQuestionAnswerResponse _$ChatQuestionAnswerResponseFromJson(
       ? null
       : ChatQuestionModel.fromJson(json['question'] as Map<String, dynamic>),
   greenReward: (json['green_reward'] as num?)?.toInt() ?? 0,
+  rainbowReward: (json['rainbow_reward'] as num?)?.toInt() ?? 0,
   powersUsed:
       (json['powers_used'] as List<dynamic>?)
           ?.map((e) => e as String)
@@ -100,6 +101,7 @@ UsePowerResponse _$UsePowerResponseFromJson(Map<String, dynamic> json) =>
       extraSeconds: (json['extra_seconds'] as num?)?.toInt(),
       cost: (json['cost'] as num?)?.toInt(),
       greenReward: (json['green_reward'] as num?)?.toInt(),
+      rainbowReward: (json['rainbow_reward'] as num?)?.toInt(),
       isCorrect: json['is_correct'] as bool?,
       question: json['question'] == null
           ? null

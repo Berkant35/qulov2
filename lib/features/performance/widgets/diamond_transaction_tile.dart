@@ -15,16 +15,13 @@ class DiamondTransactionTile extends StatelessWidget with DiamondTransactionTile
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isGreen = transaction.type == 'GREEN';
     final isPositive = transaction.amount > 0;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
       child: Row(
         children: [
-          isGreen
-              ? const DiamondIcon.green(size: 20, showGlow: false)
-              : const DiamondIcon.purple(size: 20, showGlow: false),
+          DiamondIcon(type: diamondTypeFromApi(transaction.type), size: 20, showGlow: false),
           const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(

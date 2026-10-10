@@ -3,10 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/app_localizations.dart';
 import 'package:qulo_v2/core/navigation/navigation_provider.dart';
 import 'package:qulo_v2/core/network/failure_message.dart';
+import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/features/chat/utils/chat_question_form.dart';
 import 'package:qulo_v2/data/models/chat_question_draft_model.dart';
 import 'package:qulo_v2/features/chat/screens/create_chat_question_screen.dart';
 import 'package:qulo_v2/features/chat/sheets/draft_history_sheet.dart';
+import 'package:qulo_v2/features/email_verification/email_verification_controller.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/chat_provider.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
@@ -103,29 +105,32 @@ mixin CreateChatQuestionScreenMixin
       final repo = ref.read(chatRepositoryProvider);
       final result = await repo.createQuestion(widget.matchId, data);
 
-      result.when(
-        success: (question) {
+      switch (result) {
+        case Success(data: final question):
           ref.read(chatQuestionCacheProvider.notifier).update((state) => {
                 ...state,
                 question.id: question,
               });
-          ref.invalidate(diamondProvider);
+          // invalidate DEĞİL: `DiamondNotifier.build()` sabit 0 döner — sıfırlardı.
+          ref.read(diamondProvider.notifier).fetchBalance();
           ref.read(chatProvider(widget.matchId).notifier).loadMessages();
 
           if (mounted) {
             ref.read(navigationServiceProvider).pop(true);
           }
-        },
-        failure: (failure) {
-          if (mounted) {
+        case Failure(:final failure):
+          // Doğrulama kapısı: form korunur, doğruladıktan sonra tekrar gönderilir.
+          final gated = await ref
+              .read(emailVerificationControllerProvider)
+              .handleFailure(failure, trigger: EmailVerifyTrigger.question);
+          if (!gated && mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                   content: Text(AppLocalizations.of(context)
                       .get(failure.userMessageKey('chat_question_send_failed')))),
             );
           }
-        },
-      );
+      }
     } finally {
       if (mounted) setState(() => isLoading = false);
     }

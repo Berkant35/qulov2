@@ -1,8 +1,11 @@
 import 'dart:typed_data';
 import 'package:dio/dio.dart';
+import 'package:qulo_v2/core/constants/identity_labels.dart';
+import 'package:qulo_v2/core/constants/pref_consent.dart';
 import 'package:qulo_v2/core/network/network_manager.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/network/services/user_service.dart';
+import 'package:qulo_v2/data/models/identity_model.dart';
 import 'package:qulo_v2/data/models/public_profile_model.dart';
 import 'package:qulo_v2/data/models/user_model.dart';
 import 'package:qulo_v2/data/models/notification_preferences_model.dart';
@@ -237,6 +240,48 @@ class UserRepository implements IUserRepository {
     );
     return result.when(
       success: (data) => Success(List<String>.from(data['languages'] ?? [])),
+      failure: (f) => Failure(f),
+    );
+  }
+
+  /// Eşleşme tercihi açık rızası (KVKK m.6). `genderPref` yalnız ilk seçimde GRANTED ile gider.
+  Future<Result<void>> setPrefConsent({required String status, String? genderPref}) async {
+    final result = await _network.put<Map<String, dynamic>>(
+      '/users/me/pref-consent',
+      data: {
+        'status': status,
+        'version': PrefConsent.version,
+        if (genderPref != null) 'gender_pref': genderPref,
+      },
+    );
+    return result.when(
+      success: (_) => const Success(null),
+      failure: (f) => Failure(f),
+    );
+  }
+
+  /// Kimlik & yönelim etiketleri (spec 2026-10-06).
+  Future<Result<IdentityModel>> getIdentity() async {
+    final result = await _network.get<Map<String, dynamic>>('/users/me/identity');
+    return result.when(
+      success: (data) => Success(IdentityModel.fromJson(data)),
+      failure: (f) => Failure(f),
+    );
+  }
+
+  /// Sunucu boş olmayan HER kayıtta `consent: true` + sürüm ister (ilk kayıtla sınırlı değil);
+  /// boş liste = sil, rıza gerekmez. `consent` bayrağı verilmişse her ikisi de gönderilir.
+  Future<Result<IdentityModel>> saveIdentity(IdentityModel identity, {required bool consent}) async {
+    final result = await _network.put<Map<String, dynamic>>(
+      '/users/me/identity',
+      data: {
+        ...identity.toJson(),
+        if (consent) 'consent': true,
+        if (consent) 'version': IdentityConsent.version,
+      },
+    );
+    return result.when(
+      success: (data) => Success(IdentityModel.fromJson(data)),
       failure: (f) => Failure(f),
     );
   }

@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/services/coach_mark_service.dart';
 import 'package:qulo_v2/core/services/funnel_events.dart';
 import 'package:qulo_v2/core/services/haptic_manager.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/providers/quiz_provider.dart';
 import 'package:qulo_v2/providers/exchange_provider.dart';
+import 'package:qulo_v2/features/quiz/coach/quiz_power_coach_marks.dart';
 import 'package:qulo_v2/features/quiz/screens/quiz_screen.dart';
 import 'package:qulo_v2/features/quiz/widgets/quiz_timer.dart';
 
@@ -29,6 +31,9 @@ mixin QuizScreenStateMixin on ConsumerState<QuizScreen> {
   bool showFeedback = false;
   bool feedbackCorrect = false;
   bool canRescue = false;
+
+  /// Bu yanlış cevapta SKIP kurtarması bedava (ilk quiz ikinci şansı).
+  bool freeSecondChance = false;
   String? pendingSessionStatus;
   String? pendingBadge;
   List<int> removedIndices = [];
@@ -43,6 +48,15 @@ mixin QuizScreenStateMixin on ConsumerState<QuizScreen> {
       if (!mounted) return;
       ref.read(quizProvider.notifier).reset();
       ref.read(exchangeProvider.notifier).fetchAll();
+      // İlk quiz'de güç turu oturum AÇILMADAN gösterilir: sunucu süresi
+      // (`expires_at`) oturum açılınca işlemeye başlar ve istemci sayacını
+      // durdurmak onu durdurmaz. Tur görüldüyse hemen geçer.
+      await CoachMarkService.instance.runTour(
+        context,
+        tourId: quizPowersTourId,
+        steps: buildQuizPowerCoachSteps(),
+      );
+      if (!mounted) return;
       final result =
           await ref.read(quizProvider.notifier).startSession(widget.targetId);
       if (!mounted) return;
@@ -70,6 +84,8 @@ mixin QuizScreenStateMixin on ConsumerState<QuizScreen> {
   }
 
   void disposeMixin() {
+    // Tur sürerken ekrandan çıkılırsa overlay yetim kalmasın (görüldü sayılmaz).
+    CoachMarkService.instance.forceClose();
     stopwatch.stop();
   }
 
@@ -127,6 +143,7 @@ mixin QuizScreenStateMixin on ConsumerState<QuizScreen> {
     setState(() {
       showFeedback = false;
       canRescue = false;
+      freeSecondChance = false;
       pendingSessionStatus = null;
       pendingBadge = null;
       oracleSuggestedIndex = null;

@@ -88,4 +88,48 @@ void main() {
       expect(answer.canRescue, isNull);
     });
   });
+
+  group('soru basina sure + ilk quiz ikinci sansi (sunucu 2026-10-04)', () {
+    QuizQuestionModel question({int? remaining, int limit = 30}) => QuizQuestionModel.fromJson({
+          'session_id': 's1',
+          'question_number': 1,
+          'total_questions': 3,
+          'question_id': 'q1',
+          'question_text': 'Soru',
+          'answers': const [],
+          'time_limit_seconds': limit,
+          if (remaining != null) 'remaining_seconds': remaining,
+        });
+
+    test('eski sunucu (remaining_seconds yok) → tam sure', () {
+      expect(question().startSeconds, 30);
+    });
+
+    test('yeniden acilis: sayac kalan sureden baslar', () {
+      expect(question(remaining: 12).startSeconds, 12);
+    });
+
+    test('taze soruda sunucu toleransi gosterilmez — soru suresini asmaz', () {
+      expect(question(remaining: 34).startSeconds, 30);
+    });
+
+    test('sure bitmisse en az 1 sn — ilk tikte TIME_UP akisi calisir', () {
+      expect(question(remaining: 0).startSeconds, 1);
+    });
+
+    test('yanlis cevap free_second_chance, kurtarma free_second_chance_used tasir', () {
+      final wrong = QuizAnswerResponse.fromJson(const {
+        'is_correct': false,
+        'can_rescue': true,
+        'free_second_chance': true,
+      });
+      expect(wrong.freeSecondChance, isTrue);
+
+      final rescued = QuizAnswerResponse.fromJson(const {
+        'is_correct': true,
+        'free_second_chance_used': true,
+      });
+      expect(rescued.freeSecondChanceUsed, isTrue);
+    });
+  });
 }

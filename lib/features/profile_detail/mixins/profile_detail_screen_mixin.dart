@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/features/quiz/quiz_retry_lock.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/network/failure_message.dart';
 import 'package:qulo_v2/core/network/result.dart';
@@ -91,6 +92,21 @@ mixin ProfileDetailScreenMixin on ConsumerState<ProfileDetailScreen> {
         failure: (f) {
           if (f is ServerFailure && f.code == 'DAILY_LIMIT_EXCEEDED') {
             PaywallBottomSheetContent.show(ref, trigger: 'swipe_limit');
+            aborted = true;
+            return;
+          }
+          // Erişilemeyen profil (404 USER_NOT_FOUND / eski 403 NOT_COMPATIBLE): quiz'e gidilmez.
+          if (isNotCompatibleFailure(f)) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(context.tr(f.userMessageKey('error_general')))),
+            );
+            aborted = true;
+            return;
+          }
+          // Kilitli hedef (409 QUIZ_RETRY_LOCKED): quiz'e gidilmez, sebep söylenir.
+          final lockMessage = quizRetryLockMessage(f, context.l10n);
+          if (lockMessage != null) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(lockMessage)));
             aborted = true;
           }
         },

@@ -115,6 +115,37 @@ void main() {
 
       expect(h.ids.first, 'a');
     });
+
+    test('begen NOT_COMPATIBLE: uyumsuz kart desteden duser, geri alinamaz', () async {
+      final h = await _Harness.loaded(['a', 'b', 'c', 'd', 'e'])
+        ..repo.swipeResult = const Failure(ServerFailure(code: 'NOT_COMPATIBLE', statusCode: 403));
+
+      final result = await h.notifier.swipe(targetId: 'b', action: 'LIKE');
+
+      expect(result.when(success: (_) => null, failure: isNotCompatibleFailure), isTrue);
+      expect(h.ids, ['a', 'c', 'd', 'e']);
+      expect(h.state.canUndo, isFalse);
+    });
+
+    test('begen USER_NOT_FOUND (404): NOT_COMPATIBLE gibi kart desteden duser', () async {
+      final h = await _Harness.loaded(['a', 'b', 'c', 'd', 'e'])
+        ..repo.swipeResult = const Failure(ServerFailure(code: 'USER_NOT_FOUND', statusCode: 404));
+
+      final result = await h.notifier.swipe(targetId: 'b', action: 'LIKE');
+
+      expect(result.when(success: (_) => null, failure: isNotCompatibleFailure), isTrue);
+      expect(h.ids, ['a', 'c', 'd', 'e']);
+      expect(h.state.canUndo, isFalse);
+    });
+
+    test('begen baska bir 403 hatasinda kart kuyrukta kalir', () async {
+      final h = await _Harness.loaded(['a', 'b', 'c', 'd', 'e'])
+        ..repo.swipeResult = const Failure(ServerFailure(code: 'FORBIDDEN', statusCode: 403));
+
+      await h.notifier.swipe(targetId: 'b', action: 'LIKE');
+
+      expect(h.ids, ['a', 'b', 'c', 'd', 'e']);
+    });
   });
 
   group('geri al', () {

@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/models/app_dialog.dart';
 import 'package:qulo_v2/core/navigation/navigation_provider.dart';
 import 'package:qulo_v2/core/network/failure_message.dart';
+import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/app_review_manager.dart';
@@ -16,6 +16,8 @@ import 'package:qulo_v2/data/models/match_model.dart';
 import 'package:qulo_v2/data/models/message_model.dart';
 import 'package:qulo_v2/features/chat/coach/chat_question_coach_marks.dart';
 import 'package:qulo_v2/features/chat/screens/chat_screen.dart';
+import 'package:qulo_v2/features/email_verification/email_verification_controller.dart';
+import 'package:qulo_v2/features/notifications/mixins/push_permission_offer_mixin.dart';
 import 'package:qulo_v2/features/profile_detail/models/profile_detail_args.dart';
 import 'package:qulo_v2/providers/chat_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
@@ -27,7 +29,7 @@ import 'package:qulo_v2/routing/route_names.dart';
 /// Alan bazli akislar alt mixin'lere ayrildi (tek dosya 677 satirdi, limit 300):
 /// `ChatRealtimeMixin`, `ChatMediaMixin`, `ChatModerationMixin`. Ayni bolme
 /// deseni `ChatQuestionPowerMixin` / `QuizPowerMixin` tarafinda da var.
-mixin ChatScreenMixin on ConsumerState<ChatScreen> {
+mixin ChatScreenMixin on PushPermissionOfferMixin<ChatScreen> {
 
   final msgCtrl = TextEditingController();
   final scrollCtrl = ScrollController();
@@ -156,6 +158,16 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
 
   // ─── Send Message ───
 
+  /// Başarılı her gönderimde (metin, foto, ses) çağrılır. Bu oturumdaki ilk
+  /// mesajda bildirim izni açıklaması denenir: mesaj atan kullanıcı cevabı
+  /// bekliyor — izin için değerli an (sıklığı `PushPromptStore` sınırlar).
+  void recordMessageSent() {
+    messagesSentCount++;
+    if (messagesSentCount == 1) {
+      unawaited(offerPushPermission(trigger: PushPromptTrigger.firstMessage));
+    }
+  }
+
   Future<void> send() async {
     final text = msgCtrl.text.trim();
     if (text.isEmpty) return;
@@ -163,8 +175,17 @@ mixin ChatScreenMixin on ConsumerState<ChatScreen> {
     final result =
         await ref.read(chatProvider(widget.matchId).notifier).sendMessage(text);
     // Başarısız gönderim (ağ yok) ne oturum sayacına ne puan istemine sayılır.
-    if (result.isFailure) return;
-    messagesSentCount++;
+    // Yazılan metin kaybolmaz: doğrulama kapısından (403
+    // EMAIL_VERIFICATION_REQUIRED) ya da ağ hatasından sonra aynı mesaj
+    // tekrar gönderilebilir.
+    if (result case Failure(:final failure)) {
+      if (msgCtrl.text.isEmpty) msgCtrl.text = text;
+      await ref
+          .read(emailVerificationControllerProvider)
+          .handleFailure(failure, trigger: EmailVerifyTrigger.message);
+      return;
+    }
+    recordMessageSent();
     unawaited(AppReviewManager.instance.onMessageSent());
     WidgetsBinding.instance.addPostFrameCallback((_) => scrollToBottom());
     AnalyticsManager.instance.logEvent(

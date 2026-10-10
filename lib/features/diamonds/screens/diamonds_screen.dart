@@ -7,6 +7,7 @@ import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/data/models/subscription_model.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
+import 'package:qulo_v2/providers/rainbow_flag.dart';
 import 'package:qulo_v2/providers/subscription_provider.dart';
 import 'package:qulo_v2/features/diamonds/mixins/diamonds_screen_mixin.dart';
 import 'package:qulo_v2/features/diamonds/widgets/diamond_balance_card.dart';
@@ -16,6 +17,7 @@ import 'package:qulo_v2/features/diamonds/widgets/diamonds_transaction_history.d
 import 'package:qulo_v2/features/diamonds/widgets/exchange_center_button.dart';
 import 'package:qulo_v2/features/diamonds/widgets/subscription_banner.dart';
 import 'package:qulo_v2/features/diamonds/widgets/purchase_grid.dart';
+import 'package:qulo_v2/features/rewards_market/widgets/rainbow_market_card.dart';
 
 class DiamondsScreen extends ConsumerStatefulWidget {
   final String? referralCode;
@@ -44,6 +46,7 @@ class _DiamondsScreenState extends ConsumerState<DiamondsScreen>
   Widget build(BuildContext context) {
     final balance = ref.watch(diamondProvider);
     final subAsync = ref.watch(subscriptionProvider);
+    final rainbowEnabled = ref.watchRainbowEnabled();
     final theme = Theme.of(context);
 
     return AppScaffold(
@@ -57,6 +60,7 @@ class _DiamondsScreenState extends ConsumerState<DiamondsScreen>
               data: (bal) => DiamondBalanceCard(
                 greenCount: bal.green,
                 purpleCount: bal.purple,
+                rainbowCount: rainbowEnabled ? bal.rainbow : null,
               ),
               loading: () => const Center(child: AppLoadingWidget.large()),
               error: (_, __) => Center(
@@ -68,6 +72,11 @@ class _DiamondsScreenState extends ConsumerState<DiamondsScreen>
                 ),
               ),
             ),
+
+            if (rainbowEnabled) ...[
+              const SizedBox(height: AppSpacing.md),
+              RainbowMarketCard(onTap: onRainbowMarketTap),
+            ],
 
             const SizedBox(height: AppSpacing.md),
 

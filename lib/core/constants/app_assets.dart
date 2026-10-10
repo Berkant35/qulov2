@@ -7,6 +7,9 @@ abstract final class AppAssets {
   static const greenDiamondSlideRight = 'assets/brand/green_diamond_slide_right.svg';
   static const purpleDiamondSlideLeft = 'assets/brand/purple_diamond_slide_left.svg';
   static const purpleDiamondSlideRight = 'assets/brand/purple_diamond_slide_right.svg';
+  static const rainbowDiamond = 'assets/brand/rainbow_diamond.svg';
+  static const rainbowDiamondSlideLeft = 'assets/brand/rainbow_diamond_slide_left.svg';
+  static const rainbowDiamondSlideRight = 'assets/brand/rainbow_diamond_slide_right.svg';
 
   // ─── Videos ───
   static const videoLoginBg = 'assets/videos/login_bg.mp4';

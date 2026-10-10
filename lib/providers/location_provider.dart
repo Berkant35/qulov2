@@ -2,6 +2,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/services/location_manager.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 
+/// [LocationState.error] kodları — ekran bunlara göre istem kartını seçer.
+abstract final class LocationErrors {
+  static const String serviceDisabled = 'LOCATION_SERVICE_DISABLED';
+  static const String permissionDenied = 'LOCATION_PERMISSION_DENIED';
+  static const String permissionDeniedForever = 'LOCATION_PERMISSION_DENIED_FOREVER';
+  static const String mockDetected = 'LOCATION_MOCK_DETECTED';
+}
+
 class LocationState {
   final double? lat;
   final double? lng;
@@ -37,45 +45,50 @@ class LocationNotifier extends Notifier<LocationState> {
   }
 
   /// App resume olduğunda çağrılır.
-  /// Error varsa veya 15dk geçmişse konum güncellenir.
+  /// Error varsa veya 15dk geçmişse konum güncellenir. Sistem izni burada
+  /// SORULMAZ (her dönüşte soğuk istem çıkmasın); Ayarlar'dan izin verip
+  /// dönen kullanıcı yine de toparlanır.
   void onAppResumed() {
     if (state.isLoading) return;
 
     // Error varsa her zaman retry
     if (state.error != null) {
-      getCurrentLocation();
+      getCurrentLocation(askPermission: false);
       return;
     }
 
     // Throttle: son güncellemeden 15dk geçmişse güncelle
     if (_lastUpdateTime == null ||
         DateTime.now().difference(_lastUpdateTime!) >= _kLocationUpdateInterval) {
-      getCurrentLocation();
+      getCurrentLocation(askPermission: false);
     }
   }
 
-  Future<void> getCurrentLocation() async {
+  /// [askPermission] false ise izin yokken sistem istemi açılmaz,
+  /// `LOCATION_PERMISSION_DENIED` yazılır — Discover bunu "konumu paylaş"
+  /// kartıyla gösterir, sistem istemi kullanıcı karta dokununca gelir.
+  Future<void> getCurrentLocation({bool askPermission = true}) async {
     state = state.copyWith(isLoading: true, error: null);
     try {
       final manager = ref.read(locationManagerProvider);
 
       final serviceEnabled = await manager.isServiceEnabled();
       if (!serviceEnabled) {
-        state = state.copyWith(isLoading: false, error: 'LOCATION_SERVICE_DISABLED');
+        state = state.copyWith(isLoading: false, error: LocationErrors.serviceDisabled);
         return;
       }
 
       var permission = await manager.checkPermission();
-      if (permission == LocationPermissionStatus.denied) {
+      if (permission == LocationPermissionStatus.denied && askPermission) {
         permission = await manager.requestPermission();
-        if (permission == LocationPermissionStatus.denied) {
-          state = state.copyWith(isLoading: false, error: 'LOCATION_PERMISSION_DENIED');
-          return;
-        }
+      }
+      if (permission == LocationPermissionStatus.denied) {
+        state = state.copyWith(isLoading: false, error: LocationErrors.permissionDenied);
+        return;
       }
 
       if (permission == LocationPermissionStatus.deniedForever) {
-        state = state.copyWith(isLoading: false, error: 'LOCATION_PERMISSION_DENIED_FOREVER');
+        state = state.copyWith(isLoading: false, error: LocationErrors.permissionDeniedForever);
         return;
       }
 
@@ -102,7 +115,7 @@ class LocationNotifier extends Notifier<LocationState> {
         // 401 veya network hatası lokal GPS state'ini bozmamalı
       }
     } on MockLocationException {
-      state = state.copyWith(isLoading: false, error: 'LOCATION_MOCK_DETECTED');
+      state = state.copyWith(isLoading: false, error: LocationErrors.mockDetected);
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
     }

@@ -35,6 +35,8 @@ abstract class DeepLinkParser {
     'performance',
     'settings',
     'notifications',
+    'market',
+    'gift-cards',
   };
 
   /// URI'yi parse eder, desteklenen bir deep link ise DeepLinkResult doner.

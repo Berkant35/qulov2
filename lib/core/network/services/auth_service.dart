@@ -14,8 +14,9 @@ abstract class AuthService {
   @POST('/auth/login')
   Future<AuthTokens> login(@Body() Map<String, dynamic> body);
 
-  @POST('/auth/verify-email')
-  Future<void> verifyEmail(@Body() Map<String, dynamic> body);
+  /// Kimlikli; gövde yok. Hız sınırı kullanıcı başına (429 `RATE_LIMITED`).
+  @POST('/auth/resend-verification')
+  Future<ResendVerificationResponse> resendVerification();
 
   @POST('/auth/refresh')
   Future<RefreshResponse> refresh(@Body() Map<String, dynamic> body);

@@ -4,6 +4,7 @@ import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_button.dart';
 
+/// Cinsiyet = eşleşme kovası, ikili (Kadın/Erkek). Kayıttan sonra yalnız destek talebiyle değişir.
 class RegisterStepGender extends StatelessWidget {
   final String? selectedGender;
   final ValueChanged<String> onGenderSelected;
@@ -45,13 +46,6 @@ class RegisterStepGender extends StatelessWidget {
             icon: Icons.female,
             isSelected: selectedGender == 'WOMAN',
             onTap: () => onGenderSelected('WOMAN'),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          _GenderCard(
-            label: l10n.get('other'),
-            icon: Icons.transgender,
-            isSelected: selectedGender == 'OTHER',
-            onTap: () => onGenderSelected('OTHER'),
           ),
           if (errorText != null) ...[
             const SizedBox(height: AppSpacing.sm),

@@ -66,6 +66,12 @@ class QuizQuestionModel extends Equatable {
   @JsonKey(name: 'used_powers')
   final List<String> usedPowers;
 
+  /// Sunucunun bu soru için kalan süresi (2026-10-04+; toleransı içerir).
+  /// Uygulama yeniden açılınca sayaç tam süreden değil buradan başlar.
+  /// Eski sunucuda null.
+  @JsonKey(name: 'remaining_seconds')
+  final int? remainingSeconds;
+
   const QuizQuestionModel({
     required this.sessionId,
     required this.questionNumber,
@@ -76,7 +82,16 @@ class QuizQuestionModel extends Equatable {
     this.hasHint = false,
     this.timeLimitSeconds = 30,
     this.usedPowers = const [],
+    this.remainingSeconds,
   });
+
+  /// Sayacın başlangıcı: soru süresini aşmaz (sunucu toleransı gösterilmez),
+  /// süre bitmiş olsa da en az 1 sn (ilk tikte TIME_UP akışı çalışır).
+  int get startSeconds {
+    final remaining = remainingSeconds;
+    if (remaining == null) return timeLimitSeconds;
+    return remaining.clamp(1, timeLimitSeconds < 1 ? 1 : timeLimitSeconds);
+  }
 
   factory QuizQuestionModel.fromJson(Map<String, dynamic> json) =>
       _$QuizQuestionModelFromJson(json);
@@ -118,6 +133,14 @@ class QuizAnswerResponse extends Equatable {
   final bool? canRescue;
   final String? badge;
 
+  /// Yanlış cevapta: SKIP kurtarması bu sefer bedava (ilk quiz ikinci şansı).
+  @JsonKey(name: 'free_second_chance')
+  final bool? freeSecondChance;
+
+  /// Kurtarma yanıtında: ücretsiz hak kullanıldı — envanter/bakiye düşülmez.
+  @JsonKey(name: 'free_second_chance_used')
+  final bool? freeSecondChanceUsed;
+
   const QuizAnswerResponse({
     this.isCorrect,
     this.matched,
@@ -127,6 +150,8 @@ class QuizAnswerResponse extends Equatable {
     this.awaitingAnswer,
     this.canRescue,
     this.badge,
+    this.freeSecondChance,
+    this.freeSecondChanceUsed,
   });
 
   factory QuizAnswerResponse.fromJson(Map<String, dynamic> json) =>
@@ -134,7 +159,8 @@ class QuizAnswerResponse extends Equatable {
   Map<String, dynamic> toJson() => _$QuizAnswerResponseToJson(this);
 
   @override
-  List<Object?> get props => [isCorrect, sessionStatus, canRescue, badge];
+  List<Object?> get props =>
+      [isCorrect, sessionStatus, canRescue, badge, freeSecondChance, freeSecondChanceUsed];
 }
 
 @JsonSerializable()

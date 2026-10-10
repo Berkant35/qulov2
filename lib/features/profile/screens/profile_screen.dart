@@ -9,6 +9,7 @@ import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/core/widgets/question_gate_banner.dart';
 import 'package:qulo_v2/core/widgets/referral_invite_card.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/features/identity/widgets/identity_prompt_banner.dart';
 import 'package:qulo_v2/providers/notification_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
@@ -25,6 +26,7 @@ import 'package:qulo_v2/features/profile/widgets/profile_progress_card.dart';
 import 'package:qulo_v2/features/profile/widgets/question_vitrin_card.dart';
 import 'package:qulo_v2/features/profile/widgets/section_card.dart';
 import 'package:qulo_v2/features/page_messages/widgets/page_message_host.dart';
+import 'package:qulo_v2/features/rewards_market/widgets/rainbow_market_button.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -58,6 +60,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
       title: context.tr('profile'),
       isLoading: userAsync is AsyncLoading,
       actions: [
+        const RainbowMarketButton(),
         NotificationBellButton(
           unreadCount: unreadCount,
           onTap: () => navigateTo(RouteNames.notifications),
@@ -102,6 +105,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                   const QuestionVitrinCard(),
                   const SizedBox(height: AppSpacing.xl),
                 ],
+
+                // ─── Identity labels prompt (kendini gizler) ───
+                const IdentityPromptBanner(),
 
                 // ─── Identity ───
                 ProfileIdentityCard(
@@ -175,6 +181,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                   onPassport: () => navigateTo(RouteNames.passport),
                   onTerms: () => pushTo(RouteNames.terms),
                   onPrivacy: () => pushTo(RouteNames.privacyPolicy),
+                  onRainbowMarket: () => navigateTo(RouteNames.rewardsMarket),
+                  onGiftCards: () => navigateTo(RouteNames.rewardsRedemptions),
                 ),
               ],
             ),

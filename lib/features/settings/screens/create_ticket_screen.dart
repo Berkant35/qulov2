@@ -15,7 +15,9 @@ const ticketCategories = [
 ];
 
 class CreateTicketScreen extends ConsumerStatefulWidget {
-  const CreateTicketScreen({super.key});
+  /// Bağlamdan açılınca hazır konu (ör. tercih değişikliği talebi); kategori varsayılanı ACCOUNT.
+  final String? initialSubject;
+  const CreateTicketScreen({super.key, this.initialSubject});
 
   @override
   ConsumerState<CreateTicketScreen> createState() => _CreateTicketScreenState();
@@ -23,6 +25,12 @@ class CreateTicketScreen extends ConsumerStatefulWidget {
 
 class _CreateTicketScreenState extends ConsumerState<CreateTicketScreen>
     with CreateTicketScreenMixin {
+  @override
+  void initState() {
+    super.initState();
+    initTicketForm();
+  }
+
   @override
   void dispose() {
     disposeMixin();

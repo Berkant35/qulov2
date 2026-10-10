@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/widgets/page_bar_indicator.dart';
 
 class ProfilePhotoGallery extends StatefulWidget {
   final List<String> photos;
@@ -128,24 +129,7 @@ class _ProfilePhotoGalleryState extends State<ProfilePhotoGallery> {
               top: topPadding + AppSpacing.sm,
               left: AppSpacing.lg,
               right: AppSpacing.lg,
-              child: Row(
-                children: List.generate(_photos.length, (i) {
-                  return Expanded(
-                    child: Container(
-                      height: 3,
-                      margin: EdgeInsets.symmetric(
-                        horizontal: _photos.length > 6 ? 1 : 2,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(AppSpacing.radiusXxs),
-                        color: i == _current
-                            ? AppColors.onScrim
-                            : AppColors.onScrim.withValues(alpha: 0.4),
-                      ),
-                    ),
-                  );
-                }),
-              ),
+              child: PageBarIndicator(count: _photos.length, current: _current),
             ),
 
           // Close button

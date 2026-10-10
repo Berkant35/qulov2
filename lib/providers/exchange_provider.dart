@@ -97,6 +97,8 @@ class ExchangeNotifier extends Notifier<ExchangeState> {
     if (result is Success<BuyPowerResponse>) {
       await fetchAll();
       await ref.read(diamondProvider.notifier).fetchBalance();
+      // AppBar bakiyesi (userProvider) sunucunun işlem sonrası bakiyesiyle — ek getMe isteği yok.
+      ref.read(userProvider.notifier).applyBalance(result.data.newBalance);
     }
     return result;
   }

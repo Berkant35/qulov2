@@ -397,6 +397,18 @@ final _routes = <RouteBase>[
               builder: (context, state) => const SubscriptionComparisonScreen(),
             ),
             GoRoute(
+              path: 'market',
+              name: RouteNames.rewardsMarket,
+              builder: (context, state) => const MarketScreen(),
+            ),
+            // Market'in KARDEŞİ, çocuğu değil: iç içe olsaydı yığına gizli bir MarketScreen
+            // kurulurdu (GET /market + market_view; Rainbow'u kapalı kullanıcıda 403).
+            GoRoute(
+              path: 'gift-cards',
+              name: RouteNames.rewardsRedemptions,
+              builder: (context, state) => const RedemptionsScreen(),
+            ),
+            GoRoute(
               path: 'performance',
               name: RouteNames.performance,
               builder: (context, state) => const PerformanceDashboardScreen(),
@@ -419,7 +431,7 @@ final _routes = <RouteBase>[
                     GoRoute(
                       path: 'create',
                       name: RouteNames.createTicket,
-                      builder: (context, state) => const CreateTicketScreen(),
+                      builder: (context, state) => CreateTicketScreen(initialSubject: state.extra as String?),
                     ),
                   ],
                 ),

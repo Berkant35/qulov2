@@ -3,12 +3,15 @@ import 'dart:async';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/data/models/diamond_model.dart';
 import 'package:qulo_v2/data/models/exchange_model.dart';
+import 'package:qulo_v2/data/models/identity_model.dart';
 import 'package:qulo_v2/data/models/notification_preferences_model.dart';
 import 'package:qulo_v2/data/models/question_model.dart';
+import 'package:qulo_v2/data/models/rewards_model.dart';
 import 'package:qulo_v2/data/models/user_model.dart';
 import 'package:qulo_v2/data/repositories/diamond_repository.dart';
 import 'package:qulo_v2/data/repositories/exchange_repository.dart';
 import 'package:qulo_v2/data/repositories/question_repository.dart';
+import 'package:qulo_v2/data/repositories/rewards_repository.dart';
 import 'package:qulo_v2/data/repositories/user_repository.dart';
 
 /// Provider testleri icin bellek-ici repository'ler. Servis/ag yok; testler
@@ -18,19 +21,70 @@ import 'package:qulo_v2/data/repositories/user_repository.dart';
 /// gerisi `noSuchMethod` ile patlar; `ExchangeRepository` 4 metot → hepsi acik.
 
 class FakeUserRepository implements UserRepository {
-  FakeUserRepository(this.user, {this.prefsFailure});
+  FakeUserRepository(this.user, {this.prefsFailure, this.reorderFailure});
 
-  final UserModel user;
+  /// Testler getMe'nin sonraki yanıtını değiştirebilsin diye atanabilir.
+  UserModel user;
   final AppFailure? prefsFailure;
+  final AppFailure? reorderFailure;
 
   int getMeCallCount = 0;
   int prefsCallCount = 0;
+  int reorderPhotosCallCount = 0;
   Map<String, dynamic>? lastPrefsBody;
+  AppFailure? prefConsentFailure;
+  final List<({String status, String? genderPref})> prefConsentCalls = [];
+
+  @override
+  Future<Result<void>> setPrefConsent({required String status, String? genderPref}) async {
+    prefConsentCalls.add((status: status, genderPref: genderPref));
+    final failure = prefConsentFailure;
+    return failure == null ? const Success(null) : Failure(failure);
+  }
+
+  IdentityModel identity = IdentityModel.empty;
+  AppFailure? identityFailure;
+  AppFailure? identityGetFailure;
+
+  /// Doluysa `saveIdentity` bu tamamlanana kadar bekler (kaydederken arayüz durumu testi).
+  Completer<void>? identitySaveGate;
+  final List<({IdentityModel identity, bool consent})> identityCalls = [];
+
+  /// `getIdentity` çağrı sayısı (maliyet koruması testi) ve doluysa tamamlanana kadar bekletme.
+  int identityGetCount = 0;
+  Completer<void>? identityGetGate;
+
+  @override
+  Future<Result<IdentityModel>> getIdentity() async {
+    identityGetCount++;
+    await identityGetGate?.future;
+    final failure = identityGetFailure;
+    return failure != null ? Failure(failure) : Success(identity);
+  }
+
+  @override
+  Future<Result<IdentityModel>> saveIdentity(IdentityModel next, {required bool consent}) async {
+    identityCalls.add((identity: next, consent: consent));
+    await identitySaveGate?.future;
+    final failure = identityFailure;
+    if (failure != null) return Failure(failure);
+    identity = next;
+    return Success(next);
+  }
 
   @override
   Future<Result<UserModel>> getMe() async {
     getMeCallCount++;
     return Success(user);
+  }
+
+  /// Gercek `PATCH /users/me` yaniti gibi: yalniz profil alanlari doner, getMe'ye
+  /// ozel alanlar (`rainbow_diamonds`, `rainbow_enabled`, bakiyeler) YOK.
+  @override
+  Future<Result<UserModel>> reorderPhotos(List<String> photos) async {
+    reorderPhotosCallCount++;
+    if (reorderFailure != null) return Failure(reorderFailure!);
+    return Success(UserModel(id: user.id, email: user.email, photos: photos));
   }
 
   @override
@@ -59,6 +113,7 @@ class FakeExchangeRepository implements ExchangeRepository {
     this.ratesFailure,
     this.convertFailure,
     this.buyPowerFailure,
+    this.buyPowerBalance = const DiamondBalance(green: 0, purple: 0),
   });
 
   List<PowerInventoryItem> inventory;
@@ -67,10 +122,12 @@ class FakeExchangeRepository implements ExchangeRepository {
   AppFailure? ratesFailure;
   final AppFailure? convertFailure;
   final AppFailure? buyPowerFailure;
+  final DiamondBalance buyPowerBalance;
 
   int getInventoryCallCount = 0;
   int convertCallCount = 0;
   int buyPowerCallCount = 0;
+  String? lastBuyDiamondType;
 
   @override
   Future<Result<InventoryResponse>> getInventory() async {
@@ -103,11 +160,9 @@ class FakeExchangeRepository implements ExchangeRepository {
     int quantity,
   ) async {
     buyPowerCallCount++;
+    lastBuyDiamondType = diamondType;
     if (buyPowerFailure != null) return Failure(buyPowerFailure!);
-    return Success(BuyPowerResponse(
-      newCount: quantity,
-      newBalance: const DiamondBalance(green: 0, purple: 0),
-    ));
+    return Success(BuyPowerResponse(newCount: quantity, newBalance: buyPowerBalance));
   }
 }
 
@@ -233,4 +288,74 @@ class FakeQuestionRepository implements QuestionRepository {
   @override
   dynamic noSuchMethod(Invocation invocation) =>
       throw UnimplementedError('FakeQuestionRepository.${invocation.memberName}');
+}
+
+/// Market sahte repository'si: sonuçlar kurucudan, çağrılar sayaçlarda.
+class FakeRewardsRepository implements RewardsRepository {
+  FakeRewardsRepository({
+    this.market,
+    this.marketFailure,
+    this.redeemResult,
+    this.redeemFailure,
+    this.redemptionPages = const {},
+    this.redemptionsFailure,
+    this.eventsFailure,
+  });
+
+  MarketView? market;
+  AppFailure? marketFailure;
+  RedeemResult? redeemResult;
+  AppFailure? redeemFailure;
+  Map<int, RedemptionPage> redemptionPages;
+  AppFailure? redemptionsFailure;
+  AppFailure? eventsFailure;
+
+  final marketCountries = <String?>[];
+  final redeemCalls = <({String itemId, String idempotencyKey, String? sourceItemId})>[];
+  final redemptionPagesRequested = <int>[];
+  final sentEventBatches = <List<SectionEvent>>[];
+
+  /// Doluysa redeem bu tamamlanana kadar bekler (tek uçuş testi).
+  Completer<void>? redeemGate;
+
+  /// Doluysa getMarket bu tamamlanana kadar bekler (ekran kapanırken yükleme sürüyor testi).
+  Completer<void>? marketGate;
+
+  /// Doluysa getRedemptions bu tamamlanana kadar bekler (refresh sırasında önceki liste korunuyor testi).
+  Completer<void>? redemptionsGate;
+
+  @override
+  Future<Result<MarketView>> getMarket({String? country}) async {
+    marketCountries.add(country);
+    if (marketGate != null) await marketGate!.future;
+    if (marketFailure != null) return Failure(marketFailure!);
+    return Success(market ?? const MarketView(balance: 0, items: [], monthlyCap: null, usedThisMonth: 0));
+  }
+
+  @override
+  Future<Result<RedeemResult>> redeem({
+    required String itemId,
+    required String idempotencyKey,
+    String? sourceItemId,
+  }) async {
+    redeemCalls.add((itemId: itemId, idempotencyKey: idempotencyKey, sourceItemId: sourceItemId));
+    if (redeemGate != null) await redeemGate!.future;
+    if (redeemFailure != null) return Failure(redeemFailure!);
+    return Success(redeemResult!);
+  }
+
+  @override
+  Future<Result<RedemptionPage>> getRedemptions({int page = 1, int limit = 20}) async {
+    redemptionPagesRequested.add(page);
+    if (redemptionsGate != null) await redemptionsGate!.future;
+    if (redemptionsFailure != null) return Failure(redemptionsFailure!);
+    return Success(redemptionPages[page] ?? RedemptionPage(items: const [], total: 0, page: page, limit: limit));
+  }
+
+  @override
+  Future<Result<void>> sendEvents(List<SectionEvent> events) async {
+    sentEventBatches.add(List.of(events));
+    if (eventsFailure != null) return Failure(eventsFailure!);
+    return const Success(null);
+  }
 }

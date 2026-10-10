@@ -26,20 +26,56 @@ class AuthTokens extends Equatable {
   List<Object?> get props => [accessToken, refreshToken, userId];
 }
 
+/// Kayıt yanıtı. 2026-10-04'ten (qulo-server d571dc0) beri sunucu token
+/// çiftini de döner: kullanıcı e-postayı doğrulamadan içeri alınır, doğrulama
+/// yalnız eşleşmeye ilk yazımda istenir (403 `EMAIL_VERIFICATION_REQUIRED`).
+/// Token'lar null ise eski sözleşme: kullanıcı giriş ekranına yönlenir.
 @JsonSerializable()
 class RegisterResponse extends Equatable {
   @JsonKey(name: 'userId')
   final String userId;
   final String email;
+  @JsonKey(name: 'accessToken')
+  final String? accessToken;
+  @JsonKey(name: 'refreshToken')
+  final String? refreshToken;
 
-  const RegisterResponse({required this.userId, required this.email});
+  const RegisterResponse({
+    required this.userId,
+    required this.email,
+    this.accessToken,
+    this.refreshToken,
+  });
+
+  /// Doğrudan oturum açmaya yeten token çifti; eski sunucuda null.
+  AuthTokens? get tokens => accessToken != null && refreshToken != null
+      ? AuthTokens(accessToken: accessToken!, refreshToken: refreshToken!, userId: userId)
+      : null;
 
   factory RegisterResponse.fromJson(Map<String, dynamic> json) =>
       _$RegisterResponseFromJson(json);
   Map<String, dynamic> toJson() => _$RegisterResponseToJson(this);
 
   @override
-  List<Object?> get props => [userId, email];
+  List<Object?> get props => [userId, email, accessToken, refreshToken];
+}
+
+/// `POST /auth/resend-verification` yanıtı: `sent` = e-posta gitti;
+/// `emailVerified` = zaten doğrulanmış (e-posta gönderilmez).
+@JsonSerializable()
+class ResendVerificationResponse extends Equatable {
+  @JsonKey(name: 'emailVerified')
+  final bool emailVerified;
+  final bool sent;
+
+  const ResendVerificationResponse({this.emailVerified = false, this.sent = false});
+
+  factory ResendVerificationResponse.fromJson(Map<String, dynamic> json) =>
+      _$ResendVerificationResponseFromJson(json);
+  Map<String, dynamic> toJson() => _$ResendVerificationResponseToJson(this);
+
+  @override
+  List<Object?> get props => [emailVerified, sent];
 }
 
 @JsonSerializable()

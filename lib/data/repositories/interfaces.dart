@@ -13,6 +13,7 @@ import 'package:qulo_v2/data/models/power_model.dart';
 import 'package:qulo_v2/data/models/question_model.dart';
 import 'package:qulo_v2/data/models/quiz_model.dart';
 import 'package:qulo_v2/data/models/referral_model.dart';
+import 'package:qulo_v2/data/models/rewards_model.dart';
 import 'package:qulo_v2/data/models/subscription_model.dart';
 import 'package:qulo_v2/data/models/support_ticket_model.dart';
 import 'package:qulo_v2/data/models/public_profile_model.dart';
@@ -28,7 +29,8 @@ abstract class IAuthRepository {
     required String surname,
     required int age,
     required String gender,
-    required String genderPref,
+    String? genderPref,
+    String? prefConsentStatus,
     double? lat,
     double? lng,
     String locale = 'tr',
@@ -39,7 +41,8 @@ abstract class IAuthRepository {
     required String password,
   });
 
-  Future<Result<void>> verifyEmail(String token);
+  /// Doğrulama e-postasını yeniden gönderir (doğrulama bağlantısı web'de açılır).
+  Future<Result<ResendVerificationResponse>> resendVerification();
 
   Future<Result<RefreshResponse>> refresh(String refreshToken);
 
@@ -250,4 +253,12 @@ abstract class ISupportTicketRepository {
 abstract class IAcquisitionRepository {
   Future<Result<List<AcquisitionChannel>>> getChannels();
   Future<Result<void>> submitAnswer({String? channelId, String? freeformText});
+}
+
+// ─── Rewards (Rainbow Market) ───
+abstract class IRewardsRepository {
+  Future<Result<MarketView>> getMarket({String? country});
+  Future<Result<RedeemResult>> redeem({required String itemId, required String idempotencyKey, String? sourceItemId});
+  Future<Result<RedemptionPage>> getRedemptions({int page = 1, int limit = 20});
+  Future<Result<void>> sendEvents(List<SectionEvent> events);
 }

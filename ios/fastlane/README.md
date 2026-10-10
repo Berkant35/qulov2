@@ -45,7 +45,7 @@ IPA uret (release, prod API)
 [bundle exec] fastlane ios beta
 ```
 
-IPA'yi TestFlight'a yukle
+IPA'yi TestFlight'a yukle + arsivin dSYM'lerini Crashlytics'e gonder (build_ipa'nin hemen ardindan kosulmali — arsiv/IPA ayni build olmali)
 
 ### ios dsyms
 

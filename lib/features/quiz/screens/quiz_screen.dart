@@ -8,6 +8,7 @@ import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/core/widgets/compact_diamond_balance.dart';
 import 'package:qulo_v2/core/widgets/power_icon.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
+import 'package:qulo_v2/features/notifications/mixins/push_permission_offer_mixin.dart';
 import 'package:qulo_v2/providers/quiz_provider.dart';
 import 'package:qulo_v2/providers/exchange_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
@@ -17,6 +18,7 @@ import 'package:qulo_v2/features/quiz/mixins/quiz_flow_mixin.dart';
 import 'package:qulo_v2/features/quiz/mixins/quiz_power_mixin.dart';
 import 'package:qulo_v2/features/quiz/mixins/quiz_screen_state_mixin.dart';
 import 'package:qulo_v2/features/quiz/widgets/answer_feedback_overlay.dart';
+import 'package:qulo_v2/features/quiz/widgets/rescue_cards.dart';
 import 'package:qulo_v2/features/quiz/widgets/quiz_error_view.dart';
 import 'package:qulo_v2/features/quiz/widgets/quiz_question_content.dart';
 import 'package:qulo_v2/features/quiz/screens/match_celebration_screen.dart';
@@ -32,7 +34,12 @@ class QuizScreen extends ConsumerStatefulWidget {
 }
 
 class _QuizScreenState extends ConsumerState<QuizScreen>
-    with QuizScreenStateMixin, QuizAnswerMixin, QuizPowerMixin, QuizFlowMixin {
+    with
+        QuizScreenStateMixin,
+        PushPermissionOfferMixin<QuizScreen>,
+        QuizAnswerMixin,
+        QuizPowerMixin,
+        QuizFlowMixin {
   @override
   void initState() {
     super.initState();
@@ -121,6 +128,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
                       isCorrect: feedbackCorrect,
                       onComplete: onFeedbackComplete,
                       canRescue: canRescue,
+                      freeSecondChance: freeSecondChance,
                       skipOption: RescuePowerOption(
                         type: PowerType.skip,
                         inventoryCount: ref.read(exchangeProvider).getCount('SKIP'),
@@ -144,5 +152,4 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
       ),
     );
   }
-
 }

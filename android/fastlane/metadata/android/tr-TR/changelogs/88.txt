@@ -1,0 +1,5 @@
+• Yeni: profiline isteğe bağlı kimlik ve yönelim etiketleri ekle; kimlerin göreceğine sen karar verirsin
+• Eşleşmeler artık iki tarafın tercihine de uyuyor; eşleşme tercihin için ayrı bir onay adımı var
+• Kayıttan hemen sonra başla; e-postanı yalnızca mesaj göndermeden önce doğrulaman yeterli
+• İlk quizinde ücretsiz ikinci şans ve soru başına işleyen daha adil sayaç
+• Güvenlik iyileştirmeleri ve hata düzeltmeleri

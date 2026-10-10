@@ -20,6 +20,11 @@ abstract final class AppColors {
   static const secondaryLight = Color(0xFFB9F6CA);
   static const secondarySurface = Color(0x1A69F0AE);
 
+  // ─── Rainbow (Prizma) ───
+  /// Rainbow elmas ışıması ve vurgu rengi (Prizma'nın mavi yüzü).
+  static const rainbow = Color(0xFF5CC8F5);
+  static const rainbowDark = Color(0xFF6F86F7);
+
   // ─── Semantic ───
   static const error = Color(0xFFCF6679);
   static const success = Color(0xFF69F0AE);
@@ -135,6 +140,8 @@ class AppColorsResolved {
   final Color secondaryDark;
   final Color secondaryLight;
   final Color secondarySurface;
+  final Color rainbow;
+  final Color rainbowDark;
 
   // ─── Semantic ───
   final Color error;
@@ -170,6 +177,8 @@ class AppColorsResolved {
     required this.secondaryDark,
     required this.secondaryLight,
     required this.secondarySurface,
+    required this.rainbow,
+    required this.rainbowDark,
     required this.error,
     required this.success,
     required this.warning,
@@ -198,6 +207,8 @@ class AppColorsResolved {
     secondaryDark: AppColors.secondaryDark,
     secondaryLight: AppColors.secondaryLight,
     secondarySurface: AppColors.secondarySurface,
+    rainbow: AppColors.rainbow,
+    rainbowDark: AppColors.rainbowDark,
     error: AppColors.error,
     success: AppColors.success,
     warning: AppColors.warning,
@@ -229,6 +240,9 @@ class AppColorsResolved {
     secondaryDark: Color(0xFF1B5E20),
     secondaryLight: Color(0xFF81C784),
     secondarySurface: Color(0x1A2E7D32),
+    // Deeper blue/indigo for white bg (WCAG AA contrast)
+    rainbow: Color(0xFF0277BD),
+    rainbowDark: Color(0xFF3949AB),
     // Stronger semantic colors for light bg
     error: Color(0xFFD32F2F),
     success: Color(0xFF2E7D32),

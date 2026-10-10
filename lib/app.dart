@@ -33,6 +33,7 @@ import 'package:qulo_v2/core/services/overlay_request.dart';
 import 'package:qulo_v2/routing/app_router.dart';
 import 'package:qulo_v2/core/services/format_manager.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
+import 'package:qulo_v2/features/email_verification/email_verification_controller.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
 
 class QuloApp extends ConsumerStatefulWidget {
@@ -121,6 +122,8 @@ class _QuloAppState extends ConsumerState<QuloApp> with WidgetsBindingObserver {
           unawaited(ref.read(userRepositoryProvider).heartbeat());
           // Resume'da sayfa mesajlarını güncelle
           ref.read(pageMessagesProvider.notifier).fetch();
+          // Doğrulama bağlantısına tıklayıp dönen kullanıcının mesaj kapısı açılsın.
+          unawaited(ref.read(emailVerificationControllerProvider).refreshIfUnverified());
         }
       case AppLifecycleState.paused:
         analytics.logAppBackground();

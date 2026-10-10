@@ -4,7 +4,7 @@ import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/diamond_icon.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
 
-/// AppBar icin kompakt mor/yesil bakiye.
+/// AppBar icin kompakt mor/yesil bakiye (+ Rainbow, yalniz sunucu actiysa).
 ///
 /// Kaynak `userProvider`: uygulama acilisinda zaten yuklu, ekstra istek yok;
 /// bakiye yerel guncellendiginde aninda yeniden cizilir.
@@ -34,6 +34,12 @@ class CompactDiamondBalance extends ConsumerWidget {
           const DiamondIcon.green(size: 14, showGlow: false),
           const SizedBox(width: AppSpacing.xxs),
           Text('${user.greenDiamonds}', style: style),
+          if (user.rainbowEnabled) ...[
+            const SizedBox(width: AppSpacing.sm),
+            const DiamondIcon.rainbow(size: 14, showGlow: false),
+            const SizedBox(width: AppSpacing.xxs),
+            Text('${user.rainbowDiamonds}', style: style),
+          ],
         ],
       ),
     );

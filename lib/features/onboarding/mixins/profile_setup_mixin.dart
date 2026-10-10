@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/constants/pref_consent.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/pref_analytics.dart';
 import 'package:qulo_v2/core/widgets/image_picker_permission_dialog.dart';
+import 'package:qulo_v2/features/pref_consent/pref_consent_dialogs.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
@@ -19,6 +22,7 @@ mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
   bool isUploadingPhoto = false;
   bool isSubmittingGenderPref = false;
   String? selectedGenderPref;
+  bool prefConsentGranted = false;
 
   void initMixin() {
     AnalyticsManager.instance.logEvent(AnalyticsEvents.setupGateView);
@@ -111,25 +115,26 @@ mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
 
   // ─── Gender Preference Flow ───────────────────────────────────────
 
+  void onSetupPrefConsentChanged(bool granted) => setState(() => prefConsentGranted = granted);
+
   Future<void> handleGenderPrefSelect(String value) async {
-    if (isSubmittingGenderPref) return;
+    if (isSubmittingGenderPref || !prefConsentGranted) return;
     setState(() {
       selectedGenderPref = value;
       isSubmittingGenderPref = true;
     });
 
+    // Tercih + açık rıza tek istekte (KVKK m.6); sunucu ispatı user_consents'e yazar.
     final result = await ref
         .read(userProvider.notifier)
-        .updateProfile({'gender_pref': value});
+        .setPrefConsent(status: PrefConsent.granted, genderPref: value);
 
     if (!mounted) return;
 
     result.when(
       success: (_) {
-        AnalyticsManager.instance.logEvent(
-          AnalyticsEvents.setupGenderPrefSelected,
-          params: {'value': value, 'entry_point': 'gate'},
-        );
+        PrefAnalytics.prefSelected(PrefEntryPoint.gate);
+        PrefAnalytics.consentAnswered(entryPoint: PrefEntryPoint.gate, granted: true);
         maybeCompleteSetup();
       },
       failure: (_) {
@@ -140,6 +145,25 @@ mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
 
     if (mounted) setState(() => isSubmittingGenderPref = false);
   }
+
+  Future<void> handleGenderPrefDecline() async {
+    if (isSubmittingGenderPref) return;
+    final confirmed = await PrefConsentDialogs.confirmDecline(context, ref.read(navigationServiceProvider));
+    if (!confirmed || !mounted) return;
+    setState(() => isSubmittingGenderPref = true);
+    final result = await ref.read(userProvider.notifier).setPrefConsent(status: PrefConsent.declined);
+    if (!mounted) return;
+    result.when(
+      success: (_) {
+        PrefAnalytics.consentAnswered(entryPoint: PrefEntryPoint.gate, granted: false);
+        maybeCompleteSetup();
+      },
+      failure: (_) => showSetupSnack(context.tr('setup_gender_pref_error')),
+    );
+    if (mounted) setState(() => isSubmittingGenderPref = false);
+  }
+
+  void openPrivacyPolicy() => ref.read(navigationServiceProvider).push(RouteNames.privacyPolicy);
 
   // ─── Quick Assign Flow ────────────────────────────────────────────
 

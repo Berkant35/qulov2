@@ -4,9 +4,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/data/models/discover_model.dart';
 import 'package:qulo_v2/data/models/match_model.dart';
+import 'package:qulo_v2/data/models/user_model.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
+import 'package:qulo_v2/providers/location_provider.dart';
+import 'package:qulo_v2/providers/user_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+/// Karşılıklı eşleşme guard'ı (qulo-server `pair-compatibility.service`): hedef
+/// izleyiciyle uyumsuzsa / gösterilmemiş, engelli ya da silinmiş profile LIKE ve
+/// quiz başlatma erişilemez: yeni sunucu tek tip 404 `USER_NOT_FOUND`, eski sunucu
+/// 403 `NOT_COMPATIBLE` döner; ikisi de "profil kullanılamıyor" demektir.
+const notCompatibleCode = 'NOT_COMPATIBLE';
+const userNotFoundCode = 'USER_NOT_FOUND';
+
+bool isNotCompatibleFailure(AppFailure failure) =>
+    failure is ServerFailure && (failure.code == notCompatibleCode || failure.code == userNotFoundCode);
 
 class DiscoverNotifier extends AsyncNotifier<DiscoverState> {
   bool _isPrefetching = false;
@@ -17,9 +30,41 @@ class DiscoverNotifier extends AsyncNotifier<DiscoverState> {
   final Set<String> _seenUserIds = {};
 
   @override
-  Future<DiscoverState> build() async => const DiscoverState();
+  Future<DiscoverState> build() async {
+    _reloadOnGenderPrefChange();
+    return const DiscoverState();
+  }
+
+  /// Cinsiyet tercihi ayarlanmadan sunucu discover'a PROFILE_INCOMPLETE döner
+  /// (qulo-server 14a1f0a). Eskiden giriş ön-yüklemesi tercih seçilmeden
+  /// çağrılıp yanlış cinsiyetten deste çekiyordu — tercih yoksa istek atılmaz;
+  /// deste tercih ayarlanınca [_reloadOnGenderPrefChange] ile yüklenir.
+  bool get _hasGenderPrefOrUnknown {
+    final user = ref.read(userProvider).valueOrNull;
+    return user == null || user.hasGenderPref;
+  }
+
+  /// Tercih ilk kez ayarlandığında ya da değiştiğinde desteyi yeniler. Kullanıcı
+  /// verisinin ilk gelişi (null → değer) ve çıkış (değer → null) yükleme
+  /// sebebi değildir; konum yoksa yükleme Discover ekranının işidir.
+  void _reloadOnGenderPrefChange() {
+    ref.listen<String?>(
+      userProvider.select((u) => _genderPrefKey(u.valueOrNull)),
+      (prev, next) {
+        if (prev == null || next == null || prev == next) return;
+        if (ref.read(locationProvider).lat == null) return;
+        loadCards();
+      },
+    );
+  }
+
+  static String? _genderPrefKey(UserModel? user) {
+    if (user == null) return null;
+    return user.hasGenderPref ? 'set:${user.genderPref}' : 'unset';
+  }
 
   Future<void> loadCards({int page = 1}) async {
+    if (!_hasGenderPrefOrUnknown) return;
     state = const AsyncLoading();
     final result = await ref.read(matchRepositoryProvider).discover(page: page);
     state = result.when(
@@ -145,9 +190,24 @@ class DiscoverNotifier extends AsyncNotifier<DiscoverState> {
           _maybePrefetch();
         }
       },
-      failure: (f) => dev.log('swipe failed: $f', name: 'DiscoverNotifier'),
+      failure: (f) {
+        dev.log('swipe failed: $f', name: 'DiscoverNotifier');
+        if (isNotCompatibleFailure(f)) _dropCard(targetId);
+      },
     );
     return result;
+  }
+
+  /// Uyumsuz kart (404 `USER_NOT_FOUND` / eski 403 `NOT_COMPATIBLE`, ör. sunucu karşılıklı eşleşme anahtarı
+  /// açılmadan önce çekilmiş deste) desteden düşer; kalsaydı her dokunuş sessizce
+  /// yine reddedilirdi. Geri alınabilir değildir (`lastSwipedCard` değişmez).
+  void _dropCard(String targetId) {
+    final current = state.valueOrNull;
+    if (current == null) return;
+    state = AsyncData(current.copyWith(
+      cards: current.cards.where((c) => c.userId != targetId).toList(),
+    ));
+    _maybePrefetch();
   }
 
   Future<Result<ProfileCardModel>> undoSwipe() async {

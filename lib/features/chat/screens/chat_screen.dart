@@ -18,6 +18,7 @@ import 'package:qulo_v2/features/chat/widgets/quiz_summary_card.dart';
 import 'package:qulo_v2/features/chat/widgets/typing_indicator.dart';
 import 'package:qulo_v2/features/chat/widgets/chat_lock_banner.dart';
 import 'package:qulo_v2/features/chat/widgets/voice_recorder_overlay.dart';
+import 'package:qulo_v2/features/notifications/mixins/push_permission_offer_mixin.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   final String matchId;
@@ -28,7 +29,12 @@ class ChatScreen extends ConsumerStatefulWidget {
 }
 
 class _ChatScreenState extends ConsumerState<ChatScreen>
-    with ChatScreenMixin, ChatRealtimeMixin, ChatMediaMixin, ChatModerationMixin {
+    with
+        PushPermissionOfferMixin<ChatScreen>,
+        ChatScreenMixin,
+        ChatRealtimeMixin,
+        ChatMediaMixin,
+        ChatModerationMixin {
   @override
   void initState() {
     super.initState();

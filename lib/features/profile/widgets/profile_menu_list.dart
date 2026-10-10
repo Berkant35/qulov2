@@ -6,6 +6,7 @@ import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/diamond_icon.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/providers/rainbow_flag.dart';
 import 'package:qulo_v2/providers/subscription_provider.dart';
 import 'package:qulo_v2/features/profile/widgets/profile_menu_item.dart';
 
@@ -21,6 +22,8 @@ class ProfileMenuList extends ConsumerWidget {
     required this.onPassport,
     required this.onTerms,
     required this.onPrivacy,
+    required this.onRainbowMarket,
+    required this.onGiftCards,
   });
 
   final int questionCount;
@@ -32,9 +35,14 @@ class ProfileMenuList extends ConsumerWidget {
   final VoidCallback onPassport;
   final VoidCallback onTerms;
   final VoidCallback onPrivacy;
+  final VoidCallback onRainbowMarket;
+  final VoidCallback onGiftCards;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final rainbowEnabled = ref.watchRainbowEnabled();
+    final giftCardsVisible = ref.watchGiftCardsVisible();
+
     return Column(
       children: [
         ProfileMenuItem(
@@ -61,6 +69,18 @@ class ProfileMenuList extends ConsumerWidget {
           title: context.tr('diamonds'),
           onTap: onDiamonds,
         ),
+        if (rainbowEnabled)
+          ProfileMenuItem(
+            iconWidget: const DiamondIcon.rainbow(size: 24),
+            title: context.tr('market_title'),
+            onTap: onRainbowMarket,
+          ),
+        if (giftCardsVisible)
+          ProfileMenuItem(
+            iconPath: QIcons.gift,
+            title: context.tr('market_my_gift_cards'),
+            onTap: onGiftCards,
+          ),
         ProfileMenuItem(
           iconPath: QIcons.crown,
           title: context.tr('sub_my_subscription'),
