@@ -2,17 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/image_picker_manager.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 
 /// Shows a dialog explaining that camera or photo permission was denied and
 /// offers to open the OS-level app settings so the user can re-enable it.
+///
+/// Servisler dialog'dan ÖNCE alınır: dialog açıkken çağıran ekran kapanırsa
+/// (401 çıkışı, deep link) `ref` kullanılamaz; "Ayarları aç" onayı yine uygulanır.
 Future<void> showImagePickerPermissionDialog(
   WidgetRef ref,
   BuildContext context, {
   required bool isCamera,
 }) async {
   final nav = ref.read(navigationServiceProvider);
+  final picker = ref.read(imagePickerManagerProvider);
 
   final titleKey =
       isCamera ? 'camera_permission_denied_title' : 'photo_permission_denied_title';
@@ -31,7 +37,7 @@ Future<void> showImagePickerPermissionDialog(
   );
 
   if (confirmed == true) {
-    await ref.read(imagePickerManagerProvider).openAppSettings();
+    await picker.openAppSettings();
   }
 }
 
@@ -41,6 +47,9 @@ Future<void> showImagePickerPermissionDialog(
 /// hatasi" mesajina (profil kurulumu) ya da yakalanmayan istisnaya (soru
 /// gorseli) donusuyordu; iOS reddden sonra bir daha sormadigi icin kullanici
 /// ayarlara gidilmesi gerektigini hic ogrenemiyordu.
+///
+/// Acilamayan gorsel (0 bayt / cozulemeyen) da burada yakalanir: "baska
+/// fotograf sec" mesaji gosterilir ve `null` doner — kirpma ekranina girmez.
 Future<PickedImage?> pickWithPermissionPrompt(
   WidgetRef ref,
   BuildContext context,
@@ -53,5 +62,23 @@ Future<PickedImage?> pickWithPermissionPrompt(
       await showImagePickerPermissionDialog(ref, context, isCamera: e.isCamera);
     }
     return null;
+  } on ImagePickerInvalidImageException catch (e) {
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.photoPickInvalid,
+      params: {
+        AnalyticsEvents.paramSource: e.source.name,
+        AnalyticsEvents.paramReason: e.reason,
+      },
+    );
+    if (context.mounted) showInvalidImageMessage(context);
+    return null;
   }
+}
+
+/// "Bu fotograf acilamadi, baska bir fotograf sec" — uygulama duzeyindeki
+/// mesajciya yazilir; kirpma ekrani kapansa da gorunur kalir.
+void showInvalidImageMessage(BuildContext context) {
+  ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+    SnackBar(content: Text(context.tr('photo_invalid_pick_again'))),
+  );
 }

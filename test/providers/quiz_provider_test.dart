@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:qulo_v2/core/network/result.dart';
@@ -207,6 +209,68 @@ void main() {
     });
   });
 
+  /// Crashlytics iOS 2.0.17 `quiz_screen.dart:106` `sessionId!`: iki quiz ekrani
+  /// ust uste acildi; ikincinin `reset`'i birincinin yoldaki soru yanitindan once
+  /// geldi → soru dolu, oturum null. Eski isteklerin yanitlari yazilmamali.
+  group('eski oturumun gec gelen yaniti (reset sonrasi)', () {
+    test('soru yaniti reset\'ten sonra gelirse yazilmaz — soru dolu/oturum null olmaz', () async {
+      final h = _Harness();
+      h.repo.questionGate = Completer<void>();
+      final starting = h.notifier.startSession('target-1');
+      await pumpEventQueue();
+      expect(h.repo.questionFetchedFor, 's1', reason: 'soru istegi yolda');
+
+      h.notifier.reset(); // ikinci quiz ekrani
+      h.repo.questionGate!.complete();
+      await starting;
+
+      expect(h.state.currentQuestion, isNull);
+      expect(h.state.sessionId, isNull);
+    });
+
+    test('oturum yaniti reset\'ten sonra gelirse yazilmaz, soru istenmez', () async {
+      final h = _Harness();
+      h.repo.startGate = Completer<void>();
+      final starting = h.notifier.startSession('target-1');
+      await pumpEventQueue();
+
+      h.notifier.reset();
+      h.repo.startGate!.complete();
+      await starting;
+
+      expect(h.state.sessionId, isNull);
+      expect(h.repo.questionFetchedFor, isNull);
+    });
+
+    test('yeni oturum acildiysa eski oturumun cevabi lastAnswer\'i ezmez', () async {
+      final h = _Harness();
+      await h.notifier.startSession('target-1');
+      h.repo.answerGate = Completer<void>();
+      final answering = h.notifier.answer(1);
+      await pumpEventQueue();
+
+      h.notifier.reset();
+      h.repo.startResult = const Success(QuizStartResponse(sessionId: 's2', totalQuestions: 2));
+      h.repo.answerGate = null;
+      await h.notifier.startSession('target-2');
+      await _completeGate(h.repo, answering);
+
+      expect(h.state.sessionId, 's2');
+      expect(h.state.lastAnswer, isNull);
+    });
+
+    test('ayni oturumdaki normal akis etkilenmez', () async {
+      final h = _Harness();
+      await h.notifier.startSession('target-1');
+      h.repo.questionResult = Success(_question(2));
+
+      await h.notifier.fetchCurrentQuestion();
+
+      expect(h.state.currentQuestion?.questionNumber, 2);
+      expect(h.state.sessionId, 's1');
+    });
+  });
+
   group('oturum yokken', () {
     test('cevap/kurtarma/pes/sonuc sunucuya GITMEZ, UnknownFailure doner', () async {
       final h = _Harness();
@@ -232,6 +296,12 @@ void main() {
       expect(h.repo.calls, isEmpty);
     });
   });
+}
+
+/// Yolda bekleyen cevap istegini serbest birakir ve sonucunu bekler.
+Future<void> _completeGate(_FakeQuizRepository repo, Future<Object?> pending) async {
+  repo.pendingAnswerGate?.complete();
+  await pending;
 }
 
 QuizQuestionModel _question(int number, {List<String> usedPowers = const []}) =>
@@ -272,6 +342,12 @@ class _FakeQuizRepository implements QuizRepository {
       const Success(QuizAnswerResponse(isCorrect: true, nextQuestion: 2));
 
   final calls = <String>[];
+
+  /// Doluysa ilgili istek bu tamamlanana kadar bekler (yarisi kurmak icin).
+  Completer<void>? startGate;
+  Completer<void>? questionGate;
+  Completer<void>? answerGate;
+  Completer<void>? pendingAnswerGate;
   String? startedFor;
   String? questionFetchedFor;
   (String, int?, String?, int?)? answered;
@@ -282,6 +358,7 @@ class _FakeQuizRepository implements QuizRepository {
   Future<Result<QuizStartResponse>> startSession(String targetId) async {
     calls.add('start');
     startedFor = targetId;
+    await startGate?.future;
     return startResult;
   }
 
@@ -289,6 +366,7 @@ class _FakeQuizRepository implements QuizRepository {
   Future<Result<QuizQuestionModel>> getCurrentQuestion(String sessionId) async {
     calls.add('question');
     questionFetchedFor = sessionId;
+    await questionGate?.future;
     return questionResult;
   }
 
@@ -301,6 +379,9 @@ class _FakeQuizRepository implements QuizRepository {
   }) async {
     calls.add('answer');
     answered = (sessionId, selectedAnswer, powerUsed, timeSpent);
+    final gate = answerGate;
+    pendingAnswerGate = gate;
+    await gate?.future;
     return answerResult;
   }
 

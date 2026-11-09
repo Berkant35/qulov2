@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
@@ -11,6 +12,13 @@ import 'package:qulo_v2/providers/user_provider.dart';
 import 'package:qulo_v2/features/profile/mixins/edit_profile_screen_mixin.dart';
 
 /// Foto ekleme/silme/sirala islemleri — bottom sheet secimi + kirp/yukle akisi.
+///
+/// Async-gap kurali: baslamis sunucu islemi (yukleme, silme, siralama) ekran
+/// kapansa da tamamlanir ve duzenleme durumu tazelenir. Kapsam (container) await
+/// ONCESI alinir, notifier'lar CAGRI ANINDA okunur: [editProfileProvider] her ekran
+/// acilisinda yeniden tohumlanir — istek surerken ekran kapanip yeniden acildiysa
+/// guncel durum tazelenir (onceden yakalanmis notifier eskimis olurdu). `context`
+/// isteyen adimlar (sonraki sheet/dialog, hata snackbar'i) yalniz `mounted` iken.
 mixin EditProfilePhotosMixin on EditProfileScreenMixin {
   // ─── Photo Actions ───
 
@@ -21,14 +29,12 @@ mixin EditProfilePhotosMixin on EditProfileScreenMixin {
     if (hasPhoto) {
       _showExistingPhotoSheet(index);
     } else {
-      _showPickPhotoSheet(index);
+      _showPickPhotoSheet();
     }
   }
 
-  void _showExistingPhotoSheet(int index) {
-    final nav = ref.read(navigationServiceProvider);
-
-    nav.showAppBottomSheet<String>(
+  Future<void> _showExistingPhotoSheet(int index) async {
+    final result = await ref.read(navigationServiceProvider).showAppBottomSheet<String>(
       ListBottomSheet<String>(
         name: 'photo_options',
         title: context.tr('photo_options'),
@@ -45,20 +51,17 @@ mixin EditProfilePhotosMixin on EditProfileScreenMixin {
           ),
         ],
       ),
-    ).then((result) {
-      if (result == null) return;
-      if (result == 'primary') {
-        _makePrimary(index);
-      } else if (result == 'delete') {
-        _confirmDeletePhoto(index);
-      }
-    });
+    );
+    if (!mounted) return;
+    if (result == 'primary') {
+      _makePrimary(index);
+    } else if (result == 'delete') {
+      _confirmDeletePhoto(index);
+    }
   }
 
-  void _showPickPhotoSheet(int index) {
-    final nav = ref.read(navigationServiceProvider);
-
-    nav.showAppBottomSheet<String>(
+  Future<void> _showPickPhotoSheet() async {
+    final result = await ref.read(navigationServiceProvider).showAppBottomSheet<String>(
       ListBottomSheet<String>(
         name: 'pick_photo_source',
         title: context.tr('add_photo'),
@@ -75,51 +78,52 @@ mixin EditProfilePhotosMixin on EditProfileScreenMixin {
           ),
         ],
       ),
-    ).then((result) {
-      if (result == null) return;
-      if (result == 'gallery') {
-        _pickCropAndUpload(ImageSource.gallery);
-      } else if (result == 'camera') {
-        _pickCropAndUpload(ImageSource.camera);
-      }
-    });
-  }
-
-  Future<void> _pickCropAndUpload(ImageSource source) async {
-    final picked = await pickWithPermissionPrompt(
-      ref,
-      context,
-      () => ref.read(imagePickerManagerProvider).pickAndCrop(context, source),
     );
-    if (picked == null) return;
-
-    final result = await ref
-        .read(userProvider.notifier)
-        .uploadPhoto(picked.bytes, picked.mimeType);
-
-    if (mounted) {
-      if (result.isSuccess) {
-        final photos = ref.read(editProfileProvider).photos;
-        final photoIndex = photos.indexWhere((p) => p == null);
-        AnalyticsManager.instance.logEvent(
-          AnalyticsEvents.profilePhotoAdd,
-          params: {
-            AnalyticsEvents.paramPhotoIndex:
-                photoIndex >= 0 ? photoIndex : photos.length,
-            AnalyticsEvents.paramSource:
-                source == ImageSource.gallery ? 'gallery' : 'camera',
-          },
-        );
-        ref.read(editProfileProvider.notifier).refreshPhotos();
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.tr('error_general'))),
-        );
-      }
+    if (!mounted) return;
+    if (result == 'gallery') {
+      _pickCropAndUpload(ImageSource.gallery);
+    } else if (result == 'camera') {
+      _pickCropAndUpload(ImageSource.camera);
     }
   }
 
-  void _makePrimary(int index) {
+  Future<void> _pickCropAndUpload(ImageSource source) async {
+    final picker = ref.read(imagePickerManagerProvider);
+    final picked = await pickWithPermissionPrompt(
+      ref,
+      context,
+      () => picker.pickAndCrop(context, source),
+    );
+    if (picked == null || !mounted) return;
+
+    final container = ProviderScope.containerOf(context, listen: false);
+    // Yeni foto ilk bos slota oturur (sunucu sona ekler).
+    final photos = ref.read(editProfileProvider).photos;
+    final firstEmpty = photos.indexWhere((p) => p == null);
+    final photoIndex = firstEmpty >= 0 ? firstEmpty : photos.length;
+
+    final result = await container
+        .read(userProvider.notifier)
+        .uploadPhoto(picked.bytes, picked.mimeType);
+
+    if (result.isSuccess) {
+      AnalyticsManager.instance.logEvent(
+        AnalyticsEvents.profilePhotoAdd,
+        params: {
+          AnalyticsEvents.paramPhotoIndex: photoIndex,
+          AnalyticsEvents.paramSource:
+              source == ImageSource.gallery ? 'gallery' : 'camera',
+        },
+      );
+      _refreshPhotos(container);
+    } else if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.tr('error_general'))),
+      );
+    }
+  }
+
+  Future<void> _makePrimary(int index) async {
     final photos = ref.read(editProfileProvider).photos;
     final currentPhotos = photos.whereType<String>().toList();
     if (index >= currentPhotos.length) return;
@@ -127,15 +131,15 @@ mixin EditProfilePhotosMixin on EditProfileScreenMixin {
     final photo = currentPhotos.removeAt(index);
     currentPhotos.insert(0, photo);
 
-    ref.read(userProvider.notifier).reorderPhotos(currentPhotos).then((_) {
-      ref.read(editProfileProvider.notifier).refreshPhotos();
-    });
+    final container = ProviderScope.containerOf(context, listen: false);
+    await container.read(userProvider.notifier).reorderPhotos(currentPhotos);
+    _refreshPhotos(container);
   }
 
-  void _confirmDeletePhoto(int index) {
-    final nav = ref.read(navigationServiceProvider);
+  Future<void> _confirmDeletePhoto(int index) async {
+    final container = ProviderScope.containerOf(context, listen: false);
 
-    nav.showAppDialog<bool>(
+    final confirmed = await ref.read(navigationServiceProvider).showAppDialog<bool>(
       ConfirmDialog(
         name: 'delete_photo_confirm',
         title: context.tr('delete_photo'),
@@ -143,16 +147,19 @@ mixin EditProfilePhotosMixin on EditProfileScreenMixin {
         confirmText: context.tr('delete'),
         isDestructive: true,
       ),
-    ).then((confirmed) {
-      if (confirmed == true) {
-        AnalyticsManager.instance.logEvent(
-          AnalyticsEvents.profilePhotoRemove,
-          params: {AnalyticsEvents.paramPhotoIndex: index},
-        );
-        ref.read(userProvider.notifier).deletePhoto(index).then((_) {
-          ref.read(editProfileProvider.notifier).refreshPhotos();
-        });
-      }
-    });
+    );
+    if (confirmed != true) return;
+
+    // Onaylanan silme ekran kapansa da sunucuya gider.
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.profilePhotoRemove,
+      params: {AnalyticsEvents.paramPhotoIndex: index},
+    );
+    await container.read(userProvider.notifier).deletePhoto(index);
+    _refreshPhotos(container);
   }
+
+  /// Notifier cagri aninda okunur: ekran bu arada yeniden acildiysa guncel durum tazelenir.
+  void _refreshPhotos(ProviderContainer container) =>
+      container.read(editProfileProvider.notifier).refreshPhotos();
 }

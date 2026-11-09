@@ -7,7 +7,13 @@ import 'package:qulo_v2/core/widgets/diamond_icon.dart';
 import 'package:qulo_v2/core/widgets/power_icon.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/core/widgets/safe_tap_button.dart';
+import 'package:qulo_v2/core/widgets/power_effects/power_effect_timing.dart';
+import 'package:qulo_v2/core/widgets/power_effects/reduce_motion.dart';
 import 'package:qulo_v2/features/quiz/mixins/power_bar_mixin.dart';
+import 'package:qulo_v2/features/quiz/mixins/power_help_mixin.dart';
+import 'package:qulo_v2/features/quiz/widgets/power_help_bubble.dart';
+import 'package:qulo_v2/features/quiz/widgets/power_help_button.dart';
+import 'package:qulo_v2/providers/economy_config_provider.dart';
 import 'package:qulo_v2/providers/exchange_provider.dart';
 import 'package:qulo_v2/providers/quiz_provider.dart';
 
@@ -16,7 +22,11 @@ import 'package:qulo_v2/providers/quiz_provider.dart';
 /// Envanter kapisi YOK: envanterde hak varsa oradan duser, yoksa dogrudan mor
 /// elmastan odenir (sunucu `tryUseInventory` false donunce `spendPurple`'a dusuyor).
 /// Eskiden envanteri olmayan herkes 6 gri ikon goruyordu → prod'da 0 guc kullanimi.
-class PowerBar extends ConsumerWidget with PowerBarMixin {
+///
+/// Her gucun ustunde ayri dokunma alanli "?" ([PowerHelpButton]) → o guce ozel baloncuk
+/// ([PowerHelpBubble]) cubugun hemen ustunde acilir. Yalniz gercek quiz; sohbetin
+/// `ChatQuestionPowerBar`'inda yok (spec §13.2/6).
+class PowerBar extends ConsumerStatefulWidget {
   final String sessionId;
   final bool hasHint;
   final void Function(String power)? onPowerUsed;
@@ -29,27 +39,74 @@ class PowerBar extends ConsumerWidget with PowerBarMixin {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PowerBar> createState() => _PowerBarState();
+}
+
+class _PowerBarState extends ConsumerState<PowerBar>
+    with PowerBarMixin, PowerHelpMixin<PowerBar> {
+  @override
+  Widget build(BuildContext context) {
     final exchangeState = ref.watch(exchangeProvider);
     final quiz = ref.watch(quizProvider);
+    final (oracleAccuracy, extendSeconds) = ref.watch(economyConfigProvider
+        .select((c) => (c.oracleAccuracy, c.timing.timeExtendSeconds)));
 
-    final powers = visiblePowers(quiz, hasHint: hasHint);
+    final powers = visiblePowers(quiz, hasHint: widget.hasHint);
+    final help = visibleHelp(powers);
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: powers.map((type) {
-        final count = exchangeState.getCount(type.apiName);
-        final isUsed = quiz.usedPowers.contains(type.apiName);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        AnimatedSize(
+          duration: reduceMotionOf(context) ? Duration.zero : PowerEffectTiming.exit,
+          curve: PowerEffectTiming.curve,
+          alignment: Alignment.bottomCenter,
+          child: help == null
+              ? const SizedBox(width: double.infinity)
+              : Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                  child: PowerHelpBubble(
+                    type: help,
+                    title: powerLabel(context, help),
+                    oracleAccuracy: oracleAccuracy,
+                    timeExtendSeconds: extendSeconds,
+                    onClose: closeHelp,
+                  ),
+                ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: powers.map((type) {
+            final count = exchangeState.getCount(type.apiName);
+            final isUsed = quiz.usedPowers.contains(type.apiName);
 
-        return PowerBarButton(
-          type: type,
-          count: count,
-          isUsed: isUsed,
-          purpleCost: quiz.purpleCostOf(type.apiName),
-          label: powerLabel(context, type),
-          onTap: isUsed ? null : () async => onPowerUsed?.call(type.apiName),
-        );
-      }).toList(),
+            return Column(
+              key: ValueKey(type),
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                PowerHelpButton(
+                  type: type,
+                  isOpen: help == type,
+                  onTap: () => toggleHelp(type),
+                ),
+                // "?" ile guc butonu arasinda bosluk: yanlis dokunus mor harcatmasin.
+                const SizedBox(height: PowerHelpButton.gap),
+                PowerBarButton(
+                  type: type,
+                  count: count,
+                  isUsed: isUsed,
+                  purpleCost: quiz.purpleCostOf(type.apiName),
+                  label: powerLabel(context, type),
+                  onTap: isUsed
+                      ? null
+                      : () async => widget.onPowerUsed?.call(type.apiName),
+                ),
+              ],
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 }

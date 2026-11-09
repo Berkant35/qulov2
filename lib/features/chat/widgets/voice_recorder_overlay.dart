@@ -1,11 +1,8 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qulo_v2/core/services/audio_recorder_manager.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
-import 'package:qulo_v2/providers/api_provider.dart';
+import 'package:qulo_v2/features/chat/mixins/voice_recorder_overlay_mixin.dart';
 
 class VoiceRecorderOverlay extends ConsumerStatefulWidget {
   final void Function(String filePath, int durationSeconds) onRecordComplete;
@@ -22,24 +19,13 @@ class VoiceRecorderOverlay extends ConsumerStatefulWidget {
 }
 
 class _VoiceRecorderOverlayState extends ConsumerState<VoiceRecorderOverlay>
-    with SingleTickerProviderStateMixin {
-  static const int _maxDurationSeconds = 60;
-
-  late final AudioRecorderManager _recorder;
-
-  Timer? _timer;
-  int _seconds = 0;
-  bool _hasStarted = false;
-  bool _isCancelling = false;
-  String? _filePath;
-
+    with SingleTickerProviderStateMixin, VoiceRecorderOverlayMixin {
   late final AnimationController _blinkController;
   late final Animation<double> _blinkAnimation;
 
   @override
   void initState() {
     super.initState();
-    _recorder = ref.read(audioRecorderManagerProvider);
 
     _blinkController = AnimationController(
       vsync: this,
@@ -50,81 +36,21 @@ class _VoiceRecorderOverlayState extends ConsumerState<VoiceRecorderOverlay>
       CurvedAnimation(parent: _blinkController, curve: Curves.easeInOut),
     );
 
-    _startRecording();
+    initRecorder();
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
+    disposeRecorder();
     _blinkController.dispose();
     super.dispose();
-  }
-
-  Future<void> _startRecording() async {
-    try {
-      _filePath = await _recorder.getRecordingPath();
-
-      await _recorder.startRecording(_filePath!);
-
-      if (!mounted) return;
-
-      setState(() => _hasStarted = true);
-
-      _timer?.cancel();
-      _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-        if (!mounted) {
-          _timer?.cancel();
-          return;
-        }
-
-        setState(() => _seconds++);
-
-        if (_seconds >= _maxDurationSeconds) {
-          _completeRecording();
-        }
-      });
-    } catch (e) {
-      if (mounted) widget.onCancel();
-    }
-  }
-
-  Future<void> _completeRecording() async {
-    _timer?.cancel();
-
-    final path = await _recorder.stopRecording();
-    if (path != null && mounted) {
-      widget.onRecordComplete(path, _seconds);
-    }
-  }
-
-  Future<void> _cancelRecording() async {
-    _timer?.cancel();
-    await _recorder.cancelRecording();
-
-    if (mounted) widget.onCancel();
-  }
-
-  String _formatTime(int totalSeconds) {
-    final minutes = totalSeconds ~/ 60;
-    final seconds = totalSeconds % 60;
-    return '$minutes:${seconds.toString().padLeft(2, '0')}';
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onVerticalDragUpdate: (details) {
-        if (details.delta.dy < -5) {
-          setState(() => _isCancelling = true);
-        } else {
-          setState(() => _isCancelling = false);
-        }
-      },
-      onVerticalDragEnd: (details) {
-        if (_isCancelling) {
-          _cancelRecording();
-        }
-      },
+      onVerticalDragUpdate: onDragUpdate,
+      onVerticalDragEnd: onDragEnd,
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(
@@ -132,7 +58,7 @@ class _VoiceRecorderOverlayState extends ConsumerState<VoiceRecorderOverlay>
           vertical: AppSpacing.md,
         ),
         decoration: BoxDecoration(
-          color: _isCancelling
+          color: isCancelling
               ? context.appColors.error.withValues(alpha: 0.25)
               : context.appColors.error.withValues(alpha: 0.12),
           borderRadius: const BorderRadius.vertical(
@@ -159,7 +85,7 @@ class _VoiceRecorderOverlayState extends ConsumerState<VoiceRecorderOverlay>
 
               // Timer
               Text(
-                _hasStarted ? _formatTime(_seconds) : '0:00',
+                elapsedLabel,
                 style: TextStyle(
                   color: context.appColors.textPrimary,
                   fontSize: 16,
@@ -172,7 +98,7 @@ class _VoiceRecorderOverlayState extends ConsumerState<VoiceRecorderOverlay>
 
               // Cancel button
               IconButton(
-                onPressed: _cancelRecording,
+                onPressed: cancelRecording,
                 icon: Icon(Icons.delete_outline, color: context.appColors.error, size: 22),
               ),
               const SizedBox(width: AppSpacing.sm),
@@ -184,7 +110,7 @@ class _VoiceRecorderOverlayState extends ConsumerState<VoiceRecorderOverlay>
                   shape: BoxShape.circle,
                 ),
                 child: IconButton(
-                  onPressed: _hasStarted ? _completeRecording : null,
+                  onPressed: hasStarted ? completeRecording : null,
                   icon: Icon(
                     Icons.send,
                     color: Theme.of(context).colorScheme.onPrimary,

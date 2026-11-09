@@ -30,6 +30,16 @@ void main() {
     expect(offline.state.core.boostCostGreen, 77);
   });
 
+  test('cevrimdisi acilista ONCEKI acilisin Kahin orani kullanilir (onbellek oracleAccuracy tasir)', () async {
+    SharedPreferences.setMockInitialValues({});
+    await _Harness([Success(_response(boost: 77, oracleAccuracy: 0.55))]).fetch();
+
+    final offline = _Harness([const Failure(NetworkFailure())]);
+    await offline.fetch();
+
+    expect(offline.state.oracleAccuracy, 0.55);
+  });
+
   test('onbellek yoksa derlenmis varsayilanlar kalir', () async {
     SharedPreferences.setMockInitialValues({});
     final h = _Harness([const Failure(NetworkFailure())]);
@@ -66,10 +76,16 @@ void main() {
   });
 }
 
-EconomyConfigResponse _response({required int boost}) {
+/// Sunucu zarfi (`{ version, config, oracleAccuracy }`) uzerinden kurulur —
+/// uretim ile ayni parse yolu.
+EconomyConfigResponse _response({required int boost, double? oracleAccuracy}) {
   final json = EconomyConfig.fallback.toJson();
   final core = Map<String, dynamic>.from(json['core'] as Map<String, dynamic>)..['boostCostGreen'] = boost;
-  return EconomyConfigResponse(version: 2, config: EconomyConfig.fromJson({...json, 'core': core}));
+  return EconomyConfigResponse.fromJson({
+    'version': 2,
+    'config': {...json, 'core': core},
+    if (oracleAccuracy != null) 'oracleAccuracy': oracleAccuracy,
+  });
 }
 
 class _Harness {

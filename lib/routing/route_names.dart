@@ -20,6 +20,7 @@ abstract final class RouteNames {
   static const diamonds = 'diamonds';
   static const passport = 'passport';
   static const mapConfirm = 'map-confirm';
+  static const cityPicker = 'city-picker';
   static const subscription = 'subscription';
   static const notifications = 'notifications';
   static const onboarding = 'onboarding';
@@ -33,6 +34,7 @@ abstract final class RouteNames {
   static const profilePreview = 'profile-preview';
   static const rewardsMarket = 'rewards-market';
   static const rewardsRedemptions = 'rewards-redemptions';
+  static const powerDemo = 'power-demo';
 
   // Chat
   static const createChatQuestion = 'create-chat-question';

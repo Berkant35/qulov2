@@ -157,6 +157,8 @@ mixin SplashScreenMixin on ConsumerState<SplashScreen>
     if (!mounted) return;
 
     final config = ref.read(appConfigProvider).config;
+    // "Güncelle" onayı dialog açıkken splash kapansa da mağazayı açar (`ref` sonra kullanılamaz).
+    final urlLauncher = ref.read(urlLauncherManagerProvider);
     final result =
         await ref.read(navigationServiceProvider).showAppDialog<bool>(
               ConfirmDialog(
@@ -169,7 +171,7 @@ mixin SplashScreenMixin on ConsumerState<SplashScreen>
             );
 
     if (result == true && config != null && config.storeUrl.isNotEmpty) {
-      ref.read(urlLauncherManagerProvider).launch(config.storeUrl);
+      urlLauncher.launch(config.storeUrl);
     } else {
       await notifier.dismissOptionalUpdate();
     }

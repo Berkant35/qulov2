@@ -2,12 +2,15 @@ import 'dart:async';
 import 'dart:developer' as dev;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/network/result.dart';
+import 'package:qulo_v2/core/services/realtime_channel_group.dart';
 import 'package:qulo_v2/data/models/discover_model.dart';
 import 'package:qulo_v2/data/models/match_model.dart';
-import 'package:qulo_v2/data/models/user_model.dart';
+import 'package:qulo_v2/features/discover/domain/reject_delivery.dart';
+import 'package:qulo_v2/features/discover/utils/discover_filter_key.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
+import 'package:qulo_v2/providers/match_list_realtime.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -29,27 +32,43 @@ class DiscoverNotifier extends AsyncNotifier<DiscoverState> {
   /// henüz işlememişken aynı profili tekrar döndürse de duplicate olmaz.
   final Set<String> _seenUserIds = {};
 
+  /// Bu oturumda reddedilen id'ler. REJECT sunucuya "gönder ve unut" gider;
+  /// kayıt düşmeden "Yeniden Ara" aynı kişiyi tekrar getirebilir (prod: hedef,
+  /// REJECT insert'inden saniyeler önce yeniden servis edildi). [loadCards]
+  /// bunu SIFIRLAMAZ; yalnız geri alma ve günlük hak 403'ü çıkarır.
+  final Set<String> _rejectedIds = {};
+
+  /// [DiscoverState.swipeLimitHits]'in kaynağı: yükleme sırasında da artabilir,
+  /// yeni deste durumu onu buradan taşır.
+  int _swipeLimitHits = 0;
+
   @override
   Future<DiscoverState> build() async {
-    _reloadOnGenderPrefChange();
-    return const DiscoverState();
+    // Notifier örneği yeniden kurulumda (çıkışta invalidate) korunur.
+    _rejectedIds.clear();
+    _reloadOnFilterChange();
+    return DiscoverState(swipeLimitHits: _swipeLimitHits);
   }
 
   /// Cinsiyet tercihi ayarlanmadan sunucu discover'a PROFILE_INCOMPLETE döner
   /// (qulo-server 14a1f0a). Eskiden giriş ön-yüklemesi tercih seçilmeden
   /// çağrılıp yanlış cinsiyetten deste çekiyordu — tercih yoksa istek atılmaz;
-  /// deste tercih ayarlanınca [_reloadOnGenderPrefChange] ile yüklenir.
+  /// deste tercih ayarlanınca [_reloadOnFilterChange] ile yüklenir.
   bool get _hasGenderPrefOrUnknown {
     final user = ref.read(userProvider).valueOrNull;
     return user == null || user.hasGenderPref;
   }
 
-  /// Tercih ilk kez ayarlandığında ya da değiştiğinde desteyi yeniler. Kullanıcı
-  /// verisinin ilk gelişi (null → değer) ve çıkış (değer → null) yükleme
-  /// sebebi değildir; konum yoksa yükleme Discover ekranının işidir.
-  void _reloadOnGenderPrefChange() {
-    ref.listen<String?>(
-      userProvider.select((u) => _genderPrefKey(u.valueOrNull)),
+  /// Adayı sunucuda ELEYEN bir tercih ([DiscoverFilterKey]: cinsiyet tercihi,
+  /// dil listesi, yaş aralığı) ilk kez ayarlandığında ya da değiştiğinde desteyi
+  /// yeniler. Discover ekranı sekme yığınında canlı kaldığı için oradan açılan
+  /// profil düzenlemeden dönüş desteyi kendiliğinden tazelemez (11 Eki: boş dil
+  /// durumundan dil ekleyen kullanıcı eski boş desteyi görüyordu).
+  /// Kullanıcı verisinin ilk gelişi (null → değer) ve çıkış (değer → null)
+  /// yükleme sebebi değildir; konum yoksa yükleme Discover ekranının işidir.
+  void _reloadOnFilterChange() {
+    ref.listen<DiscoverFilterKey?>(
+      userProvider.select((u) => discoverFilterKey(u.valueOrNull)),
       (prev, next) {
         if (prev == null || next == null || prev == next) return;
         if (ref.read(locationProvider).lat == null) return;
@@ -58,30 +77,30 @@ class DiscoverNotifier extends AsyncNotifier<DiscoverState> {
     );
   }
 
-  static String? _genderPrefKey(UserModel? user) {
-    if (user == null) return null;
-    return user.hasGenderPref ? 'set:${user.genderPref}' : 'unset';
-  }
-
   Future<void> loadCards({int page = 1}) async {
     if (!_hasGenderPrefOrUnknown) return;
     state = const AsyncLoading();
     final result = await ref.read(matchRepositoryProvider).discover(page: page);
     state = result.when(
       success: (response) {
-        // Taze başlangıç (ilk yükleme / retry / "tekrar ara") — seen takibini sıfırla.
+        // Taze başlangıç (ilk yükleme / retry / "tekrar ara") — seen takibini
+        // sıfırla; reddedilenler oturum boyu "görüldü" kalır.
         _seenUserIds
           ..clear()
+          ..addAll(_rejectedIds)
           ..addAll(response.cards.map((c) => c.userId));
+        final cards = response.cards.where((c) => !_rejectedIds.contains(c.userId)).toList();
         return AsyncData(DiscoverState(
-          cards: response.cards,
+          cards: cards,
           page: response.page,
           // Discover sayfa-tabanlı değil "görülmemiş aday havuzu" tabanlı:
           // her çağrı page=1 çekip swipe edilmişleri sunucuda eleyerek kalanın
-          // en iyisini döndürür. İlk batch doluysa taze-çek denemelerine devam.
+          // en iyisini döndürür. İlk batch doluysa (süzülse de) taze-çek
+          // denemelerine devam; prefetch'te yeni kart yoksa zincir durur.
           hasMore: response.cards.isNotEmpty,
           initialized: true,
-          emptyReason: response.cards.isEmpty ? response.emptyReason : null,
+          emptyReason: cards.isEmpty ? response.emptyReason : null,
+          swipeLimitHits: _swipeLimitHits,
         ));
       },
       failure: (f) => AsyncError(f, StackTrace.current),
@@ -156,7 +175,7 @@ class DiscoverNotifier extends AsyncNotifier<DiscoverState> {
     }
   }
 
-  /// Optimistic reject — removes card instantly, fires API in background.
+  /// İyimser red: kart anında çıkar, REJECT arka planda teslim edilir.
   void rejectCard(String targetId) {
     final current = state.valueOrNull;
     if (current == null) return;
@@ -164,15 +183,48 @@ class DiscoverNotifier extends AsyncNotifier<DiscoverState> {
     final swipedCard = current.cards.where((c) => c.userId == targetId).firstOrNull;
     if (swipedCard == null) return;
 
+    _rejectedIds.add(targetId);
     final updatedCards = current.cards.where((c) => c.userId != targetId).toList();
     state = AsyncData(current.copyWith(
       cards: updatedCards,
       lastSwipedCard: swipedCard,
     ));
     _maybePrefetch();
+    unawaited(_deliverReject(swipedCard));
+  }
 
-    // Fire-and-forget — reject failure is not critical
-    ref.read(matchRepositoryProvider).swipe(targetId: targetId, action: 'REJECT');
+  Future<void> _deliverReject(ProfileCardModel card) async {
+    final repo = ref.read(matchRepositoryProvider);
+    final outcome = await RejectDelivery(
+      send: (id) => repo.swipe(targetId: id, action: 'REJECT'),
+    ).deliver(card.userId, stillRejected: () => _rejectedIds.contains(card.userId));
+    switch (outcome) {
+      case RejectDeliveryOutcome.delivered:
+        return;
+      case RejectDeliveryOutcome.limitExceeded:
+        _restoreUnrecordedReject(card);
+      case RejectDeliveryOutcome.failed:
+        // Oturumda geri gelmez (`_rejectedIds`'te kalır).
+        dev.log('reject not delivered: ${card.userId}', name: 'DiscoverNotifier');
+    }
+  }
+
+  /// Günlük hak bitti, red kaydedilmedi: kart destenin başına döner ve ekran
+  /// paywall'u açsın diye [DiscoverState.swipeLimitHits] artar. Kart destede
+  /// olduğu için `_seenUserIds`'te kalır (prefetch onu ikinci kez eklemesin).
+  void _restoreUnrecordedReject(ProfileCardModel card) {
+    // Beklerken geri alındıysa kart zaten destede.
+    if (!_rejectedIds.remove(card.userId)) return;
+    _swipeLimitHits++;
+    final current = state.valueOrNull;
+    if (current == null) return;
+    final inDeck = current.cards.any((c) => c.userId == card.userId);
+    state = AsyncData(current.copyWith(
+      cards: inDeck ? null : [card, ...current.cards],
+      // Kaydı olmayan red geri alınamaz; sonra reddedilen kartın hakkı kalır.
+      lastSwipedCard: current.lastSwipedCard?.userId == card.userId ? null : current.lastSwipedCard,
+      swipeLimitHits: _swipeLimitHits,
+    ));
   }
 
   Future<Result<SwipeResponse>> swipe({required String targetId, required String action}) async {
@@ -218,6 +270,8 @@ class DiscoverNotifier extends AsyncNotifier<DiscoverState> {
     final result = await ref.read(matchRepositoryProvider).undoSwipe(lastCard.userId);
     result.when(
       success: (card) {
+        // Geri alma swipe'i sunucuda siler: kart yeniden gosterilebilir.
+        _rejectedIds.remove(card.userId);
         // Beklerken biten prefetch'in kartlari kaybolmasin: `current` await
         // oncesinin anlik goruntusu, guncel state'in uzerine yazilir.
         final latest = state.valueOrNull;
@@ -250,6 +304,11 @@ class DiscoverState {
   /// kart varken de dolu olabilir. Ekran yalnızca kuyruk boşken okur.
   final String? emptyReason;
 
+  /// Kaç reddin günlük hak (403 `DAILY_LIMIT_EXCEEDED`) yüzünden sunucuya
+  /// düşmediği — oturum boyu artar, hiç sıfırlanmaz. Sağlayıcı UI açmaz:
+  /// Discover ekranı artışta günlük sınır paywall'unu açar.
+  final int swipeLimitHits;
+
   const DiscoverState({
     this.cards = const [],
     this.page = 1,
@@ -258,6 +317,7 @@ class DiscoverState {
     this.isPrefetching = false,
     this.lastSwipedCard,
     this.emptyReason,
+    this.swipeLimitHits = 0,
   });
 
   bool get canUndo => lastSwipedCard != null;
@@ -270,6 +330,7 @@ class DiscoverState {
     bool? isPrefetching,
     Object? lastSwipedCard = _keep,
     Object? emptyReason = _keep,
+    int? swipeLimitHits,
   }) {
     return DiscoverState(
       cards: cards ?? this.cards,
@@ -291,29 +352,37 @@ class DiscoverState {
       emptyReason: identical(emptyReason, _keep)
           ? this.emptyReason
           : emptyReason as String?,
+      swipeLimitHits: swipeLimitHits ?? this.swipeLimitHits,
     );
   }
 }
 
 final discoverProvider = AsyncNotifierProvider<DiscoverNotifier, DiscoverState>(DiscoverNotifier.new);
 
+/// Eşleşme listesi + dört Realtime kanalı. Kanalların token'ı, yeniden
+/// kurulumu ve kopukluk sonrası tazelemesi [RealtimeChannelGroup]'ta; olayların
+/// listeye uygulanışı [MatchListRealtimeReducer]'da.
 class MatchListNotifier extends AsyncNotifier<List<MatchModel>> {
-  final List<RealtimeChannel> _channels = [];
-  int _generation = 0;
-  int _retryCount = 0;
-  static const _maxRetries = 3;
+  RealtimeChannelGroup? _realtime;
 
   @override
   Future<List<MatchModel>> build() async {
     // Logout'ta invalidate edilirken alttaki ekranlar hala dinliyor; kimliksizken
     // aga cikma (token'siz istek → 401 → Crashlytics gurultusu).
     final authStatus = ref.watch(authProvider.select((s) => s.status));
-    if (authStatus != AuthStatus.authenticated) return const [];
+    if (authStatus != AuthStatus.authenticated) {
+      _realtime = null;
+      return const [];
+    }
 
-    _generation++;
-    _retryCount = 0;
-
-    ref.onDispose(_unsubscribeAll);
+    final realtime = RealtimeChannelGroup(
+      auth: ref.read(realtimeAuthManagerProvider),
+      userId: ref.read(authProvider).userId ?? '',
+      build: _buildChannels,
+      reload: silentRefresh,
+    );
+    _realtime = realtime;
+    ref.onDispose(realtime.dispose);
 
     final result = await ref.read(matchRepositoryProvider).getMatches();
     final matches = result.when(
@@ -321,7 +390,7 @@ class MatchListNotifier extends AsyncNotifier<List<MatchModel>> {
       failure: (f) => throw f,
     );
 
-    Future.microtask(() => _subscribeToRealtime());
+    Future.microtask(realtime.start);
 
     return _sortMatches(matches);
   }
@@ -333,9 +402,10 @@ class MatchListNotifier extends AsyncNotifier<List<MatchModel>> {
       success: (data) => AsyncData(_sortMatches(data)),
       failure: (f) => AsyncError(f, StackTrace.current),
     );
-    _unsubscribeAll();
-    _retryCount = 0;
-    _subscribeToRealtime();
+    // Liste değişti: filtreler yeni eşleşme kimlikleriyle kurulur. Yenilemeyi
+    // (pull-to-refresh) kanal kurulumu beklemez.
+    final realtime = _realtime;
+    if (realtime != null) unawaited(realtime.restart(reload: false));
   }
 
   Future<void> silentRefresh() async {
@@ -368,8 +438,6 @@ class MatchListNotifier extends AsyncNotifier<List<MatchModel>> {
     state = AsyncData(updated);
   }
 
-  // --- Sorting ---
-
   List<MatchModel> _sortMatches(List<MatchModel> matches) {
     return [...matches]..sort((a, b) {
       final aTime = a.lastMessageSentAt;
@@ -381,193 +449,33 @@ class MatchListNotifier extends AsyncNotifier<List<MatchModel>> {
     });
   }
 
-  // --- Realtime Event Handlers ---
+  // --- Realtime ---
 
-  void _onNewMessage(int gen, PostgresChangePayload payload) {
-    if (gen != _generation) return;
-    final current = state.valueOrNull;
-    if (current == null) return;
-
-    final record = payload.newRecord;
-    final matchId = record['match_id'] as String?;
-    final senderId = record['sender_id'] as String?;
-    final content = record['content'] as String?;
-    final createdAt = record['created_at'] as String?;
-    final myId = ref.read(authProvider).userId;
-
-    if (matchId == null) return;
-
-    final updated = current.map((m) {
-      if (m.matchId != matchId) return m;
-      if (createdAt != null && m.lastMessageSentAt != null && createdAt.compareTo(m.lastMessageSentAt!) <= 0) return m;
-      return m.copyWith(
-        lastMessage: content,
-        lastMessageSentAt: createdAt,
-        lastMessageSenderId: senderId,
-        unreadCount: (senderId != myId) ? m.unreadCount + 1 : m.unreadCount,
-      );
-    }).toList();
-
-    state = AsyncData(_sortMatches(updated));
-  }
-
-  void _onMessageRead(int gen, PostgresChangePayload payload) {
-    if (gen != _generation) return;
-    final current = state.valueOrNull;
-    if (current == null) return;
-
-    final record = payload.newRecord;
-    final matchId = record['match_id'] as String?;
-    final readAt = record['read_at'];
-    final senderId = record['sender_id'] as String?;
-    final myId = ref.read(authProvider).userId;
-
-    if (matchId == null || readAt == null) return;
-    if (senderId == myId) return;
-
-    final updated = current.map((m) {
-      if (m.matchId != matchId || m.unreadCount == 0) return m;
-      return m.copyWith(unreadCount: 0);
-    }).toList();
-
-    state = AsyncData(updated);
-  }
-
-  void _onUserStatusChange(int gen, PostgresChangePayload payload) {
-    if (gen != _generation) return;
-    final current = state.valueOrNull;
-    if (current == null) return;
-
-    final record = payload.newRecord;
-    final userId = record['id'] as String?;
-    final isOnline = record['is_online'] as bool?;
-
-    if (userId == null || isOnline == null) return;
-
-    final updated = current.map((m) {
-      if (m.user?.userId != userId) return m;
-      return m.copyWith(user: m.user!.copyWith(isOnline: isOnline));
-    }).toList();
-
-    state = AsyncData(updated);
-  }
-
-  void _onNewMatch(int gen, PostgresChangePayload payload) {
-    if (gen != _generation) return;
-    final record = payload.newRecord;
-    final user1 = record['user1_id'] as String?;
-    final user2 = record['user2_id'] as String?;
-    final myId = ref.read(authProvider).userId;
-
-    if (myId == user1 || myId == user2) {
-      silentRefresh();
-    }
-  }
-
-  // --- Subscription Management ---
-
-  void _subscribeToRealtime() {
-    final gen = _generation;
-    final current = state.valueOrNull;
-    if (current == null || current.isEmpty) {
-      _subscribeNewMatches(gen);
-      return;
-    }
-
-    final matchIds = current.map((m) => m.matchId).toList();
-    final userIds = current.where((m) => m.user != null).map((m) => m.user!.userId).toList();
-
-    // Channel 1: New messages
-    final msgChannel = Supabase.instance.client
-        .channel('matches:messages')
-        .onPostgresChanges(
-          event: PostgresChangeEvent.insert,
-          schema: 'public',
-          table: 'messages',
-          filter: PostgresChangeFilter(
-            type: PostgresChangeFilterType.inFilter,
-            column: 'match_id',
-            value: matchIds,
-          ),
-          callback: (payload) => _onNewMessage(gen, payload),
-        )
-        .subscribe((status, [error]) {
-          if (status == RealtimeSubscribeStatus.channelError ||
-              status == RealtimeSubscribeStatus.timedOut) {
-            _handleReconnect();
+  List<RealtimeChannel> _buildChannels(int gen, RealtimeStatusCallback onStatus) =>
+      buildMatchListChannels(
+        client: Supabase.instance.client,
+        matches: state.valueOrNull ?? const [],
+        generation: gen,
+        onStatus: onStatus,
+        onNewMessage: (g, p) => _apply(g, (m) => MatchListRealtimeReducer.onNewMessage(m, p.newRecord, myId: _myId), sort: true),
+        onMessageRead: (g, p) => _apply(g, (m) => MatchListRealtimeReducer.onMessageRead(m, p.newRecord, myId: _myId)),
+        onUserStatus: (g, p) => _apply(g, (m) => MatchListRealtimeReducer.onUserStatus(m, p.newRecord)),
+        onNewMatch: (g, p) {
+          if (_isCurrent(g) && MatchListRealtimeReducer.isMyNewMatch(p.newRecord, myId: _myId)) {
+            silentRefresh();
           }
-        });
-    _channels.add(msgChannel);
+        },
+      );
 
-    // Channel 2: Read receipts
-    final readChannel = Supabase.instance.client
-        .channel('matches:read')
-        .onPostgresChanges(
-          event: PostgresChangeEvent.update,
-          schema: 'public',
-          table: 'messages',
-          filter: PostgresChangeFilter(
-            type: PostgresChangeFilterType.inFilter,
-            column: 'match_id',
-            value: matchIds,
-          ),
-          callback: (payload) => _onMessageRead(gen, payload),
-        )
-        .subscribe();
-    _channels.add(readChannel);
+  String? get _myId => ref.read(authProvider).userId;
 
-    // Channel 3: Online status
-    if (userIds.isNotEmpty) {
-      final onlineChannel = Supabase.instance.client
-          .channel('matches:online')
-          .onPostgresChanges(
-            event: PostgresChangeEvent.update,
-            schema: 'public',
-            table: 'users',
-            filter: PostgresChangeFilter(
-              type: PostgresChangeFilterType.inFilter,
-              column: 'id',
-              value: userIds,
-            ),
-            callback: (payload) => _onUserStatusChange(gen, payload),
-          )
-          .subscribe();
-      _channels.add(onlineChannel);
-    }
+  bool _isCurrent(int gen) => gen == _realtime?.generation;
 
-    // Channel 4: New matches
-    _subscribeNewMatches(gen);
-  }
-
-  void _subscribeNewMatches(int gen) {
-    final newMatchChannel = Supabase.instance.client
-        .channel('matches:new')
-        .onPostgresChanges(
-          event: PostgresChangeEvent.insert,
-          schema: 'public',
-          table: 'matches',
-          callback: (payload) => _onNewMatch(gen, payload),
-        )
-        .subscribe();
-    _channels.add(newMatchChannel);
-  }
-
-  void _unsubscribeAll() {
-    _generation++;
-    for (final channel in _channels) {
-      channel.unsubscribe();
-    }
-    _channels.clear();
-  }
-
-  Future<void> _handleReconnect() async {
-    if (_retryCount >= _maxRetries) return;
-    _retryCount++;
-    final delay = Duration(seconds: 5 * _retryCount);
-    await Future.delayed(delay);
-    _unsubscribeAll();
-    await silentRefresh();
-    _subscribeToRealtime();
+  void _apply(int gen, List<MatchModel> Function(List<MatchModel>) reduce, {bool sort = false}) {
+    final current = state.valueOrNull;
+    if (!_isCurrent(gen) || current == null) return;
+    final updated = reduce(current);
+    state = AsyncData(sort ? _sortMatches(updated) : updated);
   }
 }
 

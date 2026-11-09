@@ -1,0 +1,3 @@
+• Easier language choice during setup: all languages start selected, and you can remove any you don't want
+• The language page now scrolls on small screens
+• Stability improvements and bug fixes

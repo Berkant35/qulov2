@@ -4,8 +4,8 @@ import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
-import 'package:qulo_v2/core/widgets/diamond_icon.dart';
 import 'package:qulo_v2/features/chat/mixins/chat_question_step2_mixin.dart';
+import 'package:qulo_v2/features/chat/widgets/chat_question_setting_switch.dart';
 
 class ChatQuestionStep2 extends ConsumerStatefulWidget {
   final String matchId;
@@ -117,7 +117,7 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2>
           const SizedBox(height: AppSpacing.xl),
 
           // Unmatch risk
-          _SettingSwitch(
+          ChatQuestionSettingSwitch(
             title: context.tr('chat_q_unmatch_title'),
             subtitle: context.tr('chat_q_unmatch_desc'),
             value: widget.hasUnmatchRisk,
@@ -128,7 +128,7 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2>
           const SizedBox(height: AppSpacing.md),
 
           // Chat lock
-          _SettingSwitch(
+          ChatQuestionSettingSwitch(
             title: context.tr('chat_q_chatlock_title'),
             subtitle: context.tr('chat_q_chatlock_desc'),
             value: widget.hasChatLock,
@@ -139,7 +139,7 @@ class _ChatQuestionStep2State extends ConsumerState<ChatQuestionStep2>
           const SizedBox(height: AppSpacing.md),
 
           // Power block
-          _SettingSwitch(
+          ChatQuestionSettingSwitch(
             title: context.tr('chat_q_powerblock_title'),
             subtitle: widget.hasPowerBlock
                 ? context.tr('chat_q_powerblock_desc_on')
@@ -360,97 +360,6 @@ class _MediaButton extends StatelessWidget {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _SettingSwitch extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final bool value;
-  final Color activeColor;
-  final IconData icon;
-  final String? badge;
-  final Color? badgeColor;
-  final ValueChanged<bool> onChanged;
-
-  const _SettingSwitch({
-    required this.title,
-    required this.subtitle,
-    required this.value,
-    required this.activeColor,
-    required this.icon,
-    this.badge,
-    this.badgeColor,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Container(
-      decoration: BoxDecoration(
-        color: context.appColors.surfaceElevated,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-      ),
-      child: SwitchListTile(
-        value: value,
-        onChanged: onChanged,
-        activeThumbColor: activeColor,
-        activeTrackColor: activeColor.withValues(alpha: 0.4),
-        secondary: Icon(icon, color: value ? activeColor : context.appColors.textHint),
-        title: Row(
-          children: [
-            Text(
-              title,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: value ? activeColor : context.appColors.textPrimary,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            if (badge != null) ...[
-              const SizedBox(width: AppSpacing.sm),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.sm,
-                  vertical: AppSpacing.xxs,
-                ),
-                decoration: BoxDecoration(
-                  color: (badgeColor ?? activeColor).withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      badge!,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: badgeColor ?? activeColor,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacing.xxs),
-                    DiamondIcon.purple(size: 12, showGlow: false),
-                  ],
-                ),
-              ),
-            ],
-          ],
-        ),
-        subtitle: Text(
-          subtitle,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: context.appColors.textHint,
-          ),
-        ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         ),
       ),
     );

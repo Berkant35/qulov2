@@ -20,6 +20,7 @@ mixin OnboardingScreenMixin on ConsumerState<OnboardingScreen>,
     'diamonds',
     'language',
   ];
+  static final _powersPageIndex = _pageNames.indexOf('powers');
 
   final _analytics = AnalyticsManager.instance;
   late final PageController pageController;
@@ -41,7 +42,7 @@ mixin OnboardingScreenMixin on ConsumerState<OnboardingScreen>,
       duration: const Duration(seconds: 4),
     )..repeat();
 
-    selectedLanguages = [_defaultLanguage()];
+    selectedLanguages = _initialLanguages();
 
     _analytics.logEvent(AnalyticsEvents.onboardingV2Start);
   }
@@ -79,19 +80,25 @@ mixin OnboardingScreenMixin on ConsumerState<OnboardingScreen>,
     });
   }
 
-  /// Desteklenen 18 dilin tumunu sirasiyla secer ("select all" aksiyonu).
+  /// Desteklenen dillerin tumunu secer, uygulama dili basta ("select all").
   void selectAllLanguages() {
     setState(() {
-      selectedLanguages = List.of(AppConstants.supportedQuestionLocales);
+      selectedLanguages = _initialLanguages();
     });
   }
 
-  /// Secimi tek dile sifirlar — initMixin'deki ile ayni kural.
+  /// Secimi tek dile (uygulama dili) sifirlar.
   void resetLanguages() {
     setState(() {
       selectedLanguages = [_defaultLanguage()];
     });
   }
+
+  /// Varsayilan: tum diller, uygulama dili basta — yeni kullanici ilk
+  /// Discover'dan itibaren global havuzu gorur.
+  List<String> _initialLanguages() => AppConstants.initialQuestionLocales(
+        Localizations.localeOf(context).languageCode,
+      );
 
   /// Uygulama dili destekleniyorsa o, degilse `en` (tek kural, tek yer).
   String _defaultLanguage() => AppConstants.defaultQuestionLocale(
@@ -146,6 +153,27 @@ mixin OnboardingScreenMixin on ConsumerState<OnboardingScreen>,
 
   bool get isLastPage => currentPage == _totalPages - 1;
   int get totalPages => _totalPages;
+
+  /// Güçler sayfası şu an geçerli sayfa mı (demo görünümü "yerleşti" — girişte bırakılırsa
+  /// atlama sayılır; kaydırırken bir anlığına kurulan sayfa sayılmaz).
+  bool get isPowersPage => currentPage == _powersPageIndex;
+
+  /// Geçerli sayfa interaktif demo mu (sunucu anahtarı açık + Güçler sayfası).
+  bool _isDemoPage(bool powerDemoEnabled) => powerDemoEnabled && isPowersPage;
+
+  /// Genel "Atla" (tüm tanıtımı atlatır) gösterilir mi. Son sayfada yok; Güçler sayfası demo
+  /// iken de yok — orada demonun kendi tek "Atla"sı vardır ve yalnız demoyu atlar.
+  bool showsGeneralSkip({required bool powerDemoEnabled}) =>
+      !isLastPage && !_isDemoPage(powerDemoEnabled);
+
+  /// Genel "Atla"nın yer tutucusu (son sayfa). Demo sayfasında yok: dikey alanın hepsi demonun
+  /// (küçük ekranda Cevapla ve güç çubuğu sığsın).
+  bool showsTopSpacer({required bool powerDemoEnabled}) =>
+      !showsGeneralSkip(powerDemoEnabled: powerDemoEnabled) && !_isDemoPage(powerDemoEnabled);
+
+  /// Alt çubuğun "İleri"si. Demo sayfasında yok (tek talimat): çıkış demonun Atla'sı, finaldeki
+  /// demo "İleri"si ya da kaydırma. Sayfa göstergeleri kalır.
+  bool showsNextButton({required bool powerDemoEnabled}) => !_isDemoPage(powerDemoEnabled);
 
   /// 18 dilin tumu secili mi — "select all" / "reset" buton etiketini belirler.
   bool get allLanguagesSelected =>

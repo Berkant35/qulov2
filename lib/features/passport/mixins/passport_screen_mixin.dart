@@ -16,6 +16,7 @@ mixin PassportScreenMixin on ConsumerState<PassportScreen> {
 
   void initMixin() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       final passport = ref.read(passportProvider);
       analytics.logEvent(AnalyticsEvents.passportScreenView, params: {
         AnalyticsEvents.paramIsActive: passport.isActive ? 1 : 0,

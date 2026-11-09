@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -77,5 +79,70 @@ void main() {
     await tester.pump();
     expect(h.nav.sheets, ['identity_editor']);
     expect(h.results, [true]);
+  });
+
+  group('kimlik yüklenirken çağıran ekran kapanırsa', () {
+    late FakeUserRepository repo;
+    late FakeNavigationService nav;
+    late ProviderContainer container;
+    late List<bool> results;
+
+    Widget app(Widget home) => UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(home: Material(child: home)),
+        );
+
+    setUp(() {
+      repo = FakeUserRepository(UserModel(id: 'u1', email: 'u1@qulo.test'))
+        ..identity = const IdentityModel(orientationLabels: ['gay']);
+      nav = FakeNavigationService();
+      results = <bool>[];
+      container = ProviderContainer(overrides: [
+        userRepositoryProvider.overrideWithValue(repo),
+        navigationServiceProvider.overrideWithValue(nav),
+      ]);
+      addTearDown(container.dispose);
+    });
+
+    // Kapı test gövdesinde (FakeAsync bölgesi) kurulur: setUp'ta kurulan
+    // Completer'ın tamamlanması gerçek bölgede kalır, pump ile ilerlemez.
+    testWidgets('ref kullanılmaz, sayfa başka ekranın üstünde açılmaz, false döner', (tester) async {
+      repo.identityGetGate = Completer<void>();
+      await tester.pumpWidget(app(_OpenButton(results)));
+      await tester.tap(find.text('open'));
+      await tester.pump();
+      await tester.pumpWidget(app(const SizedBox()));
+      repo.identityGetGate!.complete();
+      await tester.pump();
+      await tester.pump();
+
+      expect(tester.takeException(), isNull);
+      expect(nav.sheets, isEmpty);
+      expect(results, [false]);
+    });
+
+    testWidgets('yükleme hatası yine sıfırlanır: sonraki açılış yeniden dener', (tester) async {
+      repo
+        ..identityGetFailure = const ServerFailure(code: 'SERVER_ERROR', statusCode: 500)
+        ..identityGetGate = Completer<void>();
+      await tester.pumpWidget(app(_OpenButton(results)));
+      await tester.tap(find.text('open'));
+      await tester.pump();
+      await tester.pumpWidget(app(const SizedBox()));
+      repo.identityGetGate!.complete();
+      await tester.pump();
+      await tester.pump();
+      expect(tester.takeException(), isNull);
+      expect(results, [false]);
+
+      repo.identityGetFailure = null;
+      await tester.pumpWidget(app(_OpenButton(results)));
+      await tester.tap(find.text('open'));
+      await tester.pump();
+      await tester.pump();
+
+      expect(repo.identityGetCount, 2);
+      expect(nav.sheets, ['identity_editor']);
+    });
   });
 }

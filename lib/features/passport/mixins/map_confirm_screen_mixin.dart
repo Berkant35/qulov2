@@ -38,6 +38,30 @@ mixin MapConfirmScreenMixin on ConsumerState<MapConfirmScreen>, LoadingMixin<Map
     // Reserved for future cleanup
   }
 
+  /// Acilis kamerasi: secilen sehir, genis aci; harita hazir olunca
+  /// [onMapCreated] [_focusZoom]'a yaklastirir.
+  static const double _initialZoom = 12;
+  static const double _focusZoom = 14;
+
+  LatLng get _cityTarget => LatLng(widget.lat, widget.lng);
+
+  CameraPosition get initialCameraPosition =>
+      CameraPosition(target: _cityTarget, zoom: _initialZoom);
+
+  /// Haritayi gorunur yapar, kisa bir beklemeden sonra sehre yaklasir.
+  Future<void> onMapCreated(GoogleMapController controller) async {
+    if (!mapController.isCompleted) mapController.complete(controller);
+    if (!mounted) return;
+    setState(() => isMapReady = true);
+    await Future.delayed(const Duration(milliseconds: 300));
+    if (!mounted) return;
+    controller.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(target: _cityTarget, zoom: _focusZoom),
+      ),
+    );
+  }
+
   Future<void> loadMapStyle() async {
     final brightness = Theme.of(context).brightness;
     final path = brightness == Brightness.dark
@@ -98,7 +122,9 @@ mixin MapConfirmScreenMixin on ConsumerState<MapConfirmScreen>, LoadingMixin<Map
             AnalyticsEvents.passportExploreStart,
             params: {AnalyticsEvents.paramDestinationCity: cityToActivate},
           );
-          nav.pop();
+          // Istek surerken "Geri" ile cikildiysa bu ekran zaten kapandi: pop
+          // ALTTAKI pasaport ekranini kapatirdi.
+          if (mounted) nav.pop();
         },
         failure: (_) {
           if (mounted) {

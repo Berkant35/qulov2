@@ -14,6 +14,11 @@ import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/features/chat/mixins/chat_screen_mixin.dart';
 import 'package:qulo_v2/features/email_verification/email_verification_controller.dart';
 
+/// Sesli mesajin `content` alani — arayuz metni DEGIL, cevrilmez: ses mesaji
+/// `audio_url` ile ayirt edilip `VoiceMessageWidget` ile cizilir, son mesaj
+/// onizlemesini sunucu dile gore uretir. Mevcut kayitlarla tutarli kalir.
+const _voiceMessageContent = 'Sesli mesaj';
+
 /// Chat ekraninda foto ve sesli mesaj akisi: medya izni istegi, kaynak secimi,
 /// yukleme ve medya iznini kapatma.
 ///
@@ -28,6 +33,7 @@ mixin ChatMediaMixin on ChatScreenMixin {
     if (chatState == null) return;
     if (!chatState.mediaEnabled) {
       await ref.read(chatProvider(widget.matchId).notifier).loadMediaStatus();
+      if (!mounted) return;
       chatState = ref.read(chatProvider(widget.matchId)).valueOrNull;
     }
     if (chatState?.mediaEnabled == true) {
@@ -112,7 +118,7 @@ mixin ChatMediaMixin on ChatScreenMixin {
       context,
       () => source == ImageSource.gallery ? picker.pickFromGallery() : picker.pickFromCamera(),
     );
-    if (picked == null) return;
+    if (picked == null || !mounted) return;
 
     try {
       final upload = await ref.read(chatRepositoryProvider).uploadMedia(
@@ -120,6 +126,9 @@ mixin ChatMediaMixin on ChatScreenMixin {
         bytes: picked.bytes,
         mimeType: picked.mimeType,
       );
+      // Yukleme surerken sohbetten cikildiysa mesaj gonderilmez (eskiden de
+      // gonderilmiyordu: kapali ekranda `ref` StateError atip catch'e dusuyordu).
+      if (!mounted) return;
       final String url;
       switch (upload) {
         case Success(:final data):
@@ -150,7 +159,9 @@ mixin ChatMediaMixin on ChatScreenMixin {
   }
 
   /// Medya gönderim hatası: doğrulama kapısıysa sayfa açılır, değilse snackbar.
+  /// Gönderim await'inden sonra çağrılır — ekran kapandıysa sayfa/snackbar yok.
   Future<void> _onMediaFailure(AppFailure failure, String fallbackKey) async {
+    if (!mounted) return;
     final gated = await ref
         .read(emailVerificationControllerProvider)
         .handleFailure(failure, trigger: EmailVerifyTrigger.media);
@@ -169,6 +180,7 @@ mixin ChatMediaMixin on ChatScreenMixin {
     if (chatState == null) return;
     if (!chatState.mediaEnabled) {
       await ref.read(chatProvider(widget.matchId).notifier).loadMediaStatus();
+      if (!mounted) return;
       chatState = ref.read(chatProvider(widget.matchId)).valueOrNull;
     }
     if (chatState?.mediaEnabled == true) {
@@ -190,6 +202,8 @@ mixin ChatMediaMixin on ChatScreenMixin {
         file: file,
         mimeType: 'audio/m4a',
       );
+      // Foto akisiyla ayni: kapali ekranda gonderim yapilmaz.
+      if (!mounted) return;
       final String url;
       switch (upload) {
         case Success(:final data):
@@ -200,7 +214,7 @@ mixin ChatMediaMixin on ChatScreenMixin {
       }
 
       final sent = await ref.read(chatProvider(widget.matchId).notifier).sendMessage(
-          'Sesli mesaj',
+          _voiceMessageContent,
           audioUrl: url,
           audioDurationSeconds: durationSeconds);
       if (sent case Failure(:final failure)) {
@@ -227,6 +241,9 @@ mixin ChatMediaMixin on ChatScreenMixin {
 
   Future<void> handleDisableMedia() async {
     final l10n = AppLocalizations.of(context);
+    // Dialog await'inden ONCE: onaydan sonra ekran kapanmis olsa da (ref dispose)
+    // kullanicinin onayladigi kapatma sunucuya gider.
+    final chat = ref.read(chatProvider(widget.matchId).notifier);
     final confirmed =
         await ref.read(navigationServiceProvider).showAppDialog<bool>(
               ConfirmDialog(
@@ -237,8 +254,6 @@ mixin ChatMediaMixin on ChatScreenMixin {
                 isDestructive: true,
               ),
             );
-    if (confirmed == true) {
-      await ref.read(chatProvider(widget.matchId).notifier).disableMedia();
-    }
+    if (confirmed == true) await chat.disableMedia();
   }
 }

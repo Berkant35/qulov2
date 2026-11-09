@@ -103,6 +103,14 @@ final _routes = <RouteBase>[
     builder: (context, state) => const ProfileSetupScreen(),
   ),
 
+  // Şehir seçici: konumsuz yedek yol (root navigator — alt menü üstünde)
+  GoRoute(
+    parentNavigatorKey: rootNavigatorKey,
+    path: '/city-picker',
+    name: RouteNames.cityPicker,
+    builder: (context, state) => const CityPickerScreen(),
+  ),
+
   // Map Confirm (root navigator — full screen over bottom nav)
   GoRoute(
     parentNavigatorKey: rootNavigatorKey,
@@ -299,6 +307,19 @@ final _routes = <RouteBase>[
       final source = state.extra is String ? state.extra as String : 'profile_screen';
       return ProfilePreviewScreen(source: source);
     },
+  ),
+
+  // Power Demo (root navigator — full screen, auth sonrası: market ▶ ve quiz öncesi güç kartı).
+  // Auth öncesi demo carousel'in içinde gömülü çalışır; bu route'a redirect'siz erişilemez.
+  GoRoute(
+    parentNavigatorKey: rootNavigatorKey,
+    path: '/power-demo',
+    name: RouteNames.powerDemo,
+    builder: (context, state) => PowerDemoScreen(
+      entryPoint: state.extra is PowerDemoEntryPoint
+          ? state.extra as PowerDemoEntryPoint
+          : PowerDemoEntryPoint.market,
+    ),
   ),
 
   // Main shell (bottom nav)

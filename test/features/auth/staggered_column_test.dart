@@ -15,8 +15,15 @@ void main() {
         ),
       );
 
-  double firstOpacity(WidgetTester tester) =>
-      tester.widgetList<FadeTransition>(find.byType(FadeTransition)).first.opacity.value;
+  // Kolonun kendi FadeTransition'ı; rota geçişlerinin FadeTransition'ları sayılmaz.
+  double firstOpacity(WidgetTester tester) => tester
+      .widgetList<FadeTransition>(find.descendant(
+        of: find.byType(StaggeredColumn),
+        matching: find.byType(FadeTransition),
+      ))
+      .first
+      .opacity
+      .value;
 
   testWidgets('forward çağrılmazsa içerik gizli kalır', (tester) async {
     await tester.pumpWidget(host());

@@ -53,7 +53,7 @@ class QuestionStepSettings extends StatelessWidget
               final descKey = timeDescKey(i);
               return TimePresetCard(
                 seconds: seconds,
-                label: labelKey != null ? context.tr(labelKey) : '$seconds sn',
+                label: labelKey != null ? context.tr(labelKey) : context.fmt.seconds(seconds),
                 description: descKey != null ? context.tr(descKey) : '',
                 isSelected: isSelected,
                 onTap: () => onTimeLimitChanged(seconds),

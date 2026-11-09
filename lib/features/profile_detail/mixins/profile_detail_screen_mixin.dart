@@ -197,6 +197,7 @@ mixin ProfileDetailScreenMixin on ConsumerState<ProfileDetailScreen> {
 
   void _showReportReasonDialog(String category) {
     final nav = ref.read(navigationServiceProvider);
+    final reports = ref.read(reportRepositoryProvider);
     final controller = TextEditingController();
     final isOther = category == 'OTHER';
 
@@ -234,7 +235,7 @@ mixin ProfileDetailScreenMixin on ConsumerState<ProfileDetailScreen> {
                 final failedText = ctx.tr('report_failed');
                 // Sonuc KONTROL EDILIYOR — bkz. chat_moderation_mixin'deki
                 // ayni duzeltme: sessiz basarisizlik moderasyon yolunu korduyordu.
-                final result = await ref.read(reportRepositoryProvider).createReport(
+                final result = await reports.createReport(
                   reportedId: widget.userId,
                   category: category,
                   reason: reason.isNotEmpty ? reason : null,
@@ -257,8 +258,10 @@ mixin ProfileDetailScreenMixin on ConsumerState<ProfileDetailScreen> {
     );
   }
 
+  /// Depo dialog ÖNCESİ alınır: açıkken ekran kapansa da onaylanan engel gider.
   void _showBlockConfirmation() {
     final nav = ref.read(navigationServiceProvider);
+    final blocks = ref.read(blockRepositoryProvider);
 
     nav.showAppDialog<bool>(
       ConfirmDialog(
@@ -277,10 +280,10 @@ mixin ProfileDetailScreenMixin on ConsumerState<ProfileDetailScreen> {
       );
       await runBlock(
         targetUserId: widget.userId,
-        block: ref.read(blockRepositoryProvider).blockUser,
+        block: blocks.blockUser,
         // 'blocked' YALNIZCA sunucu onaylarsa — cagiran karti kaldiriyor.
         onBlocked: () {
-          if (mounted) ref.read(navigationServiceProvider).pop('blocked');
+          if (mounted) nav.pop('blocked');
         },
         onFailed: (f) {
           if (!mounted) return;

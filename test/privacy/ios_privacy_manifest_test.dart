@@ -63,11 +63,29 @@ void main() {
       'firebase_crashlytics': 'CrashData',
       'firebase_analytics': 'ProductInteraction',
     };
+    // google_mobile_ads (AdMob) → reklam kimliği, reklam verisi, etkileşim, tanılama.
+    const adsTypes = ['DeviceID', 'AdvertisingData', 'ProductInteraction', 'OtherDiagnosticData'];
     final types = collectedTypes();
     depToType.forEach((dep, type) {
       if (RegExp('^  $dep:', multiLine: true).hasMatch(pubspec)) {
         expect(types, contains(type), reason: '$dep var, $type beyanı yok');
       }
     });
+    if (RegExp('^  google_mobile_ads:', multiLine: true).hasMatch(pubspec)) {
+      for (final type in adsTypes) {
+        expect(types, contains(type), reason: 'google_mobile_ads var, $type beyanı yok');
+      }
+    }
+  });
+
+  test('Google reklam alanları NSPrivacyTrackingDomains\'e YAZILMAZ', () {
+    // ATT reddedilince iOS izleme alanlarına bağlantıyı keser; AdMob alanları listeye
+    // girerse izin vermeyen kullanıcıda kişiselleştirilmemiş reklam da yüklenmez.
+    final domains = RegExp(r'<key>NSPrivacyTrackingDomains</key>\s*<array>([\s\S]*?)</array>')
+        .firstMatch(manifest)!
+        .group(1)!;
+    for (final bad in ['doubleclick', 'googlesyndication', 'googleadservices', 'admob', 'google']) {
+      expect(domains, isNot(contains(bad)), reason: '$bad izleme alanı olarak beyan edilmemeli');
+    }
   });
 }

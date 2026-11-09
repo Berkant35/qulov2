@@ -102,7 +102,17 @@ class AnalyticsManager {
 
   // ─── User Properties ───
 
+  /// Test kancası ([debugEventSink] ile aynı sözleşme): `init()` çağrılmayan testlerde
+  /// kullanıcı özellikleri sessizce düşer; bu sink ile hangi özelliğin hangi değerle
+  /// yazıldığı doğrulanır. Yalnız debug/test derlemesinde çalışır (assert).
+  @visibleForTesting
+  static void Function(String name, String? value)? debugUserPropertySink;
+
   void setUserProperty(String name, String? value) {
+    assert(() {
+      debugUserPropertySink?.call(name, value);
+      return true;
+    }());
     if (!_initialized) return;
     _analytics.setUserProperty(name: name, value: value);
     if (value != null) {

@@ -37,6 +37,12 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
   late final units = EditProfileUnits(ref.read(formatManagerProvider));
 
   void initMixin() {
+    // Duzenleme durumu (foto izgarasi, tercihler) her acilista kullanicidan yeniden
+    // tohumlanir: saglayici uygulama kapsaminda ve `build()` kullaniciyi bir kez okur.
+    // Eskiden kaydedilmemis secimler sonraki acilisa tasiniyor, baska yoldan degisen
+    // yaricap/foto eski gorunuyor, eski izgaradaki indeksle yanlis foto silinebiliyordu.
+    // `ref.invalidate` initState'te miras bagimliligi kurar (assert): kapsam listen'siz alinir.
+    ProviderScope.containerOf(context, listen: false).invalidate(editProfileProvider);
     _loadControllers();
     _addCompletionListeners();
   }
@@ -101,15 +107,18 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
 
   // ─── Location Update ───
 
+  /// Kullanicinin baslattigi konum guncellemesi ekran kapansa da tamamlanir (sunucu
+  /// konumu + kullanici tazelemesi): kapsam await ONCESI alinir. Eskiden kapali ekranda
+  /// `fetchMe` atlaniyor, sehir/konum bayat kaliyordu. Yalniz sehir alani acik ekrana bagli.
   Future<void> updateLocation() async {
-    await ref.read(locationProvider.notifier).getCurrentLocation();
-    if (!mounted) return;
-    final loc = ref.read(locationProvider);
+    final container = ProviderScope.containerOf(context, listen: false);
+    final users = container.read(userProvider.notifier);
+    await container.read(locationProvider.notifier).getCurrentLocation();
+    final loc = container.read(locationProvider);
     if (loc.lat == null || loc.lng == null) return;
 
-    await ref.read(userProvider.notifier).updateLocation(lat: loc.lat!, lng: loc.lng!);
-    if (!mounted) return;
-    await ref.read(userProvider.notifier).fetchMe();
+    await users.updateLocation(lat: loc.lat!, lng: loc.lng!);
+    await users.fetchMe();
     if (!mounted) return;
 
     final city = ref.read(userProvider).valueOrNull?.city;
@@ -120,12 +129,19 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
 
   // ─── Save ───
 
+  /// Kaydet. Bağımlılıklar await ÖNCESİ alınır: kayıt sürerken geri dönülürse
+  /// sunucu kaydı yine tamamlanır ve dil listesi ([userLanguagesProvider])
+  /// eşitlenir — eskiden kapalı ekranda `ref` StateError atıyordu, eşitleme
+  /// düşüyordu. Sonuç sayfaları/snackbar yalnız açık ekranda.
   Future<void> save() async {
     final epState = ref.read(editProfileProvider);
     final notifier = ref.read(editProfileProvider.notifier);
+    final users = ref.read(userProvider.notifier);
+    final userLanguages = ref.read(userLanguagesProvider.notifier);
+    final nav = ref.read(navigationServiceProvider);
 
     // Snapshot rewards before save for milestone detection
-    final oldClaimed = ref.read(userProvider.notifier).currentRewardsClaimed;
+    final oldClaimed = users.currentRewardsClaimed;
 
     final profileData = <String, dynamic>{
       'bio': bioController.text.trim(),
@@ -155,56 +171,50 @@ mixin EditProfileScreenMixin on ConsumerState<EditProfileScreen> {
     if (success) {
       AnalyticsManager.instance.logEvent(AnalyticsEvents.profileEditSave);
       // Sync: userLanguagesProvider'i userProvider'dan guncelle
-      ref.read(userLanguagesProvider.notifier).syncFromUser();
+      userLanguages.syncFromUser();
     }
 
-    if (mounted) {
-      if (!success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.tr('error_general'))),
-        );
-        return;
-      }
+    if (!mounted) return;
+    if (!success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.tr('error_general'))),
+      );
+      return;
+    }
 
-      // Detect newly claimed milestones
-      final newMilestones =
-          ref.read(userProvider.notifier).detectNewMilestones(oldClaimed);
+    // Detect newly claimed milestones
+    final newMilestones = users.detectNewMilestones(oldClaimed);
 
-      if (newMilestones.isNotEmpty) {
-        final milestoneRewards = ref.read(economyConfigProvider).rewards.milestones;
-        final highestMilestone = newMilestones.last;
+    if (newMilestones.isNotEmpty) {
+      final milestoneRewards = ref.read(economyConfigProvider).rewards.milestones;
+      final highestMilestone = newMilestones.last;
 
-        await ref.read(navigationServiceProvider).showAppBottomSheet(
-              CustomBottomSheet(
-                name: 'milestone_celebration',
-                builder: (_) => MilestoneCelebrationSheet(
-                  milestone: highestMilestone,
-                  reward: milestoneRewards[highestMilestone] ?? 0,
-                ),
-              ),
-            );
-      }
-
-      // Show success sheet (after milestone if any)
-      if (mounted) {
-        await ref.read(navigationServiceProvider).showAppBottomSheet(
-          CustomBottomSheet(
-            name: 'profile_save_success',
-            builder: (_) => ProfileSaveSuccessSheet(
-              onPreview: () {
-                ref.read(navigationServiceProvider).closeOverlay();
-                AnalyticsManager.instance.logEvent(
-                  AnalyticsEvents.saveSuccessPreviewTapped,
-                );
-                ref.read(navigationServiceProvider).push(
-                  RouteNames.profilePreview,
-                  extra: 'edit_screen',
-                );
-              },
-            ),
+      await nav.showAppBottomSheet(
+        CustomBottomSheet(
+          name: 'milestone_celebration',
+          builder: (_) => MilestoneCelebrationSheet(
+            milestone: highestMilestone,
+            reward: milestoneRewards[highestMilestone] ?? 0,
           ),
-        );
-      }
+        ),
+      );
     }
+
+    // Show success sheet (after milestone if any)
+    if (!mounted) return;
+    await nav.showAppBottomSheet(
+      CustomBottomSheet(
+        name: 'profile_save_success',
+        builder: (_) => ProfileSaveSuccessSheet(
+          onPreview: () {
+            nav.closeOverlay();
+            AnalyticsManager.instance.logEvent(
+              AnalyticsEvents.saveSuccessPreviewTapped,
+            );
+            nav.push(RouteNames.profilePreview, extra: 'edit_screen');
+          },
+        ),
+      ),
+    );
   }
 }

@@ -53,7 +53,7 @@ void main() {
       expect(await h.notifier.shouldOfferPushPrompt(), isFalse);
     });
 
-    test('yakin zamanda gosterildiyse (ilk eslesme → ilk mesaj) tekrar gosterilmez', () async {
+    test('bir kez gosterildiyse (ilk eslesme → ilk mesaj, ya da reddedildi) tekrar gosterilmez', () async {
       final h = _Harness()..manager.canRequest = true;
       await PushPromptStore.markShown();
 
@@ -116,7 +116,7 @@ void main() {
 
     test('ayni sohbetteyken o sohbetin mesaji bastirilir — sayac yine artar', () async {
       final h = await _Harness.ready();
-      h.container.read(activeChatMatchIdProvider.notifier).state = 'm1';
+      h.container.read(openChatStackProvider.notifier).state = ['m1'];
       final push = _push(type: 'new_message', actionUrl: '/chat/m1');
 
       h.manager.onForeground!(push);
@@ -128,16 +128,26 @@ void main() {
 
     test('baska sohbetin mesaji bastirilmaz', () async {
       final h = await _Harness.ready();
-      h.container.read(activeChatMatchIdProvider.notifier).state = 'm1';
+      h.container.read(openChatStackProvider.notifier).state = ['m1'];
 
       h.manager.onForeground!(_push(type: 'new_message', actionUrl: '/chat/m2'));
 
       expect(h.banners, 1);
     });
 
+    test('yalniz en ustteki (gorunen) sohbet bastirilir — alttaki sohbetin mesaji gosterilir', () async {
+      final h = await _Harness.ready();
+      h.container.read(openChatStackProvider.notifier).state = ['m1', 'm2'];
+      final bottom = _push(type: 'new_message', actionUrl: '/chat/m1');
+      final top = _push(type: 'new_message', actionUrl: '/chat/m2');
+
+      expect(h.manager.shouldSuppress!(bottom), isFalse, reason: 'alttaki m1 gorunmuyor');
+      expect(h.manager.shouldSuppress!(top), isTrue, reason: 'ustteki m2 gorunuyor');
+    });
+
     test('sohbet disi bildirim aktif sohbetteyken de gosterilir', () async {
       final h = await _Harness.ready();
-      h.container.read(activeChatMatchIdProvider.notifier).state = 'm1';
+      h.container.read(openChatStackProvider.notifier).state = ['m1'];
 
       h.manager.onForeground!(_push(type: 'new_match', actionUrl: '/chat/m1'));
 

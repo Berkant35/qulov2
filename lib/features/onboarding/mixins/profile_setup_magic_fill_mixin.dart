@@ -64,8 +64,10 @@ mixin ProfileSetupMagicFillMixin<T extends ConsumerStatefulWidget>
   }
 
   Future<void> _showPreviewSheet() async {
+    // "Yeniden üret" sayfadan gelir; kapı kapandıysa `ref` kullanılamaz.
+    if (!mounted) return;
     final user = ref.read(userProvider).valueOrNull;
-    if (user == null || !mounted) return;
+    if (user == null) return;
 
     setState(() => isProcessing = true);
     late final List<Map<String, dynamic>> suggestions;

@@ -1,0 +1,4 @@
+• Entdecke ohne Standortfreigabe: Wähle einfach deine Stadt
+• „Heute aktiv“- und „Diese Woche aktiv“-Badges auf den Entdecken-Karten
+• Wir sagen dir Bescheid, wenn jemand deine Fragen löst
+• Stabilitätskorrekturen bei der Fotoauswahl und im Quiz; Personen, die du in Entdecken abgelehnt hast, erscheinen nicht mehr erneut

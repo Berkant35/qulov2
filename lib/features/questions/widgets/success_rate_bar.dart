@@ -2,22 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/features/questions/mixins/success_rate_color_mixin.dart';
 
-class SuccessRateBar extends StatelessWidget {
+class SuccessRateBar extends StatelessWidget with SuccessRateColorMixin {
   final int successRate;
 
   const SuccessRateBar({super.key, required this.successRate});
 
-  Color _color(BuildContext context) {
-    if (successRate >= 70) return context.appColors.success;
-    if (successRate >= 40) return context.appColors.warning;
-    return context.appColors.error;
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color = _color(context);
+    final color = successRateColor(context, successRate);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,7 +27,7 @@ class SuccessRateBar extends StatelessWidget {
               ),
             ),
             Text(
-              '%$successRate',
+              context.fmt.percent(successRate),
               style: theme.textTheme.labelSmall?.copyWith(
                 color: color,
                 fontWeight: FontWeight.bold,

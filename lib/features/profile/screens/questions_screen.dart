@@ -8,6 +8,7 @@ import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/data/models/question_model.dart';
 import 'package:qulo_v2/providers/question_provider.dart';
+import 'package:qulo_v2/features/notifications/mixins/push_permission_offer_mixin.dart';
 import 'package:qulo_v2/features/profile/mixins/questions_screen_mixin.dart';
 import 'package:qulo_v2/features/profile/widgets/questions_empty_state.dart';
 import 'package:qulo_v2/features/profile/widgets/questions_fab.dart';
@@ -21,7 +22,7 @@ class QuestionsScreen extends ConsumerStatefulWidget {
 }
 
 class _QuestionsScreenState extends ConsumerState<QuestionsScreen>
-    with QuestionsScreenMixin {
+    with PushPermissionOfferMixin<QuestionsScreen>, QuestionsScreenMixin {
   @override
   void initState() {
     super.initState();

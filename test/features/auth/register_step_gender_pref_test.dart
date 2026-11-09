@@ -1,3 +1,5 @@
+import 'dart:ui' show SemanticsFlag;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
@@ -101,8 +103,9 @@ void main() {
       // Birleşik veri: etiket + onay kutusu durumu aynı düğümde.
       final data = node.getSemanticsData();
       expect(data.label, contains(ctx.tr('pref_consent_checkbox')));
-      expect(data.flagsCollection.hasCheckedState, isTrue);
-      expect(data.flagsCollection.isChecked, isFalse);
+      // Onay durumu VAR ve işaretsiz. `hasFlag`: release SDK 3.35 ile 3.47'de ortak API.
+      expect(data.hasFlag(SemanticsFlag.hasCheckedState), isTrue);
+      expect(data.hasFlag(SemanticsFlag.isChecked), isFalse);
       handle.dispose();
     });
 

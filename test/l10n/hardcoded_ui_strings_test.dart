@@ -24,13 +24,32 @@ final _pattern = RegExp([
 /// Bilincli istisnalar: urun adlari ve emoji kacisi (kilit ikonu).
 const _allowed = ["'PLUS'", "'PREMIUM'", r"'\ud83d\udd12'"];
 
+/// Elle yuzde/birim bicimi: interpolasyona yapisik `%` ya da birim soneki
+/// (`'%$x'`, `'${x}%'`, `'$x s'`, `'$x sn'`) yukaridaki tarayicidan kacar (`$`
+/// iceren literal) ama her dilde ayni gorunur — `context.fmt.percent` /
+/// `context.fmt.seconds` kullanilir.
+///
+/// 2026-10-12: soru olusturma suresi `'$seconds sn'` (Turkce "sn" her dilde),
+/// quiz sayaci `'$_remaining s'`, rozet/basari orani `'%$pct'` (Ingilizcede
+/// "50%" olmali) bu yolla kaciyordu.
+const _unit = r'(?:s|sn|sec|dk|min|km|mi|cm|kg)';
+final _manualFormat = RegExp([
+  r'''['"]%\$''',
+  r'''|(?:\$\{[^}'"]*\}|\$\w+)%['"]''',
+  r'''|(?:\$\{[^}'"]*\} ?|\$\w+ )''',
+  _unit,
+  r'''['"]''',
+].join());
+
 List<String> _offendersIn(String source, String path) {
   final code = source.replaceAll(RegExp(r'//[^\n]*'), '');
+  String at(RegExpMatch m) =>
+      '$path:${code.substring(0, m.start).split('\n').length}: '
+      '${m.group(0)!.split(RegExp(r'\s+')).join(' ')}';
   return [
     for (final m in _pattern.allMatches(code))
-      if (!_allowed.any(m.group(0)!.contains))
-        '$path:${code.substring(0, m.start).split('\n').length}: '
-            '${m.group(0)!.split(RegExp(r'\s+')).join(' ')}',
+      if (!_allowed.any(m.group(0)!.contains)) at(m),
+    for (final m in _manualFormat.allMatches(code)) at(m),
   ];
 }
 
@@ -42,6 +61,11 @@ void main() {
       "hintText: 'Search here'",
       "title: const Text('Ayarlar')",
       'label: "FREE"',
+      r"Text('%$pct')",
+      r"Text('${rate}%')",
+      r"Text('$_remaining s')",
+      r"label: '$seconds sn'",
+      r"Text('${n}s')",
     ]) {
       test('yakalar: ${sample.replaceAll('\n', r'\n')}', () {
         expect(_offendersIn(sample, 'x'), hasLength(1));
@@ -55,6 +79,9 @@ void main() {
       "Text('%')",
       "// Text('yorum satiri')",
       "label: 'PLUS'",
+      r"'$totalQuestions'",
+      r"'${x}/${y}'",
+      'context.fmt.percent(pct)',
     ]) {
       test('yakalamaz: $sample', () {
         expect(_offendersIn(sample, 'x'), isEmpty);

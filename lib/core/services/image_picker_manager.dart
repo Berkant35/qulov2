@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:qulo_v2/core/utils/image_bytes.dart';
 import 'package:qulo_v2/core/widgets/crop_screen.dart';
 
 export 'package:image_picker/image_picker.dart' show ImageSource;
@@ -25,6 +26,19 @@ class ImagePickerPermissionException implements Exception {
   const ImagePickerPermissionException(this.source);
 
   bool get isCamera => source == ImageSource.camera;
+}
+
+/// Seçici bir dosya döndürdü ama görsel olarak açılamıyor (0 bayt ya da
+/// çözülemeyen içerik). Çağıran "başka fotoğraf seç" mesajı gösterir.
+class ImagePickerInvalidImageException implements Exception {
+  final ImageSource source;
+
+  /// `empty` (0 bayt) ya da `undecodable` — analitik için.
+  final String reason;
+  const ImagePickerInvalidImageException(this.source, {required this.reason});
+
+  static const String reasonEmpty = 'empty';
+  static const String reasonUndecodable = 'undecodable';
 }
 
 class ImagePickerManager {
@@ -78,6 +92,13 @@ class ImagePickerManager {
     if (xFile == null) return null;
 
     final bytes = await xFile.readAsBytes();
+    // iOS image_picker kodlama başarısızsa 0 baytlık dosya yolu döndürebiliyor.
+    if (bytes.isEmpty) {
+      throw ImagePickerInvalidImageException(
+        source,
+        reason: ImagePickerInvalidImageException.reasonEmpty,
+      );
+    }
     final mimeType = xFile.mimeType ?? 'image/jpeg';
     final fileName = xFile.name;
 
@@ -99,6 +120,14 @@ class ImagePickerManager {
     final picked = await _pick(source, maxWidth: maxWidth, imageQuality: imageQuality);
     if (picked == null) return null;
 
+    // Kırpma ekranına girmeden tam çözümleme: `crop_your_image` bozuk baytı
+    // isolate'te yakalanmamış hatayla düşürüyor.
+    if (!await ImageBytes.validate(picked.bytes)) {
+      throw ImagePickerInvalidImageException(
+        source,
+        reason: ImagePickerInvalidImageException.reasonUndecodable,
+      );
+    }
     if (!context.mounted) return null;
 
     final croppedBytes = await Navigator.of(context).push<Uint8List>(

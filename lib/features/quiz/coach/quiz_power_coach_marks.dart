@@ -5,6 +5,7 @@ import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/power_icon.dart';
 import 'package:qulo_v2/features/quiz/widgets/coach_power_row.dart';
 import 'package:qulo_v2/features/quiz/widgets/coach_wallet_note.dart';
+import 'package:qulo_v2/features/quiz/widgets/quiz_power_demo_link.dart';
 
 /// Güç turunun kimliği — `coach_quiz_powers_seen` bayrağı (eski sürümde turu
 /// görmüş kullanıcıya tekrar gösterilmez).
@@ -36,6 +37,8 @@ List<CoachMarkStep> buildQuizPowerCoachSteps() => [
             const CoachPowerRow(type: PowerType.hint, labelKey: 'coach_quiz_power_hint'),
             const CoachPowerRow(type: PowerType.timeExtend, labelKey: 'coach_quiz_power_time_extend'),
             const CoachPowerRow(type: PowerType.skipAll, labelKey: 'coach_quiz_power_skip_all'),
+            // Demo turun üstüne açılır (tur kapanmaz) — bkz. QuizPowerDemoLink.
+            const QuizPowerDemoLink(),
           ],
         ),
       ),

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/models/app_dialog.dart';
 import 'package:qulo_v2/core/navigation/navigation_provider.dart';
@@ -39,6 +40,11 @@ mixin ChatScreenMixin on PushPermissionOfferMixin<ChatScreen> {
   bool hasText = false;
   bool quizSummaryDismissed = false;
 
+  /// Acik sohbet yigini (in-app banner bastirma); `dispose`'da `ref` kullanilamadigi
+  /// icin (eskiden temizleme sessizce atlaniyordu) initMixin'de yakalanir.
+  late final StateController<List<String>> _openChats;
+  bool _pushedOnStack = false;
+
   // ─── Alt Mixin Kancalari ───
 
   /// Realtime abonelikleri (mesaj + typing + medya) — `ChatRealtimeMixin` uygular.
@@ -50,6 +56,7 @@ mixin ChatScreenMixin on PushPermissionOfferMixin<ChatScreen> {
   // ─── Lifecycle ───
 
   void initMixin() {
+    _openChats = ref.read(openChatStackProvider.notifier);
     msgCtrl.addListener(_onTextChanged);
     AnalyticsManager.instance.logEvent(
       AnalyticsEvents.chatOpen,
@@ -58,8 +65,10 @@ mixin ChatScreenMixin on PushPermissionOfferMixin<ChatScreen> {
     scrollCtrl.addListener(_onScroll);
     _loadQuizSummaryDismissState();
     Future.microtask(() {
-      // Aktif chat'i isaretle — in-app banner suppress icin
-      ref.read(activeChatMatchIdProvider.notifier).state = widget.matchId;
+      if (!mounted) return;
+      // Aktif chat'i yigina ekle — in-app banner suppress icin
+      _openChats.pushChat(widget.matchId);
+      _pushedOnStack = true;
       // Clear question cache so cards re-fetch fresh data
       ref.read(chatQuestionCacheProvider.notifier).state = {};
       ref.read(openedQuestionIdsProvider.notifier).state = {};
@@ -87,10 +96,14 @@ mixin ChatScreenMixin on PushPermissionOfferMixin<ChatScreen> {
     _chatStopwatch.stop();
     // Prevent orphaned overlay if chat is popped while coach-mark is open.
     CoachMarkService.instance.forceClose();
-    // Aktif chat'i temizle — guard against disposed ref
-    try {
-      ref.read(activeChatMatchIdProvider.notifier).state = null;
-    } catch (_) {}
+    // Yigindan cik — agac kilitliyken provider degismez, kare bitince.
+    if (_pushedOnStack) {
+      final openChats = _openChats;
+      final matchId = widget.matchId;
+      Future.microtask(() {
+        if (openChats.mounted) openChats.popChat(matchId);
+      });
+    }
     AnalyticsManager.instance.logEvent(
       AnalyticsEvents.chatClose,
       params: {
@@ -161,9 +174,10 @@ mixin ChatScreenMixin on PushPermissionOfferMixin<ChatScreen> {
   /// Başarılı her gönderimde (metin, foto, ses) çağrılır. Bu oturumdaki ilk
   /// mesajda bildirim izni açıklaması denenir: mesaj atan kullanıcı cevabı
   /// bekliyor — izin için değerli an (sıklığı `PushPromptStore` sınırlar).
+  /// Kapalı ekranda (gönderim sürerken geri) teklif `ref` StateError'ı verirdi.
   void recordMessageSent() {
     messagesSentCount++;
-    if (messagesSentCount == 1) {
+    if (messagesSentCount == 1 && mounted) {
       unawaited(offerPushPermission(trigger: PushPromptTrigger.firstMessage));
     }
   }
@@ -179,6 +193,8 @@ mixin ChatScreenMixin on PushPermissionOfferMixin<ChatScreen> {
     // EMAIL_VERIFICATION_REQUIRED) ya da ağ hatasından sonra aynı mesaj
     // tekrar gönderilebilir.
     if (result case Failure(:final failure)) {
+      // Ekran kapandıysa geri yüklenecek kutu ve açılacak doğrulama sayfası yok.
+      if (!mounted) return;
       if (msgCtrl.text.isEmpty) msgCtrl.text = text;
       await ref
           .read(emailVerificationControllerProvider)

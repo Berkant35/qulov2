@@ -79,13 +79,14 @@ class ExchangeNotifier extends Notifier<ExchangeState> {
     return false;
   }
 
-  Future<bool> convert(int greenAmount) async {
+  /// Hata kodu çağırana döner (buyPower gibi): yeşil yetersizse
+  /// (403 `INSUFFICIENT_DIAMONDS`) ekran paywall'u ihtiyaç anında açar.
+  Future<Result<ConvertResponse>> convert(int greenAmount) async {
     final result = await ref.read(exchangeRepositoryProvider).convert(greenAmount);
     if (result is Success<ConvertResponse>) {
       await ref.read(diamondProvider.notifier).fetchBalance();
-      return true;
     }
-    return false;
+    return result;
   }
 
   Future<Result<BuyPowerResponse>> buyPower(String powerName, String diamondType, int quantity) async {

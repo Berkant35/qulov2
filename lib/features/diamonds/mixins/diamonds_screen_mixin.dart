@@ -2,6 +2,7 @@ import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/core/services/purchase_outcome.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/data/models/diamond_model.dart';
@@ -81,21 +82,22 @@ mixin DiamondsScreenMixin on ConsumerState<DiamondsScreen> {
     );
 
     try {
-      final success = await ref
+      final outcome = await ref
           .read(diamondProvider.notifier)
           .purchaseByProductId(package.tier.productId);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              success
-                  ? context.tr('purchase_success')
-                  : context.tr('purchase_failed'),
-            ),
+      // Vazgeçmede (mağaza penceresi kapatıldı) mesaj yok.
+      if (!mounted || outcome == PurchaseOutcome.cancelled) return;
+      final success = outcome == PurchaseOutcome.success;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            success
+                ? context.tr('purchase_success')
+                : context.tr('purchase_failed'),
           ),
-        );
-        if (success) loadHistory();
-      }
+        ),
+      );
+      if (success) loadHistory();
     } finally {
       if (mounted) setState(() => purchasing = false);
     }

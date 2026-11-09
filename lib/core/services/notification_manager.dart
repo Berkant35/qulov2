@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer' as dev;
 import 'dart:io' show Platform;
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
@@ -9,6 +10,26 @@ import 'package:qulo_v2/core/services/analytics_events.dart';
 @pragma('vm:entry-point')
 Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {
   dev.log('[FCM] Background message received: ${message.messageId}', name: 'NotificationManager');
+}
+
+/// iOS'ta bildirim izni yokken yerel bildirim gösterme denemesinin kodu
+/// (`UNErrorDomain`, "Repository could not save notification. Source is not
+/// authorized."). Crashlytics'te 2.0.9'dan beri crash olarak görünüyordu.
+const iosNotificationNotAuthorizedCode = 'Error 2003';
+
+/// [show]'u çalıştırır. İzin yoksa sessizce geçer — ön plan mesajı uygulama içi
+/// banner ile zaten gösteriliyor; diğer platform hataları [onUnexpected]'a gider
+/// (non-fatal). Çağıran beklemediği için hata dışarı sızarsa crash sayılırdı.
+Future<void> showLocalNotificationGuarded(
+  Future<void> Function() show, {
+  required void Function(Object error, StackTrace stack) onUnexpected,
+}) async {
+  try {
+    await show();
+  } on PlatformException catch (e, st) {
+    if (e.code == iosNotificationNotAuthorizedCode) return;
+    onUnexpected(e, st);
+  }
 }
 
 class NotificationManager {
@@ -209,12 +230,16 @@ class NotificationManager {
       iOS: iosDetails,
     );
 
-    await _localNotifications.show(
-      id: notification.hashCode,
-      title: notification.title,
-      body: notification.body,
-      notificationDetails: notificationDetails,
-      payload: message.data['action_url'],
+    await showLocalNotificationGuarded(
+      () => _localNotifications.show(
+        id: notification.hashCode,
+        title: notification.title,
+        body: notification.body,
+        notificationDetails: notificationDetails,
+        payload: message.data['action_url'],
+      ),
+      onUnexpected: (e, st) => AnalyticsManager.instance
+          .logNonFatalError(e, st, context: 'NotificationManager.showLocalNotification'),
     );
   }
 
@@ -256,7 +281,7 @@ class NotificationManager {
       // Show local notification for foreground messages (both platforms)
       // Suppress logic handles active chat scenario
       if (!suppress) {
-        showLocalNotification(message);
+        unawaited(showLocalNotification(message));
       }
 
       _onForegroundMessage?.call(message);

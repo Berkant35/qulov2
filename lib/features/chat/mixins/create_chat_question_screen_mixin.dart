@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/app_localizations.dart';
+import 'package:qulo_v2/core/navigation/models/app_bottom_sheet.dart';
 import 'package:qulo_v2/core/navigation/navigation_provider.dart';
 import 'package:qulo_v2/core/network/failure_message.dart';
 import 'package:qulo_v2/core/network/result.dart';
@@ -75,6 +76,8 @@ mixin CreateChatQuestionScreenMixin
     bool? hasChatLock,
     bool? hasPowerBlock,
   }) {
+    // Adim 2'nin odul fotografi yuklemesi ekran kapandiktan sonra bitebilir.
+    if (!mounted) return;
     setState(() {
       if (timeLimitSeconds != null) this.timeLimitSeconds = timeLimitSeconds;
       if (hintText != null) this.hintText = hintText;
@@ -103,22 +106,30 @@ mixin CreateChatQuestionScreenMixin
     try {
       final data = _buildPayload();
       final repo = ref.read(chatRepositoryProvider);
+      // Await ÖNCESİ yakalanır: kullanıcı gönderip geri dönerse ekran kapanır ve
+      // `ref` StateError atar. Soru sunucuda yine oluşur (elmas düşer) — önbellek,
+      // bakiye ve sohbet yine tazelenmeli.
+      final questionCache = ref.read(chatQuestionCacheProvider.notifier);
+      final diamonds = ref.read(diamondProvider.notifier);
+      final chat = ref.read(chatProvider(widget.matchId).notifier);
       final result = await repo.createQuestion(widget.matchId, data);
 
       switch (result) {
         case Success(data: final question):
-          ref.read(chatQuestionCacheProvider.notifier).update((state) => {
+          questionCache.update((state) => {
                 ...state,
                 question.id: question,
               });
           // invalidate DEĞİL: `DiamondNotifier.build()` sabit 0 döner — sıfırlardı.
-          ref.read(diamondProvider.notifier).fetchBalance();
-          ref.read(chatProvider(widget.matchId).notifier).loadMessages();
+          diamonds.fetchBalance();
+          chat.loadMessages();
 
           if (mounted) {
             ref.read(navigationServiceProvider).pop(true);
           }
         case Failure(:final failure):
+          // Ekran kapandıysa korunacak form yok: doğrulama sayfası/snackbar açılmaz.
+          if (!mounted) return;
           // Doğrulama kapısı: form korunur, doğruladıktan sonra tekrar gönderilir.
           final gated = await ref
               .read(emailVerificationControllerProvider)
@@ -186,17 +197,13 @@ mixin CreateChatQuestionScreenMixin
       );
 
   void showDraftHistory() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.7,
-      ),
-      builder: (_) => DraftHistorySheet(
-        onDraftSelected: _fillFromDraft,
-      ),
-    );
+    ref.read(navigationServiceProvider).showAppBottomSheet<void>(
+          CustomBottomSheet(
+            name: 'chat_draft_history',
+            maxHeightFactor: AppBottomSheet.mediumHeightFactor,
+            builder: (_) => DraftHistorySheet(onDraftSelected: _fillFromDraft),
+          ),
+        );
   }
 
   void _fillFromDraft(ChatQuestionDraftModel draft) {

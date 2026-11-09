@@ -8,22 +8,26 @@ abstract final class IdentitySheetLauncher {
   /// Kayıtlı etiketler yüklenmeden sayfa açılmaz: boş görünen sayfada "Kaydet" gerçek
   /// etiketleri silerdi. Yükleme hatasında sayfa açılmaz ve `false` döner — çağıran kullanıcıya
   /// hatayı gösterir (launcher'ın bağlamı yok); provider sıfırlanır, sonraki açılış yeniden dener.
+  ///
+  /// Yükleme sürerken çağıran ekran kapanabilir: `ref` sonra kullanılamaz, bu yüzden kapsam
+  /// ve servis await ÖNCESİ alınır. Kapanan çağıranın yerine başka ekranın üstünde sayfa açılmaz.
   static Future<bool> open(WidgetRef ref, {required String entryPoint}) async {
+    final container = ProviderScope.containerOf(ref.context, listen: false);
+    final nav = container.read(navigationServiceProvider);
     try {
-      await ref.read(identityProvider.future);
+      await container.read(identityProvider.future);
     } catch (_) {
-      ref.invalidate(identityProvider);
+      container.invalidate(identityProvider);
       return false;
     }
-    await ref
-        .read(navigationServiceProvider)
-        .showAppBottomSheet<void>(
-          CustomBottomSheet(
-            name: 'identity_editor',
-            maxHeightFactor: AppBottomSheet.tallHeightFactor,
-            builder: (_) => IdentityEditorSheet(entryPoint: entryPoint),
-          ),
-        );
+    if (!ref.context.mounted) return false;
+    await nav.showAppBottomSheet<void>(
+      CustomBottomSheet(
+        name: 'identity_editor',
+        maxHeightFactor: AppBottomSheet.tallHeightFactor,
+        builder: (_) => IdentityEditorSheet(entryPoint: entryPoint),
+      ),
+    );
     return true;
   }
 }

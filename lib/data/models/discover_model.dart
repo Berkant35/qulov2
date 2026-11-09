@@ -10,8 +10,25 @@ abstract final class DiscoverEmptyReason {
   /// Aday havuzunda kisi var ama hicbiri kullanicinin dilinde soru yazmamis.
   static const language = 'language';
 
+  /// Dil kapisini gecen adaylar vardi ama hepsi uzun suredir gorulmuyor
+  /// (sunucu 2.0.18: 3-30 gun uyuyan sona, 30+ gun desteye hic gelmez).
+  static const inactive = 'inactive';
+
   /// Hicbir kapidan aday cikmadi.
   static const noCandidates = 'no_candidates';
+}
+
+/// Kart sahibinin son gorulme kovasi (`activity`). Sunucu ham zaman damgasi
+/// gondermez (gizlilik); istemci sure hesaplamaz, yalniz kovayi gosterir.
+/// Bilinmeyen deger rozet gostermez (null).
+enum CardActivity {
+  /// Son 24 saatte goruldu (takvim gunu degil).
+  @JsonValue('today')
+  today,
+
+  /// Son 7 gunde goruldu.
+  @JsonValue('week')
+  week,
 }
 
 @JsonSerializable()
@@ -95,6 +112,10 @@ class ProfileCardModel extends Equatable {
   /// Sahibinin görünür yaptığı etiketler (spec 2026-10-06); yoksa null.
   final VisibleIdentityModel? identity;
 
+  /// "Bugün / Bu hafta aktif" rozeti; null = daha eski, hiç görülmedi ya da eski sunucu.
+  @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue)
+  final CardActivity? activity;
+
   const ProfileCardModel({
     required this.userId,
     this.name,
@@ -110,6 +131,7 @@ class ProfileCardModel extends Equatable {
     this.relationshipGoal,
     this.questionInfo,
     this.identity,
+    this.activity,
   });
 
   factory ProfileCardModel.fromJson(Map<String, dynamic> json) =>
@@ -132,6 +154,7 @@ class ProfileCardModel extends Equatable {
         relationshipGoal,
         questionInfo,
         identity,
+        activity,
       ];
 }
 

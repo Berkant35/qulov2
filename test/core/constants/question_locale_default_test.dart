@@ -32,4 +32,19 @@ void main() {
       }
     });
   });
+
+  group('AppConstants.initialQuestionLocales', () {
+    test('tüm desteklenen diller, uygulama dili başta, tekrarsız', () {
+      final langs = AppConstants.initialQuestionLocales('ja');
+      expect(langs.first, 'ja');
+      expect(langs.toSet(), AppConstants.supportedQuestionLocales.toSet());
+      expect(langs.length, AppConstants.supportedQuestionLocales.length);
+    });
+
+    test('desteklenmeyen uygulama dili: en başta, liste yine tam', () {
+      final langs = AppConstants.initialQuestionLocales('vi');
+      expect(langs.first, 'en');
+      expect(langs.length, AppConstants.supportedQuestionLocales.length);
+    });
+  });
 }

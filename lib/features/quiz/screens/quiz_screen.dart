@@ -55,7 +55,11 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
   @override
   Widget build(BuildContext context) {
     final quiz = ref.watch(quizProvider);
+    // Soru ile oturum birlikte hazir degilse yukleniyor (`sessionId!` fatal'i,
+    // 2.0.17): yarim durum hic cizilmez.
     final question = quiz.currentQuestion;
+    final sessionId = quiz.sessionId;
+    final isReady = question != null && sessionId != null;
 
     if (showCelebration) {
       final myPhotos = ref.read(userProvider).valueOrNull?.photos;
@@ -85,7 +89,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
         await confirmExit();
       },
       child: AppScaffold(
-        title: question != null
+        title: isReady
             ? '${question.questionNumber}/${question.totalQuestions}'
             : '',
         leading: IconButton(
@@ -94,8 +98,8 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
         ),
         actions: const [CompactDiamondBalance()],
         padding: EdgeInsets.zero,
-        isLoading: question == null,
-        body: question == null
+        isLoading: !isReady,
+        body: !isReady
             ? const SizedBox.shrink()
             : Stack(
                 children: [
@@ -103,12 +107,14 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
                     question: question,
                     target: widget.target,
                     timerKey: timerKey,
-                    sessionId: quiz.sessionId!,
+                    sessionId: sessionId,
                     selectedAnswerIndex: selectedAnswerIndex,
                     oracleSuggestedIndex: oracleSuggestedIndex,
                     removedIndices: removedIndices,
                     hintText: hintText,
                     isSubmitting: isSubmitting,
+                    timeExtendEffectToken: timeExtendEffectToken,
+                    skipEffectToken: skipEffectToken,
                     onTimeout: onTimeout,
                     onSelectAnswer: selectAnswer,
                     onSubmitAnswer: submitAnswer,

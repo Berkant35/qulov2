@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/data/models/diamond_model.dart';
@@ -7,6 +9,7 @@ import 'package:qulo_v2/data/models/identity_model.dart';
 import 'package:qulo_v2/data/models/notification_preferences_model.dart';
 import 'package:qulo_v2/data/models/question_model.dart';
 import 'package:qulo_v2/data/models/rewards_model.dart';
+import 'package:qulo_v2/data/models/user_details_model.dart';
 import 'package:qulo_v2/data/models/user_model.dart';
 import 'package:qulo_v2/data/repositories/diamond_repository.dart';
 import 'package:qulo_v2/data/repositories/exchange_repository.dart';
@@ -78,13 +81,74 @@ class FakeUserRepository implements UserRepository {
     return Success(user);
   }
 
+  /// Doluysa `reorderPhotos` bu tamamlanana kadar bekler (istek surerken ekran kapanir).
+  Completer<void>? reorderGate;
+
   /// Gercek `PATCH /users/me` yaniti gibi: yalniz profil alanlari doner, getMe'ye
   /// ozel alanlar (`rainbow_diamonds`, `rainbow_enabled`, bakiyeler) YOK.
   @override
   Future<Result<UserModel>> reorderPhotos(List<String> photos) async {
     reorderPhotosCallCount++;
+    await reorderGate?.future;
     if (reorderFailure != null) return Failure(reorderFailure!);
     return Success(UserModel(id: user.id, email: user.email, photos: photos));
+  }
+
+  /// Fotograf yukleme/silme ve profil kaydi: doluysa kapi tamamlanana kadar
+  /// bekler. Sunucu gibi `user` guncellenir; sonraki `getMe` yeni durumu doner.
+  Completer<void>? photoUploadGate;
+  Completer<void>? photoDeleteGate;
+  Completer<void>? profileSaveGate;
+  int uploadPhotoCount = 0;
+  final List<int> deletedPhotoIndexes = [];
+
+  @override
+  Future<Result<Map<String, dynamic>>> uploadPhoto(Uint8List bytes, String mimeType) async {
+    uploadPhotoCount++;
+    await photoUploadGate?.future;
+    user = _patched({'photos': [...?user.photos, 'https://cdn.test/new-$uploadPhotoCount.jpg']});
+    return const Success({});
+  }
+
+  @override
+  Future<Result<Map<String, dynamic>>> deletePhoto(int index) async {
+    deletedPhotoIndexes.add(index);
+    await photoDeleteGate?.future;
+    user = _patched({'photos': [...?user.photos]..removeAt(index)});
+    return const Success({});
+  }
+
+  @override
+  Future<Result<UserModel>> updateProfile(Map<String, dynamic> data) async {
+    await profileSaveGate?.future;
+    user = _patched(data);
+    return Success(user);
+  }
+
+  /// `updateLocation` cagrilari (lat, lng); sunucu gibi `user.city` [locationCity] olur.
+  final List<(double, double)> locationUpdates = [];
+  String? locationCity;
+
+  @override
+  Future<Result<void>> updateLocation({
+    required double lat,
+    required double lng,
+    String? city,
+    String? country,
+  }) async {
+    locationUpdates.add((lat, lng));
+    if (locationCity != null) user = _patched({'city': locationCity});
+    return const Success(null);
+  }
+
+  @override
+  Future<Result<UserDetailsModel>> updateDetails(Map<String, dynamic> data) async =>
+      Success(user.details ?? const UserDetailsModel());
+
+  /// JSON round-trip ile alan yamasi (`UserModel`'de elle copyWith yok).
+  UserModel _patched(Map<String, dynamic> patch) {
+    final json = jsonDecode(jsonEncode(user)) as Map<String, dynamic>;
+    return UserModel.fromJson(json..addAll(patch));
   }
 
   @override
@@ -243,9 +307,20 @@ class FakeQuestionRepository implements QuestionRepository {
   /// Basariyla kaydedilen soru govdeleri, cagri sirasiyla.
   final List<Map<String, dynamic>> createdBodies = [];
 
+  /// Doluysa `createQuestion` bu tamamlanana kadar bekler (kayit surerken ekran kapanir).
+  Completer<void>? createGate;
+  final List<int> deletedOrderNums = [];
+
+  @override
+  Future<Result<void>> deleteQuestion(int orderNum) async {
+    deletedOrderNums.add(orderNum);
+    return const Success(null);
+  }
+
   @override
   Future<Result<QuestionModel>> createQuestion(Map<String, dynamic> data) async {
     final call = createCallCount++;
+    await createGate?.future;
     final failure = createFailures[call];
     if (failure != null) return Failure(failure);
     createdBodies.add(data);

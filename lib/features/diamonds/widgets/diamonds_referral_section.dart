@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/utils/referral_share.dart';
+import 'package:qulo_v2/core/utils/share_origin.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
 import 'package:qulo_v2/core/widgets/referral_invite_card.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
@@ -94,6 +95,7 @@ class _DiamondsReferralSectionState
                     reward: reward,
                     code: code,
                   ),
+                  origin: shareOriginFor(context),
                 );
           }
         },

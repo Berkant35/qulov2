@@ -11,7 +11,8 @@ import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
 
 /// Cinsiyet tercihi ayarlanmadan discover çekilmez (sunucu 14a1f0a
-/// PROFILE_INCOMPLETE döner); tercih ayarlanınca/değişince deste yenilenir.
+/// PROFILE_INCOMPLETE döner); adayı eleyen bir tercih (cinsiyet, dil, yaş —
+/// `discover_filter_key.dart`) ayarlanınca/değişince deste yenilenir.
 ///
 /// Kök neden (3 Eki): giriş ön-yüklemesi (`auth_provider` → `loadCards`)
 /// tercih seçilmeden çalışıyordu; WOMAN tercihli erkeklere erkek profiller
@@ -128,6 +129,76 @@ void main() {
     await _settle();
     expect(h.repo.discoverCalls, 2);
   });
+
+  // Kök neden (11 Eki): boş Discover'ın "Dil tercihlerini düzenle" butonu profil
+  // düzenlemeyi açıyordu; kayıttan dönünce Discover ekranı canlı kaldığı için
+  // deste yeniden çekilmiyor, eski boş durum ekranda kalıyordu. Dil ve yaş
+  // aralığı da cinsiyet gibi sunucuda adayı ELEYEN filtreler.
+  group('eleyen filtre tercihleri', () {
+    UserModel withPrefs({
+      List<String> languages = const ['tr'],
+      int? ageMin = 25,
+      int? ageMax = 35,
+      int radiusKm = 50,
+    }) =>
+        UserModel(
+          id: 'u1',
+          email: 'u1@qulo.test',
+          genderPref: 'WOMAN',
+          genderPrefSetAt: DateTime(2026, 10, 3),
+          preferredLanguages: languages,
+          agePrefMin: ageMin,
+          agePrefMax: ageMax,
+          matchRadiusKm: radiusKm,
+        );
+
+    Future<int> callsAfterChange(UserModel before, UserModel after) async {
+      final h = await _Harness.create(user: before, withLocation: true);
+      await h.notifier.loadCards();
+      h.emitUser(after);
+      await _settle();
+      return h.repo.discoverCalls;
+    }
+
+    test('dil listesi değişince deste yenilenir', () async {
+      expect(await callsAfterChange(withPrefs(), withPrefs(languages: ['tr', 'en'])), 2);
+    });
+
+    test('boş dil durumu: dil eklenince eski boş deste yerine kartlar gelir (bildirilen belirti)',
+        () async {
+      final h = await _Harness.create(user: withPrefs(), withLocation: true);
+      h.repo.queued.add(const DiscoverResponse(
+        cards: [],
+        page: 1,
+        hasMore: false,
+        emptyReason: 'language',
+      ));
+      await h.notifier.loadCards();
+      expect(h.state.emptyReason, 'language');
+
+      h.emitUser(withPrefs(languages: ['tr', 'en']));
+      await _settle();
+
+      expect(h.state.cards, isNotEmpty);
+      expect(h.state.emptyReason, isNull);
+    });
+
+    test('yaş aralığı değişince deste yenilenir', () async {
+      expect(await callsAfterChange(withPrefs(), withPrefs(ageMax: 45)), 2);
+    });
+
+    test('aynı diller farklı sırayla gelince yeniden yüklemez', () async {
+      expect(
+        await callsAfterChange(withPrefs(languages: ['tr', 'en']), withPrefs(languages: ['en', 'tr'])),
+        1,
+      );
+    });
+
+    test('yalnız yarıçap değişince yeniden yüklemez (sert filtre değil; "tekrar ara" kendi çeker)',
+        () async {
+      expect(await callsAfterChange(withPrefs(), withPrefs(radiusKm: 120)), 1);
+    });
+  });
 }
 
 Future<void> _settle() async {
@@ -182,9 +253,13 @@ class _MutableUserNotifier extends UserNotifier {
 class _FakeMatchRepository implements MatchRepository {
   int discoverCalls = 0;
 
+  /// Sıradaki yanıtlar; boşsa varsayılan 5 kartlık deste.
+  final queued = <DiscoverResponse>[];
+
   @override
   Future<Result<DiscoverResponse>> discover({int page = 1}) async {
     discoverCalls++;
+    if (queued.isNotEmpty) return Success(queued.removeAt(0));
     return Success(DiscoverResponse(
       cards: [
         for (final id in ['a', 'b', 'c', 'd', 'e'])

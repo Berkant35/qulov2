@@ -233,6 +233,9 @@ mixin QuestionCreateScreenMixin on ConsumerState<QuestionCreateScreen> {
           AnalyticsEvents.paramQuestionType: selectedCategory!,
       },
     );
+    // Kayit surerken geri donulduyse ekran zaten kapandi: `ref` kullanilamaz,
+    // onceden yakalanan servisle pop da ALTTAKI ekrani kapatirdi.
+    if (!mounted) return;
     ref.read(navigationServiceProvider).pop();
   }
 

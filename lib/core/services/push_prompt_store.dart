@@ -1,27 +1,22 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Bildirim izni açıklama ekranının sıklık defteri: ömür boyu en çok
-/// [maxShown] kez, aralarında en az [cooldown]. İlk eşleşme ile ilk mesaj
-/// çoğu zaman dakikalar arayla gelir; reddeden kullanıcıya aynı oturumda
-/// ikinci kez sorulmaz.
+/// Bildirim izni açıklama ekranının defteri: ömür boyu EN ÇOK BİR KEZ.
+///
+/// Reddedene ısrar edilmez (2.0.18): eskiden 3 gün arayla 3 kez soruluyordu;
+/// Android 13+ "reddedildi" ile "hiç sorulmadı"yı ayırt ettirmediği için
+/// reddeden de tekrar açıklama görüyordu. Kabul eden zaten izinli olur
+/// (`canRequestPermission` false). Fikrini değiştiren Ayarlar → Bildirimler'den açar.
+/// Anahtar eski sürümle aynı: önceden bir kez görmüş kullanıcı da tekrar görmez.
 abstract final class PushPromptStore {
   static const _keyShownCount = 'qulo_push_preprompt_shown_count';
-  static const _keyLastShown = 'qulo_push_preprompt_last_shown';
 
-  static const int maxShown = 3;
-  static const Duration cooldown = Duration(days: 3);
-
-  static Future<bool> isDue({DateTime? now}) async {
+  static Future<bool> isDue() async {
     final prefs = await SharedPreferences.getInstance();
-    if ((prefs.getInt(_keyShownCount) ?? 0) >= maxShown) return false;
-    final last = DateTime.tryParse(prefs.getString(_keyLastShown) ?? '');
-    if (last == null) return true;
-    return (now ?? DateTime.now()).difference(last) >= cooldown;
+    return (prefs.getInt(_keyShownCount) ?? 0) == 0;
   }
 
-  static Future<void> markShown({DateTime? now}) async {
+  static Future<void> markShown() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_keyShownCount, (prefs.getInt(_keyShownCount) ?? 0) + 1);
-    await prefs.setString(_keyLastShown, (now ?? DateTime.now()).toIso8601String());
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,6 +8,8 @@ import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/models/app_dialog.dart';
 import 'package:qulo_v2/core/navigation/navigation_provider.dart';
 import 'package:qulo_v2/core/navigation/navigation_service.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/image_picker_manager.dart';
 import 'package:qulo_v2/core/theme/app_theme.dart';
 import 'package:qulo_v2/core/widgets/image_picker_permission_dialog.dart';
@@ -53,6 +57,54 @@ void main() {
     expect(h.nav.dialogs, isEmpty);
   });
 
+  testWidgets('dialog acikken ekran kapanirsa "Ayarlari ac" onayi yine uygulanir, ref kullanilmaz',
+      (tester) async {
+    final h = await _Harness.pump(tester, confirm: true);
+    h.nav.dialogGate = Completer<void>();
+
+    final picking = h.pick(() async => throw const ImagePickerPermissionException(ImageSource.camera));
+    await tester.pump();
+    await h.closeHost(tester);
+    h.nav.dialogGate!.complete();
+
+    expect(await picking, isNull);
+    expect(tester.takeException(), isNull);
+    expect(h.picker.settingsOpened, 1);
+  });
+
+  /// Crashlytics iOS 2.0.17: 0 baytlik secim kirpma ekraninda fatal uretti.
+  group('acilamayan gorsel', () {
+    final events = <Map<String, Object?>>[];
+    setUp(() {
+      events.clear();
+      AnalyticsManager.debugEventSink = (name, params) => events.add({'event': name, ...?params});
+    });
+    tearDown(() => AnalyticsManager.debugEventSink = null);
+
+    for (final reason in [
+      ImagePickerInvalidImageException.reasonEmpty,
+      ImagePickerInvalidImageException.reasonUndecodable,
+    ]) {
+      testWidgets('$reason: null doner, "baska fotograf sec" mesaji, izin dialog\'u yok', (tester) async {
+        final h = await _Harness.pump(tester, confirm: false);
+
+        final result = await h.pick(
+          () async => throw ImagePickerInvalidImageException(ImageSource.gallery, reason: reason),
+        );
+        await tester.pump();
+
+        expect(result, isNull);
+        expect(h.nav.dialogs, isEmpty);
+        expect(find.text(h.tr('photo_invalid_pick_again')), findsOneWidget);
+        expect(events.single, {
+          'event': AnalyticsEvents.photoPickInvalid,
+          AnalyticsEvents.paramSource: 'gallery',
+          AnalyticsEvents.paramReason: reason,
+        });
+      });
+    }
+  });
+
   testWidgets('baska hatalar yutulmaz — izin disi sorun gizlenmesin', (tester) async {
     final h = await _Harness.pump(tester, confirm: false);
 
@@ -72,24 +124,33 @@ class _Harness {
   late WidgetRef ref;
   late BuildContext context;
 
+  List<Override> get _overrides => [
+        navigationServiceProvider.overrideWithValue(nav),
+        imagePickerManagerProvider.overrideWithValue(picker),
+      ];
+
+  /// Cagiran ekran agactan cikar (kapsam yasar): `ref`/`context` artik gecersiz.
+  Future<void> closeHost(WidgetTester tester) => tester.pumpWidget(
+        ProviderScope(overrides: _overrides, child: const MaterialApp(home: SizedBox())),
+      );
+
   static Future<_Harness> pump(WidgetTester tester, {required bool confirm}) async {
     final h = _Harness._(_FakeNavigationService(confirm), _FakeImagePickerManager());
     await tester.pumpWidget(ProviderScope(
-      overrides: [
-        navigationServiceProvider.overrideWithValue(h.nav),
-        imagePickerManagerProvider.overrideWithValue(h.picker),
-      ],
+      overrides: h._overrides,
       child: MaterialApp(
         theme: AppTheme.dark,
         localizationsDelegates: const [AppLocalizationsDelegate()],
         supportedLocales: const [Locale('en')],
         locale: const Locale('en'),
-        home: Consumer(builder: (context, ref, _) {
-          h
-            ..ref = ref
-            ..context = context;
-          return const SizedBox();
-        }),
+        home: Scaffold(
+          body: Consumer(builder: (context, ref, _) {
+            h
+              ..ref = ref
+              ..context = context;
+            return const SizedBox();
+          }),
+        ),
       ),
     ));
     await tester.pump();
@@ -108,9 +169,13 @@ class _FakeNavigationService implements NavigationService {
   final bool _confirm;
   final dialogs = <AppDialog>[];
 
+  /// Doluysa dialog bu tamamlanana kadar acik kalir.
+  Completer<void>? dialogGate;
+
   @override
   Future<T?> showAppDialog<T>(AppDialog dialog) async {
     dialogs.add(dialog);
+    await dialogGate?.future;
     return _confirm as T?;
   }
 

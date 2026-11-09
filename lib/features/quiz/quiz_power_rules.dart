@@ -1,3 +1,4 @@
+import 'package:qulo_v2/features/quiz/domain/skip_all_offer.dart';
 import 'package:qulo_v2/providers/quiz_provider.dart';
 
 /// Guc bari ve rescue teklifi arasinda PAYLASILAN kurallar — iki yerde ayri
@@ -12,15 +13,11 @@ int remainingQuestionCount(QuizState quiz) {
   return (total - current + 1).clamp(1, total);
 }
 
-/// SKIP_ALL teklif edilsin mi?
-///
-/// Sadece kalan sorulari tek tek gecmekten UCUZ oldugunda. 2 soruluk quizde
-/// 2xSKIP=20 iken SKIP_ALL=30 — ayni sonuc, %50 daha pahali. Carpan ikisine de
-/// uygulandigi icin sadelesir: SKIP_ALL ancak 4+ soruda kazaniyor, 3 soruda basabas.
+/// SKIP_ALL teklif edilsin mi? Kural `skipAllOffered`ta (gercek quiz + guc demosu ortak);
+/// burasi sadece oturumun fiyatlarini ve kalan soru sayisini verir.
 /// Fiyat henuz yuklenmediyse gizlenir — yanlis teklif gostermektense hic gosterme.
-bool shouldOfferSkipAll(QuizState quiz) {
-  final skipCost = quiz.purpleCostOf('SKIP');
-  final skipAllCost = quiz.purpleCostOf('SKIP_ALL');
-  if (skipCost <= 0 || skipAllCost <= 0) return false;
-  return skipAllCost < remainingQuestionCount(quiz) * skipCost;
-}
+bool shouldOfferSkipAll(QuizState quiz) => skipAllOffered(
+  skipCost: quiz.purpleCostOf('SKIP'),
+  skipAllCost: quiz.purpleCostOf('SKIP_ALL'),
+  remaining: remainingQuestionCount(quiz),
+);

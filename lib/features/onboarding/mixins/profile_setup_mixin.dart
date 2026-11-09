@@ -58,17 +58,13 @@ mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
 
     try {
       final picker = ref.read(imagePickerManagerProvider);
-      if (!mounted) return;
-      // ignore: use_build_context_synchronously
       // Izin reddi burada genel "yukleme hatasi"na dusuyordu; yardimci ayarlara
       // yonlendiren dialog'u gosterip null doner (asagida vazgecme dali).
       final picked = await pickWithPermissionPrompt(
         ref,
         context,
         () => source == 'camera'
-            // ignore: use_build_context_synchronously
             ? picker.pickAndCropFromCamera(context)
-            // ignore: use_build_context_synchronously
             : picker.pickAndCropFromGallery(context),
       );
       if (picked == null) {
@@ -92,8 +88,11 @@ mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
         success: (_) async {
           // Delete the previous photos in reverse so indices stay valid.
           // The freshly-uploaded photo sits at index `preCount` and is not
-          // touched.
+          // touched. Kapi kapanirsa (cikis/401) dongu durur: kapali ekranda
+          // `ref` StateError atip catch'e dusuyor, basarili yukleme
+          // `setup_photo_fail` diye olculuyordu.
           for (int i = preCount - 1; i >= 0; i--) {
+            if (!mounted) return;
             await ref.read(userProvider.notifier).deletePhoto(i);
           }
           if (!mounted) return;
@@ -217,6 +216,8 @@ mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
 
   Future<bool> handleBackAttempt() async {
     AnalyticsManager.instance.logEvent(AnalyticsEvents.setupExitAttempt);
+    // Onaylanan cikis, dialog acikken kapi kapansa da uygulanir (`ref` sonra kullanilamaz).
+    final auth = ref.read(authProvider.notifier);
     final shouldLogout =
         await ref.read(navigationServiceProvider).showAppDialog<bool>(
               ConfirmDialog(
@@ -231,7 +232,7 @@ mixin ProfileSetupMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
 
     if (shouldLogout ?? false) {
       AnalyticsManager.instance.logEvent(AnalyticsEvents.setupExitConfirm);
-      await ref.read(authProvider.notifier).logout();
+      await auth.logout();
       return true;
     }
     return false;

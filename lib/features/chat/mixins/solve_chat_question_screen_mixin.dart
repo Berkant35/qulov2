@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
+import 'package:qulo_v2/core/navigation/navigation_provider.dart';
 import 'package:qulo_v2/core/network/failure_message.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/data/models/chat_question_model.dart';
@@ -60,7 +61,7 @@ mixin SolveChatQuestionScreenMixin
     // Guard: don't allow re-solving answered questions
     if (widget.question.isAnswered) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) Navigator.of(context).pop(false);
+        if (mounted) ref.read(navigationServiceProvider).pop(false);
       });
       return;
     }
@@ -135,20 +136,18 @@ mixin SolveChatQuestionScreenMixin
       {'selected_option': null, 'time_spent': timeSpent},
     );
 
+    // Istek surerken ekran kapandiysa (sistem geri, bildirim) hata dalindaki
+    // setState dispose edilmis State'e dusuyordu.
+    if (!mounted) return;
+
     apiResult.when(
-      success: (response) {
-        if (mounted) {
-          Navigator.of(context).pop(true);
-        }
-      },
+      success: (_) => ref.read(navigationServiceProvider).pop(true),
       failure: (f) {
         setState(() => isSubmitting = false);
         timerKey.currentState?.resume();
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(context.tr('error_chat_generic'))),
-          );
-        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.tr('error_chat_generic'))),
+        );
       },
     );
   }
@@ -156,7 +155,7 @@ mixin SolveChatQuestionScreenMixin
   /// Handles back/close press. Shows abandon warning if question not yet answered.
   Future<void> handleBackPress() async {
     if (answered || result != null) {
-      Navigator.of(context).pop(true);
+      ref.read(navigationServiceProvider).pop(true);
       return;
     }
 

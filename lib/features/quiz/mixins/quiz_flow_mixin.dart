@@ -5,18 +5,14 @@ import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/app_review_manager.dart';
-import 'package:qulo_v2/core/services/funnel_events.dart';
-import 'package:qulo_v2/core/services/one_time_flag_store.dart';
 import 'package:qulo_v2/features/notifications/mixins/push_permission_offer_mixin.dart';
-import 'package:qulo_v2/features/onboarding/widgets/premium_suggestion_sheet.dart';
 import 'package:qulo_v2/features/quiz/mixins/quiz_screen_state_mixin.dart';
 import 'package:qulo_v2/features/quiz/screens/quiz_screen.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/providers/quiz_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 
-/// Ekrandan cikis, kutlama sonrasi yonlendirme, bildirim izni ve ilk eslesme
-/// paywall'i.
+/// Ekrandan cikis, kutlama sonrasi yonlendirme ve bildirim izni.
 mixin QuizFlowMixin on QuizScreenStateMixin, PushPermissionOfferMixin<QuizScreen> {
   Future<void> confirmExit() async {
     final nav = ref.read(navigationServiceProvider);
@@ -49,63 +45,39 @@ mixin QuizFlowMixin on QuizScreenStateMixin, PushPermissionOfferMixin<QuizScreen
 
   void onStartChat() {
     ref.invalidate(matchListProvider);
-    _maybeShowFirstMatchPaywall(nextRoute: RouteNames.matches);
+    _leaveCelebration(nextRoute: RouteNames.matches);
   }
 
-  // Eslesme olmadan geri donus kotu bir an: degerlendirme istemi sorulmaz
-  // (2026-09-25'e kadar soruluyordu).
+  // Eslesme olmadan geri donus kotu bir an: ne bildirim izni ne degerlendirme
+  // istemi sorulur (2026-09-25'e kadar soruluyordu).
   void onGoBack() {
     if (celebrationMatched) {
-      _maybeShowFirstMatchPaywall(nextRoute: RouteNames.discover);
+      _leaveCelebration(nextRoute: RouteNames.discover);
     } else {
       ref.read(navigationServiceProvider).go(RouteNames.discover);
     }
   }
 
-  // Kutlama cikisinda once bildirim izni aciklamasi (uygunsa): "eslesmen
-  // cevap verince haber verelim mi?" en anlamli bu anda — login sonrasi soguk
-  // istem kaldirildi. Ilk eslesmede ardindan paywall bir kez gosterilir
-  // (onboarding yerine buraya ertelendi — carousel artik auth oncesi). Flag
-  // zaten set ise (2. + eslesme) dogrudan yonlendir + degerlendirme istemini
-  // dene (bu turda bildirim istemi acildiysa ust uste binmesin diye atlanir).
-  // Ilk eslesmede paywall ile istem ayni turda acilmasin diye istem
-  // `AppReviewManager.returnDelay` sonrasina, Kesfet'e donuse birakilir
-  // (ReturnReviewPromptMixin).
-  Future<void> _maybeShowFirstMatchPaywall({required String nextRoute}) async {
+  // Kutlama cikisinda once bildirim izni aciklamasi (uygunsa, omur boyu bir
+  // kez): "biri sorularini cozunce / eslesmen cevap verince haber verelim" en
+  // anlamli bu anda. Aciklama acildiysa degerlendirme istemi ust uste binmesin
+  // diye Kesfet'e donuse ertelenir (ReturnReviewPromptMixin); acilmadiysa hemen.
+  //
+  // Ilk eslesme paywall'i (PremiumSuggestionSheet, trigger `first_match`)
+  // 2.0.18'de KALDIRILDI: kayittan ~4 dk sonra cikiyordu, Kasim'da 39
+  // gosterim / 0 odeme. Teklif ihtiyac aninda: kurtarma ve guc bakiyesi
+  // yetersiz (`quiz_rescue` / `quiz_power`), gunluk kesif siniri
+  // (`swipe_limit`), donusumde yesil yetersiz (`exchange_convert`).
+  Future<void> _leaveCelebration({required String nextRoute}) async {
     final nav = ref.read(navigationServiceProvider);
     final offeredPush = await offerPushPermission(trigger: PushPromptTrigger.match);
     if (!mounted) return;
-    final isFirstTime = await OneTimeFlagStore.markIfUnset(
-      AnalyticsEvents.flagPaywallFirstMatch,
+    nav.go(nextRoute);
+    final review = AppReviewManager.instance;
+    unawaited(
+      offeredPush
+          ? review.markPendingReturnReview()
+          : review.tryShowReview(trigger: AppReviewTrigger.matchCelebration),
     );
-
-    if (!isFirstTime) {
-      nav.go(nextRoute);
-      if (!offeredPush) {
-        unawaited(
-          AppReviewManager.instance.tryShowReview(
-            trigger: AppReviewTrigger.matchCelebration,
-          ),
-        );
-      }
-      return;
-    }
-
-    unawaited(AppReviewManager.instance.markPendingReturnReview());
-    FunnelEvents.logAuthed(
-      AnalyticsEvents.paywallShown,
-      params: {AnalyticsEvents.paramTrigger: 'first_match'},
-    );
-
-    if (!mounted) return;
-    nav.showAppBottomSheet(
-      CustomBottomSheet(
-        name: 'premium_suggestion',
-        maxHeightFactor: AppBottomSheet.tallHeightFactor,
-        builder: (context) => const PremiumSuggestionSheet(),
-      ),
-    ).then((_) {
-      if (mounted) nav.go(nextRoute);
-    });
   }
 }

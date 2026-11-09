@@ -6,18 +6,21 @@ import 'package:qulo_v2/core/navigation/navigation_provider.dart';
 import 'package:qulo_v2/core/navigation/navigation_service.dart';
 import 'package:qulo_v2/core/services/url_launcher_manager.dart';
 import 'package:qulo_v2/core/theme/app_theme.dart';
+import 'package:qulo_v2/data/models/subscription_model.dart';
+import 'package:qulo_v2/features/diamonds/screens/subscription_comparison_screen.dart';
 import 'package:qulo_v2/features/diamonds/widgets/paywall_bottom_sheet.dart';
 import 'package:qulo_v2/features/diamonds/widgets/subscription_legal_links.dart';
-import 'package:qulo_v2/features/onboarding/widgets/premium_suggestion_sheet.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/store_prices_provider.dart';
+import 'package:qulo_v2/providers/subscription_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Otomatik yenilenen abonelik satilan her yuzeyde Kullanim Kosullari (EULA)
 /// ve Gizlilik linki zorunlu (App Store 3.1.2(c)); eksikse surum reddedilir.
-/// Uc satis yuzeyi: `PaywallBottomSheetContent`, `SubscriptionComparisonScreen`
-/// ve quiz sonrasi acilan `PremiumSuggestionSheet` — sonuncusunda link YOKTU.
+/// Iki satis yuzeyi: `PaywallBottomSheetContent` ve `SubscriptionComparisonScreen`.
+/// (Ucuncusu `PremiumSuggestionSheet` 2.0.18'de silindi: hicbir yerden acilmiyordu.)
+/// Yeni bir abonelik satis yuzeyi eklenirse buraya bir case eklenir.
 void main() {
   group('linkler tiklanabilir', () {
     testWidgets('Kullanim Kosullari Apple standart EULA\'sini acar', (tester) async {
@@ -42,9 +45,9 @@ void main() {
   });
 
   group('satis yuzeyleri linkleri gosterir', () {
-    testWidgets('quiz sonrasi Premium onerisi (PremiumSuggestionSheet)', (tester) async {
+    testWidgets('plan karsilastirma ekrani (SubscriptionComparisonScreen)', (tester) async {
       final h = _Harness();
-      await tester.pumpWidget(h.wrap(const PremiumSuggestionSheet()));
+      await tester.pumpWidget(h.wrapScreen(const SubscriptionComparisonScreen()));
       await tester.pump();
 
       expect(find.byType(SubscriptionLegalLinks), findsOneWidget);
@@ -67,18 +70,21 @@ class _Harness {
   final urls = _FakeUrlLauncher();
   final nav = _FakeNavigationService();
 
-  Widget wrap(Widget child) => ProviderScope(
+  Widget wrap(Widget child) => wrapScreen(Scaffold(body: SingleChildScrollView(child: child)));
+
+  Widget wrapScreen(Widget screen) => ProviderScope(
         overrides: [
           storePricesLoaderProvider.overrideWithValue(() async => const <String, String>{}),
           urlLauncherManagerProvider.overrideWithValue(urls),
           navigationServiceProvider.overrideWithValue(nav),
+          subscriptionProvider.overrideWith(_FreeSubscription.new),
         ],
         child: MaterialApp(
           theme: AppTheme.dark,
           localizationsDelegates: const [AppLocalizationsDelegate()],
           supportedLocales: const [Locale('en')],
           locale: const Locale('en'),
-          home: Scaffold(body: SingleChildScrollView(child: child)),
+          home: screen,
         ),
       );
 }
@@ -109,4 +115,9 @@ class _FakeNavigationService implements NavigationService {
   @override
   dynamic noSuchMethod(Invocation invocation) =>
       throw UnimplementedError('_FakeNavigationService.${invocation.memberName}');
+}
+
+class _FreeSubscription extends SubscriptionNotifier {
+  @override
+  Future<SubscriptionInfo> build() async => SubscriptionInfo.free();
 }

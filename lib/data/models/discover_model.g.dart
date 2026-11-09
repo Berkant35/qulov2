@@ -48,33 +48,35 @@ Map<String, dynamic> _$QuestionInfoModelToJson(QuestionInfoModel instance) =>
       'languages': instance.languages,
     };
 
-ProfileCardModel _$ProfileCardModelFromJson(Map<String, dynamic> json) =>
-    ProfileCardModel(
-      userId: json['user_id'] as String,
-      name: json['name'] as String?,
-      age: (json['age'] as num?)?.toInt(),
-      city: json['city'] as String?,
-      bio: json['bio'] as String?,
-      photos: (json['photos'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
-      distanceKm: (json['distance_km'] as num?)?.toDouble(),
-      distanceTier: (json['distance_tier'] as num?)?.toInt() ?? 0,
-      questionCount: (json['question_count'] as num).toInt(),
-      profileCompletion: (json['profile_completion'] as num?)?.toInt() ?? 0,
-      isBoosted: json['is_boosted'] as bool? ?? false,
-      relationshipGoal: json['relationship_goal'] as String?,
-      questionInfo: json['question_info'] == null
-          ? null
-          : QuestionInfoModel.fromJson(
-              json['question_info'] as Map<String, dynamic>,
-            ),
-      identity: json['identity'] == null
-          ? null
-          : VisibleIdentityModel.fromJson(
-              json['identity'] as Map<String, dynamic>,
-            ),
-    );
+ProfileCardModel _$ProfileCardModelFromJson(
+  Map<String, dynamic> json,
+) => ProfileCardModel(
+  userId: json['user_id'] as String,
+  name: json['name'] as String?,
+  age: (json['age'] as num?)?.toInt(),
+  city: json['city'] as String?,
+  bio: json['bio'] as String?,
+  photos: (json['photos'] as List<dynamic>?)?.map((e) => e as String).toList(),
+  distanceKm: (json['distance_km'] as num?)?.toDouble(),
+  distanceTier: (json['distance_tier'] as num?)?.toInt() ?? 0,
+  questionCount: (json['question_count'] as num).toInt(),
+  profileCompletion: (json['profile_completion'] as num?)?.toInt() ?? 0,
+  isBoosted: json['is_boosted'] as bool? ?? false,
+  relationshipGoal: json['relationship_goal'] as String?,
+  questionInfo: json['question_info'] == null
+      ? null
+      : QuestionInfoModel.fromJson(
+          json['question_info'] as Map<String, dynamic>,
+        ),
+  identity: json['identity'] == null
+      ? null
+      : VisibleIdentityModel.fromJson(json['identity'] as Map<String, dynamic>),
+  activity: $enumDecodeNullable(
+    _$CardActivityEnumMap,
+    json['activity'],
+    unknownValue: JsonKey.nullForUndefinedEnumValue,
+  ),
+);
 
 Map<String, dynamic> _$ProfileCardModelToJson(ProfileCardModel instance) =>
     <String, dynamic>{
@@ -92,7 +94,13 @@ Map<String, dynamic> _$ProfileCardModelToJson(ProfileCardModel instance) =>
       'relationship_goal': instance.relationshipGoal,
       'question_info': instance.questionInfo,
       'identity': instance.identity,
+      'activity': _$CardActivityEnumMap[instance.activity],
     };
+
+const _$CardActivityEnumMap = {
+  CardActivity.today: 'today',
+  CardActivity.week: 'week',
+};
 
 SwipeResponse _$SwipeResponseFromJson(Map<String, dynamic> json) =>
     SwipeResponse(matched: json['matched'] as bool);

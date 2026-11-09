@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:qulo_v2/core/constants/app_durations.dart';
+import 'package:qulo_v2/core/services/realtime_channel_group.dart';
 import 'package:qulo_v2/data/models/message_model.dart';
+import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/chat_provider.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
 import 'package:qulo_v2/features/chat/mixins/chat_screen_mixin.dart';
@@ -9,39 +12,49 @@ import 'package:qulo_v2/features/chat/mixins/chat_screen_mixin.dart';
 /// Chat ekraninin realtime abonelikleri: mesaj insert, typing broadcast,
 /// medya istegi degisiklikleri.
 ///
-/// `ChatScreenMixin`'den ayrildi: tek dosya 677 satira ciktu (limit 300).
+/// `ChatScreenMixin`'den ayrildi: tek dosya 677 satira cikti (limit 300).
 /// Ayni bolme deseni `ChatQuestionPowerMixin` / `QuizPowerMixin` tarafinda da var.
 mixin ChatRealtimeMixin on ChatScreenMixin {
-  RealtimeChannel? _channel;
+  RealtimeChannelGroup? _realtime;
   RealtimeChannel? _typingChannel;
-  RealtimeChannel? _mediaChannel;
   Timer? _mediaDebounce;
   Timer? _typingDebounce;
   bool isOtherTyping = false;
 
   // ─── Lifecycle Kancalari ───
 
+  /// Kanal adlari (`chat:`, `typing:`, `media:` + matchId) sozlesmede sabit.
+  /// Kullanici token'i, kopuklukta / token yenilenince yeniden kurulum
+  /// [RealtimeChannelGroup]'ta.
   @override
   void subscribeRealtime() {
-    _subscribeRealtime();
-    _subscribeTyping();
-    _subscribeMediaRequests();
+    final realtime = RealtimeChannelGroup(
+      auth: ref.read(realtimeAuthManagerProvider),
+      userId: ref.read(authProvider).userId ?? '',
+      build: (_, onStatus) => [
+        _subscribeMessages(onStatus),
+        _typingChannel = _subscribeTyping(onStatus),
+        _subscribeMediaRequests(onStatus),
+      ],
+    );
+    _realtime = realtime;
+    unawaited(realtime.start());
   }
 
   @override
   void disposeRealtime() {
-    _channel?.unsubscribe();
-    _typingChannel?.unsubscribe();
-    _mediaChannel?.unsubscribe();
+    _realtime?.dispose();
+    _realtime = null;
+    _typingChannel = null;
     _mediaDebounce?.cancel();
     _typingDebounce?.cancel();
   }
 
   // ─── Realtime ───
 
-  void _subscribeRealtime() {
+  RealtimeChannel _subscribeMessages(RealtimeStatusCallback onStatus) {
     final myId = ref.read(authProvider).userId;
-    _channel = Supabase.instance.client
+    return Supabase.instance.client
         .channel('chat:${widget.matchId}')
         .onPostgresChanges(
           event: PostgresChangeEvent.insert,
@@ -70,14 +83,13 @@ mixin ChatRealtimeMixin on ChatScreenMixin {
             }
           },
         )
-        .subscribe();
+        .subscribe(onStatus);
   }
 
-  void _subscribeTyping() {
+  RealtimeChannel _subscribeTyping(RealtimeStatusCallback onStatus) {
     final myId = ref.read(authProvider).userId;
-    _typingChannel =
-        Supabase.instance.client.channel('typing:${widget.matchId}');
-    _typingChannel!
+    return Supabase.instance.client
+        .channel('typing:${widget.matchId}')
         .onBroadcast(
           event: 'typing',
           callback: (payload) {
@@ -86,17 +98,17 @@ mixin ChatRealtimeMixin on ChatScreenMixin {
             if (senderId != null && senderId != myId) {
               setState(() => isOtherTyping = true);
               _typingDebounce?.cancel();
-              _typingDebounce = Timer(const Duration(seconds: 3), () {
+              _typingDebounce = Timer(AppDurations.typingIndicator, () {
                 if (mounted) setState(() => isOtherTyping = false);
               });
             }
           },
         )
-        .subscribe();
+        .subscribe(onStatus);
   }
 
-  void _subscribeMediaRequests() {
-    _mediaChannel = Supabase.instance.client
+  RealtimeChannel _subscribeMediaRequests(RealtimeStatusCallback onStatus) {
+    return Supabase.instance.client
         .channel('media:${widget.matchId}')
         .onPostgresChanges(
           event: PostgresChangeEvent.all,
@@ -109,14 +121,13 @@ mixin ChatRealtimeMixin on ChatScreenMixin {
           ),
           callback: (_) {
             if (disposed) return;
-            // Debounce: hizli ardisik degisikliklerde tek API cagrisi yap
             _mediaDebounce?.cancel();
-            _mediaDebounce = Timer(const Duration(milliseconds: 500), () {
+            _mediaDebounce = Timer(AppDurations.mediaRequestDebounce, () {
               ref.read(chatProvider(widget.matchId).notifier).loadMediaStatus();
             });
           },
         )
-        .subscribe();
+        .subscribe(onStatus);
   }
 
   // Question updates come via FCM (NotificationNotifier._refreshQuestionCache).

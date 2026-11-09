@@ -156,8 +156,8 @@ void main() {
     });
 
     test('REJECT payload olarak gonderilir', () async {
-      // Iki deger de kullanimda: LIKE discover_card_view.dart:257,
-      // REJECT match_provider.dart:130 (bilincli fire-and-forget).
+      // Iki deger de kullanimda: LIKE DiscoverNotifier.swipe,
+      // REJECT DiscoverNotifier.rejectCard (arka planda RejectDelivery).
       final fake = _FakeMatchService();
 
       await MatchRepository(fake).swipe(targetId: 'u2', action: 'REJECT');

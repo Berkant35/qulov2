@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/l10n/app_localizations.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_button.dart';
@@ -42,7 +43,7 @@ class RegisterStepEmail extends StatelessWidget {
             controller: emailCtrl,
             label: l10n.get('email'),
             errorText: emailError,
-            maxLength: 254,
+            maxLength: AppConstants.emailMaxLength,
             prefixIcon: const Icon(Icons.email_outlined),
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
@@ -51,7 +52,7 @@ class RegisterStepEmail extends StatelessWidget {
           AppTextField(
             controller: passwordCtrl,
             label: l10n.get('password'),
-            maxLength: 128,
+            maxLength: AppConstants.passwordMaxLength,
             errorText: passwordError,
             prefixIcon: const Icon(Icons.lock_outline),
             suffixIcon: IconButton(

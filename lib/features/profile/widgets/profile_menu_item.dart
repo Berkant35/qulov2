@@ -4,6 +4,7 @@ import 'package:qulo_v2/core/constants/q_icons.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_icon.dart';
+import 'package:qulo_v2/core/widgets/ink_surface.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 
 class ProfileMenuItem extends StatelessWidget {
@@ -27,12 +28,8 @@ class ProfileMenuItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Container(
+    return InkSurface(
       margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-      ),
       child: ListTile(
         leading: Stack(
           clipBehavior: Clip.none,

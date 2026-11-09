@@ -5,6 +5,9 @@ import 'package:qulo_v2/core/constants/power_labels.dart';
 import 'package:qulo_v2/core/constants/reward_brands.dart';
 import 'package:qulo_v2/core/l10n/translations/en.dart';
 import 'package:qulo_v2/data/models/rewards_model.dart';
+import 'package:qulo_v2/features/power_demo/constants/power_demo_keys.dart';
+import 'package:qulo_v2/features/power_demo/domain/demo_power.dart';
+import 'package:qulo_v2/features/power_demo/domain/power_demo_scenario.dart';
 import 'package:qulo_v2/features/rewards_market/domain/redeem_error.dart';
 
 /// `context.tr('prefix_$deger')` ile kurulan dinamik anahtarlar: her deger
@@ -73,5 +76,24 @@ void main() {
 
   test('itfa hatası anahtarları (Plan 5)', () {
     expectKeys('redeem error', RedeemErrorKind.values.map(redeemErrorKey));
+  });
+
+  test('power_demo_q<n> — en uzun demo senaryosunun (9 soru) soru, şık ve ipucu metinleri', () {
+    // Hepsini Geç en geç 4 soru kala teklif edilir → senaryo en fazla 9 soru (yedek fiyat 20/60).
+    final scenario = PowerDemoScenario.build(skipPurple: 20, skipAllPurple: 60);
+    expect(scenario.length, 9);
+    final questions = scenario.questions;
+    expectKeys('power_demo soru', questions.map(PowerDemoKeys.question));
+    expectKeys('power_demo şık', [
+      for (final q in questions)
+        for (var i = 0; i < q.optionCount; i++) PowerDemoKeys.option(q, i),
+    ]);
+    expectKeys('power_demo ipucu', questions.where((q) => q.hasHint).map(PowerDemoKeys.questionHint));
+  });
+
+  test('power_demo_hint_<güç> / power_demo_result_<güç> ve çubuk etiketi (6 quiz gücü)', () {
+    expectKeys('power_demo talimat', DemoPower.values.map(PowerDemoKeys.instruction));
+    expectKeys('power_demo sonuç', DemoPower.values.map(PowerDemoKeys.result));
+    expectKeys('power_demo çubuk etiketi', DemoPower.values.map(PowerDemoKeys.barLabel));
   });
 }

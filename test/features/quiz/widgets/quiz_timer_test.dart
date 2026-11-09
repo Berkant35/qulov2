@@ -5,6 +5,9 @@ import 'package:qulo_v2/features/quiz/widgets/quiz_timer.dart';
 
 /// Yeniden açılışta sayaç sunucunun kalan süresinden başlar; çubuk sorunun
 /// tam süresine göre dolu görünür (12/30 → %40), "taze 12 sn" gibi değil.
+///
+/// Süre etiketi `FormatManager.seconds` ile yerelleşir (`12s`, ja `12秒`);
+/// eskiden her dilde sabit `'12 s'` yazıyordu.
 void main() {
   testWidgets('kalan süreden başlar, ilerleme tam süreye oranlanır', (tester) async {
     await tester.pumpWidget(MaterialApp(
@@ -14,7 +17,7 @@ void main() {
       ),
     ));
 
-    expect(find.text('12 s'), findsOneWidget);
+    expect(find.text('12s'), findsOneWidget);
     final bar = tester.widget<LinearProgressIndicator>(find.byType(LinearProgressIndicator));
     expect(bar.value, closeTo(0.4, 0.001));
   });

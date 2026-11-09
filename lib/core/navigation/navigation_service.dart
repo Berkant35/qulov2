@@ -56,6 +56,11 @@ class NavigationService {
 
   bool canPop() => _router.canPop();
 
+  /// [name] adlı rota yığında (itilmiş ya da kabuk içinde) var mı. Çift dokunuşla
+  /// aynı tam ekranın ikinci kez açılmasını önlemek için (ör. quiz).
+  bool isInStack(String name) => _router.routerDelegate.currentConfiguration.routes
+      .any((route) => route is GoRoute && route.name == name);
+
   // ─── Dialog ───
 
   Future<T?> showAppDialog<T>(AppDialog dialog) {

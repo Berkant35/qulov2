@@ -34,4 +34,24 @@ void main() {
       expect(card.distanceKm, isNull);
     });
   });
+
+  /// 2.0.18: kartta "Bugün / Bu hafta aktif" rozeti (sunucu yalnız kova gönderir).
+  group('activity', () {
+    Map<String, dynamic> card(Object? activity) => {'user_id': 'u1', 'question_count': 2, 'activity': activity};
+
+    test('"today" ve "week" okunur', () {
+      expect(ProfileCardModel.fromJson(card('today')).activity, CardActivity.today);
+      expect(ProfileCardModel.fromJson(card('week')).activity, CardActivity.week);
+    });
+
+    test('null, eksik alan (eski sunucu) ve bilinmeyen değer → rozet yok, çökmez', () {
+      expect(ProfileCardModel.fromJson(card(null)).activity, isNull);
+      expect(ProfileCardModel.fromJson({'user_id': 'u1', 'question_count': 2}).activity, isNull);
+      expect(ProfileCardModel.fromJson(card('month')).activity, isNull);
+    });
+
+    test('toJson geri yazar (undo önbelleği)', () {
+      expect(ProfileCardModel.fromJson(card('week')).toJson()['activity'], 'week');
+    });
+  });
 }

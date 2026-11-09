@@ -6,14 +6,7 @@ import 'package:qulo_v2/core/widgets/diamond_icon.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/providers/subscription_provider.dart';
-import 'package:qulo_v2/providers/diamond_provider.dart';
-import 'package:qulo_v2/providers/daily_stats_provider.dart';
-import 'package:qulo_v2/routing/route_names.dart';
-import 'package:qulo_v2/core/navigation/navigation.dart';
-import 'package:qulo_v2/features/diamonds/widgets/celebration_dialog.dart';
-import 'package:qulo_v2/core/services/analytics_manager.dart';
-import 'package:qulo_v2/core/services/analytics_events.dart';
-import 'package:qulo_v2/core/services/revenuecat_service.dart';
+import 'package:qulo_v2/features/diamonds/mixins/subscription_comparison_screen_mixin.dart';
 import 'package:qulo_v2/features/diamonds/models/plan_feature.dart';
 import 'package:qulo_v2/features/diamonds/utils/monthly_price_label.dart';
 import 'package:qulo_v2/features/diamonds/widgets/compact_plan_row.dart';
@@ -29,11 +22,12 @@ class SubscriptionComparisonScreen extends ConsumerStatefulWidget {
 }
 
 class _SubscriptionComparisonScreenState
-    extends ConsumerState<SubscriptionComparisonScreen> {
+    extends ConsumerState<SubscriptionComparisonScreen>
+    with SubscriptionComparisonScreenMixin {
   @override
   void initState() {
     super.initState();
-    AnalyticsManager.instance.logEvent(AnalyticsEvents.subscriptionCompareView);
+    initMixin();
   }
 
   @override
@@ -73,7 +67,7 @@ class _SubscriptionComparisonScreenState
               ],
               isRecommended: false,
               isCurrent: currentPlan?.isPlus ?? false,
-              onSubscribe: plusPrice == null ? null : () => _handlePurchase(context, 'plus'),
+              onSubscribe: plusPrice == null ? null : () => handlePurchase('plus'),
             ),
             const SizedBox(height: AppSpacing.md),
 
@@ -91,13 +85,13 @@ class _SubscriptionComparisonScreenState
               ],
               isRecommended: true,
               isCurrent: currentPlan?.isPremium ?? false,
-              onSubscribe: premiumPrice == null ? null : () => _handlePurchase(context, 'premium'),
+              onSubscribe: premiumPrice == null ? null : () => handlePurchase('premium'),
             ),
             const SizedBox(height: AppSpacing.xxl),
 
             // Restore purchases
             TextButton(
-              onPressed: () => _handleRestore(context),
+              onPressed: handleRestore,
               child: Text(
                 context.tr('sub_restore_purchases'),
                 style: theme.textTheme.bodySmall?.copyWith(
@@ -116,67 +110,4 @@ class _SubscriptionComparisonScreenState
       ),
     );
   }
-
-  Future<void> _handlePurchase(
-    BuildContext context,
-    String plan,
-  ) async {
-    AnalyticsManager.instance.logEvent(
-      AnalyticsEvents.subscriptionPurchaseStart,
-      params: {AnalyticsEvents.paramTier: plan},
-    );
-
-    final productId = plan == 'premium'
-        ? RevenueCatService.premiumProductId
-        : RevenueCatService.plusProductId;
-    final success = await ref
-        .read(subscriptionProvider.notifier)
-        .purchaseByProductId(productId);
-
-    if (!context.mounted) return;
-
-    if (success) {
-      final isPremium = plan == 'premium';
-      final planName = isPremium
-          ? context.tr('sub_plan_premium')
-          : context.tr('sub_plan_plus');
-      final bonus = isPremium ? 1500 : 500;
-
-      await showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (_) => CelebrationDialog(
-          planName: planName,
-          diamondBonus: bonus,
-          isPremium: isPremium,
-        ),
-      );
-
-      if (!context.mounted) return;
-
-      // Invalidate providers so diamonds screen shows fresh data
-      ref.invalidate(diamondProvider);
-      ref.invalidate(subscriptionProvider);
-      ref.invalidate(dailyStatsProvider);
-
-      // Navigate to diamonds screen
-      final nav = ref.read(navigationServiceProvider);
-      nav.pop();
-      nav.go(RouteNames.diamonds);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.tr('purchase_failed'))),
-      );
-    }
-  }
-
-  Future<void> _handleRestore(BuildContext context) async {
-    await ref.read(subscriptionProvider.notifier).restorePurchases();
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.tr('sub_restore_done'))),
-      );
-    }
-  }
 }
-

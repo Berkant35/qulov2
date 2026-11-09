@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/services/haptic_manager.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
@@ -175,7 +176,7 @@ class QuizTimerState extends State<QuizTimer> with TickerProviderStateMixin {
               return Transform.scale(scale: scale, child: child);
             },
             child: Text(
-              '$_remaining s',
+              context.fmt.seconds(_remaining),
               style: Theme.of(context)
                   .textTheme
                   .labelMedium

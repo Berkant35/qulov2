@@ -4,6 +4,10 @@ import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/features/discover/models/location_prompt_content.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
+import 'package:qulo_v2/providers/match_provider.dart';
+import 'package:qulo_v2/core/navigation/navigation.dart';
+import 'package:qulo_v2/features/discover/utils/discover_location_gate.dart';
+import 'package:qulo_v2/routing/route_names.dart';
 
 /// Konum yokken Discover'daki istem kartının mantığı. Kart hata ekranı değil:
 /// önce neden gerektiğini anlatır, sistem istemini kullanıcı dokununca açar.
@@ -16,6 +20,7 @@ mixin DiscoverLocationPromptMixin {
             ctaKey: 'location_retry',
             action: LocationPromptAction.requestPermission,
             isMock: true,
+            offersCity: false,
           ),
         LocationErrors.serviceDisabled => const LocationPromptContent(
             titleKey: 'location_prompt_title',
@@ -39,6 +44,18 @@ mixin DiscoverLocationPromptMixin {
           ),
       };
 
+  /// Konum vermeden devam: şehir seç (sunucu şehir merkezini konum yazar).
+  void openCityPicker(WidgetRef ref, String error) {
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.discoverLocationPromptTap,
+      params: {AnalyticsEvents.paramReason: error, AnalyticsEvents.paramAction: cityPickerAction},
+    );
+    ref.read(navigationServiceProvider).push(RouteNames.cityPicker);
+  }
+
+  /// Analitikte istem kartının "şehir seç" dokunuşu (`action` parametresi).
+  static const cityPickerAction = 'city_picker';
+
   void logLocationPromptShown(String error) {
     AnalyticsManager.instance.logEvent(
       AnalyticsEvents.discoverLocationPromptShow,
@@ -52,9 +69,16 @@ mixin DiscoverLocationPromptMixin {
       params: {AnalyticsEvents.paramReason: error},
     );
     final manager = ref.read(locationManagerProvider);
+    final location = ref.read(locationProvider.notifier);
+    final discover = ref.read(discoverProvider.notifier);
     switch (promptFor(error).action) {
       case LocationPromptAction.requestPermission:
-        await ref.read(locationProvider.notifier).getCurrentLocation();
+        await location.getCurrentLocation();
+        // Sunucuda konum yoktu ama cihazda vardı: konum "hazır hale gelmedi",
+        // `listenLocationRecovery` desteyi yüklemez — burada yeniden çekilir.
+        if (error == discoverLocationMissingCode && location.hasUsableLocation) {
+          await discover.loadCards();
+        }
       case LocationPromptAction.openAppSettings:
         await manager.openAppSettings();
       case LocationPromptAction.openLocationSettings:

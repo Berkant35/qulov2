@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/network/network_manager.dart';
 import 'package:qulo_v2/core/services/image_picker_manager.dart';
@@ -8,6 +11,8 @@ import 'package:qulo_v2/core/services/url_launcher_manager.dart';
 import 'package:qulo_v2/core/services/version_manager.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/app_info_manager.dart';
+import 'package:qulo_v2/core/services/admob_manager.dart';
+import 'package:qulo_v2/core/services/att_manager.dart';
 import 'package:qulo_v2/core/services/audio_player_manager.dart';
 import 'package:qulo_v2/core/services/share_manager.dart';
 import 'package:qulo_v2/core/services/audio_recorder_manager.dart';
@@ -33,14 +38,18 @@ import 'package:qulo_v2/core/network/services/app_config_service.dart';
 import 'package:qulo_v2/core/network/services/referral_service.dart';
 import 'package:qulo_v2/core/network/services/exchange_service.dart';
 import 'package:qulo_v2/core/network/services/chat_question_service.dart';
+import 'package:qulo_v2/core/network/services/city_service.dart';
 import 'package:qulo_v2/core/network/services/block_service.dart';
 import 'package:qulo_v2/core/network/services/presence_service.dart';
 import 'package:qulo_v2/core/network/services/support_ticket_service.dart';
 import 'package:qulo_v2/core/network/services/acquisition_service.dart';
 import 'package:qulo_v2/core/network/services/page_message_service.dart';
+import 'package:qulo_v2/core/network/services/realtime_token_service.dart';
 import 'package:qulo_v2/core/network/services/rewards_service.dart';
 import 'package:qulo_v2/data/repositories/acquisition_repository.dart';
 import 'package:qulo_v2/core/services/presence_manager.dart';
+import 'package:qulo_v2/core/services/realtime_auth_manager.dart';
+import 'package:qulo_v2/core/services/supabase_realtime_auth_target.dart';
 import 'package:qulo_v2/data/repositories/repositories.dart';
 
 // ─── Core Services ───
@@ -61,6 +70,12 @@ final versionManagerProvider = Provider<VersionManager>(
 );
 final analyticsManagerProvider = Provider<AnalyticsManager>(
   (_) => AnalyticsManager.instance,
+);
+final admobManagerProvider = Provider<AdMobManager>(
+  (_) => AdMobManager.instance,
+);
+final attManagerProvider = Provider<AttManager>(
+  (_) => AttManager.instance,
 );
 final appInfoManagerProvider = Provider<AppInfoManager>(
   (_) => AppInfoManager.instance,
@@ -226,6 +241,40 @@ final presenceServiceProvider = Provider<PresenceService>(
 final presenceManagerProvider = Provider<PresenceManager>((ref) {
   final manager = PresenceManager.instance;
   manager.init(ref.read(presenceServiceProvider));
+  return manager;
+});
+
+// ─── Şehir seçimi (konumsuz yedek yol, 2.0.18) ───
+final cityServiceProvider = Provider<CityService>(
+  (ref) => CityService(ref.read(networkManagerProvider).dio),
+);
+final cityRepositoryProvider = Provider<CityRepository>(
+  (ref) => CityRepository(ref.read(cityServiceProvider)),
+);
+
+// ─── Realtime kullanıcı token'ı (2.0.18) ───
+final realtimeTokenServiceProvider = Provider<RealtimeTokenService>(
+  (ref) => RealtimeTokenService(ref.read(networkManagerProvider).dio),
+);
+final realtimeTokenRepositoryProvider = Provider<RealtimeTokenRepository>(
+  (ref) => RealtimeTokenRepository(ref.read(realtimeTokenServiceProvider)),
+);
+
+/// Yaşam döngüsünü kendisi dinler (CLAUDE.md "Lifecycle'ı tüketen dinler"):
+/// `app.dart` büyümez; arka planda yenileme durur, öne gelişte gerekiyorsa yenilenir.
+final realtimeAuthManagerProvider = Provider<RealtimeAuthManager>((ref) {
+  final manager = RealtimeAuthManager(
+    issueToken: ref.read(realtimeTokenRepositoryProvider).issue,
+    target: const SupabaseRealtimeAuthTarget(),
+  );
+  final lifecycle = AppLifecycleListener(
+    onResume: () => unawaited(manager.onForeground()),
+    onPause: manager.onBackground,
+  );
+  ref.onDispose(() {
+    lifecycle.dispose();
+    manager.dispose();
+  });
   return manager;
 });
 

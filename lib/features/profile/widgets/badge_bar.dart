@@ -197,7 +197,7 @@ class BadgeBar extends StatelessWidget {
                 ),
               ),
               Text(
-                '%$pct',
+                context.fmt.percent(pct),
                 style: TextStyle(
                   color: info.color,
                   fontSize: 14,

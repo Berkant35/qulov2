@@ -47,6 +47,8 @@ AppConfigModel _config({
   String latest = '2.0.0',
   bool maintenance = false,
   bool force = true,
+  bool powerDemo = true,
+  bool ads = false,
 }) =>
     AppConfigModel(
       minVersion: min,
@@ -54,6 +56,8 @@ AppConfigModel _config({
       storeUrl: 'https://store.example/qulo',
       isMaintenance: maintenance,
       isForceUpdateEnabled: force,
+      powerDemoEnabled: powerDemo,
+      adsEnabled: ads,
     );
 
 ProviderContainer _container(
@@ -196,6 +200,94 @@ void main() {
       await n.dismissOptionalUpdate();
 
       expect(await n.isOptionalUpdateDismissed(), isTrue);
+    });
+  });
+
+  group('powerDemoEnabledProvider — guc demosu kapatma anahtari', () {
+    test('config null iken (henuz cekilmedi) true — demo yedek degerle acik', () {
+      final container = _container('2.0.0', Success(_config()));
+
+      expect(container.read(appConfigProvider).config, isNull);
+      expect(container.read(powerDemoEnabledProvider), isTrue);
+    });
+
+    test('config alinamazsa (fail-open) true kalir', () async {
+      final container = _container('2.0.0', const Failure(NetworkFailure()));
+
+      await container.read(appConfigProvider.notifier).checkVersion();
+
+      expect(container.read(appConfigProvider).config, isNull);
+      expect(container.read(powerDemoEnabledProvider), isTrue);
+    });
+
+    test('sunucu true derse true', () async {
+      final container = _container('2.0.0', Success(_config(powerDemo: true)));
+
+      await container.read(appConfigProvider.notifier).checkVersion();
+
+      expect(container.read(powerDemoEnabledProvider), isTrue);
+    });
+
+    test('sunucu false derse false — kapatma anahtari', () async {
+      final container = _container('2.0.0', Success(_config(powerDemo: false)));
+
+      await container.read(appConfigProvider.notifier).checkVersion();
+
+      expect(container.read(powerDemoEnabledProvider), isFalse);
+    });
+
+    test('config sonradan gelince dinleyiciye yansir (true → false)', () async {
+      final container = _container('2.0.0', Success(_config(powerDemo: false)));
+      final seen = <bool>[];
+      container.listen<bool>(
+        powerDemoEnabledProvider,
+        (_, next) => seen.add(next),
+        fireImmediately: true,
+      );
+
+      await container.read(appConfigProvider.notifier).checkVersion();
+      await container.pump(); // Provider bagimlilik guncellemesi zamanlayiciyla yayilir
+
+      expect(seen, [true, false]);
+    });
+  });
+
+  group('adsEnabledProvider — reklam anahtari (fail-closed, varsayilan KAPALI)', () {
+    test('config cekilmediyse kapali', () {
+      final container = _container('2.0.0', Success(_config(ads: true)));
+
+      expect(container.read(adsEnabledProvider), isFalse);
+    });
+
+    test('config alinamazsa kapali kalir', () async {
+      final container = _container('2.0.0', const Failure(NetworkFailure()));
+
+      await container.read(appConfigProvider.notifier).checkVersion();
+
+      expect(container.read(adsEnabledProvider), isFalse);
+    });
+
+    test('sunucu true demedikce kapali; true derse acik', () async {
+      final off = _container('2.0.0', Success(_config()));
+      await off.read(appConfigProvider.notifier).checkVersion();
+      expect(off.read(adsEnabledProvider), isFalse);
+
+      final on = _container('2.0.0', Success(_config(ads: true)));
+      await on.read(appConfigProvider.notifier).checkVersion();
+      expect(on.read(adsEnabledProvider), isTrue);
+    });
+
+    test('JSON\'da adsEnabled yoksa false, varsa okunur', () {
+      const base = {
+        'minVersion': '1.0.0',
+        'latestVersion': '1.0.0',
+        'storeUrl': 'x',
+        'isMaintenance': false,
+        'isForceUpdateEnabled': false,
+      };
+      expect(AppConfigModel.fromJson(base).adsEnabled, isFalse);
+      expect(AppConfigModel.fromJson({...base, 'adsEnabled': true}).adsEnabled, isTrue);
+      expect(AppConfigModel.fromJson({...base, 'adsEnabled': null}).adsEnabled, isFalse);
     });
   });
 }

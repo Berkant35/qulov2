@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:qulo_v2/core/l10n/translations/en.dart';
 import 'package:qulo_v2/features/discover/mixins/discover_location_prompt_mixin.dart';
 import 'package:qulo_v2/features/discover/models/location_prompt_content.dart';
+import 'package:qulo_v2/features/discover/utils/discover_location_gate.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
 
 class _Prompt with DiscoverLocationPromptMixin {}
@@ -52,4 +53,24 @@ void main() {
       }
     }
   });
+
+  // 2.0.18 konumsuz yedek yol: konum vermeyen de şehir seçip desteyi görebilir.
+  test('"şehir seç" yalnız sahte konumda sunulmaz', () {
+    expect(prompt.promptFor(LocationErrors.mockDetected).offersCity, isFalse);
+    for (final error in [
+      LocationErrors.permissionDenied,
+      LocationErrors.permissionDeniedForever,
+      LocationErrors.serviceDisabled,
+      discoverLocationMissingCode,
+    ]) {
+      expect(prompt.promptFor(error).offersCity, isTrue, reason: error);
+    }
+    expect(enTranslations.containsKey('city_picker_choose_city'), isTrue);
+  });
+
+  test('sunucuda konum yok (PROFILE_INCOMPLETE) → konum izni iste + şehir seç', () {
+    final c = prompt.promptFor(discoverLocationMissingCode);
+    expect(c.action, LocationPromptAction.requestPermission);
+  });
 }
+

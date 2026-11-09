@@ -247,10 +247,21 @@ class ChatState {
 
 final chatProvider = AsyncNotifierProvider.family<ChatNotifier, ChatState, String>(ChatNotifier.new);
 
-/// Kullanıcının o an açık olan chat ekranının matchId'si.
-/// Chat ekranı açıkken set edilir, kapanınca null'a döner.
-/// In-app banner suppress logic'inde kullanılır.
-final activeChatMatchIdProvider = StateProvider<String?>((ref) => null);
+/// Açık sohbet ekranlarının yığını (alttan üste matchId). En üstteki, kullanıcının
+/// baktığı sohbettir; in-app mesaj banner'ı yalnız onun için bastırılır.
+/// Tek değer değil yığın: aynı sohbet iki kez açılabilir (deep link tekrarsız
+/// push eder) ve m1 → m2 → geri yolunda m1'in işareti geri gelmeli.
+final openChatStackProvider = StateProvider<List<String>>((ref) => const []);
+
+extension OpenChatStack on StateController<List<String>> {
+  void pushChat(String matchId) => state = [...state, matchId];
+
+  /// TEK örneği çıkarır; kapanan ekran üstteki olduğundan son örnek (LIFO).
+  void popChat(String matchId) {
+    final i = state.lastIndexOf(matchId);
+    if (i >= 0) state = [...state]..removeAt(i);
+  }
+}
 
 /// Cache for chat questions fetched by ID — realtime updates write here,
 /// widgets read from here via [chatQuestionProvider].

@@ -13,6 +13,9 @@ import 'package:qulo_v2/data/models/user_model.dart';
 /// (`/profile/questions`, `/profile/questions/create`, `/profile/edit`) orada.
 /// Onek eslesmesi `/profile-detail/...` ve `/profile/preview`'i de kapsar:
 /// profil gorulebilir, quiz (`/quiz/...`) yine kapida durur.
+///
+/// Guc demosu (`/power-demo`) da muaftir: market (`/profile/exchange`) ▶ kurulumu bitmemis
+/// kullaniciya da acik; demo yalitilmis, hicbir sey harcamaz ve hicbir route'a gitmez.
 String? setupGateRedirect({required String location, required UserModel? user}) {
   if (user == null) return null;
 
@@ -24,8 +27,14 @@ String? setupGateRedirect({required String location, required UserModel? user}) 
   if (location == '/profile-setup') {
     return user.setupComplete ? '/discover' : null;
   }
-  if (!user.setupComplete && !location.startsWith('/profile')) {
+  if (!user.setupComplete && !_isSetupExempt(location)) {
     return '/profile-setup';
   }
   return null;
 }
+
+/// Tam eslesme: `/power-demo-x` gibi benzer yollar muaf degil.
+const _powerDemoPath = '/power-demo';
+
+bool _isSetupExempt(String location) =>
+    location.startsWith('/profile') || location == _powerDemoPath;

@@ -2,6 +2,7 @@ import 'dart:developer' as dev;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/network/result.dart';
+import 'package:qulo_v2/core/services/purchase_outcome.dart';
 import 'package:qulo_v2/core/services/revenuecat_service.dart';
 import 'package:qulo_v2/data/models/diamond_model.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
@@ -40,10 +41,11 @@ class DiamondNotifier extends AsyncNotifier<DiamondBalance> {
     return result;
   }
 
-  Future<bool> purchaseByProductId(String productId) async {
+  /// Vazgeçme [PurchaseOutcome.cancelled]: çağıran hata mesajı göstermez.
+  Future<PurchaseOutcome> purchaseByProductId(String productId) async {
     if (!RevenueCatService.isConfigured) {
       dev.log('RevenueCat not configured — cannot purchase');
-      return false;
+      return PurchaseOutcome.failed;
     }
     try {
       final customerInfo = await RevenueCatService.purchaseByProductId(productId);
@@ -53,10 +55,10 @@ class DiamondNotifier extends AsyncNotifier<DiamondBalance> {
           ?.transactionIdentifier;
       await _notifyBackend(productId, txId);
       await fetchBalance();
-      return true;
+      return PurchaseOutcome.success;
     } catch (e) {
       dev.log('Diamond purchase failed: $e');
-      return false;
+      return PurchaseOutcome.fromError(e);
     }
   }
 

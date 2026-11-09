@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/widgets/ink_surface.dart';
 
 class ProfileSectionCard extends StatelessWidget {
   final String title;
@@ -23,78 +24,76 @@ class ProfileSectionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        border: Border.all(
-          color: context.appColors.primary.withValues(alpha: 0.15),
-          width: 1,
-        ),
-      ),
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              if (icon != null) ...[
-                Icon(icon, color: context.appColors.primary, size: 20),
-                const SizedBox(width: AppSpacing.sm),
-              ],
-              Expanded(
-                child: Text(
-                  title,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    color: context.appColors.primary,
-                    fontWeight: FontWeight.w600,
+    // Rengi InkSurface boyar: içerikteki SwitchListTile vb. dokunma dalgası görünsün.
+    return InkSurface(
+      color: theme.colorScheme.surfaceContainerLow,
+      radius: AppSpacing.radiusLg,
+      side: BorderSide(color: context.appColors.primary.withValues(alpha: 0.15)),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                if (icon != null) ...[
+                  Icon(icon, color: context.appColors.primary, size: 20),
+                  const SizedBox(width: AppSpacing.sm),
+                ],
+                Expanded(
+                  child: Text(
+                    title,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: context.appColors.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-              ),
-              if (completionText != null)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.sm,
-                    vertical: AppSpacing.xs,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isComplete
-                        ? context.appColors.secondary.withValues(alpha: 0.15)
-                        : theme.colorScheme.surfaceContainerHigh,
-                    borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (isComplete)
-                        Icon(Icons.check, color: context.appColors.secondary, size: 14),
-                      if (isComplete) const SizedBox(width: AppSpacing.xxs),
-                      Text(
-                        completionText!,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: isComplete
-                              ? context.appColors.secondary
-                              : theme.colorScheme.onSurfaceVariant,
-                          fontWeight: FontWeight.w600,
+                if (completionText != null)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.sm,
+                      vertical: AppSpacing.xs,
+                    ),
+                    decoration: BoxDecoration(
+                      color: isComplete
+                          ? context.appColors.secondary.withValues(alpha: 0.15)
+                          : theme.colorScheme.surfaceContainerHigh,
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (isComplete)
+                          Icon(Icons.check, color: context.appColors.secondary, size: 14),
+                        if (isComplete) const SizedBox(width: AppSpacing.xxs),
+                        Text(
+                          completionText!,
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: isComplete
+                                ? context.appColors.secondary
+                                : theme.colorScheme.onSurfaceVariant,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-            ],
-          ),
-          if (subtitle != null) ...[
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              subtitle!,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
+              ],
             ),
+            if (subtitle != null) ...[
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                subtitle!,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+            const SizedBox(height: AppSpacing.md),
+            child,
           ],
-          const SizedBox(height: AppSpacing.md),
-          child,
-        ],
+        ),
       ),
     );
   }

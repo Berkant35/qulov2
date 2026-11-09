@@ -58,6 +58,121 @@ void main() {
 
     expect(config, EconomyConfig.fallback);
   });
+
+  group('oracleAccuracy — guc demosu Kahin dogrulugu', () {
+    // Sunucu `GET /app/economy` → `{ version, config, oracleAccuracy }`: oran
+    // config'in ICINDE degil, kok seviyede ayri alan (config semasina girmez).
+    Map<String, dynamic> envelope({Object? oracleAccuracy, bool withConfig = true}) => {
+          'version': 3,
+          if (withConfig) 'config': _plain(EconomyConfig.fallback.toJson()),
+          if (oracleAccuracy != null) 'oracleAccuracy': oracleAccuracy,
+        };
+
+    test('oracleAccuracy kok alandan okunur (0.65)', () {
+      final response = EconomyConfigResponse.fromJson(envelope(oracleAccuracy: 0.65));
+
+      expect(response.config.oracleAccuracy, 0.65);
+    });
+
+    test('alan yoksa 0.7 — demo yedek degeriyle calisir', () {
+      final response = EconomyConfigResponse.fromJson(envelope());
+
+      expect(response.config.oracleAccuracy, 0.7);
+      expect(EconomyConfig.fallback.oracleAccuracy, 0.7);
+    });
+
+    test('kokteki tam sayi (1 ve 0 — JSON\'da int gelir) double olur, cokmez', () {
+      expect(EconomyConfigResponse.fromJson(envelope(oracleAccuracy: 1)).config.oracleAccuracy, 1.0);
+      expect(EconomyConfigResponse.fromJson(envelope(oracleAccuracy: 0)).config.oracleAccuracy, 0.0);
+    });
+
+    test('config bolumu yokken de kok oran uygulanir, geri kalan fallback', () {
+      final response = EconomyConfigResponse.fromJson(
+        envelope(oracleAccuracy: 0.65, withConfig: false),
+      );
+
+      expect(response.config.oracleAccuracy, 0.65);
+      expect(response.config.powerCosts, EconomyConfig.fallback.powerCosts);
+      expect(response.config.core, EconomyConfig.fallback.core);
+    });
+
+    test('toJson→fromJson oracleAccuracy korunur (cevrimdisi acilis onbellegi)', () {
+      final config = EconomyConfigResponse.fromJson(envelope(oracleAccuracy: 0.65)).config;
+
+      final restored = EconomyConfig.fromJson(_plain(config.toJson()));
+
+      expect(restored.oracleAccuracy, 0.65);
+      expect(restored, config);
+    });
+
+    test('oran esitlige girer — farkli oranli config\'ler esit sayilmaz', () {
+      final a = EconomyConfigResponse.fromJson(envelope(oracleAccuracy: 0.65)).config;
+      final b = EconomyConfigResponse.fromJson(envelope(oracleAccuracy: 0.9)).config;
+
+      expect(a, isNot(b));
+    });
+  });
+
+  group('rewards.starterPowers — kayit hediyesi guc adetleri', () {
+    // Sunucu `DEFAULT_STARTER_POWERS`: 8 gucun hepsi 1. Alan hic yoksa varsayilan;
+    // alan VARSA oldugu gibi (kismi tanimda listelenmeyen guc verilmez —
+    // sunucu `exchange.service` yalniz listelenenleri envantere yazar).
+    const allPowers = [
+      'ORACLE', 'HALF', 'SKIP', 'SKIP_ALL', 'TIME_EXTEND', 'HINT', 'POWER_BLOCK', 'POWER_UNBLOCK',
+    ];
+
+    Map<String, dynamic> rewardsJson({Object? starterPowers}) => {
+          'milestones': {'25': 5},
+          'referralPurple': 25,
+          'maxCompletedReferrals': 10,
+          if (starterPowers != null) 'starterPowers': starterPowers,
+        };
+
+    test('starterPowers yoksa 8 guc × 1', () {
+      final rewards = RewardsConfig.fromJson(rewardsJson());
+
+      expect(rewards.starterPowers, {for (final p in allPowers) p: 1});
+    });
+
+    test('varsayilan guc adlari fiyat tablosundaki 8 guc ile birebir ayni', () {
+      final pricedPowers = PowerCostsConfig.fallback.toJson().keys.toSet();
+
+      expect(EconomyConfig.fallback.rewards.starterPowers.keys.toSet(), pricedPowers);
+      expect(pricedPowers, allPowers.toSet());
+    });
+
+    test('config\'te rewards bolumu hic yoksa da 8 guc × 1', () {
+      final config = EconomyConfig.fromJson(const <String, dynamic>{});
+
+      expect(config.rewards.starterPowers, {for (final p in allPowers) p: 1});
+    });
+
+    test("starterPowers {'HALF':0} okunur — 0 gecerli adet, kismi tanim varsayilanla doldurulmaz", () {
+      final rewards = RewardsConfig.fromJson(rewardsJson(starterPowers: {'HALF': 0}));
+
+      expect(rewards.starterPowers, {'HALF': 0});
+    });
+
+    test('listelenen tum guclerin adedi okunur, listede olmayan kalmaz', () {
+      final rewards = RewardsConfig.fromJson(
+        rewardsJson(starterPowers: {'ORACLE': 2, 'HALF': 0, 'HINT': 5}),
+      );
+
+      expect(rewards.starterPowers, {'ORACLE': 2, 'HALF': 0, 'HINT': 5});
+      expect(rewards.starterPowers['SKIP'], isNull);
+    });
+
+    test('starterPowers onbellek gidis-donusunde korunur', () {
+      final rewards = RewardsConfig.fromJson(
+        rewardsJson(starterPowers: {'ORACLE': 3, 'SKIP_ALL': 0}),
+      );
+
+      final restored = RewardsConfig.fromJson(_plain(rewards.toJson()));
+
+      expect(restored.starterPowers, {'ORACLE': 3, 'SKIP_ALL': 0});
+      expect(restored, rewards);
+    });
+  });
 }
 
 /// JSON'a yaz-oku: gercek onbellek yolu ile ayni tip normallestirmesi.

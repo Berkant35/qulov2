@@ -16,4 +16,15 @@ mixin DiscoverActionButtonsMixin {
       remaining: unlimited ? -1 : (limit - used).clamp(0, limit),
     );
   }
+
+  /// Butonun altindaki etiket: hak varsa kalan sayi (sinirsizda ∞), yoksa
+  /// [lockedLabel] ("Geri al").
+  String undoLabel(UndoAllowance allowance, {required String lockedLabel}) {
+    if (!allowance.hasRight) return lockedLabel;
+    return allowance.isUnlimited ? '∞' : '${allowance.remaining}';
+  }
+
+  /// Etiket yalniz hak varken VE geri alinacak kart varken vurgulu.
+  bool isUndoLabelHighlighted(UndoAllowance allowance, {required bool canUndo}) =>
+      allowance.hasRight && canUndo;
 }

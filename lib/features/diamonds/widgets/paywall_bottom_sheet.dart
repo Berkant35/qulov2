@@ -4,18 +4,13 @@ import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
-import 'package:qulo_v2/core/services/revenuecat_service.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_button.dart';
 import 'package:qulo_v2/core/widgets/diamond_icon.dart';
+import 'package:qulo_v2/features/diamonds/mixins/paywall_bottom_sheet_mixin.dart';
 import 'package:qulo_v2/features/diamonds/utils/monthly_price_label.dart';
-import 'package:qulo_v2/features/diamonds/widgets/celebration_dialog.dart';
-import 'package:qulo_v2/features/diamonds/models/diamond_tier.dart';
 import 'package:qulo_v2/features/diamonds/widgets/purchase_grid.dart';
-import 'package:qulo_v2/providers/daily_stats_provider.dart';
-import 'package:qulo_v2/providers/diamond_provider.dart';
-import 'package:qulo_v2/providers/economy_config_provider.dart';
 import 'package:qulo_v2/providers/subscription_provider.dart';
 import 'package:qulo_v2/features/diamonds/widgets/subscription_legal_links.dart';
 
@@ -44,120 +39,7 @@ class PaywallBottomSheetContent extends ConsumerStatefulWidget {
 }
 
 class _PaywallBottomSheetContentState
-    extends ConsumerState<PaywallBottomSheetContent> {
-  bool _isPurchasing = false;
-
-  String _titleForTrigger(BuildContext context) {
-    return switch (widget.trigger) {
-      'undo_locked' => context.tr('paywall_title_undo'),
-      'passport_locked' => context.tr('paywall_title_passport'),
-      'question_limit' => context.tr('paywall_title_questions'),
-      'swipe_limit' => context.tr('paywall_title_swipes'),
-      _ => context.tr('paywall_title_general'),
-    };
-  }
-
-  bool get _isPremiumOnlyTrigger => widget.trigger == 'passport_locked';
-
-  Future<void> _handlePurchase(String plan) async {
-    if (_isPurchasing) return;
-    setState(() => _isPurchasing = true);
-
-    AnalyticsManager.instance.logEvent(
-      AnalyticsEvents.subscriptionPurchaseStart,
-      params: {
-        AnalyticsEvents.paramTier: plan,
-        AnalyticsEvents.paramTrigger: widget.trigger,
-      },
-    );
-
-    final productId = plan == 'premium'
-        ? RevenueCatService.premiumProductId
-        : RevenueCatService.plusProductId;
-    final success = await ref
-        .read(subscriptionProvider.notifier)
-        .purchaseByProductId(productId);
-
-    if (!mounted) return;
-
-    if (success) {
-      Navigator.of(context).pop();
-
-      ref.invalidate(subscriptionProvider);
-      ref.invalidate(dailyStatsProvider);
-      ref.invalidate(diamondProvider);
-
-      final isPremium = plan == 'premium';
-      final planName = isPremium
-          ? context.tr('sub_plan_premium')
-          : context.tr('sub_plan_plus');
-      final config = ref.read(economyConfigProvider);
-      final bonus = isPremium
-          ? config.limitsFor('premium').monthlyPurpleBonus
-          : config.limitsFor('plus').monthlyPurpleBonus;
-
-      if (context.mounted) {
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (_) => CelebrationDialog(
-            planName: planName,
-            diamondBonus: bonus,
-            isPremium: isPremium,
-          ),
-        );
-      }
-    } else {
-      setState(() => _isPurchasing = false);
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.tr('purchase_failed'))),
-        );
-      }
-    }
-  }
-
-  Future<void> _handleConsumablePurchase(PurchasePackage package) async {
-    if (_isPurchasing) return;
-    setState(() => _isPurchasing = true);
-
-    AnalyticsManager.instance.logEvent(
-      'diamond_purchase_start',
-      params: {
-        'product_id': package.tier.productId,
-        'amount': package.amount,
-        AnalyticsEvents.paramTrigger: widget.trigger,
-      },
-    );
-
-    final success = await ref
-        .read(diamondProvider.notifier)
-        .purchaseByProductId(package.tier.productId);
-
-    if (!mounted) return;
-
-    if (success) {
-      Navigator.of(context).pop();
-      ref.invalidate(diamondProvider);
-    } else {
-      setState(() => _isPurchasing = false);
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.tr('purchase_failed'))),
-        );
-      }
-    }
-  }
-
-  Future<void> _handleRestore() async {
-    await ref.read(subscriptionProvider.notifier).restorePurchases();
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.tr('sub_restore_done'))),
-      );
-    }
-  }
-
+    extends ConsumerState<PaywallBottomSheetContent> with PaywallBottomSheetMixin {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -171,7 +53,7 @@ class _PaywallBottomSheetContentState
     final premiumPrice = planPrices.premium;
 
     return PopScope(
-      canPop: !_isPurchasing,
+      canPop: !isPurchasing,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -197,7 +79,7 @@ class _PaywallBottomSheetContentState
                 Align(
                   alignment: Alignment.centerRight,
                   child: GestureDetector(
-                    onTap: _isPurchasing ? null : () => Navigator.of(context).pop(),
+                    onTap: isPurchasing ? null : () => Navigator.of(context).pop(),
                     child: Container(
                       width: 32,
                       height: 32,
@@ -230,7 +112,7 @@ class _PaywallBottomSheetContentState
           children: [
             // Title
             Text(
-              _titleForTrigger(context),
+              titleForTrigger(context),
               style: theme.textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -247,14 +129,14 @@ class _PaywallBottomSheetContentState
             const SizedBox(height: AppSpacing.xl),
 
             // Purchase buttons
-            if (!isPlus && !_isPremiumOnlyTrigger)
+            if (!isPlus && !isPremiumOnlyTrigger)
               Padding(
                 padding: const EdgeInsets.only(bottom: AppSpacing.md),
                 child: AppButton(
                   label: '${context.tr('sub_plan_plus')} — ${plusPrice ?? unknownPriceLabel}',
                   variant: AppButtonVariant.secondary,
-                  isLoading: _isPurchasing,
-                  onPressed: plusPrice == null ? null : () => _handlePurchase('plus'),
+                  isLoading: isPurchasing,
+                  onPressed: plusPrice == null ? null : () => handlePurchase('plus'),
                 ),
               ),
 
@@ -269,8 +151,8 @@ class _PaywallBottomSheetContentState
             if (!isPremium)
               AppButton(
                 label: '${context.tr('sub_plan_premium')} — ${premiumPrice ?? unknownPriceLabel}',
-                isLoading: _isPurchasing,
-                onPressed: premiumPrice == null ? null : () => _handlePurchase('premium'),
+                isLoading: isPurchasing,
+                onPressed: premiumPrice == null ? null : () => handlePurchase('premium'),
               ),
 
             if (isPremium)
@@ -296,15 +178,15 @@ class _PaywallBottomSheetContentState
             ),
             const SizedBox(height: AppSpacing.md),
             PurchaseGrid(
-              onPurchase: _isPurchasing ? null : _handleConsumablePurchase,
-              isLoading: _isPurchasing,
+              onPurchase: isPurchasing ? null : handleConsumablePurchase,
+              isLoading: isPurchasing,
             ),
 
             const SizedBox(height: AppSpacing.lg),
 
             // Restore purchases
             TextButton(
-              onPressed: _isPurchasing ? null : _handleRestore,
+              onPressed: isPurchasing ? null : handleRestore,
               child: Text(
                 context.tr('sub_restore_purchases'),
                 style: theme.textTheme.bodySmall?.copyWith(

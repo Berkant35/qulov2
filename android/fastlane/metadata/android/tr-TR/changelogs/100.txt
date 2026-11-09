@@ -1,0 +1,4 @@
+• Konum izni vermeden şehrini seçerek keşfedebilirsin
+• Keşfet kartlarında "Bugün aktif" ve "Bu hafta aktif" rozetleri
+• Biri sorularını çözdüğünde haber veriyoruz
+• Fotoğraf seçiminde ve quiz'de kararlılık düzeltmeleri; Keşfet'te reddettiğin kişiler artık tekrar karşına çıkmıyor

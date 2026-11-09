@@ -30,6 +30,36 @@ void main() {
     );
   });
 
+  // ITMS-90683 (2026-11-02, build 97): geolocator Always API'sine referans veriyor; uygulama
+  // Always istemese de Apple anahtarı ister. Metin When-In-Use ile aynı kalmalı.
+  test('Always konum anahtarı Info.plist ve her dilde When-In-Use ile aynı', () {
+    final plist = File('ios/Runner/Info.plist').readAsStringSync();
+    String plistValue(String key) => RegExp(
+      '<key>$key</key>\\s*<string>([\\s\\S]*?)</string>',
+    ).firstMatch(plist)!.group(1)!;
+    expect(
+      plistValue('NSLocationAlwaysAndWhenInUseUsageDescription'),
+      plistValue('NSLocationWhenInUseUsageDescription'),
+    );
+
+    for (final code in expected) {
+      final strings = File(
+        'ios/Runner/$code.lproj/InfoPlist.strings',
+      ).readAsStringSync();
+      String? value(String key) =>
+          RegExp('^"$key"\\s*=\\s*(.*)\$', multiLine: true)
+              .firstMatch(strings)
+              ?.group(1);
+      final whenInUse = value('NSLocationWhenInUseUsageDescription');
+      expect(whenInUse, isNotNull, reason: code);
+      expect(
+        value('NSLocationAlwaysAndWhenInUseUsageDescription'),
+        whenInUse,
+        reason: code,
+      );
+    }
+  });
+
   test('Info.plist CFBundleLocalizations == supportedQuestionLocales', () {
     final plist = File('ios/Runner/Info.plist').readAsStringSync();
     final block = RegExp(
@@ -63,7 +93,9 @@ void main() {
   );
 
   test('push_testflight_notes.mjs LOCALE_MAP her dili eşler', () {
-    expect(_testFlightLocaleMap().keys.toSet(), expected);
+    // Yalnız mağazada olan vitrinler (vi, 2.0.15 What's New) haritada fazladan
+    // durabilir; eksik uygulama dili ise notun o dilde hiç gitmemesi demek.
+    expect(_testFlightLocaleMap().keys.toSet(), containsAll(expected));
   });
 
   test(

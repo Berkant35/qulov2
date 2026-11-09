@@ -13,12 +13,18 @@ class EconomyConfigResponse {
     required this.config,
   });
 
+  /// Sunucu zarfı `{ version, config, oracleAccuracy }`. `oracleAccuracy` config
+  /// şemasının parçası değil, kökte ayrı alan; [EconomyConfig]'e taşınır ki tek
+  /// state (ve önbellek) hepsini birlikte tutsun. Kökte yoksa config'teki/varsayılan.
   factory EconomyConfigResponse.fromJson(Map<String, dynamic> json) {
+    final configJson = json['config'] as Map<String, dynamic>?;
+    final rootAccuracy = json['oracleAccuracy'];
     return EconomyConfigResponse(
       version: json['version'] as int? ?? 1,
-      config: json['config'] != null
-          ? EconomyConfig.fromJson(json['config'] as Map<String, dynamic>)
-          : EconomyConfig.fallback,
+      config: EconomyConfig.fromJson({
+        ...?configJson,
+        if (rootAccuracy != null) 'oracleAccuracy': rootAccuracy,
+      }),
     );
   }
 }
@@ -34,12 +40,20 @@ class EconomyConfig extends Equatable {
   final TimingConfig timing;
   final PowerCostsConfig powerCosts;
 
+  /// Kâhin'in doğru cevap verme oranı (0..1). Güç demosu bunu auth öncesi
+  /// sunucudan okur; çekilemezse [defaultOracleAccuracy] ile çalışır.
+  final double oracleAccuracy;
+
+  /// Sunucu `powers` satırı yokken döndürdüğü değerle aynı.
+  static const double defaultOracleAccuracy = 0.7;
+
   const EconomyConfig({
     required this.core,
     required this.subscriptionLimits,
     required this.rewards,
     required this.timing,
     required this.powerCosts,
+    this.oracleAccuracy = defaultOracleAccuracy,
   });
 
   /// Returns limits for the given subscription plan.
@@ -146,6 +160,8 @@ class EconomyConfig extends Equatable {
       powerCosts: json['powerCosts'] != null
           ? PowerCostsConfig.fromJson(json['powerCosts'] as Map<String, dynamic>)
           : PowerCostsConfig.fallback,
+      oracleAccuracy:
+          (json['oracleAccuracy'] as num?)?.toDouble() ?? defaultOracleAccuracy,
     );
   }
 
@@ -158,11 +174,13 @@ class EconomyConfig extends Equatable {
       'rewards': rewards.toJson(),
       'timing': timing.toJson(),
       'powerCosts': powerCosts.toJson(),
+      'oracleAccuracy': oracleAccuracy,
     };
   }
 
   @override
-  List<Object?> get props => [core, subscriptionLimits, rewards, timing, powerCosts];
+  List<Object?> get props =>
+      [core, subscriptionLimits, rewards, timing, powerCosts, oracleAccuracy];
 }
 
 // ---------------------------------------------------------------------------
@@ -321,10 +339,28 @@ class RewardsConfig extends Equatable {
   final int referralPurple;
   final int maxCompletedReferrals;
 
+  /// Yeni kayıtta envantere verilen başlangıç paketi: API güç adı → adet.
+  /// Sunucu gibi okunur: alan hiç yoksa [defaultStarterPowers]; alan varsa
+  /// olduğu gibi (kısmi tanımda listelenmeyen güç verilmez, 0 geçerli adettir).
+  final Map<String, int> starterPowers;
+
+  /// Sunucu `DEFAULT_STARTER_POWERS` ile aynı: 8 gücün hepsi 1.
+  static const Map<String, int> defaultStarterPowers = {
+    'ORACLE': 1,
+    'HALF': 1,
+    'SKIP': 1,
+    'SKIP_ALL': 1,
+    'TIME_EXTEND': 1,
+    'HINT': 1,
+    'POWER_BLOCK': 1,
+    'POWER_UNBLOCK': 1,
+  };
+
   const RewardsConfig({
     required this.milestones,
     required this.referralPurple,
     required this.maxCompletedReferrals,
+    this.starterPowers = defaultStarterPowers,
   });
 
   factory RewardsConfig.fromJson(Map<String, dynamic> json) {
@@ -339,12 +375,20 @@ class RewardsConfig extends Equatable {
       }
     }
 
+    final rawStarterPowers = json['starterPowers'] as Map<String, dynamic>?;
+
     return RewardsConfig(
       milestones: parsedMilestones.isNotEmpty
           ? parsedMilestones
           : const {25: 5, 50: 15, 75: 30, 100: 50},
       referralPurple: json['referralPurple'] as int? ?? 25,
       maxCompletedReferrals: json['maxCompletedReferrals'] as int? ?? 10,
+      starterPowers: rawStarterPowers == null
+          ? defaultStarterPowers
+          : {
+              for (final entry in rawStarterPowers.entries)
+                entry.key: (entry.value as num).toInt(),
+            },
     );
   }
 
@@ -354,11 +398,13 @@ class RewardsConfig extends Equatable {
           milestones.map((key, value) => MapEntry(key.toString(), value)),
       'referralPurple': referralPurple,
       'maxCompletedReferrals': maxCompletedReferrals,
+      'starterPowers': starterPowers,
     };
   }
 
   @override
-  List<Object?> get props => [milestones, referralPurple, maxCompletedReferrals];
+  List<Object?> get props =>
+      [milestones, referralPurple, maxCompletedReferrals, starterPowers];
 }
 
 // ---------------------------------------------------------------------------

@@ -28,6 +28,7 @@ import 'package:qulo_v2/providers/user_languages_provider.dart';
 import 'package:qulo_v2/providers/exchange_provider.dart';
 import 'package:qulo_v2/providers/quiz_provider.dart';
 import 'package:qulo_v2/providers/deep_link_provider.dart';
+import 'package:qulo_v2/providers/edit_profile_provider.dart';
 import 'package:qulo_v2/providers/identity_provider.dart';
 import 'package:qulo_v2/providers/notification_preferences_provider.dart';
 
@@ -446,6 +447,7 @@ class AuthNotifier extends Notifier<AuthState> {
     }
     // Stop presence heartbeat + send offline
     await ref.read(presenceManagerProvider).stop();
+    await _clearRealtimeAuth();
     await _clearTokens();
 
     // Clean up notification listeners before invalidation
@@ -548,6 +550,8 @@ class AuthNotifier extends Notifier<AuthState> {
     state = const AuthState(status: AuthStatus.unauthenticated);
 
     _invalidateAllProviders();
+    // Durumdan SONRA: araya await girerse paralel 401'ler guard'i gecerdi.
+    await _clearRealtimeAuth();
   }
 
   /// Invalidate all auth-dependent providers to prevent stale data crashes.
@@ -576,9 +580,21 @@ class AuthNotifier extends Notifier<AuthState> {
     ref.invalidate(marketProvider);
     // Kimlik etiketleri hesaba özel: sonraki hesap önceki hesabın etiketini görmez / onun rızasıyla kaydetmez.
     ref.invalidate(identityProvider);
+    // Profil düzenleme durumu da hesaba özel: sonraki hesap önceki hesabın foto/tercihlerini görüp kaydetmez.
+    ref.invalidate(editProfileProvider);
     // Tracker invalidate EDİLMEZ: `onDispose` önceki hesabın olaylarını gönderirdi.
     if (ref.exists(sectionEventTrackerProvider)) ref.read(sectionEventTrackerProvider).reset();
     ref.read(pendingDeepLinkProvider.notifier).state = null;
+  }
+
+  /// Realtime kullanıcı token'ı bellekten atılır, kanallar kapanır: sonraki
+  /// hesaba önceki hesabın `sub`'ı kalmaz. Çıkışı asla durdurmaz.
+  Future<void> _clearRealtimeAuth() async {
+    try {
+      await ref.read(realtimeAuthManagerProvider).clear();
+    } catch (e) {
+      debugPrint('[auth] realtime auth clear failed (ignored): $e');
+    }
   }
 
   Future<void> _saveTokens(AuthTokens tokens) async {

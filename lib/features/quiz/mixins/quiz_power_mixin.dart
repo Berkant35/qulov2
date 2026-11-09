@@ -6,6 +6,7 @@ import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/services/funnel_events.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
+import 'package:qulo_v2/features/diamonds/models/paywall_triggers.dart';
 import 'package:qulo_v2/features/diamonds/widgets/paywall_bottom_sheet.dart';
 import 'package:qulo_v2/data/models/quiz_model.dart';
 import 'package:qulo_v2/providers/diamond_provider.dart';
@@ -19,6 +20,13 @@ import 'package:qulo_v2/features/quiz/mixins/quiz_screen_state_mixin.dart';
 /// Envanter kapisi kaldirildi: buton her zaman aktif, envanterde hak yoksa sunucu
 /// dogrudan mor elmastan dusuyor. Bakiye yetmezse paywall acilir.
 mixin QuizPowerMixin on QuizScreenStateMixin {
+  /// Ek Süre'nin "+N" çipini oynatır. Efekt jetonları YALNIZ sunucu başarı dalında artar:
+  /// hata (ör. `INSUFFICIENT_DIAMONDS`) yanlış geri bildirim vermesin (spec §13.2/7).
+  int timeExtendEffectToken = 0;
+
+  /// Doğru Say / Hepsini Geç'te soru kartını kaydırır; geçiş beklemez (efekt geçişle eşzamanlı).
+  int skipEffectToken = 0;
+
   Future<void> usePower(String power) async {
     if (isSubmitting) return;
 
@@ -28,7 +36,7 @@ mixin QuizPowerMixin on QuizScreenStateMixin {
     final hadInventory = ref.read(exchangeProvider).getCount(power) > 0;
     final cost = quiz.purpleCostOf(power);
 
-    AnalyticsManager.instance.logEvent(
+    FunnelEvents.logAuthed(
       AnalyticsEvents.quizPowerTap,
       params: {
         AnalyticsEvents.paramPower: power,
@@ -56,7 +64,7 @@ mixin QuizPowerMixin on QuizScreenStateMixin {
         final fromInventory =
             ref.read(exchangeProvider.notifier).settlePowerSpend(power, cost);
 
-        AnalyticsManager.instance.logEvent(
+        FunnelEvents.logAuthed(
           AnalyticsEvents.quizPowerUsed,
           params: {
             AnalyticsEvents.paramPower: power,
@@ -78,10 +86,15 @@ mixin QuizPowerMixin on QuizScreenStateMixin {
               if (powerResult.containsKey('removed_indices')) {
                 removedIndices =
                     (powerResult['removed_indices'] as List).cast<int>();
+                // Seçili şık elendiyse seçim düşer: görünmeyen şık Cevapla ile gönderilemez.
+                if (removedIndices.contains(selectedAnswerIndex)) {
+                  selectedAnswerIndex = null;
+                }
               }
               if (powerResult.containsKey('extra_seconds')) {
                 final extra = powerResult['extra_seconds'] as int;
                 timerKey.currentState?.addSeconds(extra);
+                timeExtendEffectToken++;
               }
               if (powerResult.containsKey('hint_text')) {
                 hintText = powerResult['hint_text'] as String?;
@@ -89,6 +102,7 @@ mixin QuizPowerMixin on QuizScreenStateMixin {
             });
           }
         } else {
+          if (isTerminating) setState(() => skipEffectToken++);
           if (data.isCorrect == true) totalCorrect++;
           handleSessionTransition(data.sessionStatus, data.badge);
         }
@@ -133,7 +147,7 @@ mixin QuizPowerMixin on QuizScreenStateMixin {
         );
         resetQuestionState();
 
-        AnalyticsManager.instance.logEvent(
+        FunnelEvents.logAuthed(
           AnalyticsEvents.quizPowerUsed,
           params: {
             AnalyticsEvents.paramPower: powerType,
@@ -162,7 +176,12 @@ mixin QuizPowerMixin on QuizScreenStateMixin {
           },
         );
         // Rescue overlay'i ACIK KALIR — SKIP/SKIP_ALL/vazgec tuslari kullanilabilir.
-        handlePowerFailure(f, power: powerType, pauseTimer: false);
+        handlePowerFailure(
+          f,
+          power: powerType,
+          pauseTimer: false,
+          paywallTrigger: PaywallTriggers.quizRescue,
+        );
       },
     );
   }
@@ -182,10 +201,14 @@ mixin QuizPowerMixin on QuizScreenStateMixin {
   /// Sunucuda bu yolda uretilebilen tek kaynak hatasi `INSUFFICIENT_DIAMONDS`;
   /// `NO_INVENTORY` hic tanimli degil ve `DIAMOND_COOLDOWN`'in kontrolu bos stub.
   /// `POWER_ALREADY_USED` savunma hatti — buton zaten kapali olmali.
+  ///
+  /// [paywallTrigger]: teklifin hangi ihtiyaç anında açıldığı — kurtarma
+  /// (`quiz_rescue`) soru içi güçten (`quiz_power`) ayrı ölçülür.
   Future<void> handlePowerFailure(
     AppFailure f, {
     required String power,
     required bool pauseTimer,
+    String paywallTrigger = PaywallTriggers.quizPower,
   }) async {
     final code = f is ServerFailure ? f.code : null;
 
@@ -198,9 +221,9 @@ mixin QuizPowerMixin on QuizScreenStateMixin {
       if (pauseTimer) onSheetOpening();
       FunnelEvents.logAuthed(
         AnalyticsEvents.paywallShown,
-        params: {AnalyticsEvents.paramTrigger: 'quiz_power'},
+        params: {AnalyticsEvents.paramTrigger: paywallTrigger},
       );
-      await PaywallBottomSheetContent.show(ref, trigger: 'quiz_power');
+      await PaywallBottomSheetContent.show(ref, trigger: paywallTrigger);
       if (!mounted) return;
       // RevenueCat webhook'una ~1.5s tampon — satin alma basarili olsa bile sunucu
       // credit'i bu surede isliyor; yoksa tekrar basinca bakiye eski gorunur ve

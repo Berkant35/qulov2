@@ -6,7 +6,7 @@ import 'package:qulo_v2/core/services/push_prompt_store.dart';
 import 'package:qulo_v2/data/models/chat_question_model.dart';
 import 'package:qulo_v2/data/models/notification_model.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
-import 'package:qulo_v2/providers/chat_provider.dart' show chatQuestionCacheProvider, activeChatMatchIdProvider;
+import 'package:qulo_v2/providers/chat_provider.dart' show chatQuestionCacheProvider, openChatStackProvider;
 import 'package:qulo_v2/providers/user_provider.dart';
 
 class NotificationState {
@@ -105,6 +105,9 @@ class NotificationNotifier extends Notifier<NotificationState> {
     }
   }
 
+  /// Açıklama ekranı açılmak üzere: sıklık defterine ([PushPromptStore]) işlenir.
+  Future<void> markPushPromptShown() => PushPromptStore.markShown();
+
   /// Açıklama ekranında "evet" sonrası sistem istemi. İzin gelirse token hemen
   /// sunucuya yazılır (PATCH /me/push-token); APNs gecikirse token
   /// `onTokenRefresh` ile gelir.
@@ -156,7 +159,8 @@ class NotificationNotifier extends Notifier<NotificationState> {
     if (actionUrl == null) return false;
 
     // action_url format: /chat/{matchId}
-    final activeChatMatchId = ref.read(activeChatMatchIdProvider);
+    // Yalnız en üstteki (görünen) sohbet; alttaki sohbetlerin banner'ı gösterilir.
+    final activeChatMatchId = ref.read(openChatStackProvider).lastOrNull;
     if (activeChatMatchId == null) return false;
 
     return actionUrl.contains('/chat/$activeChatMatchId');

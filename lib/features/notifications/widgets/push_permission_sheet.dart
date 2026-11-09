@@ -7,7 +7,10 @@ import 'package:qulo_v2/core/widgets/app_button.dart';
 /// Sistem bildirim isteminden önceki açıklama ekranı. `true` = kabul (ardından
 /// sistem istemi), `false`/kapatma = şimdi değil.
 class PushPermissionSheet extends StatelessWidget {
-  const PushPermissionSheet({super.key});
+  const PushPermissionSheet({super.key, this.bodyKey = 'push_prompt_body'});
+
+  /// Açıklama metninin çeviri anahtarı (değerli ana göre).
+  final String bodyKey;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +39,7 @@ class PushPermissionSheet extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              context.tr('push_prompt_body'),
+              context.tr(bodyKey),
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),

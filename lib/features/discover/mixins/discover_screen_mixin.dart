@@ -1,12 +1,17 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/services/coach_mark_service.dart';
 import 'package:qulo_v2/core/services/funnel_events.dart';
+import 'package:qulo_v2/features/diamonds/models/paywall_triggers.dart';
+import 'package:qulo_v2/features/diamonds/widgets/paywall_bottom_sheet.dart';
 import 'package:qulo_v2/features/discover/coach/discover_coach_marks.dart';
 import 'package:qulo_v2/features/discover/screens/discover_screen.dart';
 import 'package:qulo_v2/features/discover/utils/discover_location_gate.dart';
+import 'package:qulo_v2/features/power_demo/analytics/power_demo_outcome_reporter.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
 
@@ -17,6 +22,7 @@ mixin DiscoverScreenMixin on ConsumerState<DiscoverScreen> {
   int profilesViewed = 0;
   bool emptyLogged = false;
   bool _coachTried = false;
+  int _handledSwipeLimitHits = 0;
 
   void initMixin() {
     AnalyticsManager.instance.logEvent(AnalyticsEvents.discoverSessionStart);
@@ -24,8 +30,11 @@ mixin DiscoverScreenMixin on ConsumerState<DiscoverScreen> {
       AnalyticsEvents.flagFirstDiscoverView,
       AnalyticsEvents.firstDiscoverView,
     );
+    // Auth öncesi oynanan güç demosunun sonucu (cihazda saklı) — kayıttan sonra bir kez.
+    unawaited(PowerDemoOutcomeReporter.reportOnce());
     Future.microtask(() => initLocationAndDiscover());
     listenLocationRecovery();
+    listenSwipeLimit();
   }
 
   void disposeMixin() {
@@ -70,6 +79,21 @@ mixin DiscoverScreenMixin on ConsumerState<DiscoverScreen> {
       emptyLogged = true;
       AnalyticsManager.instance.logEvent(AnalyticsEvents.discoverCardsEmpty);
     }
+  }
+
+  /// Reddi günlük hak yüzünden sunucuya düşmeyen kart desteye döner;
+  /// paywall'u ekran açar (kart görünümü uçuştan sonra ağaçtan çıkmış olur).
+  /// Sayaç yalnız artar; yükleme geçişleri ve ilk değer paywall açmaz.
+  void listenSwipeLimit() {
+    _handledSwipeLimitHits = ref.read(discoverProvider).valueOrNull?.swipeLimitHits ?? 0;
+    ref.listenManual<int?>(
+      discoverProvider.select((s) => s.valueOrNull?.swipeLimitHits),
+      (_, next) {
+        if (next == null || next <= _handledSwipeLimitHits) return;
+        _handledSwipeLimitHits = next;
+        unawaited(PaywallBottomSheetContent.show(ref, trigger: PaywallTriggers.swipeLimit));
+      },
+    );
   }
 
   /// İstem kartından izin veren ya da Ayarlar'dan dönen kullanıcının

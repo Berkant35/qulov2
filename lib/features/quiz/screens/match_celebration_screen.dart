@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:qulo_v2/core/services/analytics_manager.dart';
-import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/features/quiz/mixins/match_celebration_screen_mixin.dart';
 import 'package:qulo_v2/features/quiz/models/badge_config.dart';
 import 'package:qulo_v2/features/quiz/widgets/celebration_badge_section.dart';
 import 'package:qulo_v2/features/quiz/widgets/celebration_buttons.dart';
@@ -41,87 +40,23 @@ class MatchCelebrationScreen extends StatefulWidget {
 }
 
 class _MatchCelebrationScreenState extends State<MatchCelebrationScreen>
-    with TickerProviderStateMixin {
-  late final AnimationController _badgeController;
-  late final AnimationController _photoController;
-  late final AnimationController _statsController;
-
-  late final Animation<double> _badgeScale;
-  late final Animation<double> _badgeOpacity;
-  late final Animation<double> _photoSlide;
-  late final Animation<double> _statsOpacity;
-
+    with TickerProviderStateMixin, MatchCelebrationScreenMixin {
   @override
   void initState() {
     super.initState();
-    _initAnimations();
-    _startAnimations();
-    _logScreenShown();
-  }
-
-  void _initAnimations() {
-    _badgeController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1000),
-    );
-    _badgeScale = Tween<double>(begin: 3.0, end: 1.0).animate(
-      CurvedAnimation(parent: _badgeController, curve: Curves.elasticOut),
-    );
-    _badgeOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _badgeController,
-        curve: const Interval(0.0, 0.3, curve: Curves.easeIn),
-      ),
-    );
-
-    _photoController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 800),
-    );
-    _photoSlide = Tween<double>(begin: 50.0, end: 0.0).animate(
-      CurvedAnimation(parent: _photoController, curve: Curves.easeOutBack),
-    );
-
-    _statsController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 600),
-    );
-    _statsOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _statsController, curve: Curves.easeIn),
-    );
-  }
-
-  Future<void> _startAnimations() async {
-    await Future.delayed(const Duration(milliseconds: 200));
-    if (!mounted) return;
-    _badgeController.forward();
-
-    await Future.delayed(const Duration(milliseconds: 600));
-    if (!mounted) return;
-    _photoController.forward();
-    _statsController.forward();
-  }
-
-  void _logScreenShown() {
-    AnalyticsManager.instance.logEvent(
-      AnalyticsEvents.matchCelebrationShown,
-      params: {
-        AnalyticsEvents.paramMatched: widget.matched.toString(),
-        AnalyticsEvents.paramBadge: widget.performanceBadge,
-      },
-    );
+    initMixin();
   }
 
   @override
   void dispose() {
-    _badgeController.dispose();
-    _photoController.dispose();
-    _statsController.dispose();
+    disposeMixin();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    // Raw Scaffold: yari saydam scrim ustunde kutlama animasyonu (Scaffold
+    // Kurali istisnasi) — AppScaffold'un arka plan boyasi ve AppBar'i istenmez.
     return Scaffold(
       backgroundColor: AppColors.scrimBase.withValues(alpha: 0.95),
       body: SafeArea(
@@ -135,9 +70,9 @@ class _MatchCelebrationScreenState extends State<MatchCelebrationScreen>
               mainAxisSize: MainAxisSize.min,
               children: [
                 CelebrationBadgeSection(
-                  badgeScale: _badgeScale,
-                  badgeOpacity: _badgeOpacity,
-                  animation: _badgeController,
+                  badgeScale: badgeScale,
+                  badgeOpacity: badgeOpacity,
+                  animation: badgeController,
                   config: BadgeConfig.fromPerformance(
                     matched: widget.matched,
                     performanceBadge: widget.performanceBadge,
@@ -146,15 +81,15 @@ class _MatchCelebrationScreenState extends State<MatchCelebrationScreen>
                 ),
                 const SizedBox(height: AppSpacing.xxl),
                 CelebrationPhotoSection(
-                  photoSlide: _photoSlide,
-                  animation: _photoController,
+                  photoSlide: photoSlide,
+                  animation: photoController,
                   myPhotoUrl: widget.myPhotoUrl,
                   targetPhotoUrl: widget.targetPhotoUrl,
                   matched: widget.matched,
                 ),
                 const SizedBox(height: AppSpacing.xxl),
                 FadeTransition(
-                  opacity: _statsOpacity,
+                  opacity: statsOpacity,
                   child: Column(
                     children: [
                       CelebrationStatsCard(

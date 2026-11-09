@@ -4,69 +4,31 @@ import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/data/models/quiz_model.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
+import 'package:qulo_v2/providers/quiz_state.dart';
 
-class QuizState {
-  final String? sessionId;
-  final int totalQuestions;
-  final QuizQuestionModel? currentQuestion;
-  final QuizAnswerResponse? lastAnswer;
-  final bool isLoading;
-  final AppFailure? failure;
+export 'package:qulo_v2/providers/quiz_state.dart';
 
-  /// Sunucudan gelen efektif guc fiyatlari (soru sayisi carpani uygulanmis).
-  /// TEK DOGRU KAYNAK — client burada hesap yapmaz.
-  final Map<String, SessionPowerCost> powerCosts;
-
-  /// Su anki soruda kullanilmis gucler. Sunucu ucretlendirmeyi zaten reddediyor;
-  /// bu, butonu kapatarak kullaniciya geri bildirim veriyor.
-  final Set<String> usedPowers;
-
-  const QuizState({
-    this.sessionId,
-    this.totalQuestions = 0,
-    this.currentQuestion,
-    this.lastAnswer,
-    this.isLoading = false,
-    this.failure,
-    this.powerCosts = const {},
-    this.usedPowers = const {},
-  });
-
-  /// Guc icin efektif mor elmas maliyeti. Bilinmiyorsa 0 (fiyat gosterilmez).
-  int purpleCostOf(String powerName) => powerCosts[powerName]?.purple ?? 0;
-
-  int greenCostOf(String powerName) => powerCosts[powerName]?.green ?? 0;
-
-  QuizState copyWith({
-    String? sessionId,
-    int? totalQuestions,
-    QuizQuestionModel? currentQuestion,
-    QuizAnswerResponse? lastAnswer,
-    bool? isLoading,
-    AppFailure? failure,
-    Map<String, SessionPowerCost>? powerCosts,
-    Set<String>? usedPowers,
-  }) {
-    return QuizState(
-      sessionId: sessionId ?? this.sessionId,
-      totalQuestions: totalQuestions ?? this.totalQuestions,
-      currentQuestion: currentQuestion ?? this.currentQuestion,
-      lastAnswer: lastAnswer,
-      isLoading: isLoading ?? this.isLoading,
-      failure: failure,
-      powerCosts: powerCosts ?? this.powerCosts,
-      usedPowers: usedPowers ?? this.usedPowers,
-    );
-  }
-}
-
+/// Provider GLOBAL (ekran basina degil): her QuizScreen `initMixin`'de [reset]
+/// cagirir. Crashlytics iOS 2.0.17 (`quiz_screen.dart:106` `sessionId!`): cozme
+/// dugmesine ust uste basilinca iki quiz ekrani acildi; ikincinin [reset]'i
+/// birincinin YOLDAKI soru yanitindan once geldi, yanit sifirlanmis duruma
+/// yazildi → soru dolu, oturum `null`. Kural: her async yazim, basladigi
+/// oturum hala gecerliyse yapilir ([_epoch] + `sessionId` eslesmesi).
 class QuizNotifier extends Notifier<QuizState> {
+  /// [reset] ve yeni [startSession] artirir; eski isteklerin yanitlari yok sayilir.
+  int _epoch = 0;
+
   @override
   QuizState build() => const QuizState();
 
+  bool _isCurrent(int epoch, String? sessionId) =>
+      epoch == _epoch && state.sessionId == sessionId;
+
   Future<Result<QuizStartResponse>> startSession(String targetId) async {
+    final epoch = ++_epoch;
     state = state.copyWith(isLoading: true, failure: null);
     final result = await ref.read(quizRepositoryProvider).startSession(targetId);
+    if (epoch != _epoch) return result;
     switch (result) {
       case Success(:final data):
         state = state.copyWith(
@@ -85,8 +47,10 @@ class QuizNotifier extends Notifier<QuizState> {
   Future<void> fetchCurrentQuestion() async {
     final sessionId = state.sessionId;
     if (sessionId == null) return;
+    final epoch = _epoch;
     state = state.copyWith(isLoading: true, failure: null);
     final result = await ref.read(quizRepositoryProvider).getCurrentQuestion(sessionId);
+    if (!_isCurrent(epoch, sessionId)) return;
     result.when(
       // usedPowers sunucudan gelir — uygulama yeniden baslatilsa da buton durumu dogru.
       success: (question) => state = state.copyWith(
@@ -107,29 +71,32 @@ class QuizNotifier extends Notifier<QuizState> {
   Future<Result<QuizAnswerResponse>> answer(int? selectedAnswer, {String? powerUsed, int? timeSpent}) async {
     final sessionId = state.sessionId;
     if (sessionId == null) return Failure(const UnknownFailure(message: 'No active session'));
+    final epoch = _epoch;
     final result = await ref.read(quizRepositoryProvider).answerQuestion(
       sessionId,
       selectedAnswer: selectedAnswer,
       powerUsed: powerUsed,
       timeSpent: timeSpent,
     );
-    _applyAnswer(result);
+    _applyAnswer(result, epoch, sessionId);
     return result;
   }
 
   Future<Result<QuizAnswerResponse>> rescue({String powerType = 'SKIP'}) async {
     final sessionId = state.sessionId;
     if (sessionId == null) return Failure(const UnknownFailure(message: 'No active session'));
+    final epoch = _epoch;
     final result = await ref.read(quizRepositoryProvider).rescueWithSkip(sessionId, powerType: powerType);
-    _applyAnswer(result);
+    _applyAnswer(result, epoch, sessionId);
     return result;
   }
 
   Future<Result<QuizAnswerResponse>> fail() async {
     final sessionId = state.sessionId;
     if (sessionId == null) return Failure(const UnknownFailure(message: 'No active session'));
+    final epoch = _epoch;
     final result = await ref.read(quizRepositoryProvider).failSession(sessionId);
-    _applyAnswer(result);
+    _applyAnswer(result, epoch, sessionId);
     return result;
   }
 
@@ -140,10 +107,14 @@ class QuizNotifier extends Notifier<QuizState> {
   /// Eşleşme sunucuda bu yanıtla oluşur (`matched: true`, quiz.service); ürünün
   /// kuzey yıldızı `match_new` ekran değil burada atılır — kutlama ekranı
   /// görülmese de sayılır, reklam kalitesi ve huni optimizasyonu buna bakar.
-  void _applyAnswer(Result<QuizAnswerResponse> result) {
+  ///
+  /// Eski oturumun yaniti (ekran degisti) duruma yazilmaz; eslesme olayi yine
+  /// atilir — eslesme sunucuda olustu.
+  void _applyAnswer(Result<QuizAnswerResponse> result, int epoch, String sessionId) {
+    final current = _isCurrent(epoch, sessionId);
     result.when(
       success: (data) {
-        state = state.copyWith(lastAnswer: data);
+        if (current) state = state.copyWith(lastAnswer: data);
         if (data.matched == true) {
           AnalyticsManager.instance.logEvent(AnalyticsEvents.matchNew, params: {
             AnalyticsEvents.paramRole: 'solver',
@@ -162,6 +133,7 @@ class QuizNotifier extends Notifier<QuizState> {
   }
 
   void reset() {
+    _epoch++;
     state = const QuizState();
   }
 }

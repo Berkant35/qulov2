@@ -31,4 +31,18 @@ class DeleteReasonResult {
   final String? reasonText;
 
   const DeleteReasonResult({required this.reasonCode, this.reasonText});
+
+  /// "Neden belirtmeden devam et" — UI'da neden olarak görünmez.
+  static const skipped = DeleteReasonResult(reasonCode: kDeletionReasonSkipped);
+
+  /// Seçilen nedenden sonuç. `other` metin boş olsa da `other` kalır —
+  /// [skipped]'e çevrilmez (kullanıcı bilerek "Diğer"i seçti). Metin yalnız
+  /// `other` için ve boş değilse taşınır.
+  factory DeleteReasonResult.fromSelection(DeletionReason reason, String otherText) {
+    final text = otherText.trim();
+    return DeleteReasonResult(
+      reasonCode: reason.code,
+      reasonText: reason == DeletionReason.other && text.isNotEmpty ? text : null,
+    );
+  }
 }

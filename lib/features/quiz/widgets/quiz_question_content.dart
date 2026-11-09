@@ -1,20 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:qulo_v2/core/l10n/l10n.dart';
-import 'package:qulo_v2/core/services/analytics_manager.dart';
-import 'package:qulo_v2/core/services/analytics_events.dart';
-import 'package:qulo_v2/core/theme/app_colors.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
+import 'package:qulo_v2/core/widgets/question_owner_header.dart';
 import 'package:qulo_v2/data/models/quiz_model.dart' show QuizQuestionModel;
-import 'package:qulo_v2/features/quiz/widgets/answer_button.dart';
-import 'package:qulo_v2/features/quiz/widgets/power_banner.dart';
+import 'package:qulo_v2/features/quiz/mixins/power_effect_labels_mixin.dart';
+import 'package:qulo_v2/features/quiz/mixins/quiz_question_content_mixin.dart';
+import 'package:qulo_v2/features/quiz/models/quiz_target_args.dart';
 import 'package:qulo_v2/features/quiz/widgets/power_bar.dart';
 import 'package:qulo_v2/features/quiz/widgets/quiz_confirm_button.dart';
+import 'package:qulo_v2/features/quiz/widgets/quiz_question_card.dart';
 import 'package:qulo_v2/features/quiz/widgets/quiz_timer.dart';
-import 'package:qulo_v2/core/widgets/question_owner_header.dart';
-import 'package:qulo_v2/features/quiz/models/quiz_target_args.dart';
+import 'package:qulo_v2/features/quiz/widgets/quiz_timer_section.dart';
+import 'package:qulo_v2/providers/economy_config_provider.dart';
 
-/// Displays the active quiz question, timer, answers, and power bar.
-class QuizQuestionContent extends StatelessWidget {
+/// Aktif quiz sorusu: sayaç, soru, ipucu, şıklar ve güç çubuğu.
+///
+/// Güç efektleri (spec §5) yalnız bu quiz'e özel sarmalayıcılarda: Yarıla/Kâhin
+/// `PowerEffectAnswerOption`, İpucu ve Doğru Say / Hepsini Geç [QuizQuestionCard], Ek Süre
+/// [QuizTimerSection]. Sohbetle paylaşılan `AnswerButton`/`QuizTimer` değişmez. Efekt
+/// girdileri yalnız sunucu başarı dalında değişir (`QuizPowerMixin`).
+///
+/// Küçük ekran / büyük yazı: yalnız soru alanı kayar; sayaç üstte, Cevapla + güç çubuğu (ve
+/// "?" baloncuğu) altta hep görünür — baloncuk açılınca şıkları örtmez, soru alanı daralır.
+class QuizQuestionContent extends ConsumerWidget
+    with PowerEffectLabelsMixin, QuizQuestionContentMixin {
   final QuizQuestionModel question;
   /// Sorusu cozulen kisi — isim/foto/mesafe (yoksa satir gizlenir).
   final QuizTargetArgs? target;
@@ -25,6 +34,12 @@ class QuizQuestionContent extends StatelessWidget {
   final List<int> removedIndices;
   final String? hintText;
   final bool isSubmitting;
+
+  /// Değişince Ek Süre'nin "+N" çipi oynar.
+  final int timeExtendEffectToken;
+
+  /// Değişince soru kartı kenara kayar (Doğru Say / Hepsini Geç).
+  final int skipEffectToken;
   final VoidCallback onTimeout;
   final ValueChanged<int> onSelectAnswer;
   final Future<void> Function() onSubmitAnswer;
@@ -41,6 +56,8 @@ class QuizQuestionContent extends StatelessWidget {
     required this.removedIndices,
     required this.hintText,
     required this.isSubmitting,
+    required this.timeExtendEffectToken,
+    required this.skipEffectToken,
     required this.onTimeout,
     required this.onSelectAnswer,
     required this.onSubmitAnswer,
@@ -48,92 +65,93 @@ class QuizQuestionContent extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final accuracy = ref.watch(economyConfigProvider.select((c) => c.oracleAccuracy));
+    final extendSeconds =
+        ref.watch(economyConfigProvider.select((c) => c.timing.timeExtendSeconds));
 
-    return Padding(
-      padding: const EdgeInsets.all(AppSpacing.pagePadding),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          QuestionOwnerHeader(
-            name: target?.name,
-            photoUrl: target?.photoUrl,
-            distanceKm: target?.distanceKm,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.pagePadding,
+            AppSpacing.pagePadding,
+            AppSpacing.pagePadding,
+            0,
           ),
-          QuizTimer(
-            key: timerKey,
-            seconds: question.startSeconds,
-            totalSeconds: question.timeLimitSeconds,
-            questionId: question.questionId,
-            onTimeout: onTimeout,
-            onWarning: () {
-              AnalyticsManager.instance.logEvent(
-                AnalyticsEvents.quizTimerWarning,
-                params: {
-                  AnalyticsEvents.paramQuestionIndex:
-                      question.questionNumber,
-                  AnalyticsEvents.paramSecondsRemaining: 10,
-                },
-              );
-            },
-            onCritical: () {
-              AnalyticsManager.instance.logEvent(
-                AnalyticsEvents.quizTimerCritical,
-                params: {
-                  AnalyticsEvents.paramQuestionIndex:
-                      question.questionNumber,
-                  AnalyticsEvents.paramSecondsRemaining: 5,
-                },
-              );
-            },
-          ),
-          const SizedBox(height: AppSpacing.xl),
-          Text(
-            question.questionText,
-            style: theme.textTheme.titleLarge,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: AppSpacing.xxl),
-          if (oracleSuggestedIndex != null)
-            PowerBanner(
-              icon: Icons.auto_awesome,
-              text: context.tr('power_oracle_desc'),
-            ),
-          if (hintText != null && hintText!.isNotEmpty)
-            PowerBanner(
-              icon: Icons.lightbulb_outline,
-              text: hintText!,
-              color: context.appColors.warning,
-            ),
-          ...question.answers.map((a) {
-            final isRemoved = removedIndices.contains(a.index);
-            return Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacing.md),
-              child: AnswerButton(
-                text: a.text,
-                onTap: () {
-                  if (!isRemoved) onSelectAnswer(a.index);
-                },
-                isSelected: selectedAnswerIndex == a.index,
-                isOracleSuggested: oracleSuggestedIndex == a.index,
-                isDisabled: isRemoved,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              QuestionOwnerHeader(
+                name: target?.name,
+                photoUrl: target?.photoUrl,
+                distanceKm: target?.distanceKm,
               ),
-            );
-          }),
-          if (selectedAnswerIndex != null)
-            QuizConfirmButton(
-              isSubmitting: isSubmitting,
-              onSubmitAnswer: onSubmitAnswer,
-            ),
-          const Spacer(),
-          PowerBar(
-            sessionId: sessionId,
-            hasHint: question.hasHint,
-            onPowerUsed: onPowerUsed,
+              QuizTimerSection(
+                timerKey: timerKey,
+                question: question,
+                extendSeconds: extendSeconds,
+                extendToken: timeExtendEffectToken,
+                onTimeout: onTimeout,
+                onWarning: () => logTimerWarning(question),
+                onCritical: () => logTimerCritical(question),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+        Expanded(
+          child: SingleChildScrollView(
+            // Yatay boşluk kaydırma alanının İÇİNDE: Kâhin ışıması kenarda kırpılmasın.
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.pagePadding,
+              AppSpacing.xl,
+              AppSpacing.pagePadding,
+              AppSpacing.md,
+            ),
+            child: QuizQuestionCard(
+              key: ValueKey(question.questionId),
+              question: question,
+              hintText: visibleHint(hintText),
+              removedIndices: removedIndices,
+              oracleSuggestedIndex: oracleSuggestedIndex,
+              selectedAnswerIndex: selectedAnswerIndex,
+              oracleLabel: oracleAccuracyLabel(context, accuracy),
+              skipEffectToken: skipEffectToken,
+              onSelectAnswer: onSelectAnswer,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.pagePadding,
+            0,
+            AppSpacing.pagePadding,
+            AppSpacing.pagePadding,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Kaydırma alanının dışında: şık seçilince Cevapla küçük ekranda da hep görünür.
+              if (selectedAnswerIndex != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                  child: QuizConfirmButton(
+                    isSubmitting: isSubmitting,
+                    onSubmitAnswer: onSubmitAnswer,
+                  ),
+                ),
+              // Soru başına yeniden kurulur: açık "?" baloncuğu sonraki soruya taşınmaz.
+              PowerBar(
+                key: ValueKey(question.questionId),
+                sessionId: sessionId,
+                hasHint: question.hasHint,
+                onPowerUsed: onPowerUsed,
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

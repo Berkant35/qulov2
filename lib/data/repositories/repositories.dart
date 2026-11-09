@@ -1,6 +1,7 @@
 export 'interfaces.dart';
 export 'auth_repository.dart';
 export 'chat_repository.dart';
+export 'city_repository.dart';
 export 'diamond_repository.dart';
 export 'exchange_repository.dart';
 export 'match_repository.dart';
@@ -8,6 +9,7 @@ export 'passport_repository.dart';
 export 'power_repository.dart';
 export 'question_repository.dart';
 export 'quiz_repository.dart';
+export 'realtime_token_repository.dart';
 export 'referral_repository.dart';
 export 'report_repository.dart';
 export 'subscription_repository.dart';

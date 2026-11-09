@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,15 +10,16 @@ import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
-import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/data/models/question_model.dart';
 import 'package:qulo_v2/features/diamonds/widgets/paywall_bottom_sheet.dart';
+import 'package:qulo_v2/features/notifications/mixins/push_permission_offer_mixin.dart';
 import 'package:qulo_v2/providers/daily_stats_provider.dart';
 import 'package:qulo_v2/providers/question_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/features/profile/screens/questions_screen.dart';
+import 'package:qulo_v2/features/profile/widgets/question_celebration_dialog.dart';
 
-mixin QuestionsScreenMixin on ConsumerState<QuestionsScreen> {
+mixin QuestionsScreenMixin on ConsumerState<QuestionsScreen>, PushPermissionOfferMixin<QuestionsScreen> {
   int previousCount = 0;
   bool initialized = false;
   static const keyCelebrationShown = 'celebration_shown';
@@ -40,7 +43,7 @@ mixin QuestionsScreenMixin on ConsumerState<QuestionsScreen> {
         previousCount < AppConstants.minQuestions &&
         count >= AppConstants.minQuestions) {
       if (await OneTimeFlagStore.markIfUnset(keyCelebrationShown)) {
-        if (mounted) showCelebrationDialog();
+        if (mounted) unawaited(showCelebrationDialog());
       }
     }
     previousCount = count;
@@ -117,15 +120,17 @@ mixin QuestionsScreenMixin on ConsumerState<QuestionsScreen> {
     );
   }
 
-  void deleteQuestion(QuestionModel question) {
+  /// Onaylanan silme, dialog açıkken ekran kapansa da sunucuya gider:
+  /// notifier await ÖNCESİ alınır (`ref` sonra kullanılamaz).
+  Future<void> deleteQuestion(QuestionModel question) async {
     AnalyticsManager.instance.logEvent(
       AnalyticsEvents.questionDelete,
       params: {
         AnalyticsEvents.paramQuestionId: question.id,
       },
     );
-    final nav = ref.read(navigationServiceProvider);
-    nav.showAppDialog(
+    final questions = ref.read(questionProvider.notifier);
+    final confirmed = await ref.read(navigationServiceProvider).showAppDialog<bool>(
       ConfirmDialog(
         name: 'delete_question',
         title: context.tr('delete'),
@@ -133,51 +138,28 @@ mixin QuestionsScreenMixin on ConsumerState<QuestionsScreen> {
         confirmText: context.tr('delete'),
         isDestructive: true,
       ),
-    ).then((confirmed) {
-      if (confirmed == true) {
-        ref.read(questionProvider.notifier).deleteQuestion(question.orderNum);
-      }
-    });
+    );
+    if (confirmed == true) await questions.deleteQuestion(question.orderNum);
   }
 
-  void showCelebrationDialog() {
+  /// Dialog ekranın değil kendi bağlamıyla çizilir ve servisi önceden yakalar:
+  /// açıkken ekran kapanırsa da düğme çalışır.
+  ///
+  /// Kapanınca bildirim izni açıklaması (uygunsa, ömür boyu bir kez —
+  /// `PushPromptStore`), sonra "Keşfet'e git" seçildiyse Keşfet. Açıklama soru
+  /// ekranında açılır; Keşfet'e geçişten sonra açılsa kartların üstüne binerdi.
+  Future<void> showCelebrationDialog() async {
     final nav = ref.read(navigationServiceProvider);
-    nav.showAppDialog(
+    final goDiscover = await nav.showAppDialog<bool>(
       CustomDialog(
         name: 'question_celebration',
-        builder: (_) => AlertDialog(
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: AppSpacing.md),
-              Icon(Icons.celebration, size: 64, color: context.appColors.primary),
-              const SizedBox(height: AppSpacing.lg),
-              Text(
-                context.tr('question_nudge_celebration_title'),
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppSpacing.lg),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  onPressed: () {
-                    nav.closeOverlay();
-                    ref.read(navigationServiceProvider).go(RouteNames.discover);
-                  },
-                  style: FilledButton.styleFrom(
-                    backgroundColor: context.appColors.primary,
-                  ),
-                  child: Text(context.tr('question_nudge_celebration_button')),
-                ),
-              ),
-            ],
-          ),
+        builder: (_) => QuestionCelebrationDialog(
+          onGoDiscover: () => nav.closeOverlay(true),
         ),
       ),
     );
+    if (mounted) await offerPushPermission(trigger: PushPromptTrigger.questionCelebration);
+    if (goDiscover == true) nav.go(RouteNames.discover);
   }
 
   String difficultyLabel(QuestionModel q) {

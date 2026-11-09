@@ -57,6 +57,10 @@ void main() {
     expect(share.shared.single, contains('quloapp.com/invite/ABC123'));
     expect(share.shared.single, isNot(contains('@code')));
     expect(share.shared.single, isNot(contains('@reward')));
+    // iOS paylaşım sayfası çıkış alanı olmadan crash veriyordu (2.0.14–2.0.15).
+    final origin = share.origins.single;
+    expect(origin, isNotNull);
+    expect(origin!.isEmpty, isFalse);
   });
 
   testWidgets('kota dolduysa giris cizilmez', (tester) async {
@@ -139,9 +143,13 @@ class _FakeReferralRepository implements ReferralRepository {
 
 class _RecordingShareManager implements ShareManager {
   final shared = <String>[];
+  final origins = <Rect?>[];
 
   @override
-  Future<void> share(String text, {String? subject}) async => shared.add(text);
+  Future<void> share(String text, {String? subject, Rect? origin}) async {
+    shared.add(text);
+    origins.add(origin);
+  }
 
   @override
   dynamic noSuchMethod(Invocation invocation) =>

@@ -2,8 +2,8 @@ import 'dart:io';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:qulo_v2/core/config/env.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
-import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/services/meta_events_manager.dart';
+import 'package:qulo_v2/core/services/purchase_analytics.dart';
 
 class RevenueCatNotConfiguredException implements Exception {
   @override
@@ -83,31 +83,6 @@ class RevenueCatService {
     };
   }
 
-  static Future<CustomerInfo> purchasePackage(Package package) async {
-    _ensureConfigured();
-    try {
-      // purchases_flutter 9+ ile `purchasePackage` deprecated; yeni API
-      // PurchaseResult donuyor (customerInfo + storeTransaction).
-      final result = await Purchases.purchase(PurchaseParams.package(package));
-      AnalyticsManager.instance.logEvent(
-        AnalyticsEvents.diamondsPurchaseSuccess,
-        params: {
-          AnalyticsEvents.paramProductId: package.storeProduct.identifier,
-        },
-      );
-      return result.customerInfo;
-    } catch (e) {
-      AnalyticsManager.instance.logEvent(
-        AnalyticsEvents.diamondsPurchaseFail,
-        params: {
-          AnalyticsEvents.paramProductId: package.storeProduct.identifier,
-          AnalyticsEvents.paramErrorCode: e.toString(),
-        },
-      );
-      rethrow;
-    }
-  }
-
   static const plusProductId = 'quloplusmonthly2';
 
   /// Premium'un magaza kimligi platforma gore FARKLI: App Store `qulopremiummonthly2`,
@@ -152,31 +127,25 @@ class RevenueCatService {
 
   static Future<CustomerInfo> purchaseByProductId(String productId) async {
     _ensureConfigured();
+    final isSubscription = subscriptionProductIds.contains(productId);
     try {
-      final category = subscriptionProductIds.contains(productId)
-          ? ProductCategory.subscription
-          : ProductCategory.nonSubscription;
-      final products = await Purchases.getProducts([
-        productId,
-      ], productCategory: category);
-      if (products.isEmpty) {
-        throw Exception('Product not found: $productId');
-      }
+      final products = await Purchases.getProducts(
+        [productId],
+        productCategory: isSubscription
+            ? ProductCategory.subscription
+            : ProductCategory.nonSubscription,
+      );
+      if (products.isEmpty) throw PurchaseProductNotFoundException(productId);
       final result = await Purchases.purchase(
         PurchaseParams.storeProduct(products.first),
       );
-      AnalyticsManager.instance.logEvent(
-        AnalyticsEvents.diamondsPurchaseSuccess,
-        params: {AnalyticsEvents.paramProductId: productId},
-      );
+      PurchaseAnalytics.logSuccess(productId, isSubscription: isSubscription);
       return result.customerInfo;
     } catch (e) {
-      AnalyticsManager.instance.logEvent(
-        AnalyticsEvents.diamondsPurchaseFail,
-        params: {
-          AnalyticsEvents.paramProductId: productId,
-          AnalyticsEvents.paramErrorCode: e.toString(),
-        },
+      PurchaseAnalytics.logFailure(
+        productId,
+        e,
+        isSubscription: isSubscription,
       );
       rethrow;
     }

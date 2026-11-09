@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:qulo_v2/core/network/network_manager.dart';
 import 'package:qulo_v2/core/network/result.dart';
@@ -36,8 +37,20 @@ class AnalyticsForwarder {
     }
   }
 
+  /// Test kancası ([AnalyticsManager.debugEventSink] ile aynı sözleşme): hangi olayın
+  /// `flow_events`'e yönlendirildiğini doğrulamak için. `setEnabled(false)` iken de
+  /// çağrılır — testler 15 sn'lik flush zamanlayıcısı kurulmasın diye forwarder'ı
+  /// kapatıp yine de çağrıyı ölçebilsin. Yalnız debug/test derlemesinde çalışır (assert).
+  @visibleForTesting
+  static void Function(String eventName, String? category, Map<String, dynamic>? metadata)?
+      debugTrackSink;
+
   /// Track a single event. Batched and flushed periodically.
   void track(String eventName, {String? category, Map<String, dynamic>? metadata}) {
+    assert(() {
+      debugTrackSink?.call(eventName, category, metadata);
+      return true;
+    }());
     if (!_enabled) return;
     if (eventName.isEmpty) return;
 

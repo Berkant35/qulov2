@@ -9,8 +9,10 @@ import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/notification_manager.dart';
 import 'package:qulo_v2/core/services/presence_manager.dart';
+import 'package:qulo_v2/core/services/realtime_auth_manager.dart';
 import 'package:qulo_v2/data/models/auth_model.dart';
 import 'package:qulo_v2/data/models/identity_model.dart';
+import 'package:qulo_v2/data/models/realtime_token_model.dart';
 import 'package:qulo_v2/data/models/rewards_model.dart';
 import 'package:qulo_v2/data/models/user_model.dart';
 import 'package:qulo_v2/data/repositories/auth_repository.dart';
@@ -268,6 +270,20 @@ void main() {
           reason: 'bekleyen link sonraki kullanicinin oturumunda acilmamali');
     });
 
+    // 2.0.18 P0: Realtime kullanıcı JWT'si (sub = önceki kullanıcı) bellekte kalırsa
+    // sonraki hesap önceki hesabın sohbet olaylarını alırdı.
+    test('Realtime token\'ı bellekten atılır, kanallar kapatılır', () async {
+      final h = _Harness(stored: _session(), initial: AuthStatus.authenticated);
+      await h.realtime.ensureFresh(userId: 'u1');
+      expect(h.realtime.currentToken, 'rt-jwt');
+
+      await h.notifier.logout();
+
+      expect(h.realtime.currentToken, isNull);
+      expect(h.realtimeTarget.resets, 1);
+      expect(h.realtime.hasScheduledRefresh, isFalse);
+    });
+
     test('sunucu logout hatasi yerel cikisi durdurmaz', () async {
       final h = _Harness(
         stored: _session(),
@@ -328,6 +344,16 @@ void main() {
       expect(h.notifications.disposeCalls, 1);
     });
 
+    test('Realtime token\'ı temizlenir (401 çıkışında da sonraki hesaba eski sub kalmaz)', () async {
+      final h = _Harness(stored: _session(), initial: AuthStatus.authenticated);
+      await h.realtime.ensureFresh(userId: 'u1');
+
+      await h.notifier.forceLogout();
+
+      expect(h.realtime.currentToken, isNull);
+      expect(h.realtimeTarget.resets, 1);
+    });
+
     test('zaten unauthenticated ise yan etki yok — paralel 401 kaskadi', () async {
       final h = _Harness(initial: AuthStatus.unauthenticated);
 
@@ -336,6 +362,7 @@ void main() {
 
       expect(h.presence.pauseCalls, 0);
       expect(h.notifications.disposeCalls, 0);
+      expect(h.realtimeTarget.resets, 0);
     });
 
     test('önceki hesabın kimlik etiketleri sonraki oturuma taşınmaz (forceLogout)', () async {
@@ -401,6 +428,7 @@ class _Harness {
       userRepositoryProvider.overrideWithValue(this.me),
       authRepositoryProvider.overrideWithValue(this.auth),
       presenceManagerProvider.overrideWithValue(presence),
+      realtimeAuthManagerProvider.overrideWithValue(realtime),
       notificationManagerProvider.overrideWithValue(notifications),
       // _postLoginInit → NotificationNotifier.init → fetchUnreadCount ağa (Dio) gider; testte yok.
       notificationProvider.overrideWith(_NoopNotificationNotifier.new),
@@ -414,6 +442,13 @@ class _Harness {
   final _FakeAuthRepository auth;
   final ScriptedHttpAdapter refresh;
   final presence = _FakePresence();
+  final realtimeTarget = _FakeRealtimeTarget();
+  late final realtime = RealtimeAuthManager(
+    issueToken: () async => Success(
+      RealtimeToken(token: 'rt-jwt', expiresAt: DateTime.now().toUtc().add(const Duration(minutes: 10))),
+    ),
+    target: realtimeTarget,
+  );
   final notifications = _FakeNotifications();
   late final ProviderContainer container;
 
@@ -421,6 +456,19 @@ class _Harness {
   AuthState get state => container.read(authProvider);
   Future<void> checkAuth() => notifier.checkAuth();
   Future<Map<String, String>> stored() => const FlutterSecureStorage().readAll();
+}
+
+class _FakeRealtimeTarget implements RealtimeAuthTarget {
+  int resets = 0;
+
+  @override
+  Future<void> apply(String token) async {}
+
+  @override
+  Future<void> useAnon() async {}
+
+  @override
+  Future<void> reset() async => resets++;
 }
 
 class _MeRepository implements UserRepository {

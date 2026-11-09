@@ -30,65 +30,71 @@ class OnboardingLanguagePage extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final colors = context.appColors;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.pagePadding),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: 120,
-            height: 120,
-            child: Lottie.asset(AppAssets.lottieLocation),
-          ),
-          const SizedBox(height: AppSpacing.xl),
-          Row(
+    // 18 dil cipi kucuk ekranda sigmaz (390x844'te 112px tasiyordu): icerik
+    // kaydirilabilir, sigdigi ekranda yine dikey ortali.
+    return LayoutBuilder(
+      builder: (context, constraints) => SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.pagePadding),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: constraints.maxHeight),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(
-                child: Text(
-                  context.tr('onboarding_v2_page5_title'),
-                  style: textTheme.headlineSmall?.copyWith(
-                    color: AppColors.inkOnDark,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+              SizedBox(
+                width: 120,
+                height: 120,
+                child: Lottie.asset(AppAssets.lottieLocation),
               ),
-              AppButton(
-                label: allSelected
-                    ? context.tr('reset_selection')
-                    : context.tr('select_all'),
-                variant: AppButtonVariant.text,
-                fullWidth: false,
-                onPressed: allSelected ? onReset : onSelectAll,
+              const SizedBox(height: AppSpacing.xl),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      context.tr('onboarding_v2_page5_title'),
+                      style: textTheme.headlineSmall?.copyWith(
+                        color: AppColors.inkOnDark,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  AppButton(
+                    label: allSelected
+                        ? context.tr('reset_selection')
+                        : context.tr('select_all'),
+                    variant: AppButtonVariant.text,
+                    fullWidth: false,
+                    onPressed: allSelected ? onReset : onSelectAll,
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.xl),
+              Wrap(
+                spacing: AppSpacing.sm,
+                runSpacing: AppSpacing.sm,
+                alignment: WrapAlignment.center,
+                children: AppConstants.supportedQuestionLocales.map((locale) {
+                  final isSelected = selectedLanguages.contains(locale);
+                  final flag = AppConstants.localeFlagEmojis[locale] ?? locale;
+
+                  return FilterChip(
+                    label: Text('$flag  $locale'),
+                    selected: isSelected,
+                    onSelected: (_) => onToggle(locale),
+                    selectedColor: colors.primarySurface,
+                    backgroundColor: colors.surface,
+                    side: BorderSide(
+                      color: isSelected ? colors.primary : colors.border,
+                    ),
+                    checkmarkColor: colors.primary,
+                    labelStyle: textTheme.bodyMedium?.copyWith(
+                      color: isSelected ? colors.primary : AppColors.inkOnDark,
+                    ),
+                  );
+                }).toList(),
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.xl),
-          Wrap(
-            spacing: AppSpacing.sm,
-            runSpacing: AppSpacing.sm,
-            alignment: WrapAlignment.center,
-            children: AppConstants.supportedQuestionLocales.map((locale) {
-              final isSelected = selectedLanguages.contains(locale);
-              final flag =
-                  AppConstants.localeFlagEmojis[locale] ?? locale;
-
-              return FilterChip(
-                label: Text('$flag  $locale'),
-                selected: isSelected,
-                onSelected: (_) => onToggle(locale),
-                selectedColor: colors.primarySurface,
-                backgroundColor: colors.surface,
-                side: BorderSide(
-                  color: isSelected ? colors.primary : colors.border,
-                ),
-                checkmarkColor: colors.primary,
-                labelStyle: textTheme.bodyMedium?.copyWith(
-                  color: isSelected ? colors.primary : AppColors.inkOnDark,
-                ),
-              );
-            }).toList(),
-          ),
-        ],
+        ),
       ),
     );
   }

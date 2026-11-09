@@ -1,0 +1,3 @@
+• Einfachere Sprachauswahl bei der Einrichtung: Alle Sprachen sind vorausgewählt, und du kannst unerwünschte entfernen
+• Die Sprachseite lässt sich jetzt auf kleinen Bildschirmen scrollen
+• Stabilitätsverbesserungen und Fehlerbehebungen

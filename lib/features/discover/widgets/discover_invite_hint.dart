@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/utils/referral_share.dart';
+import 'package:qulo_v2/core/utils/share_origin.dart';
 import 'package:qulo_v2/features/discover/mixins/discover_invite_hint_mixin.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/economy_config_provider.dart';
@@ -49,6 +50,7 @@ class DiscoverInviteHint extends ConsumerWidget with DiscoverInviteHintMixin {
               reward: reward,
               code: code,
             ),
+            origin: shareOriginFor(context),
           ),
       icon: const Icon(Icons.person_add_alt, size: 16),
       label: Text(

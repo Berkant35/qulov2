@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/features/discover/utils/discover_location_gate.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
 
@@ -52,4 +53,17 @@ void main() {
       expect(locationBecameReady(null, loading), isFalse);
     });
   });
+
+  group('isDiscoverLocationMissing (sunucuda konum yok)', () {
+    test('400 PROFILE_INCOMPLETE → şehir / konum istem kartı', () {
+      expect(isDiscoverLocationMissing(const ServerFailure(code: 'PROFILE_INCOMPLETE', statusCode: 400)), isTrue);
+    });
+
+    test('diğer hatalar → genel tekrar dene ekranı', () {
+      expect(isDiscoverLocationMissing(const ServerFailure(code: 'SERVER_ERROR', statusCode: 500)), isFalse);
+      expect(isDiscoverLocationMissing(const NetworkFailure()), isFalse);
+      expect(isDiscoverLocationMissing(StateError('x')), isFalse);
+    });
+  });
 }
+

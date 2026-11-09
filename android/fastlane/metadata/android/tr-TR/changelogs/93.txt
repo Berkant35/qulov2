@@ -1,0 +1,4 @@
+• Yeni: kayıtta kısa bir güç turu; her gücü güvenli bir denemede bir kez kullan
+• Marketten ▶ ile istediğin gücü tekrar dene, quizde "?" ile güç yardımına bak
+• Discover'da dil veya filtre değiştirince deste yenileniyor
+• Paylaşım ve bildirimler daha sağlam çalışıyor

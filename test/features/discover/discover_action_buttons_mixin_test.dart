@@ -63,4 +63,27 @@ void main() {
       expect(probe.undoAllowance(null).hasRight, isFalse);
     });
   });
+
+  group('undoLabel / isUndoLabelHighlighted (butonun altindaki etiket)', () {
+    test('hak yok → kilit etiketi ("Geri al"), vurgusuz', () {
+      final a = probe.undoAllowance(_stats(used: 0, limit: 0));
+
+      expect(probe.undoLabel(a, lockedLabel: 'Undo'), 'Undo');
+      expect(probe.isUndoLabelHighlighted(a, canUndo: true), isFalse);
+    });
+
+    test('Plus → kalan sayi; geri alinacak kart varsa vurgulu', () {
+      final a = probe.undoAllowance(_stats(used: 1, limit: 3));
+
+      expect(probe.undoLabel(a, lockedLabel: 'Undo'), '2');
+      expect(probe.isUndoLabelHighlighted(a, canUndo: true), isTrue);
+      expect(probe.isUndoLabelHighlighted(a, canUndo: false), isFalse);
+    });
+
+    test('Premium → ∞', () {
+      final a = probe.undoAllowance(_stats(used: 12, limit: -1));
+
+      expect(probe.undoLabel(a, lockedLabel: 'Undo'), '∞');
+    });
+  });
 }

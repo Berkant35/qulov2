@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:qulo_v2/core/network/result.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/services/analytics_forwarder.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/location_manager.dart';
 import 'package:qulo_v2/data/models/discover_model.dart';
 import 'package:qulo_v2/data/repositories/match_repository.dart';
@@ -90,6 +94,41 @@ void main() {
 
     expect(location.requestPermissionCalls, 1);
     expect(repo.discoverCalls, 1, reason: 'izin gelince deste yüklenmeli');
+  });
+
+  testWidgets(
+      'initMixin: auth öncesi oynanan güç demosunun sonucu ilk Discover girişinde raporlanır',
+      (tester) async {
+    SharedPreferences.setMockInitialValues({'power_demo_outcome_v1': 'skipped:2'});
+    // logAuthedOnce AnalyticsForwarder'a da yazar (15 sn'lik zamanlayıcı kurar).
+    AnalyticsForwarder.instance.setEnabled(false);
+    final events = <({String name, Map<String, Object>? params})>[];
+    AnalyticsManager.debugEventSink =
+        (name, params) => events.add((name: name, params: params));
+    addTearDown(() {
+      AnalyticsManager.debugEventSink = null;
+      AnalyticsForwarder.instance.setEnabled(true);
+    });
+    final container = ProviderContainer(overrides: [
+      locationManagerProvider.overrideWithValue(
+        FakeLocationManager()..permission = LocationPermissionStatus.denied,
+      ),
+      matchRepositoryProvider.overrideWithValue(_CountingMatchRepository()),
+      userRepositoryProvider.overrideWithValue(_NoopUserRepository()),
+    ]);
+    addTearDown(container.dispose);
+
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: const MaterialApp(home: _HostScreen()),
+    ));
+    tester.state<_HostState>(find.byType(_HostScreen)).initMixin();
+    await tester.pump();
+    await tester.pump();
+
+    final outcome = events.where((e) => e.name == AnalyticsEvents.powerDemoOutcome);
+    expect(outcome, hasLength(1));
+    expect(outcome.single.params, {'outcome': 'skipped', 'from_step': 2});
   });
 }
 

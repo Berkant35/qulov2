@@ -11,6 +11,7 @@ class LocationPromptContent {
     required this.ctaKey,
     required this.action,
     this.isMock = false,
+    this.offersCity = true,
   });
 
   final String titleKey;
@@ -20,4 +21,7 @@ class LocationPromptContent {
   final String ctaKey;
   final LocationPromptAction action;
   final bool isMock;
+
+  /// "Şehir seç" yedek yolu sunulur mu; sahte konumda hayır (önce sahte konum kapatılmalı).
+  final bool offersCity;
 }

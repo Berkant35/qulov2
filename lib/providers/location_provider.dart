@@ -37,6 +37,9 @@ class LocationNotifier extends Notifier<LocationState> {
   @override
   LocationState build() => const LocationState();
 
+  /// Son denemede konum alındı (izin var, GPS geldi): Discover yeniden çekilebilir.
+  bool get hasUsableLocation => state.lat != null && state.error == null;
+
   /// Login sonrası user profildeki mevcut lat/lng ile state'i doldur.
   /// GPS çağrısı yapmadan hemen discover'ı kullanılabilir hale getirir.
   void seedFromProfile({required double lat, required double lng, String? city}) {

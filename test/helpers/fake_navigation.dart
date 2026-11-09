@@ -15,6 +15,13 @@ class FakeNavigationService implements NavigationService {
   final sheets = <String>[];
   final pushes = <({String name, Object? extra})>[];
   int pops = 0;
+  final gos = <String>[];
+
+  /// [isInStack] için yığındaki rota adları (testten verilir).
+  final stacked = <String>{};
+
+  @override
+  bool isInStack(String name) => stacked.contains(name);
 
   @override
   Future<T?> showAppDialog<T>(AppDialog dialog) async {
@@ -23,10 +30,13 @@ class FakeNavigationService implements NavigationService {
     return confirmAnswer as T;
   }
 
+  /// Sheet secimi (ör. `ListBottomSheet` degeri); null = kullanici kapatti.
+  Object? sheetAnswer;
+
   @override
   Future<T?> showAppBottomSheet<T>(AppBottomSheet sheet) async {
     sheets.add(sheet.name);
-    return null;
+    return sheetAnswer as T?;
   }
 
   @override
@@ -38,6 +48,10 @@ class FakeNavigationService implements NavigationService {
     pushes.add((name: name, extra: extra));
     return null;
   }
+
+  @override
+  void go(String name, {Map<String, String>? params, Object? extra}) =>
+      gos.add(name);
 
   @override
   void pop<T>([T? result]) => pops++;

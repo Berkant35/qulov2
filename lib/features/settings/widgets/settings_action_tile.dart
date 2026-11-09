@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
+import 'package:qulo_v2/core/widgets/ink_surface.dart';
 import 'package:qulo_v2/core/widgets/safe_tap_button.dart';
 
 class SettingsActionTile extends StatelessWidget {
@@ -25,12 +26,8 @@ class SettingsActionTile extends StatelessWidget {
     final effectiveIconColor = iconColor ?? theme.colorScheme.onSurfaceVariant;
     final effectiveTitleColor = titleColor ?? theme.colorScheme.onSurface;
 
-    return Container(
+    return InkSurface(
       margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-      ),
       child: SafeTapButton(
         onTap: onTap,
         builder: (context, isLoading, onTap) => ListTile(

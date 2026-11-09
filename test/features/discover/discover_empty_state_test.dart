@@ -12,6 +12,7 @@ import 'package:qulo_v2/data/models/user_model.dart';
 import 'package:qulo_v2/data/repositories/match_repository.dart';
 import 'package:qulo_v2/data/repositories/user_repository.dart';
 import 'package:qulo_v2/features/discover/widgets/discover_empty_state.dart';
+import 'package:qulo_v2/features/discover/widgets/discover_invite_hint.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/passport_provider.dart';
 import 'package:qulo_v2/providers/subscription_provider.dart';
@@ -55,13 +56,47 @@ void main() {
     ], reason: 'kayitli yaricap yokken varsayilan (AppConstants.defaultMatchRadiusKm)');
     expect(h.match.discoverCalls, 1);
   });
+
+  group('boş deste sebebi', _emptyReasonCases);
+}
+
+/// 2.0.18: sunucu "adaylar vardı ama hepsi uzun süredir görülmüyor" için
+/// `empty_reason: inactive` gönderiyor; eskiden genel "profil kalmadı" metni çıkıyordu.
+void _emptyReasonCases() {
+  String trOf(WidgetTester tester, String key) => tester.element(find.byType(DiscoverEmptyState)).tr(key);
+
+  testWidgets('inactive: kendi metni, davet ve yarıçap girişi korunur', (tester) async {
+    final h = _Harness(
+      subscription: SubscriptionInfo.free(),
+      passportActive: false,
+      reason: DiscoverEmptyReason.inactive,
+    );
+    await h.pump(tester);
+
+    expect(find.text(trOf(tester, 'discover_empty_inactive_title')), findsOneWidget);
+    expect(find.text(trOf(tester, 'discover_empty_inactive_hint')), findsOneWidget);
+    expect(find.text(trOf(tester, 'no_more_profiles')), findsNothing);
+    expect(find.byType(DiscoverInviteHint), findsOneWidget);
+    expect(find.text(trOf(tester, 'search_again')), findsOneWidget);
+  });
+
+  for (final reason in [DiscoverEmptyReason.noCandidates, null, 'yeni_bilinmeyen_sebep']) {
+    testWidgets('$reason: genel "profil kalmadı" metni', (tester) async {
+      final h = _Harness(subscription: SubscriptionInfo.free(), passportActive: false, reason: reason);
+      await h.pump(tester);
+
+      expect(find.text(trOf(tester, 'no_more_profiles')), findsOneWidget);
+      expect(find.text(trOf(tester, 'discover_empty_inactive_title')), findsNothing);
+    });
+  }
 }
 
 class _Harness {
-  _Harness({required this.subscription, required this.passportActive});
+  _Harness({required this.subscription, required this.passportActive, this.reason});
 
   final SubscriptionInfo subscription;
   final bool passportActive;
+  final String? reason;
   final nav = _FakeNavigationService();
   final users = _FakeUserRepository();
   final match = _FakeMatchRepository();
@@ -82,7 +117,7 @@ class _Harness {
         localizationsDelegates: const [AppLocalizationsDelegate()],
         supportedLocales: const [Locale('en')],
         locale: const Locale('en'),
-        home: const Scaffold(body: DiscoverEmptyState()),
+        home: Scaffold(body: DiscoverEmptyState(reason: reason)),
       ),
     ));
     await tester.pump();

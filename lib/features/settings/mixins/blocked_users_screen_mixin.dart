@@ -17,6 +17,9 @@ mixin BlockedUsersScreenMixin {
     ProviderBase<Object?> listProvider,
   ) async {
     final nav = ref.read(navigationServiceProvider);
+    // Depo await ONCESI alinir: dialog acikken ekran kapanirsa `ref` kullanilamaz,
+    // onaylanan islem yine sunucuya gider.
+    final blocks = ref.read(blockRepositoryProvider);
     final confirmed = await nav.showAppDialog<bool>(
       ConfirmDialog(
         name: 'unblock_user',
@@ -29,11 +32,16 @@ mixin BlockedUsersScreenMixin {
     if (confirmed != true) return;
     // Liste her durumda sunucudan tazelenir (gercek durum); hata olursa
     // kullanici nedenini gorur — eskiden dokunus sessizce hicbir sey yapmiyordu.
+    // Ekran kapandiysa tazelenecek liste de yok (saglayici autoDispose).
+    void refreshList() {
+      if (ref.context.mounted) ref.invalidate(listProvider);
+    }
+
     await runServerAction(
-      action: () => ref.read(blockRepositoryProvider).unblockUser(blockedId),
-      onDone: () => ref.invalidate(listProvider),
+      action: () => blocks.unblockUser(blockedId),
+      onDone: refreshList,
       onFailed: (f) {
-        ref.invalidate(listProvider);
+        refreshList();
         if (!context.mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(context.tr(f.userMessageKey('unblock_failed')))),

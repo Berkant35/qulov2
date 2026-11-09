@@ -11,8 +11,12 @@ import 'package:qulo_v2/features/discover/mixins/discover_empty_state_mixin.dart
 import 'package:qulo_v2/features/discover/widgets/discover_invite_hint.dart';
 import 'package:qulo_v2/features/discover/widgets/discover_passport_hint.dart';
 
+/// Boş deste: yarıçapı genişlet, pasaport ve davet girişi. Metin [reason]'a göre
+/// (`DiscoverEmptyReason`; dil kapısı ayrı ekran: `DiscoverEmptyLanguage`).
 class DiscoverEmptyState extends ConsumerStatefulWidget {
-  const DiscoverEmptyState({super.key});
+  final String? reason;
+
+  const DiscoverEmptyState({super.key, this.reason});
 
   @override
   ConsumerState<DiscoverEmptyState> createState() => _DiscoverEmptyStateState();
@@ -39,11 +43,12 @@ class _DiscoverEmptyStateState extends ConsumerState<DiscoverEmptyState>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scale = context.fmt.radiusScale;
+    final copy = emptyCopyFor(widget.reason);
 
     return EmptyStateView(
       icon: QIcon(QIcons.icCompassOff, size: 64, color: context.appColors.textHint),
-      title: context.tr('no_more_profiles'),
-      message: context.tr('no_more_profiles_hint'),
+      title: context.tr(copy.titleKey),
+      message: context.tr(copy.messageKey),
       children: [
       // Inline radius slider
       Container(

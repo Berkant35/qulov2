@@ -1,7 +1,10 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:qulo_v2/core/coach_mark/coach_mark_controller.dart';
 import 'package:qulo_v2/core/coach_mark/coach_mark_painter.dart';
 import 'package:qulo_v2/core/coach_mark/coach_mark_registry.dart';
+import 'package:qulo_v2/core/coach_mark/coach_mark_step_dots.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
@@ -77,33 +80,45 @@ class _CoachMarkOverlayState extends State<CoachMarkOverlay> {
             ),
           ),
           SafeArea(
-            child: Align(
-              alignment: cardAlign,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: AppSpacing.maxContentWidth),
-                child: Container(
-                  margin: const EdgeInsets.all(AppSpacing.lg),
-                  padding: const EdgeInsets.all(AppSpacing.lg),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor,
-                    borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+            // Uzun içerik (büyük yazı, uzun çeviri, ek satırlar): kart ekrana sığar, yalnız gövde
+            // kayar; başlık ve birincil düğme hep görünür. Kart en fazla ekran eksi iki dokunma
+            // şeridi: ortadaki kart üstteki kapatmayı (X) örtmez. Kısa kart eskisi gibi.
+            child: LayoutBuilder(
+              builder: (context, constraints) => Align(
+                alignment: cardAlign,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: AppSpacing.maxContentWidth,
+                    maxHeight: math.max(0, constraints.maxHeight - 2 * kMinInteractiveDimension),
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(context.tr(step.titleKey),
-                          style: Theme.of(context).textTheme.titleMedium),
-                      const SizedBox(height: AppSpacing.sm),
-                      step.bodyBuilder != null
-                          ? step.bodyBuilder!(context)
-                          : Text(context.tr(step.bodyKey),
-                              style: Theme.of(context).textTheme.bodyMedium),
-                      const SizedBox(height: AppSpacing.md),
-                      _StepDots(count: controller.stepCount, index: controller.index),
-                      const SizedBox(height: AppSpacing.md),
-                      AppButton(label: context.tr(step.ctaKey), onPressed: controller.next),
-                    ],
+                  child: Container(
+                    margin: const EdgeInsets.all(AppSpacing.lg),
+                    padding: const EdgeInsets.all(AppSpacing.lg),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(context.tr(step.titleKey),
+                            style: Theme.of(context).textTheme.titleMedium),
+                        const SizedBox(height: AppSpacing.sm),
+                        Flexible(
+                          child: SingleChildScrollView(
+                            child: step.bodyBuilder != null
+                                ? step.bodyBuilder!(context)
+                                : Text(context.tr(step.bodyKey),
+                                    style: Theme.of(context).textTheme.bodyMedium),
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        CoachMarkStepDots(count: controller.stepCount, index: controller.index),
+                        const SizedBox(height: AppSpacing.md),
+                        AppButton(label: context.tr(step.ctaKey), onPressed: controller.next),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -111,34 +126,6 @@ class _CoachMarkOverlayState extends State<CoachMarkOverlay> {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _StepDots extends StatelessWidget {
-  const _StepDots({required this.count, required this.index});
-  final int count;
-  final int index;
-
-  @override
-  Widget build(BuildContext context) {
-    if (count <= 1) return const SizedBox.shrink();
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(count, (i) {
-        final active = i == index;
-        return Container(
-          width: active ? 10 : 6,
-          height: active ? 10 : 6,
-          margin: const EdgeInsets.symmetric(horizontal: 3),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: active
-                ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).disabledColor,
-          ),
-        );
-      }),
     );
   }
 }

@@ -10,7 +10,10 @@ class CoachMarkController extends ChangeNotifier {
   bool _started = false;
   bool _finished = false;
 
-  VoidCallback? onFinished;
+  /// Tur bitince bir kez çağrılır. [skipped] = "tümünü atla" ([skipAll]); `false` =
+  /// son adımda [next]. [stepIndex] bitişteki adımın **1 tabanlı** sırası (analitikte
+  /// "adım 3"; tamamlanan turda = adım sayısı).
+  void Function({required bool skipped, required int stepIndex})? onFinished;
 
   int get index => _index;
   int get stepCount => steps.length;
@@ -29,7 +32,7 @@ class CoachMarkController extends ChangeNotifier {
     if (_finished) return;
     current.onDismiss?.call();
     if (isLast) {
-      _finish();
+      _finish(skipped: false);
       return;
     }
     _index++;
@@ -40,12 +43,12 @@ class CoachMarkController extends ChangeNotifier {
   void skipAll() {
     if (_finished) return;
     current.onDismiss?.call();
-    _finish();
+    _finish(skipped: true);
   }
 
-  void _finish() {
+  void _finish({required bool skipped}) {
     _finished = true;
-    onFinished?.call();
+    onFinished?.call(skipped: skipped, stepIndex: _index + 1);
     notifyListeners();
   }
 }

@@ -4,8 +4,8 @@ import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/services/revenuecat_service.dart';
 import 'package:qulo_v2/providers/store_prices_provider.dart';
 
-/// Uc ekranin (subscription_comparison_screen, paywall_bottom_sheet,
-/// premium_suggestion_sheet) ortak "aylik abonelik fiyati" mantigi.
+/// Iki satis ekraninin (subscription_comparison_screen, paywall_bottom_sheet)
+/// ortak "aylik abonelik fiyati" mantigi.
 ///
 /// Fiyat RevenueCat'ten henuz gelmediyse (`prices[productId]` yok) null doner —
 /// cagiran taraf bunu tek "fiyat bilinmiyor" sinyali olarak kullanir: hem buton
@@ -43,7 +43,7 @@ PlanPriceLabels planPriceLabels({
       ),
     );
 
-/// Uc ekranin ortak on-hazirligi: fiyat provider'ini izler, etiketleri uretir.
+/// Iki ekranin ortak on-hazirligi: fiyat provider'ini izler, etiketleri uretir.
 PlanPriceLabels watchPlanPriceLabels(BuildContext context, WidgetRef ref) =>
     planPriceLabels(
       prices: ref.watch(storePricesProvider).valueOrNull ?? const <String, String>{},

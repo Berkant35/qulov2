@@ -52,8 +52,9 @@ class _MapConfirmScreenState extends ConsumerState<MapConfirmScreen>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final initialTarget = LatLng(widget.lat, widget.lng);
 
+    // Raw Scaffold: kenardan kenara harita onay ekrani (Scaffold Kurali istisnasi) —
+    // geri butonu ve onay paneli haritanin ustunde yuzer, AppBar/padding yok.
     return Scaffold(
       body: Stack(
         children: [
@@ -69,22 +70,9 @@ class _MapConfirmScreenState extends ConsumerState<MapConfirmScreen>
             opacity: isMapReady ? 1.0 : 0.0,
             duration: const Duration(milliseconds: 400),
             child: GoogleMap(
-              initialCameraPosition: CameraPosition(target: initialTarget, zoom: 12),
+              initialCameraPosition: initialCameraPosition,
               style: mapStyle,
-              onMapCreated: (controller) async {
-                if (!mapController.isCompleted) {
-                  mapController.complete(controller);
-                }
-                setState(() => isMapReady = true);
-                await Future.delayed(const Duration(milliseconds: 300));
-                if (mounted) {
-                  controller.animateCamera(
-                    CameraUpdate.newCameraPosition(
-                      CameraPosition(target: initialTarget, zoom: 14),
-                    ),
-                  );
-                }
-              },
+              onMapCreated: onMapCreated,
               onCameraMove: onCameraMove,
               onCameraIdle: onCameraIdle,
               scrollGesturesEnabled: true,

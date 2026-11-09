@@ -11,6 +11,8 @@ import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/providers/location_provider.dart';
 import 'package:qulo_v2/providers/match_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
+import 'package:qulo_v2/features/ads/providers/discover_ads_notifier.dart';
+import 'package:qulo_v2/features/ads/widgets/discover_ad_card.dart';
 import 'package:qulo_v2/features/discover/mixins/acquisition_prompt_mixin.dart';
 import 'package:qulo_v2/features/discover/mixins/discover_screen_mixin.dart';
 import 'package:qulo_v2/features/discover/mixins/return_review_prompt_mixin.dart';
@@ -56,6 +58,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen>
   Widget build(BuildContext context) {
     final discoverState = ref.watch(discoverProvider);
     final locationState = ref.watch(locationProvider);
+    final showAd = ref.watch(discoverAdsProvider.select((s) => s.isShowing));
     final isInitialLoad = locationState.lat == null && locationState.error == null;
     final locationError = blockingLocationError(locationState);
 
@@ -70,9 +73,11 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen>
               ? DiscoverLocationPrompt(error: locationError)
               : discoverState.when(
               loading: () => const SizedBox.shrink(),
-              error: (e, _) => ErrorRetryWidget(
-                onRetry: () => ref.read(discoverProvider.notifier).loadCards(),
-              ),
+              error: (e, _) => isDiscoverLocationMissing(e)
+                  ? const DiscoverLocationPrompt(error: discoverLocationMissingCode)
+                  : ErrorRetryWidget(
+                      onRetry: () => ref.read(discoverProvider.notifier).loadCards(),
+                    ),
               data: (discover) {
                 if (!discover.initialized) return const SizedBox.shrink();
 
@@ -102,7 +107,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen>
                         // kalan bos ekranin tek sebebi dil kapisi olabilir.
                         child: discover.emptyReason == DiscoverEmptyReason.language
                             ? const DiscoverEmptyLanguage()
-                            : const DiscoverEmptyState(),
+                            : DiscoverEmptyState(reason: discover.emptyReason),
                       ),
                     ],
                   );
@@ -127,13 +132,16 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen>
                           onAddQuestions: () => ref.read(navigationServiceProvider).go(RouteNames.questions),
                         ),
                       ),
-                    DiscoverScopeChip(card: discover.cards.first),
+                    if (!showAd) DiscoverScopeChip(card: discover.cards.first),
                     Expanded(
-                      child: DiscoverCardView(
-                        card: discover.cards.first,
-                        onSwipeRight: () => onSwipeRight(discover.cards.first.userId),
-                        onSwipeLeft: () => onSwipeLeft(discover.cards.first.userId),
-                      ),
+                      // Reklam kartı deste verisine dokunmaz: yalnız yerine geçer.
+                      child: showAd
+                          ? const DiscoverAdCard()
+                          : DiscoverCardView(
+                              card: discover.cards.first,
+                              onSwipeRight: () => onSwipeRight(discover.cards.first.userId),
+                              onSwipeLeft: () => onSwipeLeft(discover.cards.first.userId),
+                            ),
                     ),
                   ],
                 );

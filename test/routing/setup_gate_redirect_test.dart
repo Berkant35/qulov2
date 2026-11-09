@@ -33,7 +33,8 @@ void main() {
   group('yas yok — sosyal giris profili tamamlanmamis', () {
     final noAge = _user(age: null, photos: 0, questions: 0, genderPref: false);
 
-    for (final location in ['/discover', '/profile-setup', '/chat/m1', '/profile/edit']) {
+    // Yaş kapısı demoyu muaf tutmaz: yaşsız kullanıcı markete de ulaşamaz.
+    for (final location in ['/discover', '/profile-setup', '/chat/m1', '/profile/edit', '/power-demo']) {
       test('$location → /profile-completion (kurulumdan once gelir)', () {
         expect(_gate(location, noAge), '/profile-completion');
       });
@@ -90,6 +91,17 @@ void main() {
       expect(_gate('/profile-detail/u2', incomplete), isNull);
       expect(_gate('/profile/preview', incomplete), isNull);
       expect(_gate('/quiz/u2', incomplete), '/profile-setup');
+    });
+
+    // Market (`/profile/exchange`) ▶ "Güçleri dene" kurulumu bitmemiş kullanıcıya da açıktır;
+    // demo yalıtılmış ve hiçbir şey harcamaz — /profile-setup'a düşerse ▶ bozuk görünür.
+    test('/power-demo serbest — market ▶ kurulum öncesi de demoyu açar', () {
+      expect(_gate('/power-demo', incomplete), isNull);
+    });
+
+    test('/power-demo muafiyeti önek değil — benzer yollar yine kapıda', () {
+      expect(_gate('/power-demo-x', incomplete), '/profile-setup');
+      expect(_gate('/discover', incomplete), '/profile-setup');
     });
 
     test('/questions oneki muaf DEGIL — boyle bir rota yok, sorular /profile altinda', () {

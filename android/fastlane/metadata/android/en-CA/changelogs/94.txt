@@ -1,0 +1,4 @@
+• New: a quick power tour during sign-up; try each power once in a safe practice round
+• Replay any power from the market with ▶, and tap "?" in a quiz for help
+• Discover now refreshes when you change language or filters
+• Sharing and notifications are more reliable

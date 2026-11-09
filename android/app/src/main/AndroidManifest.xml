@@ -63,6 +63,10 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBWDZYMXb8qBFMeCGuqDE2m_D2L6uBjtBQ"/>
+        <!-- AdMob uygulama kimliği (Qulo Android, pub-1650543626009624) -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-1650543626009624~5709119026"/>
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"/>

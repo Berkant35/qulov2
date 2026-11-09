@@ -51,10 +51,17 @@ mixin ChatModerationMixin on ChatScreenMixin {
   }
 
   void _showChatReportReasonDialog(String category) {
+    // Kategori sheet'inin geri cagrisi: sheet acikken sohbet kapanmis olabilir.
+    if (!mounted) return;
     final nav = ref.read(navigationServiceProvider);
     final controller = TextEditingController();
     final isOther = category == 'OTHER';
     final l10n = AppLocalizations.of(context);
+    // Dialog acikken sohbet kapanabilir (401 cikis, bildirim) — butona
+    // basildiginda `ref` dispose olmus olur. Hedef ve depo SIMDI alinir; sikayet
+    // (moderasyon) kullanici gonderdiyse her durumda sunucuya gider.
+    final targetId = _getTargetUserId();
+    final reports = ref.read(reportRepositoryProvider);
 
     nav.showAppDialog(
       CustomDialog(
@@ -78,13 +85,12 @@ mixin ChatModerationMixin on ChatScreenMixin {
                 final reason = controller.text.trim();
                 if (isOther && reason.isEmpty) return;
                 nav.closeOverlay();
-                final targetId = _getTargetUserId();
                 if (targetId == null) return;
                 // Sonuc KONTROL EDILIYOR: eskiden `Result` atilmiyordu, yani
                 // sikayet 400/401/429 alsa da kullanici hicbir sey gormuyordu.
                 // Moderasyon yolunda sessiz kayip; `reports` tablosunda sifir
                 // satir olmasinin sebeplerinden biri bu olabilir.
-                final result = await ref.read(reportRepositoryProvider).createReport(
+                final result = await reports.createReport(
                   reportedId: targetId,
                   category: category,
                   reason: reason.isNotEmpty ? reason : null,
@@ -110,6 +116,10 @@ mixin ChatModerationMixin on ChatScreenMixin {
   Future<void> onChatBlock() async {
     final l10n = AppLocalizations.of(context);
     final nav = ref.read(navigationServiceProvider);
+    // Dialog await'inden ONCE: onay sonrasi sohbet kapanmis olsa da (ref dispose)
+    // kullanicinin onayladigi engel sunucuya gider.
+    final targetId = _getTargetUserId();
+    final block = ref.read(blockRepositoryProvider).blockUser;
     final confirmed = await nav.showAppDialog<bool>(
       ConfirmDialog(
         name: 'chat_block_user',
@@ -122,10 +132,10 @@ mixin ChatModerationMixin on ChatScreenMixin {
     );
     if (confirmed != true) return;
     await runBlock(
-      targetUserId: _getTargetUserId(),
-      block: ref.read(blockRepositoryProvider).blockUser,
+      targetUserId: targetId,
+      block: block,
       onBlocked: () {
-        if (mounted) ref.read(navigationServiceProvider).pop();
+        if (mounted) nav.pop();
       },
       onFailed: (f) {
         if (!mounted) return;

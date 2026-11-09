@@ -1,6 +1,7 @@
 "CFBundleDisplayName" = "Qulo";
 "NSCameraUsageDescription" = "Camera access is required to take profile photos.";
 "NSPhotoLibraryUsageDescription" = "Photo library access is required to select profile photos.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Qulo uses your location to: (1) find profiles on Discover within your selected distance, (2) show your city on your profile, and (3) display each profile's distance to you (e.g., \"Berlin · 2.5 km\").";
 "NSLocationWhenInUseUsageDescription" = "Qulo uses your location to: (1) find profiles on Discover within your selected distance, (2) show your city on your profile, and (3) display each profile's distance to you (e.g., \"Berlin · 2.5 km\").";
 "NSMicrophoneUsageDescription" = "Microphone access is required to send voice messages.";
-"NSUserTrackingUsageDescription" = "Qulo uses this identifier to: (1) measure ad performance (e.g., knowing you discovered Qulo through an ad), and (2) improve your app experience. It is shared only with our advertising measurement partners.";
+"NSUserTrackingUsageDescription" = "Qulo uses this identifier to show you ads that are more relevant to you, measure ad performance (e.g., knowing you discovered Qulo through an ad), and improve your app experience. If you decline, Qulo works the same and you may still see ads, just less personalized.";

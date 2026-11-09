@@ -55,6 +55,11 @@ class _DiscoverLocationPromptState extends ConsumerState<DiscoverLocationPrompt>
             child: Text(context.tr(content.ctaKey)),
           ),
         ),
+        if (content.offersCity)
+          TextButton(
+            onPressed: () => openCityPicker(ref, widget.error),
+            child: Text(context.tr('city_picker_choose_city')),
+          ),
       ],
     );
   }

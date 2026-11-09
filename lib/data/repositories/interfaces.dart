@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/data/models/acquisition_channel_model.dart';
 import 'package:qulo_v2/data/models/auth_model.dart';
+import 'package:qulo_v2/data/models/city_model.dart';
 import 'package:qulo_v2/data/models/diamond_model.dart';
 import 'package:qulo_v2/data/models/discover_model.dart';
 import 'package:qulo_v2/data/models/exchange_model.dart';
@@ -12,6 +13,7 @@ import 'package:qulo_v2/data/models/message_model.dart';
 import 'package:qulo_v2/data/models/power_model.dart';
 import 'package:qulo_v2/data/models/question_model.dart';
 import 'package:qulo_v2/data/models/quiz_model.dart';
+import 'package:qulo_v2/data/models/realtime_token_model.dart';
 import 'package:qulo_v2/data/models/referral_model.dart';
 import 'package:qulo_v2/data/models/rewards_model.dart';
 import 'package:qulo_v2/data/models/subscription_model.dart';
@@ -261,4 +263,15 @@ abstract class IRewardsRepository {
   Future<Result<RedeemResult>> redeem({required String itemId, required String idempotencyKey, String? sourceItemId});
   Future<Result<RedemptionPage>> getRedemptions({int page = 1, int limit = 20});
   Future<Result<void>> sendEvents(List<SectionEvent> events);
+}
+
+// ─── Realtime token ───
+abstract class IRealtimeTokenRepository {
+  Future<Result<RealtimeToken>> issue();
+}
+
+// ─── Şehir (konumsuz yedek yol) ───
+abstract class ICityRepository {
+  Future<Result<CityListResponse>> search({String? country, String query = '', int limit = 100});
+  Future<Result<void>> setCity(String cityId);
 }

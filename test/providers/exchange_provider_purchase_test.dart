@@ -41,23 +41,24 @@ const _insufficient = ServerFailure(code: 'INSUFFICIENT_DIAMONDS', statusCode: 4
 
 void main() {
   group('convert — yesil → mor', () {
-    test('basarida true doner ve bakiye sunucudan tazelenir', () async {
+    test('basarida Success doner ve bakiye sunucudan tazelenir', () async {
       final s = _setup();
 
-      final ok = await s.container.read(exchangeProvider.notifier).convert(30);
+      final result = await s.container.read(exchangeProvider.notifier).convert(30);
 
-      expect(ok, isTrue);
+      expect(result.isSuccess, isTrue);
       expect(s.exchange.convertCallCount, 1);
       expect(s.diamond.getBalanceCallCount, 1);
       expect(s.container.read(diamondProvider).value, const DiamondBalance(green: 4, purple: 75));
     });
 
-    test('yetersiz bakiyede false — bakiye tazelenmez, tek cagri', () async {
+    test('yetersiz bakiyede hata kodu cagirana doner (paywall icin) — bakiye tazelenmez, tek cagri', () async {
       final s = _setup(convertFailure: _insufficient);
 
-      final ok = await s.container.read(exchangeProvider.notifier).convert(30);
+      final result = await s.container.read(exchangeProvider.notifier).convert(30);
 
-      expect(ok, isFalse);
+      final failure = result.when<AppFailure?>(success: (_) => null, failure: (f) => f);
+      expect((failure as ServerFailure).code, 'INSUFFICIENT_DIAMONDS');
       expect(s.exchange.convertCallCount, 1);
       expect(s.diamond.getBalanceCallCount, 0);
     });

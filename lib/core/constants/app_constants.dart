@@ -33,6 +33,13 @@ abstract final class AppConstants {
   /// `acquisition.validator.ts` `freeform_text: max(280)` ile ayni olmali.
   static const int acquisitionFreeformMaxLength = 280;
 
+  /// E-posta alan siniri (RFC 5321 yol uzunlugu) — login, kayit ve sifre
+  /// sifirlama formlari ayni degeri kullanir.
+  static const int emailMaxLength = 254;
+
+  /// Sifre alan siniri — login ve kayit formlari ayni degeri kullanir.
+  static const int passwordMaxLength = 128;
+
   /// Destek adresi (banlanan kullanicinin tek itiraz yolu). Sunucu
   /// `config/env.ts` ve web ile ayni kanonik adres.
   static const supportEmail = 'info@socrepho.com';
@@ -70,6 +77,14 @@ abstract final class AppConstants {
   static String defaultQuestionLocale(String appLocale) {
     final code = appLocale.split(RegExp('[_-]')).first;
     return supportedQuestionLocales.contains(code) ? code : fallbackLocale;
+  }
+
+  /// Yeni kullanıcının başlangıç eşleşme dilleri: desteklenen dillerin tümü,
+  /// [defaultQuestionLocale] başta, tekrarsız. Sunucu `initialPreferredLanguages`
+  /// ile aynı kural — ilk Discover'dan itibaren global havuz (2026-10-29).
+  static List<String> initialQuestionLocales(String appLocale) {
+    final first = defaultQuestionLocale(appLocale);
+    return [first, ...supportedQuestionLocales.where((l) => l != first)];
   }
 
   static const localeFlagEmojis = <String, String>{

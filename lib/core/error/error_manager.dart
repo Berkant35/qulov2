@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:qulo_v2/core/error/crash_classifier.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 
 class ErrorManager {
@@ -8,16 +9,21 @@ class ErrorManager {
 
   static Future<void> init() async {
     FlutterError.onError = (details) {
-      if (kReleaseMode) {
+      if (!kReleaseMode) return FlutterError.presentError(details);
+      if (CrashClassifier.isFatalFlutterError(details)) {
         _crashlytics.recordFlutterFatalError(details);
       } else {
-        FlutterError.presentError(details);
+        _crashlytics.recordFlutterError(details);
       }
     };
 
     PlatformDispatcher.instance.onError = (error, stack) {
       if (kReleaseMode) {
-        _crashlytics.recordError(error, stack, fatal: true);
+        _crashlytics.recordError(
+          error,
+          stack,
+          fatal: !CrashClassifier.isImageLoadError(error),
+        );
       } else {
         debugPrint('Async error: $error\n$stack');
       }

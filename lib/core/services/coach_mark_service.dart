@@ -6,6 +6,8 @@ import 'package:qulo_v2/core/coach_mark/coach_mark_controller.dart';
 import 'package:qulo_v2/core/coach_mark/coach_mark_overlay.dart';
 import 'package:qulo_v2/core/coach_mark/coach_mark_step.dart';
 import 'package:qulo_v2/core/navigation/observers/route_change_notifier.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/overlay_queue_service.dart';
 import 'package:qulo_v2/core/services/overlay_request.dart';
 
@@ -118,7 +120,13 @@ class CoachMarkService {
     }
 
     final controller = CoachMarkController(steps: steps);
-    controller.onFinished = () => _close(tourId);
+    controller.onFinished = ({required skipped, required stepIndex}) =>
+        _close(tourId, skipped: skipped, stepIndex: stepIndex);
+
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.coachTourShown,
+      params: {AnalyticsEvents.paramTourId: tourId},
+    );
 
     _tourContext = context;
     _activeController = controller;
@@ -200,7 +208,17 @@ class CoachMarkService {
     _cleanup();
   }
 
-  void _close(String tourId) {
+  /// Kullanıcı kararıyla biten tur: completed (son adımda ileri) / skipped (tümünü
+  /// atla) olayı burada atılır. [forceClose]/[_cleanup] olay ÜRETMEZ — her sohbet
+  /// ekranı kapanışında çağrılıyor, kullanıcı kararı değil.
+  void _close(String tourId, {required bool skipped, required int stepIndex}) {
+    AnalyticsManager.instance.logEvent(
+      skipped ? AnalyticsEvents.coachTourSkipped : AnalyticsEvents.coachTourCompleted,
+      params: {
+        AnalyticsEvents.paramTourId: tourId,
+        AnalyticsEvents.paramStepIndex: stepIndex,
+      },
+    );
     _cleanup();
     // Fire-and-forget; flag write must not block UI removal.
     markSeen(tourId);

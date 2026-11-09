@@ -1,0 +1,4 @@
+• Discover without sharing your location: just pick your city
+• "Active today" and "Active this week" badges on Discover cards
+• We let you know when someone solves your questions
+• Stability fixes for photo selection and quizzes

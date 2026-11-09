@@ -107,3 +107,19 @@ class AppConfigNotifier extends Notifier<AppConfigState> {
 final appConfigProvider = NotifierProvider<AppConfigNotifier, AppConfigState>(
   AppConfigNotifier.new,
 );
+
+/// Güç demosu açık mı. Config henüz çekilmediyse/çekilemediyse açık sayılır
+/// (fail-open): demo, kapatma anahtarı yalnız sunucudan `false` gelince kapanır.
+final powerDemoEnabledProvider = Provider<bool>(
+  (ref) => ref.watch(
+    appConfigProvider.select((s) => s.config?.powerDemoEnabled ?? true),
+  ),
+);
+
+/// Discover native reklamı açık mı. Config çekilmediyse/çekilemediyse KAPALI
+/// (fail-closed): reklam yalnız sunucu `adsEnabled: true` verince açılır.
+final adsEnabledProvider = Provider<bool>(
+  (ref) => ref.watch(
+    appConfigProvider.select((s) => s.config?.adsEnabled ?? false),
+  ),
+);

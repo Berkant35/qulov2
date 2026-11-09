@@ -48,9 +48,6 @@ abstract class AnalyticsEvents {
   static const onboardingV2Skip = 'onboarding_v2_skip';
   static const onboardingV2Complete = 'onboarding_v2_complete';
   static const onboardingV2LanguagesSelected = 'onboarding_v2_languages_selected';
-  static const onboardingV2PremiumShown = 'onboarding_v2_premium_shown';
-  static const onboardingV2PremiumTapped = 'onboarding_v2_premium_tapped';
-  static const onboardingV2PremiumDismissed = 'onboarding_v2_premium_dismissed';
 
   // ─── Discover (15) ─────────────────────────────────────────────────
   static const String discoverScreenView = 'discover_screen_view';
@@ -142,6 +139,42 @@ abstract class AnalyticsEvents {
   static const String chatRescueAccepted = 'chat_rescue_accepted';
   static const String chatRescueDeclined = 'chat_rescue_declined';
 
+  /// Gerçek quiz'de güç çubuğundaki "?" baloncuğu açıldı (param: power).
+  static const String quizPowerHelpOpen = 'quiz_power_help_open';
+
+  // ─── Güç demosu (2026-10-17) ───────────────────────────────────────
+  // Demoyu kim atladı / bitirdi / nerede bıraktı. Parametre adı `entry_point`
+  // (onboarding | market | quiz_intro) — `source` DEĞİL: `source` quiz_power_used'da
+  // harcama kaynağını taşır, çakışma mor analizini bozar. Taşıma: onboarding (auth
+  // öncesi) yalnız Firebase, diğerleri Firebase + flow_events (PowerDemoAnalytics).
+  static const String powerDemoStart = 'power_demo_start';
+  static const String powerDemoStepView = 'power_demo_step_view';
+  static const String powerDemoPowerUsed = 'power_demo_power_used';
+  static const String powerDemoAnswer = 'power_demo_answer';
+  static const String powerDemoRescueUsed = 'power_demo_rescue_used';
+  static const String powerDemoSkip = 'power_demo_skip';
+  static const String powerDemoComplete = 'power_demo_complete';
+  /// Onboarding demosunun sonucu, kayıt/girişten SONRA bir kez (param: outcome, from_step?).
+  static const String powerDemoOutcome = 'power_demo_outcome';
+
+  // ─── Discover native reklam (AdMob) ────────────────────────────────
+  // Yerleşim parametresi `placement` (= discover). `entry_point` DEĞİL: o güç
+  // demosuna ait. Hata olayı `error_code` taşır (AdMob hata kodu).
+  static const String adSlotShown = 'ad_slot_shown';
+  static const String adLoaded = 'ad_loaded';
+  static const String adFailed = 'ad_failed';
+  static const String adClicked = 'ad_clicked';
+  static const String adImpression = 'ad_impression';
+  static const String paramPlacement = 'placement';
+  static const String placementDiscover = 'discover';
+
+  // ─── Coach-mark turları (tüm turlar; param: tour_id, step_index) ───
+  static const String coachTourShown = 'coach_tour_shown';
+  /// Son adımda "ileri" ile bitti.
+  static const String coachTourCompleted = 'coach_tour_completed';
+  /// "Tümünü atla" ile kapandı.
+  static const String coachTourSkipped = 'coach_tour_skipped';
+
   // ─── Questions (8) ─────────────────────────────────────────────────
   static const String questionCreateStart = 'question_create_start';
   static const String questionCreateComplete = 'question_create_complete';
@@ -185,6 +218,9 @@ abstract class AnalyticsEvents {
   static const String subscriptionPurchaseStart = 'subscription_purchase_start';
   static const String subscriptionPurchaseSuccess = 'subscription_purchase_success';
   static const String subscriptionPurchaseFail = 'subscription_purchase_fail';
+
+  /// Kullanıcı mağaza sayfasında vazgeçti (RevenueCat `purchaseCancelledError`) — hata değil.
+  static const String subscriptionPurchaseCancel = 'subscription_purchase_cancel';
   static const String subscriptionCancel = 'subscription_cancel';
   static const String subscriptionRenew = 'subscription_renew';
   static const String upsellShown = 'upsell_shown';
@@ -446,11 +482,25 @@ abstract class AnalyticsEvents {
   static const String paramShownCount = 'shown_count';
   static const String paramProvider = 'provider';
 
+  // ─── Güç demosu / tur parametreleri ───
+  /// Demoya giriş noktası: onboarding | market | quiz_intro (`source` ile karıştırılmaz).
+  static const String paramEntryPoint = 'entry_point';
+  static const String paramMsToTap = 'ms_to_tap';
+  static const String paramCorrect = 'correct';
+  static const String paramWrongAnswers = 'wrong_answers';
+  /// 1 tabanlı adım ("adım 3"), `step_index` ile aynı sayma.
+  static const String paramFromStep = 'from_step';
+  static const String paramOutcome = 'outcome';
+  static const String paramTourId = 'tour_id';
+
   // ─── Profile Setup Gate (13) ───────────────────────────────────────
   static const String setupGateView = 'setup_gate_view';
   static const String setupPhotoStart = 'setup_photo_start';
   static const String setupPhotoSuccess = 'setup_photo_success';
   static const String setupPhotoFail = 'setup_photo_fail';
+
+  /// Seçilen fotoğraf açılamadı (0 bayt / çözülemeyen); `source`, `reason`.
+  static const String photoPickInvalid = 'photo_pick_invalid';
   static const String setupMagicFillStart = 'setup_magic_fill_start';
   static const String setupMagicFillAssign = 'setup_magic_fill_assign';
   static const String setupMagicFillRegen = 'setup_magic_fill_regen';
@@ -487,8 +537,11 @@ abstract class AnalyticsEvents {
   static const String attPromptResult = 'att_prompt_result';
   static const String userPropAttStatus = 'att_status';
 
+  // ─── Güç demosu sonucu: completed | skipped:<adım> | not_seen ───
+  static const String userPropertyPowerDemo = 'power_demo';
+
   // ─── Faz 1 SharedPreferences flag key'leri ────────────────────────
-  static const String flagPaywallFirstMatch = 'paywall_after_first_match_shown';
   static const String flagFirstDiscoverView = 'funnel_first_discover_view_seen';
   static const String flagFirstQuizComplete = 'funnel_first_quiz_complete_seen';
+  static const String flagPowerDemoOutcomeSent = 'funnel_power_demo_outcome_sent';
 }

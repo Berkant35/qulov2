@@ -46,6 +46,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    // Raw Scaffold: full-bleed arka plan videosu + gradient katmani; AppScaffold'un
+    // SafeArea/padding'li govdesi videoyu kenarlara kadar yayamaz.
     return Scaffold(
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
@@ -90,7 +92,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                               AppTextField(
                                 controller: emailCtrl,
                                 label: context.tr('email'),
-                                maxLength: 254,
+                                maxLength: AppConstants.emailMaxLength,
                                 keyboardType: TextInputType.emailAddress,
                                 textInputAction: TextInputAction.next,
                                 validator: emailValidator,
@@ -100,7 +102,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                               AppTextField(
                                 controller: passwordCtrl,
                                 label: context.tr('password'),
-                                maxLength: 128,
+                                maxLength: AppConstants.passwordMaxLength,
                                 obscureText: obscure,
                                 textInputAction: TextInputAction.done,
                                 validator: passwordValidator,

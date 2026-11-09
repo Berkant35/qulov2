@@ -18,6 +18,7 @@ import 'package:qulo_v2/features/profile/screens/profile_screen.dart';
 import 'package:qulo_v2/features/profile/screens/questions_screen.dart';
 import 'package:qulo_v2/features/diamonds/screens/diamonds_screen.dart';
 import 'package:qulo_v2/features/passport/screens/passport_screen.dart';
+import 'package:qulo_v2/features/location/screens/city_picker_screen.dart';
 import 'package:qulo_v2/features/passport/screens/map_confirm_screen.dart';
 import 'package:qulo_v2/features/settings/screens/settings_screen.dart';
 import 'package:qulo_v2/features/profile/screens/edit_profile_screen.dart';
@@ -62,6 +63,8 @@ import 'package:qulo_v2/core/config/env.dart';
 import 'package:qulo_v2/features/quiz/models/quiz_target_args.dart';
 import 'package:qulo_v2/features/rewards_market/screens/market_screen.dart';
 import 'package:qulo_v2/features/rewards_market/screens/redemptions_screen.dart';
+import 'package:qulo_v2/features/power_demo/domain/power_demo_entry_point.dart';
+import 'package:qulo_v2/features/power_demo/screens/power_demo_screen.dart';
 
 part 'app_routes.dart';
 

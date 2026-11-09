@@ -112,10 +112,14 @@ mixin SettingsScreenMixin on ConsumerState<SettingsScreen> {
     AnalyticsManager.instance.logEvent(
       AnalyticsEvents.settingsDeleteAccountStart,
     );
+    // Tum bagimliliklar ilk await ONCESI: onay dialog'u acikken ekran kapanirsa
+    // (401 cikisi, deep link) `ref` kullanilamaz — onaylanan silme yine gider.
     final nav = ref.read(navigationServiceProvider);
     final userNotifier = ref.read(userProvider.notifier);
     final authNotifier = ref.read(authProvider.notifier);
+    final appInfo = ref.read(appInfoManagerProvider);
     final locale = ref.read(localeProvider).languageCode;
+    final user = ref.read(userProvider).valueOrNull;
 
     // 1) Neden topla (opsiyonel — Atla mümkün). Dismiss → iptal.
     final reason = await nav.showAppBottomSheet<DeleteReasonResult>(
@@ -143,7 +147,6 @@ mixin SettingsScreenMixin on ConsumerState<SettingsScreen> {
     if (confirm != true) return;
 
     // 3) Analytics (sadece kod — serbest metin PII, gönderilmez) + sil.
-    final user = ref.read(userProvider).valueOrNull;
     AnalyticsManager.instance.logEvent(
       AnalyticsEvents.settingsDeleteAccountReason,
       params: {
@@ -156,7 +159,7 @@ mixin SettingsScreenMixin on ConsumerState<SettingsScreen> {
           ).length,
       },
     );
-    final appVersion = await ref.read(appInfoManagerProvider).version;
+    final appVersion = await appInfo.version;
     await userNotifier.deleteAccount(
       reasonCode: reason.reasonCode,
       reasonText: reason.reasonText,

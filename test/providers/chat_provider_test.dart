@@ -236,6 +236,23 @@ void main() {
       expect(h.state.isLockedFor(currentUserId: 'me', questionCache: const {}), isFalse);
     });
   });
+
+  group('acik sohbet yigini', () {
+    test('ekle/cikar: ayni sohbetin TEK ornegi (en ustteki) cikar, bilinmeyen no-op', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+      final stack = container.read(openChatStackProvider.notifier)
+        ..pushChat('m1')
+        ..pushChat('m2')
+        ..pushChat('m1');
+
+      stack.popChat('m1');
+      expect(container.read(openChatStackProvider), ['m1', 'm2']);
+
+      stack.popChat('yok');
+      expect(container.read(openChatStackProvider), ['m1', 'm2']);
+    });
+  });
 }
 
 MessageModel _msg(String id, {String content = '', List<MessageReaction>? reactions}) => MessageModel(

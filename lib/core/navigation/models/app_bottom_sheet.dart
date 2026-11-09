@@ -4,6 +4,9 @@ sealed class AppBottomSheet {
   /// Uzun icerikli (form, oneri listesi) sheet'ler icin ekran yuksekligi orani.
   static const double tallHeightFactor = 0.85;
 
+  /// Orta boy liste sheet'leri (taslak/gecmis sekmeleri) icin.
+  static const double mediumHeightFactor = 0.7;
+
   final String name;
   final bool isDismissible;
   final bool enableDrag;

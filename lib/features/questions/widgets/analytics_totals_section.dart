@@ -6,18 +6,13 @@ import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/diamond_icon.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/data/models/question_analytics_model.dart';
+import 'package:qulo_v2/features/questions/mixins/success_rate_color_mixin.dart';
 import 'package:qulo_v2/features/questions/widgets/analytics_stat_card.dart';
 
-class AnalyticsTotalsSection extends StatelessWidget {
+class AnalyticsTotalsSection extends StatelessWidget with SuccessRateColorMixin {
   final QuestionAnalyticsTotals totals;
 
   const AnalyticsTotalsSection({super.key, required this.totals});
-
-  Color _successRateColor(BuildContext context, int rate) {
-    if (rate >= 70) return context.appColors.success;
-    if (rate >= 40) return context.appColors.warning;
-    return context.appColors.error;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +27,7 @@ class AnalyticsTotalsSection extends StatelessWidget {
         AnalyticsStatCard(
           label: context.tr('analytics_success_rate'),
           value: context.fmt.percent(totals.overallSuccessRate),
-          valueColor: _successRateColor(context, totals.overallSuccessRate),
+          valueColor: successRateColor(context, totals.overallSuccessRate),
           icon: QIcon(QIcons.icChart, size: 24, color: context.appColors.warning),
         ),
         const SizedBox(width: AppSpacing.sm),

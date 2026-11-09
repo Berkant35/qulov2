@@ -24,6 +24,10 @@ mixin ChatQuestionStep2Mixin on ConsumerState<ChatQuestionStep2> {
     final picked = await pickWithPermissionPrompt(ref, context, picker.pickFromGallery);
     if (picked == null || !mounted) return;
 
+    // Await ONCESI: yukleme surerken "Geri" (adim 1) bu adimi dispose eder ama soru
+    // ekrani yasar — URL yine ust ekrana gider. Tum ekran kapandiysa ust taraf
+    // (`onStep2Changed`) kendi `mounted` guard'iyla yok sayar.
+    final onChanged = widget.onChanged;
     setState(() => isUploading = true);
     try {
       final result = await ref.read(chatRepositoryProvider).uploadQuestionMedia(
@@ -33,8 +37,10 @@ mixin ChatQuestionStep2Mixin on ConsumerState<ChatQuestionStep2> {
           );
       switch (result) {
         case Success(data: final url):
-          widget.onChanged(rewardMediaUrl: url, rewardMediaType: 'image');
+          onChanged(rewardMediaUrl: url, rewardMediaType: 'image');
         case Failure(:final failure):
+          // Bu adim kapandiysa `ref` StateError atar; dogrulama/snackbar gosterilmez.
+          if (!mounted) return;
           // Doğrulanmamış e-posta (403 EMAIL_VERIFICATION_REQUIRED) → doğrulama sayfası.
           final gated = await ref
               .read(emailVerificationControllerProvider)
