@@ -6,6 +6,7 @@ import 'package:qulo_v2/core/widgets/power_effects/power_effect_answer_option.da
 import 'package:qulo_v2/core/widgets/power_effects/skip_slide_effect.dart';
 import 'package:qulo_v2/data/models/quiz_model.dart' show QuizQuestionModel;
 import 'package:qulo_v2/features/quiz/widgets/answer_button.dart';
+import 'package:qulo_v2/features/quiz/widgets/quiz_question_media.dart';
 
 /// Quiz soru kartı: soru, ipucu kartı, şıklar. Cevapla kaydırma alanının dışında (her zaman
 /// görünür) — bkz. `QuizQuestionContent`. Seçilen şık görünür kalır ([KeepVisibleOnSelect]):
@@ -24,6 +25,7 @@ class QuizQuestionCard extends StatelessWidget {
     required this.oracleLabel,
     required this.skipEffectToken,
     required this.onSelectAnswer,
+    this.onMediaReady,
   });
 
   final QuizQuestionModel question;
@@ -39,6 +41,9 @@ class QuizQuestionCard extends StatelessWidget {
   final int skipEffectToken;
   final ValueChanged<int> onSelectAnswer;
 
+  /// Soru sesi bitti / görseli yüklendi (2.0.19) → sayaç tutması biter.
+  final VoidCallback? onMediaReady;
+
   @override
   Widget build(BuildContext context) {
     return SkipSlideEffect(
@@ -52,6 +57,13 @@ class QuizQuestionCard extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.xl),
+          if (question.hasMedia)
+            QuizQuestionMedia(
+              voiceUrl: question.voiceUrl,
+              voiceDurationMs: question.voiceDurationMs,
+              imageUrl: question.imageUrl,
+              onReady: onMediaReady ?? () {},
+            ),
           HintRevealEffect(text: hintText),
           ...question.answers.map((a) {
             final isRemoved = removedIndices.contains(a.index);

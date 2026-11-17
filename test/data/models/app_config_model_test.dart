@@ -67,4 +67,31 @@ void main() {
 
     expect(on, isNot(off));
   });
+
+  group('mediaQuestionsEnabled — sesli/gorselli soru bayragi (fail-closed)', () {
+    test('alan yoksa ya da null ise false', () {
+      expect(AppConfigModel.fromJson(_serverJson()).mediaQuestionsEnabled, isFalse);
+      expect(
+        AppConfigModel.fromJson({..._serverJson(), 'mediaQuestionsEnabled': null})
+            .mediaQuestionsEnabled,
+        isFalse,
+      );
+    });
+
+    test('camelCase anahtardan okunur (adsEnabled ile ayni)', () {
+      final config = AppConfigModel.fromJson(
+        {..._serverJson(), 'mediaQuestionsEnabled': true},
+      );
+
+      expect(config.mediaQuestionsEnabled, isTrue);
+    });
+
+    test('esitlige girer ve toJson turu korur', () {
+      final on = AppConfigModel.fromJson({..._serverJson(), 'mediaQuestionsEnabled': true});
+      final off = AppConfigModel.fromJson(_serverJson());
+
+      expect(on, isNot(off));
+      expect(AppConfigModel.fromJson(on.toJson()), on);
+    });
+  });
 }

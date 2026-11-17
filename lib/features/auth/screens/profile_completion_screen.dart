@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_progress_bar.dart';
 import 'package:qulo_v2/core/widgets/app_scaffold.dart';
@@ -101,7 +102,8 @@ class _ProfileCompletionScreenState extends ConsumerState<ProfileCompletionScree
                     errorText: locationError,
                     onRequestLocation: requestLocation,
                     onContinue: completeProfile,
-                    onSkip: completeProfile,
+                    onPickCity: () => pickCity(AnalyticsEvents.sourceProfileCompletion),
+                    selectedCityName: pickedCity?.name,
                     onOpenSettings: () =>
                         ref.read(locationManagerProvider).openAppSettings(),
                   ),

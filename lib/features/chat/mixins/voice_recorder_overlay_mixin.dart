@@ -9,8 +9,6 @@ import 'package:qulo_v2/providers/api_provider.dart';
 /// Sesli mesaj kaydinin yasam dongusu: baslat, sayac, gonder/iptal ve overlay
 /// kapaninca mikrofonu birakma.
 mixin VoiceRecorderOverlayMixin on ConsumerState<VoiceRecorderOverlay> {
-  static const int maxDurationSeconds = 60;
-
   /// Yukari kaydirma bu esigi gecince birakinca kayit iptal edilir.
   static const double _cancelDragDelta = -5;
 
@@ -71,7 +69,7 @@ mixin VoiceRecorderOverlayMixin on ConsumerState<VoiceRecorderOverlay> {
       return;
     }
     setState(() => seconds++);
-    if (seconds >= maxDurationSeconds) completeRecording();
+    if (seconds >= widget.maxDurationSeconds) completeRecording();
   }
 
   Future<void> completeRecording() async {

@@ -19,6 +19,9 @@ class QuestionStepQuestion extends StatelessWidget {
   /// Soru metni sunucunun alt sinirindan kisa — alanin altinda uyari.
   final bool showTooShort;
 
+  /// Ses/fotoğraf bölümü; bayrak kapalıyken `null` (bölüm hiç çizilmez).
+  final Widget? mediaSection;
+
   const QuestionStepQuestion({
     super.key,
     required this.questionTextController,
@@ -27,6 +30,7 @@ class QuestionStepQuestion extends StatelessWidget {
     required this.onLanguageTap,
     required this.onCategoryChanged,
     required this.showTooShort,
+    this.mediaSection,
   });
 
   @override
@@ -161,6 +165,10 @@ class QuestionStepQuestion extends StatelessWidget {
               );
             }).toList(),
           ),
+          if (mediaSection != null) ...[
+            const SizedBox(height: AppSpacing.xl),
+            mediaSection!,
+          ],
         ],
       ),
     );

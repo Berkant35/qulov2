@@ -37,6 +37,14 @@ QuestionModel _$QuestionModelFromJson(
   statsAnswer3Count: (json['stats_answer_3_count'] as num?)?.toInt() ?? 0,
   statsAnswer4Count: (json['stats_answer_4_count'] as num?)?.toInt() ?? 0,
   createdAt: json['created_at'] as String?,
+  voiceUrl: json['voice_url'] as String?,
+  voiceDurationMs: (json['voice_duration_ms'] as num?)?.toInt(),
+  imageUrl: json['image_url'] as String?,
+  imageStatus: $enumDecodeNullable(
+    _$QuestionImageStatusEnumMap,
+    json['image_status'],
+    unknownValue: JsonKey.nullForUndefinedEnumValue,
+  ),
 );
 
 Map<String, dynamic> _$QuestionModelToJson(QuestionModel instance) =>
@@ -69,4 +77,14 @@ Map<String, dynamic> _$QuestionModelToJson(QuestionModel instance) =>
       'stats_answer_4_count': instance.statsAnswer4Count,
       'created_at': instance.createdAt,
       'locale': instance.locale,
+      'voice_url': instance.voiceUrl,
+      'voice_duration_ms': instance.voiceDurationMs,
+      'image_url': instance.imageUrl,
+      'image_status': _$QuestionImageStatusEnumMap[instance.imageStatus],
     };
+
+const _$QuestionImageStatusEnumMap = {
+  QuestionImageStatus.pending: 'pending',
+  QuestionImageStatus.approved: 'approved',
+  QuestionImageStatus.rejected: 'rejected',
+};

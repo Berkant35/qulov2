@@ -66,11 +66,19 @@ class QuestionInfoModel extends Equatable {
   final String avgDifficulty;
   final List<String> languages;
 
+  /// Sesli/gorselli soru rozeti (2.0.19). Kapi pasifken anahtar yok → false.
+  @JsonKey(name: 'has_voice', defaultValue: false)
+  final bool hasVoice;
+  @JsonKey(name: 'has_image', defaultValue: false)
+  final bool hasImage;
+
   const QuestionInfoModel({
     required this.count,
     this.categories = const [],
     this.avgDifficulty = 'medium',
     this.languages = const [],
+    this.hasVoice = false,
+    this.hasImage = false,
   });
 
   factory QuestionInfoModel.fromJson(Map<String, dynamic> json) =>
@@ -78,7 +86,8 @@ class QuestionInfoModel extends Equatable {
   Map<String, dynamic> toJson() => _$QuestionInfoModelToJson(this);
 
   @override
-  List<Object?> get props => [count, categories, avgDifficulty, languages];
+  List<Object?> get props =>
+      [count, categories, avgDifficulty, languages, hasVoice, hasImage];
 }
 
 @JsonSerializable()

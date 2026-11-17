@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/services/app_review_manager.dart';
 import 'package:qulo_v2/core/services/coach_mark_service.dart';
 import 'package:qulo_v2/core/services/funnel_events.dart';
 import 'package:qulo_v2/core/services/haptic_manager.dart';
@@ -155,6 +158,8 @@ mixin QuizScreenStateMixin on ConsumerState<QuizScreen> {
 
   void showGamifiedResult({required bool matched, required String badge}) {
     stopwatch.stop();
+    // Quiz sonuna kadar bitti (başarı/başarısızlık tüm yollar buradan geçer).
+    unawaited(AppReviewManager.instance.noteQuizCompleted());
     if (matched) {
       HapticManager.instance.success();
     }

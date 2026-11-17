@@ -16,8 +16,13 @@ import 'package:qulo_v2/data/models/user_model.dart';
 ///
 /// Guc demosu (`/power-demo`) da muaftir: market (`/profile/exchange`) ▶ kurulumu bitmemis
 /// kullaniciya da acik; demo yalitilmis, hicbir sey harcamaz ve hicbir route'a gitmez.
+///
+/// Sehir secici (`/city-picker`) iki kapidan da muaftir: konum adiminin "sehir sec" yolu sosyal
+/// giriste profil tamamlama SIRASINDA (yas henuz kayitli degil) acilir; yaprak ekrandir, secimle
+/// geri doner. Muaf olmasaydi kullanici "Sehir sec"e basinca yine `/profile-completion`'a atilirdi.
 String? setupGateRedirect({required String location, required UserModel? user}) {
   if (user == null) return null;
+  if (location == cityPickerPath) return null;
 
   if (location == '/profile-completion') {
     return user.age != null ? '/discover' : null;
@@ -32,6 +37,15 @@ String? setupGateRedirect({required String location, required UserModel? user}) 
   }
   return null;
 }
+
+/// Sehir secici yolu (`RouteNames.cityPicker`).
+const cityPickerPath = '/city-picker';
+
+/// Oturum ACMAMIS kullanici sehir seciciye yalniz "secim" kipinde (`extra == true`) girebilir:
+/// e-postali kayitta konum adimi hesap olusmadan once gelir. Bu kipte ekran aga yazmaz, secilen
+/// sehri dondurur. Baska her durumda oturumsuz kullanici landing'e gider (router 5. adim).
+bool isGuestCityPick({required String location, required Object? extra}) =>
+    location == cityPickerPath && extra == true;
 
 /// Tam eslesme: `/power-demo-x` gibi benzer yollar muaf degil.
 const _powerDemoPath = '/power-demo';

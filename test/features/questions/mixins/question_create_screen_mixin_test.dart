@@ -9,6 +9,7 @@ import 'package:qulo_v2/core/services/analytics_events.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/data/models/user_model.dart';
 import 'package:qulo_v2/features/questions/mixins/question_create_screen_mixin.dart';
+import 'package:qulo_v2/features/questions/mixins/question_media_mixin.dart';
 import 'package:qulo_v2/features/questions/screens/question_create_screen.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 
@@ -25,7 +26,8 @@ class _HostCreate extends QuestionCreateScreen {
   ConsumerState<QuestionCreateScreen> createState() => _HostState();
 }
 
-class _HostState extends ConsumerState<QuestionCreateScreen> with QuestionCreateScreenMixin {
+class _HostState extends ConsumerState<QuestionCreateScreen>
+    with QuestionMediaMixin, QuestionCreateScreenMixin {
   @override
   void initState() {
     super.initState();
@@ -107,5 +109,21 @@ void main() {
 
     expect(questions.createdBodies, hasLength(1));
     expect(nav.pops, 1);
+  });
+
+  testWidgets('kayıt sürerken ekran kapanırsa medya taslağı yine yüklenir (mesaj/pop yok)', (tester) async {
+    final (state, container, questions, nav) = await pump(tester);
+    questions.createGate = Completer<void>();
+    state.onVoiceRecorded('/tmp/q_voice.m4a', 6);
+
+    final saving = state.save();
+    await tester.pump();
+    await tester.pumpWidget(app(container, const SizedBox()));
+    questions.createGate!.complete();
+    await saving;
+
+    expect(tester.takeException(), isNull);
+    expect(questions.voiceUploads.single.durationMs, 6000);
+    expect(nav.pops, 0);
   });
 }

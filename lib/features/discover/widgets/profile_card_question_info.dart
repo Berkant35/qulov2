@@ -4,6 +4,7 @@ import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/data/models/discover_model.dart';
+import 'package:qulo_v2/features/discover/widgets/question_media_badges.dart';
 import 'package:qulo_v2/features/questions/widgets/difficulty_badge.dart';
 
 /// Profil kartında soru sayısı + zorluk + kategori/dil çipleri
@@ -61,6 +62,7 @@ class ProfileCardQuestionInfo extends StatelessWidget {
             DifficultyBadge(difficulty: info.avgDifficulty),
           ],
         ),
+        QuestionMediaBadges(hasVoice: info.hasVoice, hasImage: info.hasImage),
         // Category chips
         if (info.categories.isNotEmpty) ...[
           const SizedBox(height: AppSpacing.xs),

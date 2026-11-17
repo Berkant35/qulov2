@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,6 +15,7 @@ import 'package:qulo_v2/core/services/app_info_manager.dart';
 import 'package:qulo_v2/core/services/admob_manager.dart';
 import 'package:qulo_v2/core/services/att_manager.dart';
 import 'package:qulo_v2/core/services/audio_player_manager.dart';
+import 'package:qulo_v2/core/services/quiz_audio_player.dart';
 import 'package:qulo_v2/core/services/share_manager.dart';
 import 'package:qulo_v2/core/services/audio_recorder_manager.dart';
 import 'package:qulo_v2/core/services/haptic_manager.dart';
@@ -91,6 +93,16 @@ final shareManagerProvider = Provider<ShareManager>(
 );
 final audioPlayerManagerProvider = Provider<AudioPlayerManager>(
   (_) => AudioPlayerManager.instance,
+);
+
+/// Quiz soru sesi: tekil DEĞİL — kart başına yeni örnek kurulur, kart kapanınca bırakılır.
+final quizAudioPlayerFactoryProvider = Provider<QuizAudioPlayer Function()>(
+  (_) => QuizAudioPlayer.new,
+);
+
+/// Quiz soru görseli (imzalı URL, önbellekli). Testte ağsız görselle değiştirilir.
+final quizMediaImageProviderFactoryProvider = Provider<ImageProvider Function(String url)>(
+  (_) => CachedNetworkImageProvider.new,
 );
 final audioRecorderManagerProvider = Provider<AudioRecorderManager>(
   (_) => AudioRecorderManager.instance,

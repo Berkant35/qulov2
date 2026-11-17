@@ -21,6 +21,10 @@ class AppConfigModel extends Equatable {
   @JsonKey(defaultValue: false)
   final bool adsEnabled;
 
+  /// Sesli/gorselli soru anahtari (2.0.19). Alan yoksa/null ise KAPALI (fail-closed).
+  @JsonKey(defaultValue: false)
+  final bool mediaQuestionsEnabled;
+
   const AppConfigModel({
     required this.minVersion,
     required this.latestVersion,
@@ -30,6 +34,7 @@ class AppConfigModel extends Equatable {
     required this.isForceUpdateEnabled,
     this.powerDemoEnabled = true,
     this.adsEnabled = false,
+    this.mediaQuestionsEnabled = false,
   });
 
   factory AppConfigModel.fromJson(Map<String, dynamic> json) =>
@@ -47,5 +52,6 @@ class AppConfigModel extends Equatable {
         isForceUpdateEnabled,
         powerDemoEnabled,
         adsEnabled,
+        mediaQuestionsEnabled,
       ];
 }

@@ -21,6 +21,10 @@ abstract final class AppReviewTrigger {
   /// İlk eşleşmeden en az [AppReviewManager.returnDelay] sonra Keşfet'te ilk kaydırma.
   static const String returnAfterFirstMatch = 'return_after_first_match';
 
+  /// Uygulamayı ilk kullandığı günden sonraki bir günde Keşfet'te ilk kaydırma
+  /// ve en az bir quiz tamamlamış (eşleşme gerekmez; sonuç fark etmez).
+  static const String secondDayReturn = 'second_day_return';
+
   /// Ayarlar'daki "Bizi değerlendir" — doğrudan mağaza sayfası.
   static const String settings = 'settings';
 }
@@ -59,8 +63,9 @@ class AppReviewManager {
   @visibleForTesting
   AppReviewManager.withClient(ReviewPromptClient client) : this._(client);
 
-  static final AppReviewManager instance =
-      AppReviewManager._(const _InAppReviewClient());
+  static final AppReviewManager instance = AppReviewManager._(
+    const _InAppReviewClient(),
+  );
 
   static const _keyShownCount = 'qulo_app_review_shown_count';
   static const _keyLastShown = 'qulo_app_review_last_shown';
@@ -68,6 +73,9 @@ class AppReviewManager {
   static const _keySentMessages = 'qulo_app_review_sent_messages';
   static const _keyChatEngagedDone = 'qulo_app_review_chat_engaged_done';
   static const _keyPendingSince = 'qulo_app_review_pending_since';
+  static const _keyFirstActiveDay = 'qulo_app_review_first_active_day';
+  static const _keyQuizCompleted = 'qulo_app_review_quiz_completed';
+  static const _keySecondDayDone = 'qulo_app_review_second_day_done';
 
   static const _maxShownCount = 3;
   static const _cooldownDays = 14;
@@ -80,8 +88,7 @@ class AppReviewManager {
   static const Duration returnDelay = Duration(hours: 6);
 
   static const _iosAppStoreId = '1626734572';
-  static const _androidPackageName =
-      'com.wordpress.calikusuberkant.qulo';
+  static const _androidPackageName = 'com.wordpress.calikusuberkant.qulo';
 
   final ReviewPromptClient _client;
 
@@ -130,10 +137,7 @@ class AppReviewManager {
     try {
       final prefs = await SharedPreferences.getInstance();
       if (prefs.containsKey(_keyPendingSince)) return;
-      await prefs.setString(
-        _keyPendingSince,
-        DateTime.now().toIso8601String(),
-      );
+      await prefs.setString(_keyPendingSince, DateTime.now().toIso8601String());
     } catch (e, stack) {
       AnalyticsManager.instance.logNonFatalError(
         e,
@@ -165,12 +169,90 @@ class AppReviewManager {
     }
   }
 
+  /// Uygulamanın ilk kullanıldığı yerel takvim gününü (`yyyy-MM-dd`) bir kez
+  /// yazar; kayıt varsa üzerine yazmaz.
+  Future<void> noteActiveDay() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (prefs.containsKey(_keyFirstActiveDay)) return;
+      await prefs.setString(_keyFirstActiveDay, _dayKey(DateTime.now()));
+    } catch (e, stack) {
+      AnalyticsManager.instance.logNonFatalError(
+        e,
+        stack,
+        context: 'AppReviewManager.noteActiveDay',
+      );
+    }
+  }
+
+  /// Kullanıcı bir quiz'i sonuna kadar bitirdi (başarılı ya da başarısız);
+  /// yarıda bırakılan quiz çağırmaz. Kalıcı işaret; ilk aktif gün henüz
+  /// yazılmadıysa onu da yazar.
+  Future<void> noteQuizCompleted() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      // Keşfet'te hiç kaydırmadan quiz'e giren kullanıcının günü de sayılsın.
+      if (!prefs.containsKey(_keyFirstActiveDay)) {
+        await prefs.setString(_keyFirstActiveDay, _dayKey(DateTime.now()));
+      }
+      if (prefs.getBool(_keyQuizCompleted) ?? false) return;
+      await prefs.setBool(_keyQuizCompleted, true);
+    } catch (e, stack) {
+      AnalyticsManager.instance.logNonFatalError(
+        e,
+        stack,
+        context: 'AppReviewManager.noteQuizCompleted',
+      );
+    }
+  }
+
+  /// İlk aktif gün kayıtlı, bugün (yerel) o günden sonra, quiz tamamlanmış ve
+  /// bu tetikleyici daha önce yapılmamışsa `true`.
+  Future<bool> isSecondDayReviewDue() async {
+    final prefs = await SharedPreferences.getInstance();
+    final firstDay = prefs.getString(_keyFirstActiveDay);
+    if (firstDay == null) return false;
+    if (!(prefs.getBool(_keyQuizCompleted) ?? false)) return false;
+    if (prefs.getBool(_keySecondDayDone) ?? false) return false;
+    // `yyyy-MM-dd` biçimi sözlüksel olarak da tarih sırasıdır.
+    return _dayKey(DateTime.now()).compareTo(firstDay) > 0;
+  }
+
+  /// Ertesi gün istemini dener. "Yapıldı" işareti, istek yapılınca ya da istem
+  /// kalıcı kapandıysa (üst sınır) yazılır; soğuma engellediyse yazılmaz ve
+  /// sonraki ekranda tekrar denenir ([tryShowPendingReturnReview] ile simetrik).
+  Future<void> tryShowSecondDayReview() async {
+    try {
+      if (!await isSecondDayReviewDue()) return;
+      final shown = await tryShowReview(
+        trigger: AppReviewTrigger.secondDayReturn,
+      );
+      final prefs = await SharedPreferences.getInstance();
+      if (shown || (prefs.getBool(_keyCompleted) ?? false)) {
+        await prefs.setBool(_keySecondDayDone, true);
+      }
+    } catch (e, stack) {
+      AnalyticsManager.instance.logNonFatalError(
+        e,
+        stack,
+        context: 'AppReviewManager.tryShowSecondDayReview',
+      );
+    }
+  }
+
+  static String _dayKey(DateTime d) =>
+      '${d.year.toString().padLeft(4, '0')}-'
+      '${d.month.toString().padLeft(2, '0')}-'
+      '${d.day.toString().padLeft(2, '0')}';
+
   /// Ayarlar'daki buton — kullanıcı açıkça istedi, doğrudan mağaza sayfası.
   Future<void> requestReviewFromSettings() async {
     try {
       await _client.openStoreListing(appStoreId: _iosAppStoreId);
-      AnalyticsManager.instance
-          .logAppReviewPrompted(AppReviewTrigger.settings, 0);
+      AnalyticsManager.instance.logAppReviewPrompted(
+        AppReviewTrigger.settings,
+        0,
+      );
     } catch (e, stack) {
       // Fallback: Android Play Store URL
       if (Platform.isAndroid) {
@@ -230,7 +312,9 @@ class AppReviewManager {
     AnalyticsManager.instance.logAppReviewPrompted(trigger, shownCount);
 
     if (kDebugMode) {
-      debugPrint('[AppReviewManager] Review prompted (trigger: $trigger, count: $shownCount)');
+      debugPrint(
+        '[AppReviewManager] Review prompted (trigger: $trigger, count: $shownCount)',
+      );
     }
   }
 }

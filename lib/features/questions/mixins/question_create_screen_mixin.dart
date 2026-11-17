@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
+import 'package:qulo_v2/core/constants/app_durations.dart';
 import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/navigation/navigation.dart';
 import 'package:qulo_v2/core/widgets/language_picker_sheet.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/core/network/result.dart';
 import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/data/models/question_model.dart';
+import 'package:qulo_v2/features/questions/mixins/question_media_mixin.dart';
 import 'package:qulo_v2/features/questions/screens/question_create_screen.dart';
 import 'package:qulo_v2/features/questions/utils/question_text_rules.dart';
 import 'package:qulo_v2/providers/question_provider.dart';
 
-mixin QuestionCreateScreenMixin on ConsumerState<QuestionCreateScreen> {
+/// Ses/fotoğraf taslağı [QuestionMediaMixin]'de; kayıt onu metinden sonra uygular.
+mixin QuestionCreateScreenMixin
+    on ConsumerState<QuestionCreateScreen>, QuestionMediaMixin {
   final pageController = PageController();
   int currentStep = 0;
   bool isSaving = false;
@@ -161,25 +166,23 @@ mixin QuestionCreateScreenMixin on ConsumerState<QuestionCreateScreen> {
   }
 
   void goNext() {
-    if (currentStep < 2) {
-      setState(() => currentStep++);
-      pageController.animateToPage(
-        currentStep,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    }
+    if (currentStep < 2) _goToStep(currentStep + 1);
   }
 
   void goBack() {
-    if (currentStep > 0) {
-      setState(() => currentStep--);
-      pageController.animateToPage(
-        currentStep,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    }
+    if (currentStep > 0) _goToStep(currentStep - 1);
+  }
+
+  /// Soru adımından çıkınca ses kaydı kapanır: sayfa dispose olunca overlay
+  /// mikrofonu bırakıyor, bayrak açık kalsaydı dönüşte yeni kayıt başlardı.
+  void _goToStep(int step) {
+    if (isRecordingVoice) cancelVoiceRecording();
+    setState(() => currentStep = step);
+    pageController.animateToPage(
+      currentStep,
+      duration: AppDurations.pageTransition,
+      curve: Curves.easeInOut,
+    );
   }
 
   Future<void> save() async {
@@ -201,24 +204,28 @@ mixin QuestionCreateScreenMixin on ConsumerState<QuestionCreateScreen> {
     };
 
     final notifier = ref.read(questionProvider.notifier);
+    // Await ONCESI: kayit surerken ekran kapanirsa medya yine yuklenir.
+    final syncMedia = prepareMediaSync();
 
+    final Result<QuestionModel> result;
     if (isEditMode) {
       data['order_num'] = widget.editQuestion!.orderNum;
-      final result = await notifier.updateQuestion(
+      result = await notifier.updateQuestion(
         widget.editQuestion!.orderNum,
         data,
       );
-      result.when(
-        success: (_) => _onSaveSuccess(),
-        failure: (f) => _onSaveFailure(f),
-      );
     } else {
       data['order_num'] = await notifier.nextOrderNum();
-      final result = await notifier.createQuestion(data);
-      result.when(
-        success: (_) => _onSaveSuccess(),
-        failure: (f) => _onSaveFailure(f),
-      );
+      result = await notifier.createQuestion(data);
+    }
+
+    switch (result) {
+      case Success(data: final saved):
+        // Medya metinden SONRA: hata soruyu silmez, soru metinle kalir.
+        await syncMedia(saved);
+        _onSaveSuccess();
+      case Failure(:final failure):
+        _onSaveFailure(failure);
     }
 
     if (mounted) setState(() => isSaving = false);

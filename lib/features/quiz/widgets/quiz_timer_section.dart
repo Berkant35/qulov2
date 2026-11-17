@@ -41,6 +41,8 @@ class QuizTimerSection extends StatelessWidget {
           key: timerKey,
           seconds: question.startSeconds,
           totalSeconds: question.timeLimitSeconds,
+          // Medya hazır olana (`release`) ya da bu süre dolana dek taban sürede bekler.
+          holdSeconds: question.mediaHoldSeconds,
           questionId: question.questionId,
           onTimeout: onTimeout,
           onWarning: onWarning,

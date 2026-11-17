@@ -10,7 +10,12 @@ class RegisterStepLocation extends StatelessWidget {
   final String? errorText;
   final VoidCallback onRequestLocation;
   final VoidCallback onContinue;
-  final VoidCallback onSkip;
+
+  /// "Şehir seç": izin dayatılmaz, şehir seçimi izinle eşit ağırlıkta alternatiftir.
+  final VoidCallback onPickCity;
+
+  /// Seçilmiş şehrin adı (izin yerine); doluysa adım geçilebilir.
+  final String? selectedCityName;
   final VoidCallback? onOpenSettings;
 
   const RegisterStepLocation({
@@ -20,7 +25,8 @@ class RegisterStepLocation extends StatelessWidget {
     this.errorText,
     required this.onRequestLocation,
     required this.onContinue,
-    required this.onSkip,
+    required this.onPickCity,
+    this.selectedCityName,
     this.onOpenSettings,
   });
 
@@ -28,6 +34,8 @@ class RegisterStepLocation extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    final hasCity = selectedCityName != null;
+    final canContinue = locationGranted || hasCity;
 
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.pagePadding),
@@ -48,9 +56,9 @@ class RegisterStepLocation extends StatelessWidget {
           const SizedBox(height: AppSpacing.xxl),
           Center(
             child: Icon(
-              locationGranted ? Icons.check_circle : Icons.location_on_outlined,
+              canContinue ? Icons.check_circle : Icons.location_on_outlined,
               size: 96,
-              color: locationGranted ? context.appColors.success : context.appColors.primary,
+              color: canContinue ? context.appColors.success : context.appColors.primary,
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -58,6 +66,15 @@ class RegisterStepLocation extends StatelessWidget {
             Center(
               child: Text(
                 l10n.get('location_granted'),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: context.appColors.success,
+                ),
+              ),
+            ),
+          if (hasCity && !locationGranted)
+            Center(
+              child: Text(
+                selectedCityName!,
                 style: theme.textTheme.titleMedium?.copyWith(
                   color: context.appColors.success,
                 ),
@@ -83,30 +100,28 @@ class RegisterStepLocation extends StatelessWidget {
               ),
           ],
           const Spacer(),
-          if (!locationGranted)
-            AppButton(
-              label: l10n.get('enable_location'),
-              onPressed: isRequesting ? null : onRequestLocation,
-              isLoading: isRequesting,
-            ),
-          if (locationGranted)
+          // Sıra: geçilebiliyorsa "Devam" ana düğme; konum izni ve şehir seçimi onun altında
+          // ikincil seçenek olarak kalır (şehir seçildikten sonra da değiştirilebilir).
+          if (canContinue)
             AppButton(
               label: l10n.get('continue_btn'),
               onPressed: onContinue,
             ),
-          const SizedBox(height: AppSpacing.sm),
-          if (!locationGranted)
-            Center(
-              child: TextButton(
-                onPressed: onSkip,
-                child: Text(
-                  l10n.get('location_skip'),
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ),
+          if (!locationGranted) ...[
+            if (canContinue) const SizedBox(height: AppSpacing.sm),
+            AppButton(
+              label: l10n.get('enable_location'),
+              variant: canContinue ? AppButtonVariant.secondary : AppButtonVariant.primary,
+              onPressed: isRequesting ? null : onRequestLocation,
+              isLoading: isRequesting,
             ),
+            const SizedBox(height: AppSpacing.sm),
+            AppButton(
+              label: l10n.get('city_picker_choose_city'),
+              variant: canContinue ? AppButtonVariant.text : AppButtonVariant.secondary,
+              onPressed: isRequesting ? null : onPickCity,
+            ),
+          ],
           const SizedBox(height: AppSpacing.xl),
         ],
       ),

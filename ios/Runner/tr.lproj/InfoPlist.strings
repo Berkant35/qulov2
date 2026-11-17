@@ -3,5 +3,5 @@
 "NSPhotoLibraryUsageDescription" = "Profil fotoğraflarınızı seçmek için galeri erişimi gereklidir.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "Qulo konumunu şu amaçlarla kullanır: (1) Keşfet'te seçtiğin mesafedeki kişileri bulmak, (2) profilinde şehrini göstermek, (3) her profilin mesafesini göstermek (ör. \"İstanbul · 2,5 km\").";
 "NSLocationWhenInUseUsageDescription" = "Qulo konumunu şu amaçlarla kullanır: (1) Keşfet'te seçtiğin mesafedeki kişileri bulmak, (2) profilinde şehrini göstermek, (3) her profilin mesafesini göstermek (ör. \"İstanbul · 2,5 km\").";
-"NSMicrophoneUsageDescription" = "Sesli mesaj göndermek için mikrofon erişimi gereklidir.";
+"NSMicrophoneUsageDescription" = "Sohbette sesli mesaj kaydetmek ve profil sorularına isteğe bağlı sesli kayıt eklemek için mikrofon erişimi gereklidir.";
 "NSUserTrackingUsageDescription" = "Qulo bu tanımlayıcıyı şu amaçlarla kullanır: sana daha uygun reklamlar göstermek, reklam performansını ölçmek (ör. Qulo'yu bir reklamdan keşfettiğini anlamak) ve uygulama deneyimini iyileştirmek. İzin vermezsen Qulo aynı şekilde çalışır; yine reklam görebilirsin ama daha az kişiselleştirilmiş olur.";

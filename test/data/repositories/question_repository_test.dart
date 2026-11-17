@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:qulo_v2/core/network/network_manager.dart';
@@ -68,6 +71,38 @@ class _FakeQuestionService implements QuestionService {
     lastReorder = data;
     if (error != null) throw _err;
     return questions ?? const [];
+  }
+
+  FormData? lastFormData;
+  String? lastUploadKind;
+  String? lastDeleteKind;
+  int uploadCallCount = 0;
+
+  @override
+  Future<QuestionModel> uploadVoice(int orderNum, FormData data) async {
+    uploadCallCount++;
+    lastOrderNum = orderNum;
+    lastFormData = data;
+    lastUploadKind = 'voice';
+    if (error != null) throw _err;
+    return _q;
+  }
+
+  @override
+  Future<QuestionModel> uploadImage(int orderNum, FormData data) async {
+    uploadCallCount++;
+    lastOrderNum = orderNum;
+    lastFormData = data;
+    lastUploadKind = 'image';
+    if (error != null) throw _err;
+    return _q;
+  }
+
+  @override
+  Future<void> deleteMedia(int orderNum, String kind) async {
+    lastOrderNum = orderNum;
+    lastDeleteKind = kind;
+    if (error != null) throw _err;
   }
 
   @override
@@ -221,6 +256,135 @@ void main() {
       final result = await _repo(fake).getMyQuestions();
 
       expect(result.when(success: (_) => null, failure: (f) => f), isA<NetworkFailure>());
+    });
+  });
+
+  group('uploadVoice — multipart file + duration_ms', () {
+    late Directory dir;
+    late File file;
+
+    setUp(() async {
+      dir = await Directory.systemTemp.createTemp('qulo_voice_test');
+      file = File('${dir.path}/voice.m4a')..writeAsBytesSync([1, 2, 3, 4]);
+    });
+
+    tearDown(() => dir.delete(recursive: true));
+
+    test('file alani audio/mp4 ve duration_ms alani siraya gonderilir', () async {
+      final fake = _FakeQuestionService();
+
+      final result = await _repo(fake).uploadVoice(2, file, 7300);
+
+      expect(result.isSuccess, isTrue);
+      expect(fake.lastUploadKind, 'voice');
+      expect(fake.lastOrderNum, 2);
+      final form = fake.lastFormData!;
+      expect(Map.fromEntries(form.fields)['duration_ms'], '7300');
+      final part = form.files.single;
+      expect(part.key, 'file');
+      expect(part.value.contentType.toString(), 'audio/mp4');
+      expect(part.value.length, 4);
+    });
+
+    test('FEATURE_DISABLED (403) kodu tasinir', () async {
+      final fake = _FakeQuestionService(
+        error: _dio(DioExceptionType.badResponse,
+            status: 403, body: {'error': {'code': 'FEATURE_DISABLED'}}),
+      );
+
+      final result = await _repo(fake).uploadVoice(1, file, 1000);
+
+      expect((result.when(success: (_) => null, failure: (f) => f) as ServerFailure).code,
+          'FEATURE_DISABLED');
+    });
+
+    test('QUESTION_MEDIA_CONFLICT (409) kodu tasinir, servis bir kez cagrilir', () async {
+      final fake = _FakeQuestionService(
+        error: _dio(DioExceptionType.badResponse,
+            status: 409, body: {'error': {'code': 'QUESTION_MEDIA_CONFLICT'}}),
+      );
+
+      final result = await _repo(fake).uploadVoice(1, file, 1000);
+
+      expect((result.when(success: (_) => null, failure: (f) => f) as ServerFailure).code,
+          'QUESTION_MEDIA_CONFLICT');
+      expect(fake.uploadCallCount, 1);
+    });
+
+    test('dosya okunamazsa Failure doner, servis cagrilmaz', () async {
+      final fake = _FakeQuestionService();
+
+      final result = await _repo(fake).uploadVoice(1, File('${dir.path}/yok.m4a'), 1000);
+
+      expect(result.isFailure, isTrue);
+      expect(fake.uploadCallCount, 0);
+    });
+  });
+
+  group('uploadImage — multipart file', () {
+    test('mime tipi ve uzanti korunur, duration_ms YOK', () async {
+      final fake = _FakeQuestionService();
+
+      final result = await _repo(fake)
+          .uploadImage(3, Uint8List.fromList([9, 8, 7]), 'image/jpeg');
+
+      expect(result.isSuccess, isTrue);
+      expect(fake.lastUploadKind, 'image');
+      expect(fake.lastOrderNum, 3);
+      final form = fake.lastFormData!;
+      expect(form.fields, isEmpty);
+      final part = form.files.single;
+      expect(part.key, 'file');
+      expect(part.value.contentType.toString(), 'image/jpeg');
+      expect(part.value.filename, 'image.jpg');
+    });
+
+    test('png/webp uzantisi mime tipinden turetilir', () async {
+      final fake = _FakeQuestionService();
+
+      await _repo(fake).uploadImage(1, Uint8List(1), 'image/png');
+      expect(fake.lastFormData!.files.single.value.filename, 'image.png');
+
+      await _repo(fake).uploadImage(1, Uint8List(1), 'image/webp');
+      expect(fake.lastFormData!.files.single.value.filename, 'image.webp');
+    });
+
+    test('INVALID_FILE_TYPE (400) kodu tasinir', () async {
+      final fake = _FakeQuestionService(
+        error: _dio(DioExceptionType.badResponse,
+            status: 400, body: {'error': {'code': 'INVALID_FILE_TYPE'}}),
+      );
+
+      final result = await _repo(fake).uploadImage(1, Uint8List(1), 'image/gif');
+
+      expect((result.when(success: (_) => null, failure: (f) => f) as ServerFailure).code,
+          'INVALID_FILE_TYPE');
+    });
+  });
+
+  group('removeMedia', () {
+    test('kind yol parcasi olarak gider (voice / image)', () async {
+      final fake = _FakeQuestionService();
+
+      final voice = await _repo(fake).removeMedia(2, QuestionMediaKind.voice);
+      expect(fake.lastDeleteKind, 'voice');
+      expect(fake.lastOrderNum, 2);
+      expect(voice.isSuccess, isTrue);
+
+      await _repo(fake).removeMedia(2, QuestionMediaKind.image);
+      expect(fake.lastDeleteKind, 'image');
+    });
+
+    test('QUESTION_NOT_FOUND (404) kodu tasinir', () async {
+      final fake = _FakeQuestionService(
+        error: _dio(DioExceptionType.badResponse,
+            status: 404, body: {'error': {'code': 'QUESTION_NOT_FOUND'}}),
+      );
+
+      final result = await _repo(fake).removeMedia(9, QuestionMediaKind.image);
+
+      expect((result.when(success: (_) => null, failure: (f) => f) as ServerFailure).code,
+          'QUESTION_NOT_FOUND');
     });
   });
 }

@@ -45,6 +45,30 @@ DioException _dio(DioExceptionType type, {int? status, dynamic body}) => DioExce
     );
 
 void main() {
+  test('questionId verilirse question_id olarak eklenir (quiz sorusu sikayeti)', () async {
+    final fake = _FakeReportService();
+
+    await ReportRepository(fake).createReport(
+      reportedId: 'u2',
+      category: 'INAPPROPRIATE_MEDIA',
+      questionId: 'q-1',
+    );
+
+    expect(fake.lastPayload, {
+      'reported_id': 'u2',
+      'category': 'INAPPROPRIATE_MEDIA',
+      'question_id': 'q-1',
+    });
+  });
+
+  test('questionId yoksa payloada question_id girmez', () async {
+    final fake = _FakeReportService();
+
+    await ReportRepository(fake).createReport(reportedId: 'u2', category: 'SPAM');
+
+    expect(fake.lastPayload!.containsKey('question_id'), isFalse);
+  });
+
   test('sebepsiz sikayet gonderilebilir — payload yalnizca id ve kategori', () async {
     // Sunucu artik bunu kabul ediyor; kategori sikayetin ozunu tasiyor.
     final fake = _FakeReportService();

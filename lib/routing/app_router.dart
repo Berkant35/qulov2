@@ -134,12 +134,15 @@ final routerProvider = Provider<GoRouter>((ref) {
       // carousel'e yonlendir (auth/legal/update route'lari haric).
       final onboardingSeen = ref.read(onboardingSeenProvider);
       final isOnboardingRoute = state.matchedLocation == '/onboarding';
+      // Kayit akisindaki "sehir sec" (hesap henuz yok): oturumsuz ama izinli tek auth-disi rota.
+      final guestCityPick = isGuestCityPick(location: state.matchedLocation, extra: state.extra);
       // isUpdateRoute/isLegalRoute burada kontrol edilmez — ikisi de yukarida
       // (satir 96, 109) zaten erken return etti, buraya ulasilmis olmalari imkansiz.
       if (!isAuth &&
           !onboardingSeen &&
           !isOnboardingRoute &&
-          !isAuthRoute) {
+          !isAuthRoute &&
+          !guestCityPick) {
         return '/onboarding';
       }
 
@@ -152,6 +155,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       if (!isAuth &&
           !isAuthRoute &&
           !isUpdateRoute &&
+          !guestCityPick &&
           (!isOnboardingRoute || onboardingSeen)) {
         return '/auth/landing';
       }

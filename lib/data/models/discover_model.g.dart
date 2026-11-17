@@ -38,6 +38,8 @@ QuestionInfoModel _$QuestionInfoModelFromJson(Map<String, dynamic> json) =>
               ?.map((e) => e as String)
               .toList() ??
           const [],
+      hasVoice: json['has_voice'] as bool? ?? false,
+      hasImage: json['has_image'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$QuestionInfoModelToJson(QuestionInfoModel instance) =>
@@ -46,6 +48,8 @@ Map<String, dynamic> _$QuestionInfoModelToJson(QuestionInfoModel instance) =>
       'categories': instance.categories,
       'avg_difficulty': instance.avgDifficulty,
       'languages': instance.languages,
+      'has_voice': instance.hasVoice,
+      'has_image': instance.hasImage,
     };
 
 ProfileCardModel _$ProfileCardModelFromJson(

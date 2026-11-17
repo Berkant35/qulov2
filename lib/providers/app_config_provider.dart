@@ -123,3 +123,12 @@ final adsEnabledProvider = Provider<bool>(
     appConfigProvider.select((s) => s.config?.adsEnabled ?? false),
   ),
 );
+
+/// Sesli/görselli soru açık mı. Config çekilmediyse/çekilemediyse KAPALI
+/// (fail-closed): soru oluşturmadaki ses/fotoğraf bölümü yalnız sunucu
+/// `mediaQuestionsEnabled: true` verince görünür.
+final mediaQuestionsEnabledProvider = Provider<bool>(
+  (ref) => ref.watch(
+    appConfigProvider.select((s) => s.config?.mediaQuestionsEnabled ?? false),
+  ),
+);

@@ -98,7 +98,7 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Qulo uses your location to: (1) find profiles on Discover within your selected distance, (2) show your city on your profile, and (3) display each profile's distance to you (e.g., "Berlin · 2.5 km").</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Qulo uses your microphone to record voice messages you can send to other users in chat conversations.</string>
+	<string>Qulo uses your microphone to record (1) voice messages you send in chat and (2) an optional voice recording you can add to your profile questions (up to 15 seconds, e.g., a spoken version of a question).</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Qulo uses your photo library so you can select existing photos to upload as your profile picture or share in your profile gallery.</string>
 	<key>NSPrivacyPolicyURL</key>

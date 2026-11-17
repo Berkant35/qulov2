@@ -71,6 +71,14 @@ TestFlight 'What to Test' notlarini 16 dilde yaz
 
 App Store 'Yenilikler' metnini tum lokalizasyonlara yaz
 
+### ios prepare_version
+
+```sh
+[bundle exec] fastlane ios prepare_version
+```
+
+Surume pubspec build'ini bagla + releaseType (varsayilan MANUAL). apply:true olmadan KURU calisir
+
 ### ios submit_review
 
 ```sh

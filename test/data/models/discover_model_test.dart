@@ -52,4 +52,29 @@ void main() {
       expect(card.toPublicProfile().distanceKm, isNull);
     });
   });
+
+  group('QuestionInfoModel — has_voice / has_image', () {
+    test('anahtarlar yoksa false (kapi pasif)', () {
+      final info = QuestionInfoModel.fromJson(const {'count': 3});
+
+      expect(info.hasVoice, isFalse);
+      expect(info.hasImage, isFalse);
+    });
+
+    test('anahtarlar varsa okunur', () {
+      final info = QuestionInfoModel.fromJson(
+        const {'count': 3, 'has_voice': true, 'has_image': true},
+      );
+
+      expect(info.hasVoice, isTrue);
+      expect(info.hasImage, isTrue);
+    });
+
+    test('esitlige girer: rozet degisince kart yeniden cizilir', () {
+      expect(
+        QuestionInfoModel.fromJson(const {'count': 3, 'has_voice': true}),
+        isNot(QuestionInfoModel.fromJson(const {'count': 3})),
+      );
+    });
+  });
 }

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:qulo_v2/core/constants/app_constants.dart';
 
 /// `ios/Runner/PrivacyInfo.xcprivacy` 2026-10-06'da yanlışlıkla `[]` ile ezilmişti
 /// (geçerli plist değil) ve yıllardır "hiçbir veri toplanmıyor, takip yok" diyordu;
@@ -53,6 +54,18 @@ void main() {
         expect(types, contains(type), reason: '$permission var, $type beyanı yok');
       }
     });
+  });
+
+  test('mikrofon açıklamasındaki süre soru sesi üst sınırıyla tutarlı (App Review metni)', () {
+    // Metin "10 saniye" diyordu, sınır 15 sn (2.0.19 final review M4).
+    final infoPlist = File('ios/Runner/Info.plist').readAsStringSync();
+    final mic = RegExp(r'<key>NSMicrophoneUsageDescription</key>\s*<string>([^<]*)</string>')
+        .firstMatch(infoPlist)
+        ?.group(1);
+    expect(mic, isNotNull);
+    for (final m in RegExp(r'(\d+)[- ]second').allMatches(mic!)) {
+      expect(int.parse(m.group(1)!), AppConstants.questionVoiceMaxSeconds, reason: mic);
+    }
   });
 
   test('SDK\'ların topladığı türler uygulama manifestinde de var', () {

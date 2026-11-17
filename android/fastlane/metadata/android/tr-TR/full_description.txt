@@ -1,28 +1,29 @@
-Qulo'da kimse size doğrudan yazamaz. Tanışma fotoğrafla değil, sizin sorularınızla başlar.
+Qulo bir tanışma uygulaması; ama tanışma fotoğrafla değil, sorularla başlar. Kimse size doğrudan yazamaz: önce sizin sorularınızı doğru cevaplaması gerekir.
 
-Her kullanıcı kendi sorularını yazar. Biri sizinle tanışmak istiyorsa, önce sizin sorularınızı doğru cevaplaması gerekir. Doğru cevaplarsa eşleşirsiniz ve sohbet açılır. Yanlış cevaplarsa geçemez. Kiminle konuşacağınıza siz karar verirsiniz.
+Her kullanıcı kendi sorularını yazar. Biri sizinle tanışmak istiyorsa sorularınızı çözer. Doğru cevaplarsa eşleşirsiniz ve sohbet açılır. Yanlış cevaplarsa geçemez. Kiminle konuşacağınıza siz karar verirsiniz.
 
 NASIL ÇALIŞIR
 
-1. Keşfet — Yakınınızdaki profilleri gezin
+1. Keşfet — Yakınınızdaki ve seçtiğiniz şehirdeki profilleri gezin
 2. Cevapla — İlgilendiğiniz kişinin sorularını çözün
 3. Eşleş — Doğru cevaplar eşleşmeyi açar
 4. Sohbet — Eşleştiğiniz anda konuşmaya başlayın
 
 NEDEN FARKLI
 
-Kaydırmadan tanışma. Sonsuz profil yığını yok, boş mesaj seli yok. Sorularla eşleşme, karşınızdaki kişinin gerçekten ilgilendiğini baştan gösterir; çünkü soruları çözmek emek ister.
+Sonsuz profil yığını yok, boş "selam" seli yok. Soruları çözmek emek ister; bu yüzden eşleştiğiniz kişinin gerçekten ilgilendiğini baştan bilirsiniz. Eşleşme size verilmez, kazanılır.
 
-Sorularınızı kendiniz belirlersiniz. Ciddi ilişki mi arıyorsunuz, sohbet mi, ortak ilgi alanı mı — sorularınız kimin geçeceğini belirler. Aklınıza soru gelmiyorsa yapay zekâ destekli öneriler yardımcı olur.
+Sorularınız sizin filtreniz. Ciddi ilişki mi arıyorsunuz, sevgili mi, arkadaşlık mı, sadece flört ve sohbet mi — sorduğunuz şey kimin geçeceğini belirler. Aklınıza soru gelmiyorsa hazır soru kütüphanesinden seçebilirsiniz.
 
 ÖZELLİKLER
 
-• Soru sorarak tanışma — 2 ile 10 arasında kendi sorunuzu oluşturun
-• Yapay zekâ destekli soru önerileri
+• Kendi sorularınızı yazın — ücretsiz planda 2–4 soru, Plus'ta 6, Premium'da 10'a kadar
+• Sesli ve fotoğraflı sorular — sorunuza kısa bir ses kaydı ya da bir fotoğraf ekleyin
+• Hazır soru kütüphanesi — yapay zekâ yardımıyla önceden hazırlanmış sorular
 • Sohbette canlı quiz — eşleştiğiniz kişiye sohbet içinde meydan okuyun
 • Özel güçler — Kâhin, Pas ve 50/50 ile zor soruları aşın
-• Elmas ekonomisi — güçlerinizi elmaslarla kullanın
-• Süre limitleri — 15 saniyeden 90 saniyeye kadar zorluk seçin
+• Elmaslar — güçlerinizi elmaslarla kullanın
+• Süre seçimi — 15 saniyeden 90 saniyeye kadar zorluk
 • Yakındaki bekarlar — konumunuza göre keşfedin
 • 18 dil desteği
 
@@ -32,36 +33,30 @@ Qulo 18 yaş ve üzeri içindir. Sohbet yalnızca karşılıklı eşleşmeden so
 
 KİMLER İÇİN
 
-Yüzlerce profili kaydırmak yerine gerçekten uyumlu birini arayanlar; sohbete anlamlı bir yerden başlamak isteyenler; flört ederken de eğlenmek isteyenler için.
+Yüzlerce profile bakmak yerine gerçekten uyumlu birini arayanlar; sevgili bulmak ya da yeni arkadaşlık kurmak isteyenler; sohbete anlamlı bir yerden başlamak isteyenler; flört ederken eğlenmek isteyenler için.
 
 SIK SORULAN SORULAR
 
-Diğer tanışma uygulamalarından farkı ne?
-Kaydırmadan tanışma sunar. Fotoğrafa bakıp geçmek yerine karşınızdakinin
-sorduklarını çözersiniz; doğru cevaplar eşleşmeyi açar.
+Qulo nasıl çalışır?
+Fotoğrafa bakıp geçmek yerine karşınızdakinin yazdığı soruları çözersiniz; doğru cevaplar eşleşmeyi açar.
 
-Kaç tane koyabilirim?
-2 ile 10 arasında. Neyi sorduğunuz kimin geçeceğini belirler — filtreniz sizsiniz.
+Kaç soru koyabilirim?
+Ücretsiz planda 2 ile 4 arasında; Plus'ta 6, Premium'da 10'a kadar. Neyi sorduğunuz kimin geçeceğini belirler — filtreniz sizsiniz.
 
 Yakındaki bekarlarla mı eşleşiyorum?
-Konumunuza göre keşfedersiniz; İstanbul, Ankara, İzmir ve diğer şehirlerde
-konum bazlı keşif açıktır.
+Konumunuza ya da seçtiğiniz şehre göre keşfedersiniz; İstanbul, Ankara, İzmir ve diğer şehirlerde keşif açıktır.
 
 Ciddi ilişki mi, sohbet mi?
-İkisi de. Ciddi ilişki arayışına göre de yazabilirsiniz, arkadaşlık ve flört
-için de.
+İkisi de. Sorularınızı ciddi ilişki ve evlilik düşüncesine göre de yazabilirsiniz, arkadaşlık ve flört için de.
 
 Ücretsiz mi?
-İndirmek ve kullanmak ücretsiz. Elmaslar ve Plus/Premium abonelik isteğe
-bağlıdır.
+İndirmek ve kullanmak ücretsiz. Elmaslar ve Plus/Premium abonelik isteğe bağlıdır.
 
 Karşı taraf çözemezse ne olur?
-Kâhin, Pas ve 50/50 güçleriyle şansını artırabilir. Yine de geçemezse
-eşleşemezsiniz — sohbet açılmaz.
+Kâhin, Pas ve 50/50 güçleriyle şansını artırabilir. Yine de geçemezse eşleşemezsiniz — sohbet açılmaz.
 
 Bana istemediğim kişi yazabilir mi?
-Hayır. Sohbet yalnızca karşılıklı eşleşmeden sonra açılır. Engelleme ve
-bildirme her zaman elinizin altında.
+Hayır. Sohbet yalnızca karşılıklı eşleşmeden sonra açılır. Engelleme ve bildirme her zaman elinizin altında.
 
 Sorularınızı yazın, kimin geçeceğine siz karar verin.
 

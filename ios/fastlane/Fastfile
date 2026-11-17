@@ -111,6 +111,19 @@ platform :ios do
     UI.important("App Store Connect'ten build'i secip 'Incelemeye Gonder' demen gerekiyor.")
   end
 
+  desc "Surume pubspec build'ini bagla + releaseType (varsayilan MANUAL). apply:true olmadan KURU calisir"
+  lane :prepare_version do |options|
+    load_env!
+    ensure_key!
+    info = version_info
+    release_type = options[:release_type] || "MANUAL"
+    apply = options[:apply] ? " --apply" : ""
+    Dir.chdir(FLUTTER_ROOT) do
+      sh({ "IOS_BUNDLE_ID" => BUNDLE_ID },
+         "node scripts/asc_prepare_version.mjs #{info[:name]} --bind #{info[:build]} --release-type #{release_type}#{apply}")
+    end
+  end
+
   desc "Surumu App Store incelemesine GONDER (geri alinamaz sayilir) — yalniz kullanici 'yayinla' deyince"
   lane :submit_review do
     load_env!

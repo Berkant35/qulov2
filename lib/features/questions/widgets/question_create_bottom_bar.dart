@@ -3,9 +3,11 @@ import 'package:qulo_v2/core/l10n/l10n.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/core/widgets/app_loading_widget.dart';
+import 'package:qulo_v2/features/questions/mixins/question_create_bottom_bar_mixin.dart';
 import 'package:qulo_v2/features/questions/widgets/question_preview_card.dart';
 
-class QuestionCreateBottomBar extends StatelessWidget {
+class QuestionCreateBottomBar extends StatelessWidget
+    with QuestionCreateBottomBarMixin {
   final TextEditingController questionTextController;
   final TextEditingController answer1Controller;
   final TextEditingController answer2Controller;
@@ -17,6 +19,10 @@ class QuestionCreateBottomBar extends StatelessWidget {
   final int selectedTimeLimit;
   final int currentStep;
   final bool isSaving;
+
+  /// Metin kaydedildi, ses/fotoğraf yükleniyor (görsel moderasyonu ~8 sn).
+  /// Kayıt bu adımdan yapıldığı için ilerleme metni burada görünür.
+  final bool isUploadingMedia;
   final bool isEditMode;
   final bool canGoNext;
   final VoidCallback onBack;
@@ -36,6 +42,7 @@ class QuestionCreateBottomBar extends StatelessWidget {
     required this.selectedTimeLimit,
     required this.currentStep,
     required this.isSaving,
+    this.isUploadingMedia = false,
     required this.isEditMode,
     required this.canGoNext,
     required this.onBack,
@@ -90,24 +97,40 @@ class QuestionCreateBottomBar extends StatelessWidget {
                 Expanded(
                   flex: 2,
                   child: FilledButton(
-                    onPressed: isSaving
-                        ? null
-                        : currentStep == 2
-                            ? (canGoNext ? onSave : null)
-                            : (canGoNext ? onNext : null),
+                    onPressed: primaryAction(
+                      currentStep: currentStep,
+                      isSaving: isSaving,
+                      canGoNext: canGoNext,
+                      onNext: onNext,
+                      onSave: onSave,
+                    ),
                     style: FilledButton.styleFrom(
                       backgroundColor: context.appColors.primary,
                       padding: const EdgeInsets.symmetric(
                           vertical: AppSpacing.md),
                     ),
                     child: isSaving
-                        ? const AppLoadingWidget.small()
+                        ? Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const AppLoadingWidget.small(),
+                              if (isUploadingMedia) ...[
+                                const SizedBox(width: AppSpacing.sm),
+                                Flexible(
+                                  child: Text(
+                                    context.tr('question_media_uploading'),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          )
                         : Text(
-                            currentStep == 2
-                                ? (isEditMode
-                                    ? context.tr('question_create_update')
-                                    : context.tr('question_create_save'))
-                                : context.tr('next'),
+                            primaryLabel(
+                              context,
+                              currentStep: currentStep,
+                              isEditMode: isEditMode,
+                            ),
                           ),
                   ),
                 ),

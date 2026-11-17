@@ -6,8 +6,9 @@ import 'package:qulo_v2/core/services/overlay_queue_service.dart';
 import 'package:qulo_v2/core/services/overlay_request.dart';
 import 'package:qulo_v2/features/discover/mixins/discover_screen_mixin.dart';
 
-/// İlk eşleşmeden [AppReviewManager.returnDelay] sonra dönen kullanıcıya
-/// sorulan mağaza değerlendirme isteminin kuyruk kimliği ve önceliği.
+/// Dönen kullanıcıya sorulan mağaza değerlendirme isteminin (ilk eşleşmeden
+/// [AppReviewManager.returnDelay] sonra ya da ertesi gün + quiz tamamlamış)
+/// kuyruk kimliği ve önceliği; iki tetikleyici aynı kimliği paylaşır.
 abstract final class ReturnReviewPrompt {
   static const String overlayId = 'app_review_return';
 
@@ -18,10 +19,12 @@ abstract final class ReturnReviewPrompt {
       OverlayRequest(id: overlayId, priority: priority, show: show);
 }
 
-/// İlk eşleşme turunda paywall açıldığı için istem oraya konmuyor; kullanıcı
-/// en az [AppReviewManager.returnDelay] sonra Keşfet'te ilk kartı kaydırınca
-/// (açılışta değil — Apple HIG) overlay kuyruğuna girer. Süre dolmadıysa
-/// kuyruğa hiç girmez; ekran başına bir kez denenir.
+/// Keşfet'te ilk kartı kaydırınca (açılışta değil — Apple HIG) overlay
+/// kuyruğuna girer. Önce ilk-eşleşme dönüş istemi (en az
+/// [AppReviewManager.returnDelay] geçtiyse), o due değilse ertesi-gün istemi
+/// (ilk aktif günden sonra + en az bir quiz tamamlandıysa). İkisi de due
+/// değilse kuyruğa hiç girmez; ekran başına bir kez denenir. İlk aktif gün
+/// ilk denemede kaydedilir.
 ///
 /// Not: iOS'ta `requestReview` diyaloğu beklemeden döner, kuyruk hemen
 /// ilerler; aynı kademedeki bir bildirim banner'ı ile üst üste gelebilir
@@ -44,17 +47,26 @@ mixin ReturnReviewPromptMixin on DiscoverScreenMixin {
   Future<void> _enqueueReturnReviewIfDue() async {
     if (_returnReviewTried) return;
     _returnReviewTried = true;
-    if (!await AppReviewManager.instance.isReturnReviewDue()) return;
+    final review = AppReviewManager.instance;
+    await review.noteActiveDay();
+    final Future<void> Function() show;
+    if (await review.isReturnReviewDue()) {
+      show = review.tryShowPendingReturnReview;
+    } else if (await review.isSecondDayReviewDue()) {
+      show = review.tryShowSecondDayReview;
+    } else {
+      return;
+    }
     if (!mounted) return;
     OverlayQueueService.instance
-        .enqueue(ReturnReviewPrompt.request(_showReturnReview));
+        .enqueue(ReturnReviewPrompt.request(() => _showReview(show)));
   }
 
-  Future<void> _showReturnReview() async {
+  Future<void> _showReview(Future<void> Function() tryShow) async {
     // Kuyruk boşsa `show` senkron çağrılır; sistem istemi frame bitince açılır.
     await WidgetsBinding.instance.endOfFrame;
     if (!mounted) return;
-    await AppReviewManager.instance.tryShowPendingReturnReview();
+    await tryShow();
   }
 
   void disposeReturnReviewPrompt() =>

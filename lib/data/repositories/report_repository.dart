@@ -19,12 +19,15 @@ class ReportRepository implements IReportRepository {
     required String reportedId,
     required String category,
     String? reason,
+    String? questionId,
   }) async {
     try {
       await _service.createReport({
         'reported_id': reportedId,
         'category': category,
         if (reason != null && reason.isNotEmpty) 'reason': reason,
+        // Quiz sorusundan sikayet (2.0.19): sunucu sorunun raporlanana ait olmasini dogrular.
+        if (questionId != null) 'question_id': questionId,
       });
       return const Success(null);
     } on DioException catch (e) {

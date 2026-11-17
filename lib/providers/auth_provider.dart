@@ -13,6 +13,8 @@ import 'package:qulo_v2/core/services/revenuecat_service.dart';
 import 'package:qulo_v2/core/services/social_auth_service.dart';
 import 'package:qulo_v2/data/models/auth_model.dart';
 import 'package:qulo_v2/data/models/social_login_body.dart';
+import 'package:qulo_v2/core/services/funnel_events.dart';
+import 'package:qulo_v2/features/location/utils/chosen_city_writer.dart';
 import 'package:qulo_v2/features/page_sections/providers/section_event_tracker.dart';
 import 'package:qulo_v2/features/rewards_market/providers/market_provider.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
@@ -187,6 +189,7 @@ class AuthNotifier extends Notifier<AuthState> {
     String? prefConsentStatus,
     double? lat,
     double? lng,
+    String? cityId,
     String locale = 'tr',
   }) async {
     AnalyticsManager.instance.logEvent(AnalyticsEvents.authRegisterStart, params: {
@@ -216,7 +219,11 @@ class AuthNotifier extends Notifier<AuthState> {
           state = state.copyWith(isLoading: false);
         } else {
           // Doğrulamasız içeri al (2026-10-04): kayıt sonrası giriş ekranı yok.
-          await _startSession(tokens);
+          await _startSession(tokens, cityId: cityId);
+          FunnelEvents.logAuthed(AnalyticsEvents.onboardingLocationResolved, params: {
+            AnalyticsEvents.paramSource: AnalyticsEvents.sourceRegister,
+            AnalyticsEvents.paramMethod: cityId != null ? 'city' : (lat != null ? 'gps' : 'none'),
+          });
         }
       case Failure(:final failure):
         AnalyticsManager.instance.logEvent(AnalyticsEvents.authRegisterFail, params: {
@@ -231,8 +238,19 @@ class AuthNotifier extends Notifier<AuthState> {
   /// Kayıttan dönen token'larla oturumu açar. Profil durum değişmeden ÖNCE
   /// yüklenir: router yalnız `authProvider`'ı dinler; kurulum kapısı
   /// (`setupGateRedirect`) kullanıcıyı görmezse yeni hesabı Keşfet'e atardı.
-  Future<void> _startSession(AuthTokens tokens) async {
+  ///
+  /// [cityId]: konum izni yerine seçilen şehir; hesap ve token artık var, bu yüzden
+  /// şehir şimdi yazılır (profil çekilmeden önce → `users.lat/lng` dolu gelir).
+  /// Yazım hatası oturumu engellemez.
+  Future<void> _startSession(AuthTokens tokens, {String? cityId}) async {
     await _saveTokens(tokens);
+    if (cityId != null) {
+      await ChosenCityWriter.write(
+        ref.read(cityRepositoryProvider),
+        cityId,
+        source: AnalyticsEvents.sourceRegister,
+      );
+    }
     ErrorManager.setUser(tokens.userId);
     AnalyticsManager.instance.setUserId(tokens.userId);
     try {

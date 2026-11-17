@@ -18,9 +18,10 @@ import 'package:qulo_v2/providers/subscription_provider.dart';
 
 /// [PaywallBottomSheetContent] logic'i: abonelik / elmas satın alma, geri yükleme, başlık.
 ///
-/// Ücretli satın alma sheet kapansa da (401 çıkışı, deep link) tamamlanır: abonelik,
-/// günlük haklar ve elmas tazelemesi KOŞULSUZ — kapsam await ÖNCESİ alınır. Eskiden
-/// `if (!mounted) return;` tazelemeyi atlıyor, Plus hakları ve bakiye bayat kalıyordu.
+/// Ücretli satın alma sheet kapansa da (401 çıkışı, deep link) tamamlanır: abonelik ve
+/// günlük hak tazelemesi KOŞULSUZ — kapsam await ÖNCESİ alınır. Eskiden
+/// `if (!mounted) return;` tazelemeyi atlıyor, Plus hakları bayat kalıyordu. Elmas
+/// bakiyesini satın alma notifier'ı (`confirmPurchase` → `syncWallet`) tazeler.
 /// Sheet'i kapatma, kutlama ve hata mesajı yalnız açık sheet'te.
 mixin PaywallBottomSheetMixin on ConsumerState<PaywallBottomSheetContent> {
   bool isPurchasing = false;
@@ -58,11 +59,11 @@ mixin PaywallBottomSheetMixin on ConsumerState<PaywallBottomSheetContent> {
         .read(subscriptionProvider.notifier)
         .purchaseByProductId(productId);
 
+    // Cüzdan (mor/yeşil) burada değil, satın alma notifier'ında tazelenir (`syncWallet`).
     if (outcome == PurchaseOutcome.success) {
       container
         ..invalidate(subscriptionProvider)
-        ..invalidate(dailyStatsProvider)
-        ..invalidate(diamondProvider);
+        ..invalidate(dailyStatsProvider);
     }
 
     if (!mounted) return;
@@ -110,12 +111,10 @@ mixin PaywallBottomSheetMixin on ConsumerState<PaywallBottomSheetContent> {
       },
     );
 
-    final container = ProviderScope.containerOf(context, listen: false);
+    // Bakiye `purchaseByProductId` içinde tazelenir; invalidate bakiyeyi 0'a çekerdi.
     final outcome = await ref
         .read(diamondProvider.notifier)
         .purchaseByProductId(package.tier.productId);
-
-    if (outcome == PurchaseOutcome.success) container.invalidate(diamondProvider);
 
     if (!mounted) return;
 

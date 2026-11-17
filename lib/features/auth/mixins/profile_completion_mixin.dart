@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qulo_v2/core/constants/app_constants.dart';
 import 'package:qulo_v2/core/l10n/app_localizations.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/services/funnel_events.dart';
 import 'package:qulo_v2/core/utils/age_utils.dart';
+import 'package:qulo_v2/features/location/utils/chosen_city_writer.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
@@ -125,6 +128,7 @@ mixin ProfileCompletionMixin
   }
 
   Future<void> completeProfile() async {
+    if (!hasLocation) return; // konum adımından koordinatsız çıkılamaz
     final l10n = AppLocalizations.of(context);
     setState(() {
       isSubmitting = true;
@@ -140,6 +144,20 @@ mixin ProfileCompletionMixin
         if (lng != null) 'lng': lng,
         if (_needsName) 'name': nameCtrl.text.trim(),
         if (_needsName) 'surname': surnameCtrl.text.trim(),
+      });
+
+      // Şehir (izin yerine) profil tamamlanınca, oturum açıkken yazılır; hata akışı kilitlemez.
+      final cityId = lat == null ? pickedCity?.id : null;
+      if (cityId != null) {
+        await ChosenCityWriter.write(
+          ref.read(cityRepositoryProvider),
+          cityId,
+          source: AnalyticsEvents.sourceProfileCompletion,
+        );
+      }
+      FunnelEvents.logAuthed(AnalyticsEvents.onboardingLocationResolved, params: {
+        AnalyticsEvents.paramSource: AnalyticsEvents.sourceProfileCompletion,
+        AnalyticsEvents.paramMethod: cityId != null ? 'city' : 'gps',
       });
 
       if (!mounted) return;

@@ -12,8 +12,13 @@ import 'package:qulo_v2/features/location/widgets/city_picker_list.dart';
 /// Konum vermeyen kullanıcının yedek yolu: şehir seç → sunucu şehir merkezini
 /// konum olarak yazar → Discover çalışır. Sonradan konum izni verilirse GPS
 /// güncellemesi şehir merkezinin yerine geçer (sunucu `location_source = gps`).
+///
+/// [selectOnly]: kayıt / profil tamamlamada açılır — ağa YAZMAZ, seçilen
+/// [CityModel]'i döndürür; yazımı çağıran akış (hesap açıldıktan sonra) yapar.
 class CityPickerScreen extends ConsumerStatefulWidget {
-  const CityPickerScreen({super.key});
+  final bool selectOnly;
+
+  const CityPickerScreen({super.key, this.selectOnly = false});
 
   @override
   ConsumerState<CityPickerScreen> createState() => _CityPickerScreenState();

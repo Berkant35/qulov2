@@ -108,7 +108,8 @@ final _routes = <RouteBase>[
     parentNavigatorKey: rootNavigatorKey,
     path: '/city-picker',
     name: RouteNames.cityPicker,
-    builder: (context, state) => const CityPickerScreen(),
+    // extra == true: yalnız seçim kipi (kayıt / profil tamamlama), şehri döndürür.
+    builder: (context, state) => CityPickerScreen(selectOnly: state.extra == true),
   ),
 
   // Map Confirm (root navigator — full screen over bottom nav)

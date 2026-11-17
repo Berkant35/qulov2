@@ -21,4 +21,20 @@ abstract final class AppDurations {
   static const typingIndicator = Duration(seconds: 3);
   /// Hızlı ardışık medya isteği değişikliklerinde tek API çağrısı.
   static const mediaRequestDebounce = Duration(milliseconds: 500);
+
+  /// Ses kaydı overlay'indeki kırmızı noktanın yanıp sönme yarım periyodu.
+  static const voiceRecordBlink = Duration(milliseconds: 700);
+
+  /// Quiz sayacı uyarı eşiğinde sayının nabız yarım periyodu.
+  static const quizTimerPulse = Duration(milliseconds: 800);
+  /// Quiz sayacı kritik saniyelerde tek titreme (gidiş).
+  static const quizTimerShake = Duration(milliseconds: 100);
+
+  // Ağ
+  static const networkConnectTimeout = Duration(seconds: 15);
+  /// Genel yanıt bekleme sınırı (istek bazlı uzatma: `RequestTimeoutInterceptor`).
+  static const networkReceiveTimeout = Duration(seconds: 15);
+  /// Soru medyası yükleme yanıtını bekleme sınırı. Sunucu depolama + görsel
+  /// normalize + ≤8 sn senkron moderasyon yapar; genel 15 sn sınırı yetmez.
+  static const mediaUploadReceiveTimeout = Duration(seconds: 45);
 }

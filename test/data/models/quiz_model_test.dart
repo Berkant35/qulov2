@@ -132,4 +132,103 @@ void main() {
       expect(rescued.freeSecondChanceUsed, isTrue);
     });
   });
+
+  group('QuizQuestionModel — medya alanlari (sozlesme: kapi pasifken anahtar YOK)', () {
+    const base = {
+      'session_id': 's1',
+      'question_number': 1,
+      'total_questions': 2,
+      'question_id': 'q1',
+      'question_text': 'Soru?',
+      'answers': [
+        {'index': 1, 'text': 'A'},
+      ],
+    };
+
+    test('anahtarlar yoksa varsayilan: null / null / null / 0', () {
+      final q = QuizQuestionModel.fromJson(base);
+
+      expect(q.voiceUrl, isNull);
+      expect(q.voiceDurationMs, isNull);
+      expect(q.imageUrl, isNull);
+      expect(q.mediaExtraSeconds, 0);
+    });
+
+    test('anahtarlar varsa okunur', () {
+      final q = QuizQuestionModel.fromJson({
+        ...base,
+        'voice_url': 'https://x/v.m4a',
+        'voice_duration_ms': 7300,
+        'image_url': 'https://x/i.jpg',
+        'media_extra_seconds': 11,
+      });
+
+      expect(q.voiceUrl, 'https://x/v.m4a');
+      expect(q.voiceDurationMs, 7300);
+      expect(q.imageUrl, 'https://x/i.jpg');
+      expect(q.mediaExtraSeconds, 11);
+    });
+
+    test('media_extra_seconds null gelirse 0', () {
+      expect(
+        QuizQuestionModel.fromJson({...base, 'media_extra_seconds': null}).mediaExtraSeconds,
+        0,
+      );
+    });
+  });
+
+  /// Sayaç tutma (2.0.19): sunucu son anı = ilk gösterim + taban (L) + media_extra (E) + tolerans;
+  /// `remaining_seconds` (R) E'yi İÇERİR. Tutma ≤ R − L ⇒ tutma + L ≤ R: sayaç son anı geçmez.
+  group('mediaHoldSeconds — sayaç medya için ne kadar bekler', () {
+    QuizQuestionModel media({int? remaining, int extra = 5, bool voice = true, bool image = false}) =>
+        QuizQuestionModel.fromJson({
+          'session_id': 's1',
+          'question_number': 1,
+          'total_questions': 3,
+          'question_id': 'q1',
+          'question_text': 'Soru',
+          'answers': const [],
+          'time_limit_seconds': 10,
+          'media_extra_seconds': extra,
+          if (remaining != null) 'remaining_seconds': remaining,
+          if (voice) 'voice_url': 'https://x/v.m4a',
+          if (image) 'image_url': 'https://x/i.jpg',
+        });
+
+    test('media_extra_seconds 0 → tutma yok (eski davranış)', () {
+      expect(media(extra: 0, remaining: 10).mediaHoldSeconds, 0);
+    });
+
+    test('taze soru (R = L + E) → tutma = E, sayaç tabandan başlar', () {
+      final q = media(remaining: 15);
+      expect(q.mediaHoldSeconds, 5);
+      expect(q.startSeconds, 10);
+    });
+
+    test('tolerans dahil taze soru (R = L + E + 2) → tutma E ile sınırlı', () {
+      expect(media(remaining: 17).mediaHoldSeconds, 5);
+    });
+
+    test('remaining_seconds yok (eski yanıt biçimi) → tutma = E', () {
+      expect(media().mediaHoldSeconds, 5);
+    });
+
+    test('yeniden açılış (R = L + 2) → tutma R − L = 2', () {
+      expect(media(remaining: 12).mediaHoldSeconds, 2);
+    });
+
+    test('yeniden açılış (R < L) → tutma yok, sayaç kalan süreden', () {
+      final q = media(remaining: 7);
+      expect(q.mediaHoldSeconds, 0);
+      expect(q.startSeconds, 7);
+    });
+
+    test('medya URL yoksa (imza alınamadı) → tutma yok', () {
+      expect(media(remaining: 15, voice: false).mediaHoldSeconds, 0);
+    });
+
+    test('yalnız görsel → tutma = E', () {
+      expect(media(remaining: 15, voice: false, image: true).mediaHoldSeconds, 5);
+    });
+  });
 }

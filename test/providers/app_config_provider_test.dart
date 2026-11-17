@@ -49,6 +49,7 @@ AppConfigModel _config({
   bool force = true,
   bool powerDemo = true,
   bool ads = false,
+  bool media = false,
 }) =>
     AppConfigModel(
       minVersion: min,
@@ -58,6 +59,7 @@ AppConfigModel _config({
       isForceUpdateEnabled: force,
       powerDemoEnabled: powerDemo,
       adsEnabled: ads,
+      mediaQuestionsEnabled: media,
     );
 
 ProviderContainer _container(
@@ -288,6 +290,32 @@ void main() {
       expect(AppConfigModel.fromJson(base).adsEnabled, isFalse);
       expect(AppConfigModel.fromJson({...base, 'adsEnabled': true}).adsEnabled, isTrue);
       expect(AppConfigModel.fromJson({...base, 'adsEnabled': null}).adsEnabled, isFalse);
+    });
+  });
+
+  group('mediaQuestionsEnabledProvider — sesli/gorselli soru anahtari (fail-closed)', () {
+    test('config cekilmediyse kapali', () {
+      final container = _container('2.0.0', Success(_config(media: true)));
+
+      expect(container.read(mediaQuestionsEnabledProvider), isFalse);
+    });
+
+    test('config alinamazsa kapali kalir', () async {
+      final container = _container('2.0.0', const Failure(NetworkFailure()));
+
+      await container.read(appConfigProvider.notifier).checkVersion();
+
+      expect(container.read(mediaQuestionsEnabledProvider), isFalse);
+    });
+
+    test('sunucu true demedikce kapali; true derse acik', () async {
+      final off = _container('2.0.0', Success(_config()));
+      await off.read(appConfigProvider.notifier).checkVersion();
+      expect(off.read(mediaQuestionsEnabledProvider), isFalse);
+
+      final on = _container('2.0.0', Success(_config(media: true)));
+      await on.read(appConfigProvider.notifier).checkVersion();
+      expect(on.read(mediaQuestionsEnabledProvider), isTrue);
     });
   });
 }

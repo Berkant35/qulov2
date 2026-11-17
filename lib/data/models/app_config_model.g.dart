@@ -16,6 +16,7 @@ AppConfigModel _$AppConfigModelFromJson(Map<String, dynamic> json) =>
       isForceUpdateEnabled: json['isForceUpdateEnabled'] as bool,
       powerDemoEnabled: json['powerDemoEnabled'] as bool? ?? true,
       adsEnabled: json['adsEnabled'] as bool? ?? false,
+      mediaQuestionsEnabled: json['mediaQuestionsEnabled'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$AppConfigModelToJson(AppConfigModel instance) =>
@@ -28,4 +29,5 @@ Map<String, dynamic> _$AppConfigModelToJson(AppConfigModel instance) =>
       'isForceUpdateEnabled': instance.isForceUpdateEnabled,
       'powerDemoEnabled': instance.powerDemoEnabled,
       'adsEnabled': instance.adsEnabled,
+      'mediaQuestionsEnabled': instance.mediaQuestionsEnabled,
     };

@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/constants/app_durations.dart';
 import 'package:qulo_v2/core/theme/app_colors.dart';
 import 'package:qulo_v2/core/theme/app_spacing.dart';
 import 'package:qulo_v2/features/chat/mixins/voice_recorder_overlay_mixin.dart';
 
 class VoiceRecorderOverlay extends ConsumerStatefulWidget {
+  /// Sohbet sesli mesaj siniri; sohbet cagrilari parametre vermez.
+  static const int defaultMaxDurationSeconds = 60;
+
   final void Function(String filePath, int durationSeconds) onRecordComplete;
   final VoidCallback onCancel;
+
+  /// Bu saniyeye ulasinca kayit otomatik tamamlanir (soru sesi: 15).
+  final int maxDurationSeconds;
 
   const VoiceRecorderOverlay({
     super.key,
     required this.onRecordComplete,
     required this.onCancel,
+    this.maxDurationSeconds = defaultMaxDurationSeconds,
   });
 
   @override
@@ -29,7 +37,7 @@ class _VoiceRecorderOverlayState extends ConsumerState<VoiceRecorderOverlay>
 
     _blinkController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 700),
+      duration: AppDurations.voiceRecordBlink,
     )..repeat(reverse: true);
 
     _blinkAnimation = Tween<double>(begin: 0.3, end: 1.0).animate(
@@ -86,11 +94,10 @@ class _VoiceRecorderOverlayState extends ConsumerState<VoiceRecorderOverlay>
               // Timer
               Text(
                 elapsedLabel,
-                style: TextStyle(
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: context.appColors.textPrimary,
-                  fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  fontFeatures: [FontFeature.tabularFigures()],
+                  fontFeatures: const [FontFeature.tabularFigures()],
                 ),
               ),
 

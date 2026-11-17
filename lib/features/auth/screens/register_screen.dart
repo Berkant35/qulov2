@@ -126,7 +126,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                     errorText: locationError,
                     onRequestLocation: requestLocation,
                     onContinue: nextStep,
-                    onSkip: () => goToStep(currentStep + 1),
+                    onPickCity: () => pickCity(AnalyticsEvents.sourceRegister),
+                    selectedCityName: pickedCity?.name,
                     onOpenSettings: () =>
                         ref.read(locationManagerProvider).openAppSettings(),
                   ),

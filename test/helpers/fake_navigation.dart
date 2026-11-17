@@ -14,7 +14,11 @@ class FakeNavigationService implements NavigationService {
   final dialogs = <String>[];
   final sheets = <String>[];
   final pushes = <({String name, Object? extra})>[];
+
+  /// `push` bu değerle tamamlanır (ör. şehir seçiciden dönen `CityModel`); null = geri dönüldü.
+  Object? pushAnswer;
   int pops = 0;
+  final popResults = <Object?>[];
   final gos = <String>[];
 
   /// [isInStack] için yığındaki rota adları (testten verilir).
@@ -46,7 +50,7 @@ class FakeNavigationService implements NavigationService {
     Object? extra,
   }) async {
     pushes.add((name: name, extra: extra));
-    return null;
+    return pushAnswer as T?;
   }
 
   @override
@@ -54,7 +58,10 @@ class FakeNavigationService implements NavigationService {
       gos.add(name);
 
   @override
-  void pop<T>([T? result]) => pops++;
+  void pop<T>([T? result]) {
+    pops++;
+    popResults.add(result);
+  }
 
   @override
   dynamic noSuchMethod(Invocation invocation) =>

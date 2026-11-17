@@ -3,5 +3,5 @@
 "NSPhotoLibraryUsageDescription" = "Toegang tot de fotobibliotheek is vereist om profielfoto's te selecteren.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "Qulo gebruikt je locatie om mensen binnen je gekozen afstand te vinden op het Discover-scherm en je stad op je profiel te tonen. Stel je bijvoorbeeld 50 km in, dan toont Discover gebruikers binnen die straal en elke kaart laat stad en afstand zien, zoals \"Amsterdam · 2,5 km\".";
 "NSLocationWhenInUseUsageDescription" = "Qulo gebruikt je locatie om mensen binnen je gekozen afstand te vinden op het Discover-scherm en je stad op je profiel te tonen. Stel je bijvoorbeeld 50 km in, dan toont Discover gebruikers binnen die straal en elke kaart laat stad en afstand zien, zoals \"Amsterdam · 2,5 km\".";
-"NSMicrophoneUsageDescription" = "Microfoontoegang is vereist om spraakberichten te verzenden.";
+"NSMicrophoneUsageDescription" = "Microfoontoegang is vereist om spraakberichten in de chat op te nemen en optioneel een spraakopname aan je profielvragen toe te voegen.";
 "NSUserTrackingUsageDescription" = "Qulo gebruikt deze identifier om je relevantere advertenties te tonen, advertentieprestaties te meten (bijv. weten dat je Qulo via een advertentie hebt ontdekt) en je app-ervaring te verbeteren. Als je weigert, werkt Qulo hetzelfde en kun je nog steeds advertenties zien, maar minder gepersonaliseerd.";

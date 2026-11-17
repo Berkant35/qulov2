@@ -72,6 +72,20 @@ class QuizQuestionModel extends Equatable {
   @JsonKey(name: 'remaining_seconds')
   final int? remainingSeconds;
 
+  /// Sesli/gorselli soru (2.0.19). Sunucu kapi pasifken anahtarlari gondermez
+  /// → null / 0. `image_url` yalnizca onayli gorselde dolu.
+  @JsonKey(name: 'voice_url')
+  final String? voiceUrl;
+  @JsonKey(name: 'voice_duration_ms')
+  final int? voiceDurationMs;
+  @JsonKey(name: 'image_url')
+  final String? imageUrl;
+
+  /// Medyayi dinleme/gorme icin taban sureye eklenen saniye (`time_limit_seconds`
+  /// TABAN kalir); sayac once bu kadar bekler.
+  @JsonKey(name: 'media_extra_seconds', defaultValue: 0)
+  final int mediaExtraSeconds;
+
   const QuizQuestionModel({
     required this.sessionId,
     required this.questionNumber,
@@ -83,6 +97,10 @@ class QuizQuestionModel extends Equatable {
     this.timeLimitSeconds = 30,
     this.usedPowers = const [],
     this.remainingSeconds,
+    this.voiceUrl,
+    this.voiceDurationMs,
+    this.imageUrl,
+    this.mediaExtraSeconds = 0,
   });
 
   /// Sayacın başlangıcı: soru süresini aşmaz (sunucu toleransı gösterilmez),
@@ -91,6 +109,22 @@ class QuizQuestionModel extends Equatable {
     final remaining = remainingSeconds;
     if (remaining == null) return timeLimitSeconds;
     return remaining.clamp(1, timeLimitSeconds < 1 ? 1 : timeLimitSeconds);
+  }
+
+  /// Soruda dinlenecek/görülecek medya var mı (imzalı URL geldiyse).
+  bool get hasMedia => voiceUrl != null || imageUrl != null;
+
+  /// Sayacın medya hazır olana dek taban süreyi ([startSeconds]) bekletebileceği üst sınır (sn).
+  ///
+  /// Sunucu son anı = ilk gösterim + taban (L) + [mediaExtraSeconds] (E) + tolerans;
+  /// `remaining_seconds` (R) E'yi zaten İÇERİR. Çift sayım olmasın diye tutma `R − L` ile
+  /// kırpılır: tutma ≤ R − L ⇒ (tutma + L) ≤ R — sayaç sunucu son anını hiç geçmez.
+  /// Taze soruda R ≥ L + E → tutma = E; yeniden açılışta R − L kadarı kalır; R ≤ L → 0.
+  int get mediaHoldSeconds {
+    if (mediaExtraSeconds <= 0 || !hasMedia) return 0;
+    final remaining = remainingSeconds;
+    if (remaining == null) return mediaExtraSeconds;
+    return (remaining - timeLimitSeconds).clamp(0, mediaExtraSeconds);
   }
 
   factory QuizQuestionModel.fromJson(Map<String, dynamic> json) =>

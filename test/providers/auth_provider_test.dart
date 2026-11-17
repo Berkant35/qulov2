@@ -16,6 +16,7 @@ import 'package:qulo_v2/data/models/realtime_token_model.dart';
 import 'package:qulo_v2/data/models/rewards_model.dart';
 import 'package:qulo_v2/data/models/user_model.dart';
 import 'package:qulo_v2/data/repositories/auth_repository.dart';
+import 'package:qulo_v2/data/repositories/city_repository.dart';
 import 'package:qulo_v2/data/repositories/user_repository.dart';
 import 'package:qulo_v2/features/page_sections/providers/section_event_tracker.dart';
 import 'package:qulo_v2/features/rewards_market/providers/market_provider.dart';
@@ -225,6 +226,68 @@ void main() {
 
       expect(h.state.status, isNot(AuthStatus.authenticated));
       expect(await h.stored(), isEmpty);
+    });
+
+    group('konum yerine secilen sehir', () {
+      const withTokens = RegisterResponse(
+        userId: 'u1',
+        email: 'a@b.test',
+        accessToken: 'access-1',
+        refreshToken: 'refresh-1',
+      );
+
+      Future<void> registerWithCity(_Harness h) async {
+        try {
+          await h.notifier.register(
+            email: 'a@b.test', password: 'x', name: 'Ada', surname: 'L',
+            age: 25, gender: 'WOMAN', cityId: 'TR-istanbul',
+          );
+        } catch (_) {
+          // Testte Firebase (Crashlytics) yok: oturum acilisi `ErrorManager.setUser`'da patlar.
+          // Sehir yazimi ondan ONCE yapildigi icin burada gozlenebilir.
+        }
+      }
+
+      test('hesap acildiktan sonra, token kaydedilmisken sunucuya yazilir', () async {
+        final cities = _TokenAwareCities();
+        final h = _Harness(
+          auth: _FakeAuthRepository(registerResult: const Success(withTokens)),
+          overrides: [cityRepositoryProvider.overrideWithValue(cities)],
+        );
+
+        await registerWithCity(h);
+
+        expect(cities.saved, ['TR-istanbul']);
+        expect(cities.accessTokenAtCall, 'access-1');
+      });
+
+      test('yazim hata verse de kayit fırlatmaz: oturum acilisina devam edilir', () async {
+        final cities = _TokenAwareCities(fail: true);
+        final h = _Harness(
+          auth: _FakeAuthRepository(registerResult: const Success(withTokens)),
+          overrides: [cityRepositoryProvider.overrideWithValue(cities)],
+        );
+
+        await registerWithCity(h);
+
+        expect(cities.saved, ['TR-istanbul']);
+        expect(events.map((e) => e['event']), contains(AnalyticsEvents.onboardingCitySaveFail));
+        expect(events.map((e) => e['event']), contains(AnalyticsEvents.signUp));
+      });
+
+      test('kayit basarisizsa (hesap yok) sehir yazilmaz', () async {
+        final cities = _TokenAwareCities();
+        final h = _Harness(
+          auth: _FakeAuthRepository(
+            registerResult: const Failure(ServerFailure(code: 'EMAIL_TAKEN', statusCode: 409)),
+          ),
+          overrides: [cityRepositoryProvider.overrideWithValue(cities)],
+        );
+
+        await registerWithCity(h);
+
+        expect(cities.saved, isEmpty);
+      });
     });
 
     test('kayit hatasinda sign_up atilmaz', () async {
@@ -469,6 +532,25 @@ class _FakeRealtimeTarget implements RealtimeAuthTarget {
 
   @override
   Future<void> reset() async => resets++;
+}
+
+class _TokenAwareCities implements CityRepository {
+  _TokenAwareCities({this.fail = false});
+
+  final bool fail;
+  final saved = <String>[];
+  String? accessTokenAtCall;
+
+  @override
+  Future<Result<void>> setCity(String cityId) async {
+    saved.add(cityId);
+    accessTokenAtCall = await const FlutterSecureStorage().read(key: 'access_token');
+    return fail ? const Failure(NetworkFailure()) : const Success(null);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) =>
+      throw UnimplementedError('_TokenAwareCities.${invocation.memberName}');
 }
 
 class _MeRepository implements UserRepository {

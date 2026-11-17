@@ -9,7 +9,6 @@ import 'package:qulo_v2/core/services/revenuecat_service.dart';
 import 'package:qulo_v2/features/diamonds/screens/subscription_comparison_screen.dart';
 import 'package:qulo_v2/features/diamonds/widgets/celebration_dialog.dart';
 import 'package:qulo_v2/providers/daily_stats_provider.dart';
-import 'package:qulo_v2/providers/diamond_provider.dart';
 import 'package:qulo_v2/providers/economy_config_provider.dart';
 import 'package:qulo_v2/providers/subscription_provider.dart';
 import 'package:qulo_v2/routing/route_names.dart';
@@ -69,9 +68,8 @@ mixin SubscriptionComparisonScreenMixin on ConsumerState<SubscriptionComparisonS
 
     if (!mounted) return;
 
-    // Elmaslar ekranı taze veriyi göstersin.
+    // Elmas bakiyesi satın alma notifier'ında tazelendi (`syncWallet`); invalidate onu 0'a çekerdi.
     ref
-      ..invalidate(diamondProvider)
       ..invalidate(subscriptionProvider)
       ..invalidate(dailyStatsProvider);
 

@@ -45,6 +45,9 @@ class QuizQuestionContent extends ConsumerWidget
   final Future<void> Function() onSubmitAnswer;
   final Future<void> Function(String power) onPowerUsed;
 
+  /// Başlıktaki şikâyet ikonu (soru sahibi adı varsa görünür).
+  final VoidCallback? onReport;
+
   const QuizQuestionContent({
     super.key,
     required this.question,
@@ -62,6 +65,7 @@ class QuizQuestionContent extends ConsumerWidget
     required this.onSelectAnswer,
     required this.onSubmitAnswer,
     required this.onPowerUsed,
+    this.onReport,
   });
 
   @override
@@ -87,6 +91,7 @@ class QuizQuestionContent extends ConsumerWidget
                 name: target?.name,
                 photoUrl: target?.photoUrl,
                 distanceKm: target?.distanceKm,
+                onReport: onReport,
               ),
               QuizTimerSection(
                 timerKey: timerKey,
@@ -119,6 +124,7 @@ class QuizQuestionContent extends ConsumerWidget
               oracleLabel: oracleAccuracyLabel(context, accuracy),
               skipEffectToken: skipEffectToken,
               onSelectAnswer: onSelectAnswer,
+              onMediaReady: () => timerKey.currentState?.release(),
             ),
           ),
         ),

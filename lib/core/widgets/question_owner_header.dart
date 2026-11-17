@@ -11,12 +11,18 @@ class QuestionOwnerHeader extends StatelessWidget {
   final String? photoUrl;
   final double? distanceKm;
 
+  /// Verilirse satırın sonunda şikâyet ikonu çıkar (quiz; sohbet sorusunda yok).
+  final VoidCallback? onReport;
+
   const QuestionOwnerHeader({
     super.key,
     required this.name,
     this.photoUrl,
     this.distanceKm,
+    this.onReport,
   });
+
+  static const _reportIconSize = 20.0;
 
   @override
   Widget build(BuildContext context) {
@@ -41,13 +47,25 @@ class QuestionOwnerHeader extends StatelessWidget {
                 : null,
           ),
           const SizedBox(width: AppSpacing.sm),
-          Text(
-            label,
-            style: Theme.of(context)
-                .textTheme
-                .bodySmall
-                ?.copyWith(color: context.appColors.textSecondary),
+          Flexible(
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: context.appColors.textSecondary),
+            ),
           ),
+          if (onReport != null)
+            IconButton(
+              icon: const Icon(Icons.flag_outlined, size: _reportIconSize),
+              color: context.appColors.textSecondary,
+              tooltip: context.tr('report'),
+              visualDensity: VisualDensity.compact,
+              onPressed: onReport,
+            ),
         ],
       ),
     );

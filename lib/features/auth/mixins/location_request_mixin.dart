@@ -1,4 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qulo_v2/core/navigation/navigation.dart';
+import 'package:qulo_v2/core/services/analytics_events.dart';
+import 'package:qulo_v2/core/services/analytics_manager.dart';
+import 'package:qulo_v2/data/models/city_model.dart';
+import 'package:qulo_v2/routing/route_names.dart';
 import 'package:qulo_v2/core/l10n/app_localizations.dart';
 import 'package:qulo_v2/core/services/location_manager.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
@@ -14,6 +19,27 @@ mixin LocationRequestMixin<T extends ConsumerStatefulWidget> on ConsumerState<T>
   bool locationGranted = false;
   bool isRequestingLocation = false;
   String? locationError;
+
+  /// Konum izni yerine seçilen şehir (yalnız seçim kipi; sunucuya hesap açılınca yazılır).
+  CityModel? pickedCity;
+
+  /// Konum adımından koordinatsız çıkılamaz: izin verildi ya da şehir seçildi.
+  bool get hasLocation => locationGranted || pickedCity != null;
+
+  /// Şehir seçiciyi yalnız seçim kipinde açar. Geri dönülürse (seçim yok) adımda kalınır.
+  /// [source]: `AnalyticsEvents.sourceRegister` | `sourceProfileCompletion`.
+  Future<void> pickCity(String source) async {
+    final city = await ref.read(navigationServiceProvider).push<CityModel>(
+          RouteNames.cityPicker,
+          extra: true,
+        );
+    if (!mounted || city == null) return;
+    setState(() => pickedCity = city);
+    AnalyticsManager.instance.logEvent(
+      AnalyticsEvents.onboardingCitySelect,
+      params: {AnalyticsEvents.paramSource: source},
+    );
+  }
 
   Future<void> requestLocation() async {
     setState(() {
@@ -41,6 +67,8 @@ mixin LocationRequestMixin<T extends ConsumerStatefulWidget> on ConsumerState<T>
         lat = position.lat;
         lng = position.lng;
         locationGranted = true;
+        pickedCity = null; // GPS gerçek konumdur; şehir merkezinin önüne geçer
+
       }
     });
   }

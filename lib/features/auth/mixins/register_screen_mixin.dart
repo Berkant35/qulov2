@@ -104,7 +104,8 @@ mixin RegisterScreenMixin
         return err == null;
 
       case 4:
-        return true;
+        // Konum adımından koordinatsız çıkılamaz: izin ya da şehir.
+        return hasLocation;
 
       case 5:
         final emailErr = _emailValidator(emailCtrl.text.trim());
@@ -164,6 +165,7 @@ mixin RegisterScreenMixin
           prefConsentStatus: prefConsentDeclined ? PrefConsent.declined : PrefConsent.granted,
           lat: lat,
           lng: lng,
+          cityId: lat == null ? pickedCity?.id : null,
           locale: Localizations.localeOf(context).languageCode,
         );
 

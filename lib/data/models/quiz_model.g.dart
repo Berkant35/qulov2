@@ -54,6 +54,10 @@ QuizQuestionModel _$QuizQuestionModelFromJson(Map<String, dynamic> json) =>
               .toList() ??
           const [],
       remainingSeconds: (json['remaining_seconds'] as num?)?.toInt(),
+      voiceUrl: json['voice_url'] as String?,
+      voiceDurationMs: (json['voice_duration_ms'] as num?)?.toInt(),
+      imageUrl: json['image_url'] as String?,
+      mediaExtraSeconds: (json['media_extra_seconds'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$QuizQuestionModelToJson(QuizQuestionModel instance) =>
@@ -68,6 +72,10 @@ Map<String, dynamic> _$QuizQuestionModelToJson(QuizQuestionModel instance) =>
       'time_limit_seconds': instance.timeLimitSeconds,
       'used_powers': instance.usedPowers,
       'remaining_seconds': instance.remainingSeconds,
+      'voice_url': instance.voiceUrl,
+      'voice_duration_ms': instance.voiceDurationMs,
+      'image_url': instance.imageUrl,
+      'media_extra_seconds': instance.mediaExtraSeconds,
     };
 
 QuizAnswerOption _$QuizAnswerOptionFromJson(Map<String, dynamic> json) =>

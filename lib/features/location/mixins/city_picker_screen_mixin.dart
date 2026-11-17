@@ -37,6 +37,11 @@ mixin CityPickerScreenMixin on ConsumerState<CityPickerScreen> {
   /// 404 `CITY_NOT_FOUND`: liste tazelenir, kullanıcı yeniden seçer.
   Future<void> onCityTap(CityModel city) async {
     final nav = ref.read(navigationServiceProvider);
+    if (widget.selectOnly) {
+      FocusManager.instance.primaryFocus?.unfocus();
+      nav.pop(city);
+      return;
+    }
     final messenger = ScaffoldMessenger.of(context);
     final messages = {
       CitySaveResult.cityGone: context.tr('city_picker_city_gone'),

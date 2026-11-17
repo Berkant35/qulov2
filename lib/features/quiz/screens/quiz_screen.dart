@@ -9,6 +9,7 @@ import 'package:qulo_v2/core/widgets/compact_diamond_balance.dart';
 import 'package:qulo_v2/core/widgets/power_icon.dart';
 import 'package:qulo_v2/core/widgets/q_icon.dart';
 import 'package:qulo_v2/features/notifications/mixins/push_permission_offer_mixin.dart';
+import 'package:qulo_v2/data/models/quiz_model.dart' show QuizQuestionModel;
 import 'package:qulo_v2/providers/quiz_provider.dart';
 import 'package:qulo_v2/providers/exchange_provider.dart';
 import 'package:qulo_v2/providers/user_provider.dart';
@@ -16,6 +17,7 @@ import 'package:qulo_v2/features/quiz/quiz_power_rules.dart';
 import 'package:qulo_v2/features/quiz/mixins/quiz_answer_mixin.dart';
 import 'package:qulo_v2/features/quiz/mixins/quiz_flow_mixin.dart';
 import 'package:qulo_v2/features/quiz/mixins/quiz_power_mixin.dart';
+import 'package:qulo_v2/features/quiz/mixins/quiz_report_mixin.dart';
 import 'package:qulo_v2/features/quiz/mixins/quiz_screen_state_mixin.dart';
 import 'package:qulo_v2/features/quiz/widgets/answer_feedback_overlay.dart';
 import 'package:qulo_v2/features/quiz/widgets/rescue_cards.dart';
@@ -39,7 +41,14 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
         PushPermissionOfferMixin<QuizScreen>,
         QuizAnswerMixin,
         QuizPowerMixin,
-        QuizFlowMixin {
+        QuizFlowMixin,
+        QuizReportMixin<QuizScreen> {
+  @override
+  String get reportedUserId => widget.targetId;
+
+  @override
+  QuizQuestionModel? get reportedQuestion => ref.read(quizProvider).currentQuestion;
+
   @override
   void initState() {
     super.initState();
@@ -119,6 +128,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
                     onSelectAnswer: selectAnswer,
                     onSubmitAnswer: submitAnswer,
                     onPowerUsed: usePower,
+                    onReport: onReportQuestion,
                   ),
                   if (isSheetOpen)
                     Positioned.fill(

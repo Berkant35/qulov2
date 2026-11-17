@@ -7,6 +7,7 @@ import 'package:qulo_v2/core/services/revenuecat_service.dart';
 import 'package:qulo_v2/data/models/diamond_model.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
+import 'package:qulo_v2/providers/user_provider.dart';
 
 class DiamondNotifier extends AsyncNotifier<DiamondBalance> {
   @override
@@ -53,13 +54,29 @@ class DiamondNotifier extends AsyncNotifier<DiamondBalance> {
           .where((t) => t.productIdentifier == productId)
           .lastOrNull
           ?.transactionIdentifier;
-      await _notifyBackend(productId, txId);
-      await fetchBalance();
+      await confirmPurchase(productId, transactionId: txId);
       return PurchaseOutcome.success;
     } catch (e) {
       dev.log('Diamond purchase failed: $e');
       return PurchaseOutcome.fromError(e);
     }
+  }
+
+  /// Mağaza ödemesi bitti: sunucuya bildir (kredi bu çağrıda yazılır), sonra cüzdanı tazele.
+  Future<void> confirmPurchase(String productId, {String? transactionId}) async {
+    await _notifyBackend(productId, transactionId);
+    await syncWallet();
+  }
+
+  /// Sunucunun bakiyeyi değiştirdiği satın almalardan sonra İKİ bakiye aynasını tazeler:
+  /// bu provider (Elmaslar ekranı, güç sayfası) ve `userProvider` (quiz / sohbet sorusu
+  /// AppBar'ı `CompactDiamondBalance`, koç notu). Yalnız birini tazelemek AppBar'ı açılıştaki
+  /// bakiyede bırakıyordu (2.0.18: Premium sonrası mor elmaslar soru ekranında güncellenmedi).
+  ///
+  /// `ref.invalidate(diamondProvider)` bunun yerine KULLANILMAZ — `build()` sabit 0 döner.
+  Future<void> syncWallet() async {
+    await fetchBalance();
+    await ref.read(userProvider.notifier).fetchMe();
   }
 
   Future<void> _notifyBackend(String productId, [String? transactionId]) async {

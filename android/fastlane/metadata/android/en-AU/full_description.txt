@@ -1,25 +1,28 @@
-On Qulo nobody can message you out of the blue. You write your own questions; anyone who wants to meet you has to answer them correctly first. Right answers open a match and a chat. Wrong answers don't get through. You decide who gets to talk to you.
+Qulo is a dating app where meeting starts with questions, not photos. Nobody can message you out of the blue: they have to answer your questions correctly first.
+
+You write your own questions. Anyone who wants to meet you solves them. Right answers open a match and a chat. Wrong answers don't get through. You decide who gets to talk to you.
 
 HOW IT WORKS
 
-1. Discover — Browse profiles near you
+1. Discover — Browse singles near you or in the city you pick
 2. Answer — Solve the questions of someone you like
 3. Match — Correct answers unlock the match
 4. Chat — Start talking the moment you match
 
 WHY IT'S DIFFERENT
 
-No endless swiping and no flood of empty "hey" messages. Solving someone's questions takes effort, so a match means the other person was genuinely interested from the start.
+No endless profile stack and no flood of empty "hey" messages. Solving someone's questions takes effort, so a match means the other person was genuinely interested from the start. A match isn't handed to you — it's earned.
 
-Your questions are your filter. Looking for a serious relationship, good conversation or a shared interest? What you ask decides who gets through. Out of ideas? AI-powered suggestions help you write questions that fit your profile.
+Your questions are your filter. Looking for a serious relationship, a date, new friends or just good conversation? What you ask decides who gets through. Out of ideas? Pick from a ready-made question library.
 
 FEATURES
 
-• Create your own questions — between 2 and 10 per profile
-• AI-powered question suggestions
+• Write your own questions — 2 to 4 on the free plan, 6 on Plus, up to 10 on Premium
+• Voice and photo questions — add a short voice clip or a photo to a question
+• Question library — ready-made questions, prepared in advance with the help of AI
 • Live quiz in chat — challenge your match inside the conversation
 • Special powers — Oracle, Skip and 50/50 for the hard questions
-• Diamond economy — spend diamonds to use your powers
+• Diamonds — spend diamonds to use your powers
 • Time limits — pick a difficulty from 15 to 90 seconds
 • Singles nearby — discover people based on your location
 • Available in 18 languages
@@ -30,18 +33,18 @@ Qulo is for people aged 18 and over. A chat only opens after a mutual match; nob
 
 WHO IT'S FOR
 
-People who would rather meet someone compatible than swipe through hundreds of profiles; people who want a conversation to start from something meaningful; people who like a bit of play while dating.
+People who would rather meet someone compatible than scroll through hundreds of profiles; people looking for a relationship, a date or new friends; people who want a conversation to start from something meaningful; people who like a bit of play while dating.
 
 FAQ
 
-How is this different from other dating apps?
+How does Qulo work?
 Instead of judging a photo and moving on, you solve the questions the other person wrote. Right answers open the match.
 
 How many questions can I set?
-Between 2 and 10. What you ask decides who gets through — you are the filter.
+2 to 4 on the free plan, 6 on Plus, up to 10 on Premium. What you ask decides who gets through — you are the filter.
 
 Do I match with singles nearby?
-Yes, discovery is based on your location.
+Yes, discovery is based on your location or the city you choose.
 
 Serious relationship or casual chat?
 Both. Write your questions for a serious relationship, for friendship or for flirting.

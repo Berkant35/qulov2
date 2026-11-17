@@ -29,6 +29,9 @@ abstract final class AppConstants {
   static const int defaultMatchRadiusKm = 50;
   static const int maxQuestions = 6;
 
+  /// Soru sesi üst sınırı — sunucu `duration_ms` 1..15000 doğrular.
+  static const int questionVoiceMaxSeconds = 15;
+
   /// "Bizi nereden duydun" serbest metin siniri — sunucu
   /// `acquisition.validator.ts` `freeform_text: max(280)` ile ayni olmali.
   static const int acquisitionFreeformMaxLength = 280;

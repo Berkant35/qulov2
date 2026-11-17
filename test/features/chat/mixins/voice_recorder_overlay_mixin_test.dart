@@ -50,8 +50,13 @@ class _FakeRecorder implements AudioRecorderManager {
 }
 
 class _Harness {
+  _Harness({this.maxDurationSeconds});
+
+  /// null = sohbet cagrisi (parametre verilmez, varsayilan 60 sn).
+  final int? maxDurationSeconds;
   final recorder = _FakeRecorder();
   final completed = <String>[];
+  final completedSeconds = <int>[];
   late final container = ProviderContainer(overrides: [
     audioRecorderManagerProvider.overrideWithValue(recorder),
   ]);
@@ -64,9 +69,15 @@ class _Harness {
             body: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                if (showOverlay)
+                if (showOverlay && maxDurationSeconds == null)
                   VoiceRecorderOverlay(
-                    onRecordComplete: (path, _) => completed.add(path),
+                    onRecordComplete: _onComplete,
+                    onCancel: () {},
+                  )
+                else if (showOverlay)
+                  VoiceRecorderOverlay(
+                    maxDurationSeconds: maxDurationSeconds!,
+                    onRecordComplete: _onComplete,
                     onCancel: () {},
                   ),
               ],
@@ -74,10 +85,19 @@ class _Harness {
           ),
         ),
       );
+
+  void _onComplete(String path, int seconds) {
+    completed.add(path);
+    completedSeconds.add(seconds);
+  }
 }
 
-Future<_Harness> _pump(WidgetTester tester, {Completer<void>? startGate}) async {
-  final h = _Harness()..recorder.startGate = startGate;
+Future<_Harness> _pump(
+  WidgetTester tester, {
+  Completer<void>? startGate,
+  int? maxDurationSeconds,
+}) async {
+  final h = _Harness(maxDurationSeconds: maxDurationSeconds)..recorder.startGate = startGate;
   addTearDown(h.container.dispose);
   await tester.pumpWidget(h.app(showOverlay: true));
   await tester.pump();
@@ -133,5 +153,34 @@ void main() {
     expect(h.completed, ['/tmp/voice_test.m4a']);
     expect(h.recorder.stopCalls, 1);
     expect(h.recorder.cancelCalls, 0, reason: 'iptal dosyayi siler — gonderilen ses kaybolurdu');
+  });
+
+  testWidgets('sohbet (varsayilan): 59. sn kayitta, 60. sn otomatik tamamlanir', (tester) async {
+    final h = await _pump(tester);
+
+    await tester.pump(const Duration(seconds: 59));
+    expect(h.completed, isEmpty, reason: 'sohbet sesi 60 sn sinirinda kalmali');
+    expect(h.recorder.isRecording, isTrue);
+
+    await tester.pump(const Duration(seconds: 1));
+    expect(h.completedSeconds, [60]);
+    expect(h.recorder.isRecording, isFalse);
+
+    await tester.pumpWidget(h.app(showOverlay: false));
+  });
+
+  testWidgets('soru sesi (maxDurationSeconds: 15): 15. sn completeRecording', (tester) async {
+    final h = await _pump(tester, maxDurationSeconds: 15);
+
+    await tester.pump(const Duration(seconds: 14));
+    expect(h.completed, isEmpty);
+
+    await tester.pump(const Duration(seconds: 1));
+    expect(h.completed, ['/tmp/voice_test.m4a']);
+    expect(h.completedSeconds, [15]);
+    expect(h.recorder.stopCalls, 1);
+
+    await tester.pumpWidget(h.app(showOverlay: false));
+    expect(h.recorder.cancelCalls, 0, reason: 'tamamlanan kayit iptal edilmez');
   });
 }

@@ -4,12 +4,14 @@ import 'dart:ui' show VoidCallback;
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:qulo_v2/core/config/env.dart';
+import 'package:qulo_v2/core/constants/app_durations.dart';
 import 'package:qulo_v2/core/network/interceptors/accept_language_interceptor.dart';
 import 'package:qulo_v2/core/network/interceptors/app_version_interceptor.dart';
 import 'package:qulo_v2/core/network/interceptors/auth_interceptor.dart';
 import 'package:qulo_v2/core/network/interceptors/error_interceptor.dart';
 import 'package:qulo_v2/core/network/interceptors/idempotency_interceptor.dart';
 import 'package:qulo_v2/core/network/interceptors/log_interceptor.dart';
+import 'package:qulo_v2/core/network/interceptors/request_timeout_interceptor.dart';
 import 'package:qulo_v2/core/network/interceptors/session_interceptor.dart';
 import 'package:qulo_v2/core/network/result.dart';
 
@@ -34,8 +36,8 @@ class NetworkManager {
 
     _dio = Dio(BaseOptions(
       baseUrl: Env.apiBaseUrl,
-      connectTimeout: const Duration(seconds: 15),
-      receiveTimeout: const Duration(seconds: 15),
+      connectTimeout: AppDurations.networkConnectTimeout,
+      receiveTimeout: AppDurations.networkReceiveTimeout,
       maxRedirects: 3,
       headers: {
         'Content-Type': 'application/json',
@@ -53,6 +55,7 @@ class NetworkManager {
       AcceptLanguageInterceptor(),
       AppVersionInterceptor(),
       IdempotencyInterceptor(),
+      RequestTimeoutInterceptor(),
       AuthInterceptor(_dio, onForceLogout: () => this.onForceLogout?.call()),
       AppLogInterceptor(),
       ErrorInterceptor(),

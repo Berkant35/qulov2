@@ -4,6 +4,27 @@ import 'package:qulo_v2/core/constants/app_constants.dart';
 
 part 'question_model.g.dart';
 
+/// Gorsel moderasyon durumu (sahip kendi `pending` gorselini gorur).
+/// Bilinmeyen deger → null (eski istemci yeni durumda patlamasin).
+@JsonEnum()
+enum QuestionImageStatus {
+  @JsonValue('pending')
+  pending,
+  @JsonValue('approved')
+  approved,
+  @JsonValue('rejected')
+  rejected,
+}
+
+/// `DELETE /questions/me/:order/media/:kind` yol parcasi.
+enum QuestionMediaKind {
+  voice('voice'),
+  image('image');
+
+  const QuestionMediaKind(this.wireName);
+  final String wireName;
+}
+
 @JsonSerializable()
 class QuestionModel extends Equatable {
   final String id;
@@ -64,6 +85,20 @@ class QuestionModel extends Equatable {
   final String? createdAt;
   final String? locale;
 
+  /// Sesli/gorselli soru alanlari (2.0.19). Sunucu kapi pasifken anahtarlari
+  /// HIC gondermez → hepsi null. URL'ler imzali ve kisa omurlu (600 sn).
+  @JsonKey(name: 'voice_url')
+  final String? voiceUrl;
+  @JsonKey(name: 'voice_duration_ms')
+  final int? voiceDurationMs;
+  @JsonKey(name: 'image_url')
+  final String? imageUrl;
+  @JsonKey(
+    name: 'image_status',
+    unknownEnumValue: JsonKey.nullForUndefinedEnumValue,
+  )
+  final QuestionImageStatus? imageStatus;
+
   const QuestionModel({
     required this.id,
     required this.userId,
@@ -93,6 +128,10 @@ class QuestionModel extends Equatable {
     this.statsAnswer3Count = 0,
     this.statsAnswer4Count = 0,
     this.createdAt,
+    this.voiceUrl,
+    this.voiceDurationMs,
+    this.imageUrl,
+    this.imageStatus,
   });
 
   factory QuestionModel.fromJson(Map<String, dynamic> json) =>

@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:dio/dio.dart';
 import 'package:qulo_v2/core/network/network_manager.dart';
 import 'package:qulo_v2/core/network/result.dart';
@@ -51,6 +54,59 @@ class QuestionRepository implements IQuestionRepository {
       return Failure(e.toAppFailure());
     }
   }
+
+  /// Ses kaydi (m4a/aac, <=15 sn). `durationMs` sunucuda 1..15000 dogrulanir.
+  Future<Result<QuestionModel>> uploadVoice(int orderNum, File file, int durationMs) async {
+    try {
+      final form = FormData.fromMap({
+        'file': await MultipartFile.fromFile(
+          file.path,
+          filename: 'voice.m4a',
+          contentType: DioMediaType.parse('audio/mp4'),
+        ),
+        'duration_ms': durationMs.toString(),
+      });
+      return Success(await _service.uploadVoice(orderNum, form));
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    } catch (e) {
+      return Failure(UnknownFailure(error: e));
+    }
+  }
+
+  /// Gorsel (jpeg/png/webp). Sunucu senkron moderasyon yapar; yanitta
+  /// `image_status` approved/rejected/pending doner.
+  Future<Result<QuestionModel>> uploadImage(int orderNum, Uint8List bytes, String mimeType) async {
+    try {
+      final form = FormData.fromMap({
+        'file': MultipartFile.fromBytes(
+          bytes,
+          filename: 'image.${_imageExtension(mimeType)}',
+          contentType: DioMediaType.parse(mimeType),
+        ),
+      });
+      return Success(await _service.uploadImage(orderNum, form));
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    } catch (e) {
+      return Failure(UnknownFailure(error: e));
+    }
+  }
+
+  Future<Result<void>> removeMedia(int orderNum, QuestionMediaKind kind) async {
+    try {
+      await _service.deleteMedia(orderNum, kind.wireName);
+      return const Success(null);
+    } on DioException catch (e) {
+      return Failure(e.toAppFailure());
+    }
+  }
+
+  static String _imageExtension(String mimeType) => switch (mimeType) {
+        'image/png' => 'png',
+        'image/webp' => 'webp',
+        _ => 'jpg',
+      };
 
   @override
   Future<Result<List<QuestionModel>>> reorderQuestions(List<String> orderedIds) async {

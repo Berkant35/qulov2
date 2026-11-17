@@ -22,6 +22,30 @@ String? _gate(String location, UserModel? user) =>
     setupGateRedirect(location: location, user: user);
 
 void main() {
+  group('sehir secici — konum adiminin "sehir sec" yolu', () {
+    final noAge = _user(age: null, photos: 0, questions: 0, genderPref: false);
+    final noSetup = _user(photos: 0, questions: 0, genderPref: false);
+
+    test('yas yokken (sosyal giris, profil tamamlama sirasinda) acilabilir', () {
+      expect(_gate(cityPickerPath, noAge), isNull);
+    });
+
+    test('kurulum bitmemisken de acilabilir', () {
+      expect(_gate(cityPickerPath, noSetup), isNull);
+    });
+
+    test('benzer yol muaf degil', () {
+      expect(_gate('/city-picker-x', noAge), '/profile-completion');
+    });
+
+    test('oturumsuz kullanici yalniz secim kipinde girebilir', () {
+      expect(isGuestCityPick(location: cityPickerPath, extra: true), isTrue);
+      expect(isGuestCityPick(location: cityPickerPath, extra: null), isFalse);
+      expect(isGuestCityPick(location: cityPickerPath, extra: 'true'), isFalse);
+      expect(isGuestCityPick(location: '/discover', extra: true), isFalse);
+    });
+  });
+
   group('profil henuz yuklenmedi', () {
     for (final location in ['/discover', '/profile-setup', '/profile-completion', '/chat/m1']) {
       test('$location → yonlendirme yok (yanlis ekrana atmaz)', () {

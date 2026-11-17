@@ -7,6 +7,7 @@ import 'package:qulo_v2/data/models/subscription_model.dart';
 import 'package:qulo_v2/core/services/analytics_manager.dart';
 import 'package:qulo_v2/providers/api_provider.dart';
 import 'package:qulo_v2/providers/auth_provider.dart';
+import 'package:qulo_v2/providers/diamond_provider.dart';
 
 class SubscriptionNotifier extends AsyncNotifier<SubscriptionInfo> {
   @override
@@ -48,14 +49,21 @@ class SubscriptionNotifier extends AsyncNotifier<SubscriptionInfo> {
       final entitlement = customerInfo.entitlements.active.values
           .where((e) => e.productIdentifier == productId)
           .firstOrNull;
-      final txId = entitlement?.latestPurchaseDate;
-      await _notifyBackend(productId, txId);
-      state = AsyncData(await fetchStatus());
+      await confirmPurchase(productId, transactionId: entitlement?.latestPurchaseDate);
       return PurchaseOutcome.success;
     } catch (e) {
       dev.log('Subscription purchase failed: $e');
       return PurchaseOutcome.fromError(e);
     }
+  }
+
+  /// Mağaza ödemesi bitti: sunucuya bildir — aylık mor bonusu `POST /subscriptions/activate`
+  /// içinde eşzamanlı yatar — sonra planı ve cüzdanı tazele. Bildirim başarısız olsa da
+  /// cüzdan sunucudan okunur (bonusu webhook yatırmış olabilir; istemci tahmin etmez).
+  Future<void> confirmPurchase(String productId, {String? transactionId}) async {
+    await _notifyBackend(productId, transactionId);
+    state = AsyncData(await fetchStatus());
+    await ref.read(diamondProvider.notifier).syncWallet();
   }
 
   Future<void> _notifyBackend(String productId, [String? transactionId]) async {

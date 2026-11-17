@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:qulo_v2/core/network/result.dart';
@@ -336,6 +337,93 @@ class FakeQuestionRepository implements QuestionRepository {
       answer4: data['answer_4'] as String,
     ));
   }
+
+  /// Basariyla guncellenen soru govdeleri (duzenleme modu).
+  final List<Map<String, dynamic>> updatedBodies = [];
+
+  @override
+  Future<Result<QuestionModel>> updateQuestion(int orderNum, Map<String, dynamic> data) async {
+    updatedBodies.add(data);
+    final existing = questions.where((q) => q.orderNum == orderNum).firstOrNull;
+    return Success(existing ?? _questionFrom('updated_$orderNum', orderNum, data));
+  }
+
+  // ─── Medya (sesli/görselli soru) ───
+
+  /// Sirayla tuketilir: ilk N yukleme bu hatalarla doner, bosalinca basari.
+  final List<AppFailure> voiceFailures = [];
+  final List<AppFailure> imageFailures = [];
+
+  /// Basarili gorsel yuklemesinin yanitindaki moderasyon sonucu.
+  QuestionImageStatus? imageUploadStatus = QuestionImageStatus.approved;
+
+  final voiceUploads = <({int orderNum, String path, int durationMs})>[];
+  final imageUploads = <({int orderNum, int length, String mimeType})>[];
+  final removedMedia = <({int orderNum, QuestionMediaKind kind})>[];
+
+  /// Doluysa uploadVoice bu tamamlanana kadar bekler (yükleme sürerken arayüz testi).
+  Completer<void>? voiceUploadGate;
+
+  @override
+  Future<Result<QuestionModel>> uploadVoice(int orderNum, File file, int durationMs) async {
+    voiceUploads.add((orderNum: orderNum, path: file.path, durationMs: durationMs));
+    await voiceUploadGate?.future;
+    if (voiceFailures.isNotEmpty) return Failure(voiceFailures.removeAt(0));
+    return Success(_mediaResponse(orderNum, voiceUrl: 'https://signed.test/voice', voiceDurationMs: durationMs));
+  }
+
+  @override
+  Future<Result<QuestionModel>> uploadImage(int orderNum, Uint8List bytes, String mimeType) async {
+    imageUploads.add((orderNum: orderNum, length: bytes.length, mimeType: mimeType));
+    if (imageFailures.isNotEmpty) return Failure(imageFailures.removeAt(0));
+    final rejected = imageUploadStatus == QuestionImageStatus.rejected;
+    return Success(_mediaResponse(
+      orderNum,
+      imageUrl: rejected ? null : 'https://signed.test/image',
+      imageStatus: imageUploadStatus,
+    ));
+  }
+
+  @override
+  Future<Result<void>> removeMedia(int orderNum, QuestionMediaKind kind) async {
+    removedMedia.add((orderNum: orderNum, kind: kind));
+    return const Success(null);
+  }
+
+  QuestionModel _mediaResponse(
+    int orderNum, {
+    String? voiceUrl,
+    int? voiceDurationMs,
+    String? imageUrl,
+    QuestionImageStatus? imageStatus,
+  }) =>
+      QuestionModel(
+        id: 'media_$orderNum',
+        userId: 'u1',
+        orderNum: orderNum,
+        questionText: 'q',
+        correctAnswer: 1,
+        answer1: 'a',
+        answer2: 'b',
+        answer3: 'c',
+        answer4: 'd',
+        voiceUrl: voiceUrl,
+        voiceDurationMs: voiceDurationMs,
+        imageUrl: imageUrl,
+        imageStatus: imageStatus,
+      );
+
+  static QuestionModel _questionFrom(String id, int orderNum, Map<String, dynamic> data) => QuestionModel(
+        id: id,
+        userId: 'u1',
+        orderNum: orderNum,
+        questionText: data['question_text'] as String,
+        correctAnswer: data['correct_answer'] as int,
+        answer1: data['answer_1'] as String,
+        answer2: data['answer_2'] as String,
+        answer3: data['answer_3'] as String,
+        answer4: data['answer_4'] as String,
+      );
 
   @override
   Future<Result<Map<String, dynamic>>> getAiSuggestions(Map<String, dynamic> body) async {

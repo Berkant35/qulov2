@@ -20,8 +20,9 @@ import 'package:qulo_v2/providers/subscription_provider.dart';
 import '../../../helpers/fake_navigation.dart';
 
 /// Paywall satın alması (para): ödeme sürerken sheet kapanırsa (401 çıkışı, deep
-/// link) eskiden `if (!mounted) return;` abonelik / günlük hak / elmas tazelemesini
-/// atlıyordu — satın alınan Plus hakları ve bakiye bayat kalıyordu.
+/// link) eskiden `if (!mounted) return;` abonelik / günlük hak tazelemesini
+/// atlıyordu — satın alınan Plus hakları bayat kalıyordu. Bakiye artık burada değil,
+/// satın alma notifier'ında tazelenir (sheet kapansa da çalışır).
 class _HostPaywall extends PaywallBottomSheetContent {
   const _HostPaywall() : super(trigger: 'swipe_limit');
 
@@ -138,7 +139,7 @@ void main() {
   });
   tearDown(() => AnalyticsManager.debugEventSink = null);
 
-  testWidgets('abonelik ödemesi sürerken sheet kapanırsa haklar, abonelik ve elmas yine tazelenir',
+  testWidgets('abonelik ödemesi sürerken sheet kapanırsa haklar ve abonelik yine tazelenir',
       (tester) async {
     final state = await pump(tester);
     subscription.gate = Completer<void>();
@@ -151,10 +152,13 @@ void main() {
     await readAll();
 
     expect(tester.takeException(), isNull);
-    expect(_builds, {'subscription': 2, 'diamond': 2, 'stats': 2});
+    // Elmas bakiyesi burada invalidate EDİLMEZ: `DiamondNotifier.build()` sabit 0 döner,
+    // invalidate bakiyeyi sıfırlardı. Cüzdanı satın alma notifier'ı (`confirmPurchase`)
+    // sunucudan tazeler — bkz. test/providers/purchase_wallet_sync_test.dart.
+    expect(_builds, {'subscription': 2, 'diamond': 1, 'stats': 2});
   });
 
-  testWidgets('elmas ödemesi sürerken sheet kapanırsa bakiye yine tazelenir', (tester) async {
+  testWidgets('elmas ödemesi sürerken sheet kapanırsa bakiye sıfırlanmaz', (tester) async {
     final state = await pump(tester);
     diamonds.gate = Completer<void>();
 
@@ -166,7 +170,7 @@ void main() {
     await readAll();
 
     expect(tester.takeException(), isNull);
-    expect(_builds['diamond'], 2);
+    expect(_builds['diamond'], 1, reason: 'invalidate bakiyeyi 0\'a çekerdi; tazeleme notifier\'da');
     expect(_builds['stats'], 1, reason: 'elmas paketi günlük hakları değiştirmez');
   });
 

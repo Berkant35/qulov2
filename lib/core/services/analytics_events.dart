@@ -40,6 +40,17 @@ abstract class AnalyticsEvents {
   static const String onboardingPhotoRemove = 'onboarding_photo_remove';
   static const String onboardingBirthdateSet = 'onboarding_birthdate_set';
   static const String onboardingLocationPermit = 'onboarding_location_permit';
+
+  /// Konum adımında şehir seçildi (`source`: register | profile_completion).
+  static const String onboardingCitySelect = 'onboarding_city_select';
+
+  /// Seçilen şehir hesap açıldıktan sonra sunucuya yazılamadı; kullanıcı kilitlenmez,
+  /// Keşfet istem kartı güvenlik ağıdır.
+  static const String onboardingCitySaveFail = 'onboarding_city_save_fail';
+
+  /// Kayıt/profil tamamlama bitti, konum nasıl çözüldü (`source` + `method`: gps | city | none).
+  /// Oturum sonrası atılır → `flow_events`'e düşer (veritabanından ölçülür).
+  static const String onboardingLocationResolved = 'onboarding_location_resolved';
   static const String onboardingComplete = 'onboarding_complete';
 
   // ─── Onboarding V2 ───
@@ -184,6 +195,19 @@ abstract class AnalyticsEvents {
   static const String questionAnalyticsView = 'question_analytics_view';
   static const String questionSlotLimitHit = 'question_slot_limit_hit';
   static const String questionListView = 'question_list_view';
+
+  // ─── Sesli / görselli soru (2.0.19) ────────────────────────────────
+  /// Soruya ses yüklendi (param: duration_ms).
+  static const String questionVoiceAdded = 'question_voice_added';
+  /// Soruya görsel yüklendi (sunucu moderasyonundan bağımsız; yükleme başarılı).
+  static const String questionImageAdded = 'question_image_added';
+  /// Sorudan ses/görsel kaldırıldı (param: type = voice | image).
+  static const String questionMediaRemoved = 'question_media_removed';
+  /// Quiz'de soru sesi bir kez oynatıldı; kart kapanırken son değerlerle
+  /// (param: completed bool, replays int).
+  static const String quizVoicePlayed = 'quiz_voice_played';
+  /// Quiz'de soru sesi/görseli yüklenemedi (param: type = voice | image).
+  static const String quizMediaLoadFailed = 'quiz_media_load_failed';
 
   // ─── Profile (14) ──────────────────────────────────────────────────
   static const String profileViewOwn = 'profile_view_own';
@@ -352,6 +376,10 @@ abstract class AnalyticsEvents {
   static const String paramStepIndex = 'step_index';
   static const String paramPhotoIndex = 'photo_index';
   static const String paramSource = 'source';
+
+  /// `onboarding_city_select` / `onboarding_location_resolved` için `paramSource` değerleri.
+  static const String sourceRegister = 'register';
+  static const String sourceProfileCompletion = 'profile_completion';
   static const String paramPower = 'power';
   static const String paramHasInventory = 'has_inventory';
   static const String paramCost = 'cost';
@@ -402,6 +430,10 @@ abstract class AnalyticsEvents {
   static const String paramTotalDurationMs = 'total_duration_ms';
   static const String paramQuestionType = 'question_type';
   static const String paramQuestionId = 'question_id';
+  static const String paramCompleted = 'completed';
+  static const String paramReplays = 'replays';
+  static const String mediaTypeVoice = 'voice';
+  static const String mediaTypeImage = 'image';
   static const String paramCurrentSlots = 'current_slots';
   static const String paramQuestionsCount = 'questions_count';
   static const String paramFieldName = 'field_name';

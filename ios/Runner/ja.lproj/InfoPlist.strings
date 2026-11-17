@@ -3,5 +3,5 @@
 "NSPhotoLibraryUsageDescription" = "プロフィール写真を選択するためにフォトライブラリへのアクセスが必要です。";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "Qulo は、Discover 画面で設定した距離内のユーザーを見つけるため、またプロフィールに都市名を表示するために位置情報を使用します。たとえば距離を 50 km に設定すると、Discover はその範囲内のユーザーを表示し、各カードに「東京 · 2.5 km」のように都市と距離が表示されます。";
 "NSLocationWhenInUseUsageDescription" = "Qulo は、Discover 画面で設定した距離内のユーザーを見つけるため、またプロフィールに都市名を表示するために位置情報を使用します。たとえば距離を 50 km に設定すると、Discover はその範囲内のユーザーを表示し、各カードに「東京 · 2.5 km」のように都市と距離が表示されます。";
-"NSMicrophoneUsageDescription" = "ボイスメッセージを送信するためにマイクへのアクセスが必要です。";
+"NSMicrophoneUsageDescription" = "チャットでボイスメッセージを録音したり、プロフィールの質問に任意で音声録音を追加したりするために、マイクへのアクセスが必要です。";
 "NSUserTrackingUsageDescription" = "Quloはこの識別子を、あなたに合った広告の表示、広告効果の測定（例：広告経由でQuloを知ったことの把握）、アプリ体験の向上のために使用します。許可しない場合でもQuloは同じように使え、広告は表示されることがありますが、パーソナライズの度合いは低くなります。";

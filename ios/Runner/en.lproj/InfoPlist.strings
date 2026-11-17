@@ -3,5 +3,5 @@
 "NSPhotoLibraryUsageDescription" = "Photo library access is required to select profile photos.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "Qulo uses your location to: (1) find profiles on Discover within your selected distance, (2) show your city on your profile, and (3) display each profile's distance to you (e.g., \"Berlin · 2.5 km\").";
 "NSLocationWhenInUseUsageDescription" = "Qulo uses your location to: (1) find profiles on Discover within your selected distance, (2) show your city on your profile, and (3) display each profile's distance to you (e.g., \"Berlin · 2.5 km\").";
-"NSMicrophoneUsageDescription" = "Microphone access is required to send voice messages.";
+"NSMicrophoneUsageDescription" = "Microphone access is required to record voice messages in chat and to add an optional voice recording to your profile questions.";
 "NSUserTrackingUsageDescription" = "Qulo uses this identifier to show you ads that are more relevant to you, measure ad performance (e.g., knowing you discovered Qulo through an ad), and improve your app experience. If you decline, Qulo works the same and you may still see ads, just less personalized.";

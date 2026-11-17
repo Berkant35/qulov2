@@ -6,11 +6,14 @@ import 'package:qulo_v2/core/widgets/app_scaffold.dart';
 import 'package:qulo_v2/data/models/ai_suggestion_model.dart';
 import 'package:qulo_v2/data/models/question_model.dart';
 import 'package:qulo_v2/features/questions/mixins/question_create_screen_mixin.dart';
+import 'package:qulo_v2/features/questions/mixins/question_media_mixin.dart';
 import 'package:qulo_v2/features/questions/widgets/question_create_bottom_bar.dart';
+import 'package:qulo_v2/features/questions/widgets/question_media_section.dart';
 import 'package:qulo_v2/features/questions/widgets/question_step_answers.dart';
 import 'package:qulo_v2/features/questions/widgets/question_step_question.dart';
 import 'package:qulo_v2/features/questions/widgets/question_step_settings.dart';
 import 'package:qulo_v2/features/questions/widgets/step_indicator.dart';
+import 'package:qulo_v2/providers/app_config_provider.dart';
 import 'package:qulo_v2/providers/economy_config_provider.dart';
 
 class QuestionCreateScreen extends ConsumerStatefulWidget {
@@ -29,7 +32,7 @@ class QuestionCreateScreen extends ConsumerStatefulWidget {
 }
 
 class _QuestionCreateScreenState extends ConsumerState<QuestionCreateScreen>
-    with QuestionCreateScreenMixin {
+    with QuestionMediaMixin, QuestionCreateScreenMixin {
   @override
   void initState() {
     super.initState();
@@ -50,6 +53,8 @@ class _QuestionCreateScreenState extends ConsumerState<QuestionCreateScreen>
 
   @override
   Widget build(BuildContext context) {
+    final mediaEnabled = ref.watch(mediaQuestionsEnabledProvider);
+
     return AppScaffold(
       title: isEditMode
           ? context.tr('question_edit_title')
@@ -84,6 +89,17 @@ class _QuestionCreateScreenState extends ConsumerState<QuestionCreateScreen>
                   onCategoryChanged: (v) =>
                       setState(() => selectedCategory = v),
                   showTooShort: questionTooShort,
+                  mediaSection: showMediaSection(mediaEnabled)
+                      ? QuestionMediaSection(
+                          view: mediaView,
+                          onRecordTap: startVoiceRecording,
+                          onRecordComplete: onVoiceRecorded,
+                          onRecordCancel: cancelVoiceRecording,
+                          onRemoveVoice: removeVoice,
+                          onPickImage: pickQuestionImage,
+                          onRemoveImage: removeImage,
+                        )
+                      : null,
                 ),
                 QuestionStepAnswers(
                   answer1Controller: answer1Controller,
@@ -120,6 +136,7 @@ class _QuestionCreateScreenState extends ConsumerState<QuestionCreateScreen>
             selectedTimeLimit: selectedTimeLimit,
             currentStep: currentStep,
             isSaving: isSaving,
+            isUploadingMedia: isUploadingMedia,
             isEditMode: isEditMode,
             canGoNext: canGoNext(),
             onBack: goBack,
